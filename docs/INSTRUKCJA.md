@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Bot odcisku
 
-Wersja instrukcji odpowiada wersji programu **0.5.0**.
+Wersja instrukcji odpowiada wersji programu **0.6.0**.
 
 ## 1. Co jest potrzebne
 
@@ -30,23 +30,41 @@ Jeśli panel się nie otworzy, wpisz adres http://127.0.0.1:3777/ ręcznie.
 
 ## 3. Panel krok po kroku
 
-Panel ma dwie zakładki: **Plan** – co bot ma zrobić, i **Ustawienia** – jak ma wyglądać jego przeglądarka. Start bierze ustawienia z obu. Przy każdym polu jest podpowiedź (najedź myszą) i znaczek **[?]** – najedź na niego albo kliknij, żeby przeczytać dłuższy opis (Esc albo kliknięcie obok zamyka).
+Na górze są przyciski **Start** i **Stop** – widoczne zawsze, niezależnie od zakładki. Pod nimi dwie zakładki: **Plan** – co bot ma zrobić, i **Ustawienia** – jak ma wyglądać jego przeglądarka. Start bierze ustawienia z obu. Przy każdym polu jest podpowiedź (najedź myszą) i znaczek **[?]** – najedź na niego albo kliknij, żeby przeczytać dłuższy opis (Esc albo kliknięcie obok zamyka).
 
 ### Zakładka „Plan”
 
 #### Wejścia i cel
-- **Liczba wejść:** od 1 do 500. Jedno wejście trwa od kilkunastu sekund do ok. minuty – zależnie od długości tekstu i włączonych kroków.
+- **Liczba wejść:** od 1 do 500. Jedno wejście trwa od kilkunastu sekund do kilku minut – zależnie od scenariusza.
 - **Przerwa od–do:** losowa pauza między wejściami, w sekundach.
-- **Adres strony:** pełny adres z `https://`. Pisanie działa na każdej stronie. Zakładki, test „Człowiek czy bot” i odczyt odcisku działają tylko na „Cyfrowym odcisku człowieka” – na innych stronach bot je pomija i tylko przewija.
-- **Tekst do wpisania:** bot wpisze go znak po znaku z nierównymi, ludzkimi odstępami. Nowa linia w tekście = naciśnięcie Enter. Puste pole = bez pisania.
-- **Gdzie pisać:**
-  - *Pisz od razu* – zaraz po wczytaniu strony w pole, które ma kursor (np. wyszukiwarka). Jeśli żadne go nie ma, bot klika w pierwsze widoczne pole tekstowe.
-  - *We wskazane pole* – wpisz selektor CSS pola, np. `#search` albo `textarea[name=q]`. Jak go znaleźć: w Chrome kliknij pole prawym przyciskiem → *Zbadaj*, potem na podświetlonym kodzie prawy przycisk → *Copy* → *Copy selector*. Bot czeka na pole do 10 s.
-- **Naciśnij Enter po wpisaniu:** po całym tekście bot naciśnie Enter (np. wysłanie wyszukiwania) i poczeka na przeładowanie strony.
+- **Adres strony:** pełny adres z `https://`.
 
-#### Co robić na stronie
-- **Przewijanie i klikanie:** bot przewija stronę; na „Cyfrowym odcisku” odwiedza też 2–4 losowe zakładki.
-- **Test „Człowiek czy bot”:** tylko na „Cyfrowym odcisku” – bot sam wykonuje ten test ruchem myszy podobnym do ludzkiego, a panel pokazuje werdykt strony.
+#### Scenariusz
+Lista akcji, które bot wykonuje **po kolei, od góry**, przy każdym wejściu zaraz po wczytaniu strony.
+
+- **+ Dodaj akcję** – wybierz rodzaj z listy; akcja pojawi się na końcu.
+- Rodzaj akcji zmienisz listą w wierszu. **↑ ↓** albo przeciągnięcie za uchwyt **⠿** zmienia kolejność, **⧉** powiela, **✕** usuwa.
+- Nowy scenariusz zaczyna się od „Przeglądaj losowo” i „Test »Człowiek czy bot«” – czyli od tego, co bot robił wcześniej. Możesz je usunąć.
+
+| Akcja | Ustawienia | Co robi |
+|---|---|---|
+| **Pisz tekst** | tekst, dokąd | wpisuje tekst znak po znaku z ludzkim rytmem tam, gdzie jest kursor (jeśli nigdzie – w pierwsze widoczne pole tekstowe); nowa linia = Enter |
+| **Naciśnij klawisze** | klawisz lub kombinacja, ile razy, dokąd | naciska np. Enter, Tab, Ctrl+F, Alt+← |
+| **Kliknij w element** | selektor CSS | dojeżdża myszą i klika, np. w pole, w które potem będzie pisał |
+| **Przewiń** | w dół / w górę, o ile px | przewija kółkiem myszy porcjami |
+| **Czekaj** | od–do sekund | czeka losowo, lekko ruszając myszą |
+| **Przeglądaj losowo** | – | przewija stronę; na „Cyfrowym odcisku” odwiedza też 2–4 losowe zakładki |
+| **Test „Człowiek czy bot”** | – | tylko na „Cyfrowym odcisku”: robi test ludzkim ruchem myszy; na innych stronach pomijany |
+
+**Klawisz lub kombinacja:** kliknij w pole z klawiszem i naciśnij kombinację na klawiaturze – zapisze się sama (np. `Ctrl+F`). Skróty, których przeglądarka nie oddaje stronie (np. Ctrl+W, Ctrl+T), wybierz z **listy** obok – są tam też klawisze nawigacji i edycji.
+
+**Selektor CSS:** w Chrome kliknij element prawym przyciskiem → *Zbadaj*, potem na podświetlonym kodzie prawy przycisk → *Copy* → *Copy selector*. Przykłady: `#search`, `input[name=q]`, `textarea`. Bot czeka na element do 10 s.
+
+**Dokąd** (przy pisaniu i klawiszach):
+- *Strona* – klawisze trafiają tylko do treści strony. Działa też bez okna i w tle, ale skróty przeglądarki (Ctrl+F, Ctrl+T, Alt+←, F5…) nic nie otworzą – strona zobaczy tylko samo naciśnięcie.
+- *Przeglądarka* – klawisze idą do okna przeglądarki bota jak z prawdziwej klawiatury, więc działają też skróty przeglądarki (np. Ctrl+F otwiera okienko szukania). Wymaga widocznego okna (nie „Bez okna”), a w tym czasie nie można używać klawiatury ani myszy. **W wersji 0.6.0 ten tryb jest tylko w panelu – bot pomija takie akcje z informacją w dzienniku.**
+
+Błąd jednej akcji (np. brak elementu) nie przerywa wejścia: trafia do dziennika i tabeli, a bot idzie do następnej akcji. Na stronie „Cyfrowy odcisk człowieka” na końcu każdego wejścia bot zawsze odczytuje odcisk przeglądarki.
 
 ### Zakładka „Ustawienia”
 
@@ -78,7 +96,7 @@ Aby sprawdzić, która cecha najbardziej zmienia odcisk, odznacz wszystkie poza 
 - Chrome nie obsługuje proxy SOCKS5 z hasłem, w takim przypadku użyj HTTP.
 - **VPN** włączasz ręcznie w jego aplikacji, jeszcze przed startem. Bot go nie przełącza.
 
-### Start i Stop (pod zakładkami)
+### Start i Stop (na górze)
 - **Start** uruchamia serię wejść. Ustawienia są zablokowane, dopóki bot pracuje.
 - **Stop** przerywa bieżące wejście i kończy serię. Wyniki zebrane do tej chwili zostają w raporcie.
 
@@ -86,7 +104,7 @@ Aby sprawdzić, która cecha najbardziej zmienia odcisk, odznacz wszystkie poza 
 
 **Tabela „Wejścia”**, jeden wiersz na wejście:
 - **Profil:** wylosowane ustawienia, czyli system, język, strefa czasowa, ekran, sprzęt, karta graficzna, motyw i liczba ukrytych czcionek.
-- **Pisanie:** ile znaków wpisano i w jakim tempie (znaki na minutę); na czerwono – dlaczego się nie udało (np. brak pola).
+- **Scenariusz:** ile akcji się udało (np. 5/6), ile znaków wpisano i w jakim tempie; na czerwono – pierwszy błąd akcji.
 - **Odcisk ze strony** (tylko „Cyfrowy odcisk”): skrót, który policzyła strona.
   - **nowy:** strona w tej serii jeszcze takiego odcisku nie widziała.
   - **powtórzony:** taki odcisk już był.
@@ -95,7 +113,7 @@ Aby sprawdzić, która cecha najbardziej zmienia odcisk, odznacz wszystkie poza 
 
 Pod tabelą jest podsumowanie „Różnych odcisków: X z Y”.
 
-**Dziennik** pokazuje na bieżąco każdy krok: profil, wpisany tekst (liczba znaków, czas, tempo), odwiedzone zakładki, wynik, przerwy i błędy.
+**Dziennik** pokazuje na bieżąco każdy krok: profil, każdą akcję scenariusza (np. wpisany tekst z tempem, naciśnięte klawisze), odwiedzone zakładki, wynik, przerwy i błędy.
 
 ## 5. Raporty
 
@@ -116,8 +134,10 @@ Oba pliki są uzupełniane po każdym wejściu, więc przerwanie serii nie kasuj
 | „Executable doesn't exist…” | Brak Chrome'a i Chromium. Uruchom `pobierz-chromium.bat` w folderze programu. |
 | Błąd wejścia `net::ERR_PROXY_CONNECTION_FAILED` | To proxy nie działa. Usuń je z listy. |
 | „test … nie został ukończony” w dzienniku | Bot chybił kółko. Seria toczy się dalej, w tym wejściu po prostu nie będzie werdyktu. |
-| „nie znaleziono pola …” / „na stronie nie ma pola tekstowego” | Sprawdź selektor (patrz „Gdzie pisać”) albo czy pole jest widoczne bez klikania czegoś wcześniej. Wejście idzie dalej, tylko bez pisania. |
-| Tekst trafia w złe miejsce przy „Pisz od razu” | Użyj „We wskazane pole” z selektorem. |
+| „nie znaleziono elementu …” / „na stronie nie ma pola tekstowego” | Sprawdź selektor albo czy element jest widoczny bez klikania czegoś wcześniej. Wejście idzie dalej, bez tej akcji. |
+| Tekst trafia w złe miejsce | Przed „Pisz tekst” dodaj „Kliknij w element” z selektorem pola. |
+| Ctrl+F (lub inny skrót przeglądarki) nic nie otwiera | W trybie „Strona” to normalne. Tryb „Przeglądarka” zostanie podłączony w kolejnej wersji. |
+| „tryb »Przeglądarka« nie jest jeszcze podłączony” w dzienniku | Jak wyżej – zmień akcję na „Strona” albo poczekaj na kolejną wersję. |
 | Odcisk się powtarza | Sprawdź, czy zaznaczone są „Szum na płótnie” i „Karta graficzna”. Bez nich odcisk zmienia się rzadziej. |
 
 ## 7. Aktualizacja

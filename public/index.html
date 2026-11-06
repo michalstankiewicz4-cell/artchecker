@@ -14,6 +14,12 @@
 
 <main>
   <form id="cfg">
+    <div class="actions top">
+      <button type="submit" id="start" class="primary" title="Uruchom serię wejść z ustawieniami z obu zakładek (Plan i Ustawienia).">Start</button>
+      <button type="button" id="stop" disabled title="Przerwij bieżące wejście i zakończ serię. Zebrane wyniki zostają w raporcie.">Stop</button>
+      <span id="status" class="status">gotowy</span>
+    </div>
+
     <div class="tabs" role="tablist" aria-label="Ustawienia bota">
       <button type="button" role="tab" id="tab-plan" aria-controls="pane-plan" aria-selected="true" title="Co bot ma zrobić: ile wejść, na jaką stronę, co wpisać.">Plan</button>
       <button type="button" role="tab" id="tab-set" aria-controls="pane-set" aria-selected="false" tabindex="-1" title="Jak ma to zrobić: które cechy przeglądarki zmieniać, jaka przeglądarka, proxy.">Ustawienia</button>
@@ -35,38 +41,29 @@
       </div>
 
       <label class="row" title="Pełny adres strony, na którą wchodzi bot (z https://).">
-        <span class="lbl">Adres strony <span class="help" tabindex="0" data-tip="Pełny adres z http:// lub https://. Pisanie działa na każdej stronie. Zakładki, test „Człowiek czy bot” i odczyt odcisku działają tylko na stronie „Cyfrowy odcisk człowieka” – na innych bot je pomija i tylko przewija.">?</span></span>
+        <span class="lbl">Adres strony <span class="help" tabindex="0" data-tip="Pełny adres z http:// lub https://. Pisanie działa na każdej stronie. Losowe zakładki, test „Człowiek czy bot” i odczyt odcisku działają tylko na stronie „Cyfrowy odcisk człowieka” – na innych stronach bot je pomija.">?</span></span>
         <input id="url" type="url" required value="https://michalstankiewicz4-cell.github.io/behavioral-biometrics/"></label>
 
-      <label class="row" title="Tekst, który bot wpisze znak po znaku z ludzkimi, nierównymi odstępami. Puste = bez pisania.">
-        <span class="lbl">Tekst do wpisania <span class="help" tabindex="0" data-tip="Bot wpisuje ten tekst znak po znaku jak człowiek: odstępy między klawiszami są nierówne (średnio ok. 150–200 ms), częste pary liter idą szybciej, po spacji i znakach interpunkcyjnych jest dłużej, czasem pojawia się chwila namysłu, a każdy klawisz jest chwilę przytrzymany. Polskie znaki są „naciskane” jak na polskiej klawiaturze. Nowa linia w tekście = naciśnięcie Enter. Puste pole = bot nic nie pisze.">?</span></span>
-        <textarea id="text" rows="4" placeholder="np. Ala ma kota"></textarea></label>
-
-      <div class="typing-opts">
-        <fieldset class="radios">
-          <legend class="lbl">Gdzie pisać <span class="help" tabindex="0" data-tip="„Pisz od razu” – zaraz po wczytaniu strony bot pisze w pole, które jest aktywne (np. wyszukiwarka z kursorem). Jeśli żadne nie jest aktywne, klika w pierwsze widoczne pole tekstowe. „We wskazane pole” – bot klika w pole wskazane selektorem CSS i dopiero wtedy pisze.">?</span></legend>
-          <div class="radio-row">
-            <label title="Pisz w pole aktywne po wczytaniu strony albo w pierwsze widoczne pole tekstowe."><input type="radio" name="typeMode" value="now" checked> Pisz od razu</label>
-            <label title="Kliknij w pole wskazane selektorem CSS i pisz w nim."><input type="radio" name="typeMode" value="selector"> We wskazane pole:</label>
-            <input id="selector" type="text" placeholder="selektor CSS, np. #search albo textarea[name=q]" disabled title="Selektor CSS pola, np. #search, input[name=q], .komentarz textarea">
-            <span class="help" tabindex="0" data-tip="Selektor CSS to sposób wskazania elementu strony. Najprościej: w Chrome kliknij pole prawym przyciskiem → Zbadaj, a potem na podświetlonym kodzie prawy przycisk → Copy → Copy selector. Przykłady: #search (element o id „search”), input[name=q] (pole o nazwie „q”), textarea (pierwsze pole wieloliniowe). Bot czeka na pole do 10 s.">?</span>
-          </div>
-        </fieldset>
-        <label class="check" title="Po wpisaniu całego tekstu naciśnij Enter (np. wysłanie wyszukiwania lub formularza).">
-          <input type="checkbox" id="enter"> Naciśnij Enter po wpisaniu
-          <span class="help" tabindex="0" data-tip="Po wpisaniu całego tekstu bot odczeka chwilę i naciśnie Enter – zwykle wysyła to wyszukiwanie albo formularz. Potem czeka, aż strona się przeładuje. Entery w środku tekstu (nowe linie) są wpisywane zawsze, niezależnie od tego pola.">?</span></label>
-      </div>
     </section>
 
     <section>
-      <h2>Co robić na stronie</h2>
-      <div class="checks">
-        <label class="check" title="Przewija stronę; na „Cyfrowym odcisku” odwiedza też 2–4 losowe zakładki."><input type="checkbox" id="browse" checked> Przewijanie i klikanie w kilka losowych zakładek
-          <span class="help" tabindex="0" data-tip="Bot przewija stronę kółkiem myszy z przerwami, jak przy czytaniu. Na stronie „Cyfrowy odcisk człowieka” klika też w 2–4 losowe zakładki. Na innych stronach tylko przewija.">?</span></label>
-        <label class="check" title="Bot sam robi test „Człowiek czy bot” ludzkim ruchem myszy (tylko na „Cyfrowym odcisku”)."><input type="checkbox" id="botTest" checked> Zrób test „Człowiek czy bot”
-          <span class="help" tabindex="0" data-tip="Tylko na stronie „Cyfrowy odcisk człowieka”. Bot znajduje kółka na płótnie i klika je 5 razy ruchem jak człowiek (krzywe, przyspieszanie, drżenie, przytrzymanie przycisku). W tabeli zobaczysz, czy strona uznała go za człowieka.">?</span></label>
+      <h2>Scenariusz <span class="opt">(po wczytaniu strony, od góry)</span> <span class="help" tabindex="0" data-tip="Lista czynności, które bot wykonuje po kolei przy każdym wejściu, zaraz po wczytaniu strony. Dodajesz je przyciskiem „+ Dodaj akcję”. Kolejność zmieniasz strzałkami ↑ ↓ albo przeciągając wiersz za uchwyt ⠿. ⧉ powiela akcję, ✕ ją usuwa. Pusta lista = bot tylko wczytuje stronę. Na stronie „Cyfrowy odcisk człowieka” na końcu każdego wejścia bot zawsze odczytuje odcisk przeglądarki.">?</span></h2>
+      <ol id="scenario" class="scenario"></ol>
+      <p id="scenario-empty" class="hint empty">Brak akcji – bot tylko wczyta stronę.</p>
+      <div class="add-wrap">
+        <button type="button" id="add-action" aria-haspopup="menu" aria-expanded="false" title="Dodaj nową akcję na końcu scenariusza.">+ Dodaj akcję ▾</button>
+        <div id="add-menu" class="add-menu" role="menu" hidden>
+          <button type="button" role="menuitem" data-add="type" title="Wpisz tekst znak po znaku z ludzkim rytmem.">Pisz tekst</button>
+          <button type="button" role="menuitem" data-add="keys" title="Naciśnij klawisz albo kombinację, np. Enter, Ctrl+F, Alt+←.">Naciśnij klawisze</button>
+          <button type="button" role="menuitem" data-add="click" title="Kliknij w element strony wskazany selektorem CSS (np. pole do pisania).">Kliknij w element</button>
+          <button type="button" role="menuitem" data-add="scroll" title="Przewiń stronę kółkiem myszy w dół albo w górę.">Przewiń</button>
+          <button type="button" role="menuitem" data-add="wait" title="Odczekaj losowy czas z podanego przedziału.">Czekaj</button>
+          <button type="button" role="menuitem" data-add="browse" title="Poprzewijaj stronę jak przy czytaniu; na „Cyfrowym odcisku” odwiedź też kilka losowych zakładek.">Przeglądaj losowo</button>
+          <button type="button" role="menuitem" data-add="botTest" title="Zrób test „Człowiek czy bot” na stronie „Cyfrowy odcisk człowieka”.">Test „Człowiek czy bot”</button>
+        </div>
       </div>
     </section>
+
     </div>
 
     <div class="pane" id="pane-set" role="tabpanel" aria-labelledby="tab-set" hidden>    <section>
@@ -113,17 +110,12 @@ socks5://host:port"></textarea>
     </section>
     </div>
 
-    <div class="actions">
-      <button type="submit" id="start" class="primary" title="Uruchom serię wejść z ustawieniami z obu zakładek (Plan i Ustawienia).">Start</button>
-      <button type="button" id="stop" disabled title="Przerwij bieżące wejście i zakończ serię. Zebrane wyniki zostają w raporcie.">Stop</button>
-      <span id="status" class="status">gotowy</span>
-    </div>
   </form>
 
   <section>
-    <h2>Wejścia <span class="help" tabindex="0" data-tip="Jeden wiersz = jedno wejście. „Pisanie” – ile znaków wpisano i w jakim tempie. „Odcisk ze strony” – skrót policzony przez „Cyfrowy odcisk człowieka”: „nowy”, jeśli w tej serii jeszcze takiego nie było. „Człowiek czy bot” – ile z 5 oznak bota zobaczyła strona (od 3 = bot).">?</span></h2>
+    <h2>Wejścia <span class="help" tabindex="0" data-tip="Jeden wiersz = jedno wejście. „Scenariusz” – ile akcji się udało, ile znaków wpisano i w jakim tempie, a na czerwono pierwszy błąd akcji. „Odcisk ze strony” – skrót policzony przez „Cyfrowy odcisk człowieka”: „nowy”, jeśli w tej serii jeszcze takiego nie było. „Człowiek czy bot” – ile z 5 oznak bota zobaczyła strona (od 3 = bot).">?</span></h2>
     <div class="tablewrap"><table id="visits-t">
-      <thead><tr><th>#</th><th>Profil</th><th>Pisanie</th><th>Odcisk ze strony</th><th>Człowiek czy bot</th><th>Czas</th></tr></thead>
+      <thead><tr><th>#</th><th>Profil</th><th>Scenariusz</th><th>Odcisk ze strony</th><th>Człowiek czy bot</th><th>Czas</th></tr></thead>
       <tbody></tbody>
     </table></div>
     <p id="uniq" class="hint"></p>

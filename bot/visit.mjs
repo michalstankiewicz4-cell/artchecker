@@ -55,29 +55,69 @@ async function waitDot(page, cssVar, signal){
 const has = (page, sel) => page.locator(sel).first().isVisible().catch(() => false);
 const EDITABLE = 'textarea, input:not([type]), input[type=text], input[type=search], input[type=email], input[type=url], input[type=tel], input[type=password], [contenteditable=""], [contenteditable=true]';
 
-// krok pisania: „od razu” = w pole aktywne po wczytaniu (a gdy żadne nie jest aktywne – w pierwsze widoczne pole tekstowe),
-// „pole” = w element wskazany selektorem CSS
-async function typeStep(page, { text, typeMode, selector, enter }, log, n, signal){
-  let target;
-  if (typeMode === "selector") {
-    const loc = page.locator(selector).first();
-    try { await loc.waitFor({ state: "visible", timeout: 10000 }); } catch (_) { throw new Error(`nie znaleziono pola „${selector}”`); }
-    await clickEl(page, loc); target = selector;
-  } else {
-    const focused = await page.evaluate(() => { const a = document.activeElement;
-      return !!a && (a.isContentEditable || a.tagName === "TEXTAREA" || (a.tagName === "INPUT" && !["button","submit","checkbox","radio","range","color","file","hidden","image","reset"].includes(a.type))); });
-    if (focused) target = "aktywne pole";
-    else { const loc = page.locator(EDITABLE).filter({ visible: true }).first();
-      if (!(await loc.count())) throw new Error("na stronie nie ma pola tekstowego do pisania");
-      await clickEl(page, loc); target = "pierwsze pole tekstowe"; }
-  }
-  await sleep(rand(300, 800));
-  const r = await typeText(page, text, { signal });
-  if (enter && !signal?.aborted) { await sleep(rand(250, 700)); await page.keyboard.press("Enter", { delay: rand(50, 130) }); }
-  const zn = r.chars === 1 ? "znak" : (r.chars % 10 >= 2 && r.chars % 10 <= 4 && (r.chars % 100 < 12 || r.chars % 100 > 14)) ? "znaki" : "znaków";
-  log(`#${n} wpisano ${r.chars} ${zn} w ${target} w ${(r.ms / 1000).toFixed(1)} s (${Math.round(r.chars / r.ms * 60000)} znaków/min)${enter ? " + Enter" : ""}`);
-  return r;
+// ---------------------------------------------------------------------
+// Akcje scenariusza. Każda zwraca opis do dziennika; błąd akcji nie przerywa wejścia.
+// Tryb „Przeglądarka” (klawisze na poziomie Windowsa) jest w panelu, ale jeszcze nie jest podłączony.
+// ---------------------------------------------------------------------
+const PW_KEY = { Plus: "Equal" };   // nazwy z panelu → nazwy Playwrighta
+const toPw = combo => combo.split("+").map(k => PW_KEY[k] || k).join("+");
+const SHOW = { Control: "Ctrl", Escape: "Esc", ArrowUp: "↑", ArrowDown: "↓", ArrowLeft: "←", ArrowRight: "→", Space: "Spacja", Meta: "Win" };
+const showCombo = c => c.split("+").map(k => SHOW[k] || k).join("+");
+const plural = (n, one, few, many) => n === 1 ? one : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? few : many;
+
+async function focusEditable(page){
+  const focused = await page.evaluate(() => { const a = document.activeElement;
+    return !!a && (a.isContentEditable || a.tagName === "TEXTAREA" || (a.tagName === "INPUT" && !["button","submit","checkbox","radio","range","color","file","hidden","image","reset"].includes(a.type))); });
+  if (focused) return "aktywne pole";
+  const loc = page.locator(EDITABLE).filter({ visible: true }).first();
+  if (!(await loc.count())) throw new Error("na stronie nie ma pola tekstowego do pisania");
+  await clickEl(page, loc); await sleep(rand(300, 700)); return "pierwsze pole tekstowe";
 }
+
+const ACTIONS = {
+  async type(page, a, ctx){
+    const where = await focusEditable(page);
+    const r = await typeText(page, a.text, { signal: ctx.signal });
+    ctx.rec.typedChars = (ctx.rec.typedChars || 0) + r.chars; ctx.rec.typingMs = (ctx.rec.typingMs || 0) + r.ms;
+    return `wpisano ${r.chars} ${plural(r.chars, "znak", "znaki", "znaków")} (${where}) w ${(r.ms / 1000).toFixed(1)} s, ${Math.round(r.chars / r.ms * 60000)} znaków/min`;
+  },
+  async keys(page, a, ctx){
+    for (let k = 0; k < a.times; k++) { check(ctx.signal); if (k) await sleep(rand(120, 380)); await page.keyboard.press(toPw(a.combo), { delay: rand(50, 130) }); }
+    await page.waitForLoadState("load", { timeout: 10000 }).catch(() => {});
+    return `naciśnięto ${showCombo(a.combo)}${a.times > 1 ? ` ×${a.times}` : ""}`;
+  },
+  async click(page, a){
+    const loc = page.locator(a.selector).first();
+    try { await loc.waitFor({ state: "visible", timeout: 10000 }); } catch (_) { throw new Error(`nie znaleziono elementu „${a.selector}”`); }
+    await clickEl(page, loc); await page.waitForLoadState("load", { timeout: 10000 }).catch(() => {});
+    return `kliknięto ${a.selector}`;
+  },
+  async scroll(page, a){ await scroll(page, a.dir === "up" ? -a.px : a.px); return `przewinięto ${a.dir === "up" ? "w górę" : "w dół"} o ${a.px} px`; },
+  async wait(page, a){ const ms = rand(a.min, Math.max(a.min, a.max)) * 1000; await idle(page, ms); return `czekanie ${(ms / 1000).toFixed(1)} s`; },
+  async browse(page, a, ctx){
+    await scroll(page, rand(400, 1200)); await idle(page, rand(600, 1500)); await scroll(page, -rand(200, 800));
+    if (!ctx.ours) return "przewijanie (to nie jest „Cyfrowy odcisk” – bez zakładek)";
+    const tabs = await page.$$eval("#tabs a[data-tab]", as => as.map(x => x.dataset.tab).filter(t => t !== "bot" && t !== "odcisk"));
+    const pick = tabs.sort(() => Math.random() - 0.5).slice(0, Math.floor(rand(2, 5)));
+    for (const t of pick) { check(ctx.signal); await tab(page, t); await scroll(page, rand(200, 700)); await idle(page, rand(500, 1500)); }
+    return `przewijanie i zakładki: ${pick.join(", ")}`;
+  },
+  async botTest(page, a, ctx){
+    if (!ctx.ours) return "pominięty – to nie jest „Cyfrowy odcisk”";
+    await tab(page, "bot");
+    await clickEl(page, page.locator("#bot-go")); await sleep(rand(300, 600));
+    await page.locator("#cv-bot").evaluate(c => c.scrollIntoView({ block: "center" })); await sleep(rand(300, 500));
+    for (let i = 0; i < 5; i++) {
+      const g = await waitDot(page, "--muted", ctx.signal); await click(page, g.x, g.y, 3); await sleep(rand(150, 400));
+      const b = await waitDot(page, "--accent", ctx.signal); await click(page, b.x, b.y, 4); await sleep(rand(250, 600));
+    }
+    await sleep(500);
+    const done = await page.evaluate(() => /Gotowe|Done/.test(document.getElementById("st-bot").textContent));
+    if (!done) throw new Error("test „Człowiek czy bot” nie został ukończony (chybione kliknięcie?)");
+    return "test „Człowiek czy bot” wykonany";
+  },
+};
+const ANAME = { type: "Pisz tekst", keys: "Naciśnij klawisze", click: "Kliknij w element", scroll: "Przewiń", wait: "Czekaj", browse: "Przeglądaj losowo", botTest: "Test „Człowiek czy bot”" };
 
 async function tab(page, name){
   const link = page.locator(`#tabs a[data-tab="${name}"]`);
@@ -85,7 +125,7 @@ async function tab(page, name){
 }
 
 // wynik: rekord do raportu
-export async function visit({ n, url, spoofOpts, proxy, headless, channel, browse, botTest, typing, log, signal }){
+export async function visit({ n, url, spoofOpts, proxy, headless, channel, scenario = [], log, signal }){
   const t0 = Date.now(), rec = { n, start: new Date().toISOString(), proxy: maskProxy(proxy) };
   let browser;
   try {
@@ -101,42 +141,20 @@ export async function visit({ n, url, spoofOpts, proxy, headless, channel, brows
     await page.goto(url, { waitUntil: "load", timeout: 45000 });
     await idle(page, rand(800, 2000));
 
-    if (typing && typing.text) {
-      check(signal);
-      try {
-        const r = await typeStep(page, typing, log, n, signal);
-        rec.typedChars = r.chars; rec.typingMs = r.ms; rec.cpm = Math.round(r.chars / r.ms * 60000);
-        if (typing.enter) { await page.waitForLoadState("load", { timeout: 15000 }).catch(() => {}); await idle(page, rand(800, 1600)); }
-      } catch (e) { check(signal); rec.typingError = String(e.message || e).split("\n")[0]; log(`#${n} pisanie się nie udało: ${rec.typingError} – dalsze kroki idą normalnie`); }
-    }
-
-    // dalsze kroki są dopasowane do strony „Cyfrowy odcisk człowieka”; gdzie indziej są pomijane
+    // czy to strona „Cyfrowy odcisk człowieka” (zakładki, test bota i odcisk działają tylko na niej)
     const ours = await has(page, "#tabs a[data-tab]");
-    if ((browse || botTest) && !ours) log(`#${n} to nie jest strona „Cyfrowy odcisk człowieka” – pomijam zakładki i test „Człowiek czy bot”`);
-
-    if (browse && !ours) { await scroll(page, rand(400, 1200)); await idle(page, rand(600, 1500)); await scroll(page, -rand(200, 800)); }
-    if (browse && ours) {
-      await scroll(page, rand(400, 1200)); await idle(page, rand(600, 1500)); await scroll(page, -rand(200, 800));
-      const tabs = await page.$$eval("#tabs a[data-tab]", as => as.map(a => a.dataset.tab).filter(t => t !== "bot" && t !== "odcisk"));
-      const visits = tabs.sort(() => Math.random() - 0.5).slice(0, Math.floor(rand(2, 5)));
-      for (const t of visits) { check(signal); await tab(page, t); await scroll(page, rand(200, 700)); await idle(page, rand(500, 1500)); }
-      log(`#${n} odwiedzone zakładki: ${visits.join(", ")}`);
+    rec.actions = scenario.length; rec.actionsDone = 0;
+    for (const [k, a] of scenario.entries()) {
+      check(signal);
+      const label = `#${n} akcja ${k + 1}/${scenario.length} (${ANAME[a.type]})`;
+      if (a.target === "browser") { log(`${label}: tryb „Przeglądarka” nie jest jeszcze podłączony – pomijam`); continue; }
+      try { const msg = await ACTIONS[a.type](page, a, { rec, ours, signal }); rec.actionsDone++; log(`${label}: ${msg}`); }
+      catch (e) { check(signal); const m = String(e.message || e).split("\n")[0]; rec.actionError ||= `akcja ${k + 1}: ${m}`; log(`${label}: błąd – ${m}; dalej`); }
+      await sleep(rand(200, 600));
     }
+    if (rec.typingMs) rec.cpm = Math.round(rec.typedChars / rec.typingMs * 60000);
 
-    if (botTest && ours) {
-      check(signal); await tab(page, "bot");
-      await clickEl(page, page.locator("#bot-go")); await sleep(rand(300, 600));
-      await page.locator("#cv-bot").evaluate(c => c.scrollIntoView({ block: "center" })); await sleep(rand(300, 500));
-      for (let i = 0; i < 5; i++) {
-        const g = await waitDot(page, "--muted", signal); await click(page, g.x, g.y, 3); await sleep(rand(150, 400));
-        const b = await waitDot(page, "--accent", signal); await click(page, b.x, b.y, 4); await sleep(rand(250, 600));
-      }
-      await sleep(500);
-      const done = await page.evaluate(() => /Gotowe|Done/.test(document.getElementById("st-bot").textContent));
-      if (!done) log(`#${n} uwaga: test „Człowiek czy bot” nie został ukończony (chybione kliknięcie?)`);
-    }
-
-    if (!ours) return rec;
+    if (!ours || !(await has(page, "#tabs a[data-tab]"))) return rec;
     check(signal); await tab(page, "odcisk");
     await clickEl(page, page.locator("#fp-go")); await sleep(rand(600, 1200));
     await scroll(page, rand(300, 700)); await idle(page, rand(500, 1200));

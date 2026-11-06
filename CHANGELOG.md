@@ -2,6 +2,23 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.6.0] – 2026-11-06
+
+### Dodane
+- **Scenariusz** w zakładce Plan: lista akcji wykonywanych po kolei po wczytaniu strony. „+ Dodaj akcję”, zmiana rodzaju, kolejność strzałkami ↑ ↓ i przeciąganiem za uchwyt ⠿, powielanie ⧉, usuwanie ✕, sprawdzanie niewypełnionych akcji przed startem.
+- Akcje: **Pisz tekst**, **Naciśnij klawisze** (nagrywanie kombinacji z klawiatury albo lista ok. 30 klawiszy i skrótów, liczba powtórzeń), **Kliknij w element** (selektor CSS), **Przewiń**, **Czekaj**, **Przeglądaj losowo**, **Test „Człowiek czy bot”**.
+- Przy pisaniu i klawiszach wybór „dokąd”: **Strona** albo **Przeglądarka** (klawisze na poziomie Windowsa – działają skróty przeglądarki). Tryb „Przeglądarka” jest na razie tylko w panelu; bot pomija takie akcje z informacją w dzienniku.
+- Raport: kolumny `actions`, `actionsDone`, `actionError`; w tabeli panelu kolumna „Scenariusz”.
+
+### Zmienione
+- Start i Stop są na górze, nad zakładkami (zawsze widoczne).
+- „Przewijanie i klikanie” i „Test »Człowiek czy bot«” są teraz akcjami scenariusza (domyślnie w nowym scenariuszu).
+- Podglądany bez serwera panel (otwarty jako plik) pokazuje „podgląd bez serwera – Start nieaktywny”.
+
+### Usunięte
+- Pole „Tekst do wpisania”, wybór „Pisz od razu / We wskazane pole” i „Naciśnij Enter po wpisaniu” – zastąpione akcjami „Pisz tekst”, „Kliknij w element” i „Naciśnij klawisze”.
+- Kolumna raportu `typingError` (zastąpiona przez `actionError`).
+
 ## [0.5.0] – 2026-11-06
 
 ### Dodane

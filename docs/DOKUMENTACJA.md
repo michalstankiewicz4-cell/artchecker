@@ -1,10 +1,10 @@
 # Dokumentacja techniczna – Bot odcisku
 
-Wersja dokumentu odpowiada wersji programu **0.5.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
+Wersja dokumentu odpowiada wersji programu **0.6.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
 
 ## 1. Cel
 
-Lokalny program, który wchodzi na wskazaną stronę jak człowiek – wpisuje podany tekst z ludzkim rytmem, przewija i klika – i przy każdym wejściu ma inny profil przeglądarki. Na stronie „Cyfrowy odcisk człowieka” (repo `behavioral-biometrics`) dodatkowo robi test „Człowiek czy bot” i odczytuje wynik strony, co pozwala sprawdzić, jak łatwo podmienić odcisk przeglądarki i ruch myszy. Działa wyłącznie na komputerze użytkownika i nie ma żadnego serwera w internecie.
+Lokalny program, który wchodzi na wskazaną stronę i wykonuje scenariusz akcji jak człowiek – pisze z ludzkim rytmem, naciska klawisze, klika, przewija – i przy każdym wejściu ma inny profil przeglądarki. Na stronie „Cyfrowy odcisk człowieka” (repo `behavioral-biometrics`) dodatkowo robi test „Człowiek czy bot” i odczytuje wynik strony, co pozwala sprawdzić, jak łatwo podmienić odcisk przeglądarki i ruch myszy. Działa wyłącznie na komputerze użytkownika i nie ma żadnego serwera w internecie.
 
 ## 2. Architektura
 
@@ -31,7 +31,7 @@ przeglądarka użytkownika ──HTTP/SSE──▶ server.mjs (127.0.0.1:3777)
 | `bot/profiles.mjs` | losowanie spójnego profilu, opcje kontekstu Playwrighta, krótki opis profilu |
 | `bot/spoof.mjs` | funkcja wstrzykiwana do strony przed jej skryptami (`addInitScript`) |
 | `bot/human.mjs` | ruch myszy, kliknięcia, przewijanie, „czytanie” |
-| `public/` | panel: `index.html` (zakładki Plan i Ustawienia, podpowiedzi `title` i znaczki [?] z `data-tip`), `app.js`, `style.css` |
+| `public/` | panel: `index.html` (Start/Stop na górze, zakładki Plan i Ustawienia, podpowiedzi `title` i znaczki [?] z `data-tip`), `app.js` (edytor scenariusza: dodawanie, kolejność ↑↓ i przeciąganie, powielanie, nagrywanie kombinacji klawiszy, walidacja przed startem), `style.css` |
 | `tools/check-version.mjs` | sprawdza zgodność numeru wersji we wszystkich plikach (`npm test`) |
 | `tools/build-portable.ps1` | buduje wersję przenośną do `dist/` (sekcja 11) |
 | `tools/release-notes.mjs` | opis release'u: instrukcja pobierania + wpis z CHANGELOG dla bieżącej wersji |
@@ -56,12 +56,21 @@ Treść żądania `POST /api/start`:
 ```json
 { "url": "https://…", "visits": 5, "delayMin": 5, "delayMax": 20,
   "spoof": { "ua": true, "lang": true, "tz": true, "screen": true, "hw": true, "webgl": true, "canvas": true, "fonts": true, "prefs": true },
-  "text": "tekst do wpisania\nz nową linią", "typeMode": "now", "selector": "", "enter": false,
-  "browse": true, "botTest": true, "useChrome": true, "headless": false,
+  "scenario": [
+    { "type": "click", "selector": "#search" },
+    { "type": "type", "text": "tekst\nz nową linią", "target": "page" },
+    { "type": "keys", "combo": "Control+F", "times": 1, "target": "browser" },
+    { "type": "scroll", "dir": "down", "px": 600 },
+    { "type": "wait", "min": 1, "max": 3 },
+    { "type": "browse" }, { "type": "botTest" } ],
+  "useChrome": true, "headless": false,
   "proxies": "http://user:pass@host:port\nsocks5://host:port" }
 ```
 
-Ograniczenia: `visits` od 1 do 500, `delayMax ≥ delayMin`, adres musi zaczynać się od `http(s)://`; `text` do 20 000 znaków (CRLF zamieniane na `\n`); `typeMode` = `now` lub `selector` – przy `selector` z tekstem pusty `selector` daje `400`.
+Ograniczenia: `visits` od 1 do 500, `delayMax ≥ delayMin`, adres musi zaczynać się od `http(s)://`. Scenariusz jest czyszczony (`cleanScenario`):
+- maks. 100 akcji, nieznane typy odrzucane; puste `type.text`, `keys.combo` i `click.selector` – pomijane;
+- `text` do 20 000 znaków (CRLF → `\n`), `combo` do 60 znaków w nazwach Playwrighta (`Control`, `Alt`, `Shift`, `Meta`, `Enter`, `ArrowLeft`, litery wielkie…; `Plus` → `Equal`), `times` 1–100, `px` 50–20 000, `min`/`max` 0–600 s (`max ≥ min`), `target` = `page` | `browser`;
+- `headless` razem z akcją `target: "browser"` daje `400`.
 
 ## 5. Profil przeglądarki (`bot/profiles.mjs`)
 
@@ -114,20 +123,20 @@ Do tego Playwright ustawia sam: `userAgent`, `locale`, `timezoneId`, `viewport`,
 1. Start Chrome'a (`channel: "chrome"`). Jeśli się nie da, start wbudowanego Chromium. Opcjonalnie przez proxy.
 2. Losowanie profilu i utworzenie kontekstu z wstrzykiwanym skryptem.
 3. `goto` strony i chwila „czytania”.
-4. Pisanie (gdy `text` niepusty):
-   - `now`: jeśli `document.activeElement` jest polem edycyjnym (input tekstowy, textarea, contenteditable) – pisze w nie; inaczej klika (`clickEl`) w pierwsze widoczne pole tekstowe; brak pola = błąd pisania;
-   - `selector`: czeka do 10 s na widoczny element, klika w niego i pisze;
-   - `enter`: po 0,25–0,7 s Enter, potem czekanie na `load` (do 15 s);
-   - błąd pisania trafia do `typingError` i do dziennika, ale nie przerywa wejścia.
-5. Rozpoznanie strony: „Cyfrowy odcisk człowieka”, jeśli jest widoczny `#tabs a[data-tab]`. Na innych stronach przy włączonym przeglądaniu tylko przewijanie, a dalsze kroki są pomijane (rekord bez odcisku).
-6. Przy włączonym przeglądaniu (tylko „Cyfrowy odcisk”): przewijanie w dół i w górę, potem 2–4 losowe zakładki z `#tabs a[data-tab]` (bez `bot` i `odcisk`), w każdej przewinięcie i „czytanie”.
-7. Test „Człowiek czy bot” (tylko „Cyfrowy odcisk”): zakładka `bot`, przycisk `#bot-go`, płótno `#cv-bot` przewinięte na środek. Potem 5 razy:
-   - szukanie kółka w kolorze `--muted` (start) i `--accent` (cel) po pikselach płótna, z tolerancją ±28 na kanał;
-   - kolory są czytane ze zmiennych CSS strony, więc działa w jasnym i ciemnym motywie;
-   - jeśli kółko jest poza oknem, bot przewija do niego.
-8. Zakładka `odcisk`, przycisk `#fp-go`.
-9. Odczyt wyników przez `import()` modułów strony, który zwraca te same instancje co w aplikacji: `FP.R` (`hash`, `features`) i `Bot.R.human` (miary, `signs`).
-10. Zamknięcie przeglądarki. Każdy błąd trafia do pola `error` i nie przerywa serii.
+4. Rozpoznanie strony: „Cyfrowy odcisk człowieka”, jeśli jest widoczny `#tabs a[data-tab]` (`ours`).
+5. Scenariusz – akcje po kolei (`ACTIONS`), z przerwą 0,2–0,6 s między nimi:
+   - `type`: jeśli `document.activeElement` jest polem edycyjnym (input tekstowy, textarea, contenteditable) – pisze w nie, inaczej klika w pierwsze widoczne pole tekstowe; `typeText`; sumuje `typedChars` i `typingMs`;
+   - `keys`: `keyboard.press(combo)` × `times` (odstęp 120–380 ms, przytrzymanie 50–130 ms), potem czekanie na `load` (do 10 s);
+   - `click`: czeka do 10 s na widoczny element, `clickEl`, potem `load`;
+   - `scroll`: `scroll(±px)`; `wait`: `idle(losowo min–max)`;
+   - `browse`: przewinięcie w dół i w górę; na `ours` dodatkowo 2–4 losowe zakładki z `#tabs a[data-tab]` (bez `bot` i `odcisk`), w każdej przewinięcie i „czytanie”;
+   - `botTest` (tylko `ours`): zakładka `bot`, `#bot-go`, płótno `#cv-bot` na środek, 5 razy kółko `--muted` (start) i `--accent` (cel) szukane po pikselach (tolerancja ±28 na kanał, kolory ze zmiennych CSS strony – działa w obu motywach; kółko poza oknem → przewinięcie); brak „Gotowe” w `#st-bot` = błąd akcji;
+   - `target: "browser"` – **jeszcze niepodłączone**: akcja pomijana z wpisem w dzienniku;
+   - błąd akcji: pierwszy trafia do `actionError`, każdy do dziennika; wejście idzie dalej. `actionsDone` liczy udane akcje.
+6. Jeśli strona to (nadal) „Cyfrowy odcisk” – dalsze kroki; inaczej koniec wejścia (rekord bez odcisku).
+7. Zakładka `odcisk`, przycisk `#fp-go`.
+8. Odczyt wyników przez `import()` modułów strony, który zwraca te same instancje co w aplikacji: `FP.R` (`hash`, `features`) i `Bot.R.human` (miary, `signs`).
+9. Zamknięcie przeglądarki. Każdy błąd trafia do pola `error` i nie przerywa serii.
 
 **Zależność od strony docelowej:** selektory `#tabs a[data-tab]`, `#bot-go`, `#cv-bot`, `#st-bot`, `#fp-go`, ścieżki modułów `js/tests/browser-fingerprint.js` i `js/tests/human-or-bot.js` oraz zmienne CSS `--muted` i `--accent`. Zmiana któregoś z nich na stronie wymaga zmiany tutaj.
 
@@ -143,8 +152,8 @@ Pliki `reports/wejscia-RRRR-MM-DD-GG-MM-SS.{csv,json}` (czas UTC) są zapisywane
 | `error` | błąd lub puste |
 | `proxy` | użyte proxy (hasło zamaskowane) |
 | `summary` | krótki opis profilu |
-| `typedChars`, `typingMs`, `cpm` | wpisane znaki, czas pisania (ms), tempo (znaki/min) |
-| `typingError` | dlaczego pisanie się nie udało, albo puste |
+| `actions`, `actionsDone`, `actionError` | liczba akcji w scenariuszu, ile się udało, pierwszy błąd akcji |
+| `typedChars`, `typingMs`, `cpm` | wpisane znaki (suma ze wszystkich akcji „Pisz tekst”), czas pisania (ms), tempo (znaki/min) |
 | `hash` | odcisk policzony przez stronę |
 | `botSigns`, `botVerdict` | oznaki bota (0–5), `człowiek` lub `bot` |
 | `ua`, `platform`, `lang`, `tz`, `screen`, `cpu`, `mem`, `webgl`, `canvas`, `fonts` | cechy **tak, jak odczytała je strona** |
