@@ -9,7 +9,7 @@
 <body>
 <header>
   <div class="head-row">
-    <h1>Human Bot <span id="ver" class="ver" title="Wersja programu">v0.16.0</span></h1>
+    <h1>Human Bot <span id="ver" class="ver" title="Wersja programu">v0.17.0</span></h1>
     <button type="button" id="theme" class="theme-btn" title="Przełącz motyw: dzień / noc" aria-label="Przełącz motyw dzień / noc"></button>
   </div>
   <p class="lead">Wchodzi na wskazaną stronę, wykonuje scenariusz jak człowiek – pisze, naciska klawisze, klika, przewija – i przy każdym wejściu ma inny odcisk przeglądarki. Działa tylko na tym komputerze. Najedź na pole albo kliknij <span class="help demo">?</span>, żeby zobaczyć opis.</p>
@@ -18,21 +18,21 @@
 <main>
   <form id="cfg">
     <div class="actions top">
-      <button type="submit" id="start" class="primary" title="Uruchom serię wejść z ustawieniami z obu zakładek (Plan i Ustawienia).">Start</button>
-      <button type="button" id="stop" disabled title="Przerwij bieżące wejście i zakończ serię. Zebrane wyniki zostają w raporcie.">Stop</button>
+      <button type="submit" id="start" class="primary" title="Uruchom serię wejść z ustawieniami z obu zakładek (Plan i Ustawienia)."><svg class="ico" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4.5 2.8v10.4L13 8z" fill="currentColor"/></svg><span>Start</span></button>
+      <button type="button" id="stop" disabled title="Przerwij bieżące wejście i zakończ serię. Zebrane wyniki zostają w raporcie."><svg class="ico" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="9" height="9" rx="1.2" fill="currentColor"/></svg><span>Stop</span></button>
       <label class="prof" title="Zapisany zestaw ustawień (Plan i Ustawienia). Wybór z listy wczytuje go do panelu.">Profil
         <select id="profile"><option value="">— bez profilu —</option></select></label>
       <span id="status" class="status">gotowy</span>
       <span class="spacer"></span>
-      <button type="button" id="psave" title="Zapisz wszystko z Planu i Ustawień jako profil (pyta o nazwę; ta sama nazwa nadpisuje).">💾 Zapisz</button>
-      <button type="button" id="preset" title="Przywróć ustawienia domyślne (kliknij dwa razy).">↺ Reset</button>
+      <button type="button" id="psave" title="Zapisz wszystko z Planu i Ustawień jako profil (pyta o nazwę; ta sama nazwa nadpisuje)."><svg class="ico" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2.5 2.5h8.5l2.5 2.5v8.5h-11z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M5 2.5v3.5h5V2.5M5 13.5V9.5h6v4" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg><span>Zapisz</span></button>
+      <button type="button" id="preset" title="Przywróć ustawienia domyślne (kliknij dwa razy)."><svg class="ico" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.2 7.9a4.8 4.8 0 1 0 1.5-3.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M4.4 1.8v2.9h2.9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Reset</span></button>
     </div>
 
     <div class="tabs" role="tablist" aria-label="Ustawienia bota">
-      <button type="button" role="tab" id="tab-plan" aria-controls="pane-plan" aria-selected="true" title="Co bot ma zrobić: ile wejść, na jaką stronę, co wpisać.">Plan</button>
-      <button type="button" role="tab" id="tab-set" aria-controls="pane-set" aria-selected="false" tabindex="-1" title="Jak ma to zrobić: które cechy przeglądarki zmieniać, jaka przeglądarka, proxy.">Ustawienia</button>
-      <button type="button" role="tab" id="tab-stat" aria-controls="pane-stat" aria-selected="false" tabindex="-1" title="Wyniki bieżącej serii: tabela wejść i dziennik na żywo.">Statystyki</button>
-      <button type="button" role="tab" id="tab-lib" aria-controls="pane-lib" aria-selected="false" tabindex="-1" title="Obrazki i nazwane elementy do klikania – wspólne dla wszystkich akcji.">Biblioteka</button>
+      <button type="button" role="tab" id="tab-plan" aria-controls="pane-plan" aria-selected="true" title="Co bot ma zrobić: ile wejść, na jaką stronę, co wpisać."><svg class="ico" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6.5 4h7M6.5 8h7M6.5 12h7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M2 4l1 1 1.6-2M2 8l1 1 1.6-2" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="3.2" cy="12" r="1.1" fill="currentColor"/></svg><span>Plan</span></button>
+      <button type="button" role="tab" id="tab-set" aria-controls="pane-set" aria-selected="false" tabindex="-1" title="Jak ma to zrobić: które cechy przeglądarki zmieniać, jaka przeglądarka, proxy."><svg class="ico" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity=".55"/><circle cx="10" cy="4" r="1.8" fill="var(--surface)" stroke="currentColor" stroke-width="1.3"/><circle cx="5" cy="8" r="1.8" fill="var(--surface)" stroke="currentColor" stroke-width="1.3"/><circle cx="11.5" cy="12" r="1.8" fill="var(--surface)" stroke="currentColor" stroke-width="1.3"/></svg><span>Ustawienia</span></button>
+      <button type="button" role="tab" id="tab-stat" aria-controls="pane-stat" aria-selected="false" tabindex="-1" title="Wyniki bieżącej serii: tabela wejść i dziennik na żywo."><svg class="ico" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 14h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><rect x="3" y="8" width="2.4" height="5" rx=".5" fill="currentColor"/><rect x="6.8" y="4.5" width="2.4" height="8.5" rx=".5" fill="currentColor"/><rect x="10.6" y="6.5" width="2.4" height="6.5" rx=".5" fill="currentColor"/></svg><span>Statystyki</span></button>
+      <button type="button" role="tab" id="tab-lib" aria-controls="pane-lib" aria-selected="false" tabindex="-1" title="Obrazki i nazwane elementy do klikania – wspólne dla wszystkich akcji."><svg class="ico" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="1.8" y="3.5" width="9" height="8" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M3.2 10.2l2.3-2.6 1.8 1.8 1.2-1.1 1.6 1.9" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><circle cx="8.3" cy="5.9" r=".9" fill="currentColor"/><path d="M12.5 5.5v7.5a1 1 0 0 1-1 1H4.5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Biblioteka</span></button>
     </div>
 
     <div class="pane" id="pane-plan" role="tabpanel" aria-labelledby="tab-plan">
@@ -101,7 +101,7 @@
         <label class="check" title="Jasny lub ciemny motyw, ograniczenie animacji, „nie śledź”."><input type="checkbox" data-spoof="prefs" checked> Motyw, animacje, „nie śledź”
           <span class="help" tabindex="0" data-tip="Losuje preferencje systemu widoczne dla stron: jasny lub ciemny motyw, ograniczenie animacji (rzadko) i ustawienie „nie śledź” (Do Not Track).">?</span></label>
       </div>
-      <p class="hint legend"><span class="sw dep-a"></span> system i karta graficzna – karta pasuje do wylosowanego systemu &nbsp; <span class="sw dep-b"></span> język i strefa czasowa – losowane w parze (np. pl-PL z Europe/Warsaw); pozostałe opcje są niezależne</p>
+      <p class="hint legend"><span class="sw dep-a"></span> system i karta graficzna – karta pasuje do wylosowanego systemu &nbsp; <span class="sw dep-b"></span> język i strefa czasowa – losowane w parze (np. pl-PL z Europe/Warsaw) &nbsp; <span class="sw dep-0"></span> niezależne</p>
     </section>
 
 

@@ -2,6 +2,15 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.17.0] – 2026-11-06
+
+### Zmienione
+- Ikonki przy przyciskach Start (▶), Stop (■), Zapisz i Reset oraz przy zakładkach Plan, Ustawienia, Statystyki i Biblioteka (ikonka wybranej zakładki w kolorze akcentu).
+- Styl „kolorowych opcji” w całym panelu: wszystkie pola wyboru mają delikatne tło i pasek z lewej w kolorze grupy (niezależne – szary, w legendzie nowy kolor „niezależne”); ten sam pasek mają wiersze scenariusza, karty i wiersze Biblioteki oraz wzorce w akcjach.
+
+### Poprawione
+- Opcja „Użyj zainstalowanego Chrome'a” nie łamie się już na dwie linie.
+
 ## [0.16.0] – 2026-11-06
 
 ### Dodane

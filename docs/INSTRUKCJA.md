@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Human Bot
 
-Wersja instrukcji odpowiada wersji programu **0.16.0**.
+Wersja instrukcji odpowiada wersji programu **0.17.0**.
 
 ## 1. Co jest potrzebne
 
@@ -83,7 +83,7 @@ Błąd jednej akcji (np. brak elementu) nie przerywa wejścia: trafia do dzienni
 ### Zakładka „Ustawienia”
 
 #### Co zmieniać przy każdym wejściu
-Zaznaczone grupy są losowane od nowa przy każdym wejściu. Odznaczona grupa zostaje taka, jak w Twojej prawdziwej przeglądarce. Opcje zależne od siebie stoją obok siebie i mają ten sam kolor (legenda pod listą): **niebieski** – system i karta graficzna (karta pasuje do wylosowanego systemu), **zielony** – język i strefa czasowa (losowane w parze). Pozostałe są niezależne.
+Zaznaczone grupy są losowane od nowa przy każdym wejściu. Odznaczona grupa zostaje taka, jak w Twojej prawdziwej przeglądarce. Opcje zależne od siebie stoją obok siebie i mają ten sam kolor (legenda pod listą): **niebieski** – system i karta graficzna (karta pasuje do wylosowanego systemu), **zielony** – język i strefa czasowa (losowane w parze), **szary** – niezależne. Ten sam styl (tło i pasek z lewej) mają wszystkie opcje i wiersze w panelu.
 
 | Pole | Co robi |
 |---|---|

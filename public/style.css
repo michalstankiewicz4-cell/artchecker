@@ -1,10 +1,10 @@
 :root{--bg:#eef0ec;--surface:#f8f9f6;--ink:#1b2320;--muted:#5d6863;--line:#cfd5cf;--accent:#2b48c9;--ok:#2f8a57;--err:#c4402f;
-  --dep-a:#2b6fd6;--dep-b:#1f9466;--warn:#d9a400;--warn-bg:#fff6d6;--warn-ink:#6b5200;color-scheme:light}
+  --dep-a:#2b6fd6;--dep-0:#8a958f;--dep-b:#1f9466;--warn:#d9a400;--warn-bg:#fff6d6;--warn-ink:#6b5200;color-scheme:light}
 /* noc: wybrana przyciskiem albo – bez wyboru – zgodnie z systemem */
 :root[data-theme=dark]{--bg:#121615;--surface:#1a201e;--ink:#e3e8e4;--muted:#93a09a;--line:#2e3633;--accent:#8197ff;--ok:#5cc28a;--err:#ff7a6b;
-  --dep-a:#6aa3ff;--dep-b:#4cc79a;--warn:#f0c21b;--warn-bg:#3a3214;--warn-ink:#f6dd85;color-scheme:dark}
+  --dep-a:#6aa3ff;--dep-0:#76817c;--dep-b:#4cc79a;--warn:#f0c21b;--warn-bg:#3a3214;--warn-ink:#f6dd85;color-scheme:dark}
 @media (prefers-color-scheme:dark){:root:not([data-theme]){--bg:#121615;--surface:#1a201e;--ink:#e3e8e4;--muted:#93a09a;--line:#2e3633;--accent:#8197ff;--ok:#5cc28a;--err:#ff7a6b;
-  --dep-a:#6aa3ff;--dep-b:#4cc79a;--warn:#f0c21b;--warn-bg:#3a3214;--warn-ink:#f6dd85;color-scheme:dark}}
+  --dep-a:#6aa3ff;--dep-0:#76817c;--dep-b:#4cc79a;--warn:#f0c21b;--warn-bg:#3a3214;--warn-ink:#f6dd85;color-scheme:dark}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Segoe UI",system-ui,sans-serif}
 header,main{max-width:980px;margin:0 auto;padding:0 20px}
@@ -18,8 +18,9 @@ label.row{margin-bottom:10px}
 input[type=url],input[type=number],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:6px 8px}
 textarea{width:100%;font-family:Consolas,monospace;font-size:.85rem}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px 16px}
+.checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px 16px;align-items:start}
 .checks label{flex-direction:row;align-items:center;gap:8px;color:var(--ink);cursor:pointer}
+.checks label:not(.conflict){white-space:nowrap}
 input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px}
 .hint{font-size:.82rem;color:var(--muted);margin:8px 0 0}
 .opt{font-weight:400;color:var(--muted);font-size:.85rem}
@@ -123,16 +124,16 @@ label.row{margin-top:12px}
 .seg2 svg{width:15px;height:15px;display:block}
 
 /* Co zmieniać: kolory opcji zależnych od siebie */
-.checks.spoof label.check{padding:5px 8px;border-radius:6px;border:1px solid transparent}
-.checks.spoof label.dep-a{background:color-mix(in srgb,var(--dep-a) 12%,transparent);border-left:4px solid var(--dep-a)}
-.checks.spoof label.dep-b{background:color-mix(in srgb,var(--dep-b) 12%,transparent);border-left:4px solid var(--dep-b)}
+/* styl „kolorowych opcji” w całym panelu: delikatne tło i pasek z lewej w kolorze grupy (--opt); bez grupy – szary */
+label.check:not(.sm){--opt:var(--dep-0);padding:5px 8px;border-radius:6px;border:1px solid transparent;border-left:4px solid var(--opt);background:color-mix(in srgb,var(--opt) 12%,transparent)}
+label.check.dep-a{--opt:var(--dep-a)} label.check.dep-b{--opt:var(--dep-b)}
 .checks.spoof label.dep-a.dep-b{border:2px solid var(--dep-b);border-left:4px solid var(--dep-a)}   /* opcja w dwóch grupach: ramka */
 .legend .sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:3px}
-.legend .sw.dep-a{background:var(--dep-a)}.legend .sw.dep-b{background:var(--dep-b)}
+.legend .sw.dep-a{background:var(--dep-a)}.legend .sw.dep-0{background:var(--dep-0)}.legend .sw.dep-b{background:var(--dep-b)}
 
 /* konflikt z „Bez okna przeglądarki”: żółte tło, ramka i ⚠ */
 .warn-ico{color:var(--warn);font-weight:700}
-label.check.conflict{background:var(--warn-bg);border:1px solid var(--warn);border-radius:6px;padding:5px 8px;color:var(--warn-ink);flex-wrap:wrap}
+label.check.conflict{--opt:var(--warn);background:var(--warn-bg);border:1px solid var(--warn);border-left:4px solid var(--warn);border-radius:6px;padding:5px 8px;color:var(--warn-ink);flex-wrap:wrap}
 .warn-note{flex-basis:100%;font-size:.8rem;color:var(--warn-ink)}
 .action.conflict{border-color:var(--warn);background:var(--warn-bg)}
 .action.conflict .no::before{content:"⚠ ";color:var(--warn)}
@@ -197,3 +198,15 @@ dialog.crop h2{margin:0 0 10px;font-size:1.1rem}
 dialog.crop.small{width:440px}
 dialog.crop.small label.num{display:flex;flex-direction:row;align-items:center;gap:8px}
 dialog.crop.small label.num input{flex:1;font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--ink)}
+
+/* ten sam styl dla wierszy akcji, kart i wierszy Biblioteki: pasek z lewej w kolorze akcentu */
+.action{border-left:4px solid color-mix(in srgb,var(--accent) 60%,transparent);background:color-mix(in srgb,var(--accent) 4%,var(--bg))}
+.action.conflict{border-left-color:var(--warn)}
+.lib-card{border-left:4px solid color-mix(in srgb,var(--accent) 60%,transparent);background:color-mix(in srgb,var(--accent) 4%,var(--bg))}
+.lib-els tbody td:first-child{border-left:4px solid color-mix(in srgb,var(--accent) 60%,transparent)}
+.chip{border-left:3px solid color-mix(in srgb,var(--accent) 60%,transparent)}
+
+/* ikonki w przyciskach i zakładkach */
+button .ico{flex:none;display:block}
+#start,#stop,#psave,#preset,.tabs button{display:inline-flex;align-items:center;gap:7px}
+.tabs button .ico{opacity:.75}.tabs button[aria-selected=true] .ico{opacity:1;color:var(--accent)}

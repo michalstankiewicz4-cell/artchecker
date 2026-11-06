@@ -1,6 +1,6 @@
 # Dokumentacja techniczna – Human Bot
 
-Wersja dokumentu odpowiada wersji programu **0.16.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
+Wersja dokumentu odpowiada wersji programu **0.17.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
 
 ## 1. Cel
 
@@ -35,7 +35,7 @@ przeglądarka użytkownika ──HTTP/SSE──▶ server.mjs (127.0.0.1:3777)
 | `bot/osinput.mjs` | tryb „Przeglądarka”: sterownik prawdziwej klawiatury i myszy Windowsa (PowerShell + user32) |
 | `bot/surface.mjs` | powierzchnia dla myszy: okno strony albo ekran z przeliczeniem strona → ekran (zgranie kursora) |
 | `bot/image.mjs` | szukanie wzorca z `obrazy/` na zrzucie strony: dekoder PNG, porównanie (szarość, kolory, krawędzie), różne skale |
-| `public/` | panel: `index.html` (Start/Stop na górze, profile – `getState`/`setState`, Zapisz, Reset do stanu z chwili otwarcia panelu, przełącznik dzień/noc, zakładki Plan, Ustawienia, Statystyki i Biblioteka, podpowiedzi `title` i znaczki [?] z `data-tip`), `app.js` (edytor scenariusza: dodawanie, kolejność ↑↓ i przeciąganie, powielanie, nagrywanie kombinacji klawiszy, walidacja przed startem, oznaczanie konfliktów z „Bez okna” (`updateConflicts`), motyw w `localStorage` pod kluczem `humanbot-theme`, tryb podglądu poza 127.0.0.1/localhost – bez `/api`, Start nieaktywny), `style.css` (motyw: `:root[data-theme=dark]` albo `prefers-color-scheme`; kolory grup zależnych `dep-a`, `dep-b`; konflikty `.conflict`) |
+| `public/` | panel: `index.html` (Start/Stop na górze, profile – `getState`/`setState`, Zapisz, Reset do stanu z chwili otwarcia panelu, przełącznik dzień/noc, zakładki Plan, Ustawienia, Statystyki i Biblioteka, podpowiedzi `title` i znaczki [?] z `data-tip`), `app.js` (edytor scenariusza: dodawanie, kolejność ↑↓ i przeciąganie, powielanie, nagrywanie kombinacji klawiszy, walidacja przed startem, oznaczanie konfliktów z „Bez okna” (`updateConflicts`), motyw w `localStorage` pod kluczem `humanbot-theme`, tryb podglądu poza 127.0.0.1/localhost – bez `/api`, Start nieaktywny), `style.css` (motyw: `:root[data-theme=dark]` albo `prefers-color-scheme`; styl „kolorowych opcji” w całym panelu – tło i pasek z lewej w kolorze grupy (`--opt`: `dep-a`, `dep-b`, niezależne `dep-0`), ten sam pasek przy wierszach akcji i w Bibliotece; ikonki SVG w przyciskach i zakładkach; konflikty `.conflict`) |
 | `tools/check-version.mjs` | sprawdza zgodność numeru wersji we wszystkich plikach (`npm test`) |
 | `tools/build-portable.ps1` | buduje wersję przenośną do `dist/` (sekcja 11) |
 | `tools/release-notes.mjs` | opis release'u: instrukcja pobierania + wpis z CHANGELOG dla bieżącej wersji |

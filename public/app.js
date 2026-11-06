@@ -358,8 +358,8 @@ $("savep-ok").addEventListener("click", async () => { const name = $("savep-name
   const j = r ? await r.json().catch(() => ({})) : {}; if (!j.name) { $("savep-msg").textContent = j.error || "nie udało się zapisać"; return; }
   $("savep").close(); await loadProfiles(j.name); $("status").textContent = `zapisano profil „${j.name}”`; });
 $("preset").addEventListener("click", e => { const b = e.currentTarget;
-  if (b.dataset.sure !== "1") { b.dataset.sure = "1"; b.textContent = "Na pewno?"; setTimeout(() => { b.dataset.sure = ""; b.textContent = "↺ Reset"; }, 3000); return; }
-  b.dataset.sure = ""; b.textContent = "↺ Reset"; setState(DEFAULTS); $("profile").value = ""; $("status").textContent = "przywrócono ustawienia domyślne"; });
+  const t = b.querySelector("span"); if (b.dataset.sure !== "1") { b.dataset.sure = "1"; t.textContent = "Na pewno?"; setTimeout(() => { b.dataset.sure = ""; t.textContent = "Reset"; }, 3000); return; }
+  b.dataset.sure = ""; b.querySelector("span").textContent = "Reset"; setState(DEFAULTS); $("profile").value = ""; $("status").textContent = "przywrócono ustawienia domyślne"; });
 loadProfiles();
 
 // =====================================================================
