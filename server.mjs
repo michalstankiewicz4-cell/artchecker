@@ -68,7 +68,7 @@ function cleanScenario(list){
     case "click": return { type: "click", selector: String(a.selector || "").trim().slice(0, 500) };
     case "scroll": return { type: "scroll", dir: a.dir === "up" ? "up" : "down", px: Math.round(num(a.px, 50, 20000, 600)) };
     case "wait": { const min = num(a.min, 0, 600, 1); return { type: "wait", min, max: num(a.max, min, 600, min) }; }
-    case "human": return { type: "human" };
+    case "noise": return { type: "noise" };
   } }).filter(a => a && !(a.type === "type" && !a.text) && !(a.type === "keys" && !a.combo) && !(a.type === "click" && !a.selector));
 }
 
@@ -105,6 +105,6 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, "127.0.0.1", () => {
   const addr = `http://127.0.0.1:${PORT}/`;
-  console.log(`Bot odcisku v${PKG.version} – panel: ${addr}  (Ctrl+C kończy)`);
+  console.log(`Human Bot v${PKG.version} – panel: ${addr}  (Ctrl+C kończy)`);
   if (!process.env.NO_OPEN) exec(process.platform === "win32" ? `start "" "${addr}"` : process.platform === "darwin" ? `open ${addr}` : `xdg-open ${addr}`);
 });

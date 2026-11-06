@@ -1,6 +1,6 @@
-# Dokumentacja techniczna – Bot odcisku
+# Dokumentacja techniczna – Human Bot
 
-Wersja dokumentu odpowiada wersji programu **0.8.2**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
+Wersja dokumentu odpowiada wersji programu **0.9.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
 
 ## 1. Cel
 
@@ -31,7 +31,7 @@ przeglądarka użytkownika ──HTTP/SSE──▶ server.mjs (127.0.0.1:3777)
 | `bot/profiles.mjs` | losowanie spójnego profilu, opcje kontekstu Playwrighta, krótki opis profilu |
 | `bot/spoof.mjs` | funkcja wstrzykiwana do strony przed jej skryptami (`addInitScript`) |
 | `bot/human.mjs` | ruch myszy, kliknięcia, przewijanie, „czytanie” |
-| `public/` | panel: `index.html` (Start/Stop na górze, zakładki Plan i Ustawienia, podpowiedzi `title` i znaczki [?] z `data-tip`), `app.js` (edytor scenariusza: dodawanie, kolejność ↑↓ i przeciąganie, powielanie, nagrywanie kombinacji klawiszy, walidacja przed startem), `style.css` |
+| `public/` | panel: `index.html` (Start/Stop na górze, przełącznik dzień/noc, zakładki Plan, Ustawienia i Statystyki, podpowiedzi `title` i znaczki [?] z `data-tip`), `app.js` (edytor scenariusza: dodawanie, kolejność ↑↓ i przeciąganie, powielanie, nagrywanie kombinacji klawiszy, walidacja przed startem, oznaczanie konfliktów z „Bez okna” (`updateConflicts`), motyw w `localStorage` pod kluczem `humanbot-theme`, tryb podglądu poza 127.0.0.1/localhost – bez `/api`, Start nieaktywny), `style.css` (motyw: `:root[data-theme=dark]` albo `prefers-color-scheme`; kolory grup zależnych `dep-a`, `dep-b`; konflikty `.conflict`) |
 | `tools/check-version.mjs` | sprawdza zgodność numeru wersji we wszystkich plikach (`npm test`) |
 | `tools/build-portable.ps1` | buduje wersję przenośną do `dist/` (sekcja 11) |
 | `tools/release-notes.mjs` | opis release'u: instrukcja pobierania + wpis z CHANGELOG dla bieżącej wersji |
@@ -62,7 +62,7 @@ Treść żądania `POST /api/start`:
     { "type": "keys", "combo": "Control+F", "times": 1, "target": "browser" },
     { "type": "scroll", "dir": "down", "px": 600 },
     { "type": "wait", "min": 1, "max": 3 },
-    { "type": "human" } ],
+    { "type": "noise" } ],
   "useChrome": true, "headless": false,
   "proxies": "http://user:pass@host:port\nsocks5://host:port" }
 ```
@@ -128,7 +128,7 @@ Do tego Playwright ustawia sam: `userAgent`, `locale`, `timezoneId`, `viewport`,
    - `keys`: `keyboard.press(combo)` × `times` (odstęp 120–380 ms, przytrzymanie 50–130 ms), potem czekanie na `load` (do 10 s);
    - `click`: czeka do 10 s na widoczny element, `clickEl`, potem `load`;
    - `scroll`: `scroll(±px)`; `wait`: `idle(losowo min–max)`;
-   - `human` („Ludzkie zachowanie”): 3–6 rund: `idle` 1,2–3,5 s; z prawdopodobieństwem 35% najechanie myszą (`moveTo`, bez kliknięcia) na losowy widoczny w oknie `a`, `h1`–`h3` lub `button` i pauza 0,3–0,9 s; potem `scroll` w dół o 250–800 px (15% – w górę o 150–500 px);
+   - `noise` („Szum”): 3–6 rund: `idle` 1,2–3,5 s; z prawdopodobieństwem 35% najechanie myszą (`moveTo`, bez kliknięcia) na losowy widoczny w oknie `a`, `h1`–`h3` lub `button` i pauza 0,3–0,9 s; potem `scroll` w dół o 250–800 px (15% – w górę o 150–500 px);
    - `target: "browser"` – **jeszcze niepodłączone**: akcja pomijana z wpisem w dzienniku;
    - błąd akcji: pierwszy trafia do `actionError`, każdy do dziennika; wejście idzie dalej. `actionsDone` liczy udane akcje.
 5. Zamknięcie przeglądarki. Każdy błąd trafia do pola `error` i nie przerywa serii.
@@ -179,6 +179,9 @@ Kolumny cech są puste, gdy dana grupa była odznaczona w „Co zmieniać przy k
 - Próba bez Chrome'a: odznaczone „Użyj zainstalowanego Chrome'a” i zaznaczone „Bez okna”.
 
 ## 11. Wydania (Releases) i wersja przenośna
+
+Podgląd panelu: `.github/workflows/static.yml` przy każdym wypchnięciu na `main` publikuje sam folder `public/` na GitHub Pages (<https://michalstankiewicz4-cell.github.io/webbot/>). Tam panel działa w trybie podglądu – bez serwera, Start nieaktywny; bota uruchamia się tylko lokalnie.
+
 
 - Wersja przenośna to ZIP `webbot-X.Y.Z-windows-portable.zip` z kodem programu, `node_modules` (`npm install --omit=dev`), całą dokumentacją (wszystkie pliki `.md` z głównego folderu i folder `docs/`) i `node\node.exe` z licencją Node.js (`node\LICENSE`). Nie zawiera przeglądarki: używa zainstalowanego Chrome'a, a bez niego Chromium pobranego przez `pobierz-chromium.bat` (do `%LOCALAPPDATA%\ms-playwright`).
 - Budowa na Windowsie z Node.js: `powershell -ExecutionPolicy Bypass -File tools\build-portable.ps1` → `dist\webbot-X.Y.Z-windows-portable.zip` (folder `dist/` nie trafia do repo). Do paczki trafia `node.exe`, którym uruchomiono skrypt.

@@ -1,6 +1,6 @@
-# Instrukcja obsługi – Bot odcisku
+# Instrukcja obsługi – Human Bot
 
-Wersja instrukcji odpowiada wersji programu **0.8.2**.
+Wersja instrukcji odpowiada wersji programu **0.9.0**.
 
 ## 1. Co jest potrzebne
 
@@ -30,7 +30,7 @@ Jeśli panel się nie otworzy, wpisz adres http://127.0.0.1:3777/ ręcznie.
 
 ## 3. Panel krok po kroku
 
-Na górze są przyciski **Start** i **Stop** – widoczne zawsze, niezależnie od zakładki. Pod nimi dwie zakładki: **Plan** – co bot ma zrobić, i **Ustawienia** – jak ma wyglądać jego przeglądarka. Start bierze ustawienia z obu. Przy każdym polu jest podpowiedź (najedź myszą) i znaczek **[?]** – najedź na niego albo kliknij, żeby przeczytać dłuższy opis (Esc albo kliknięcie obok zamyka).
+Na górze są przyciski **Start** i **Stop** – widoczne zawsze, niezależnie od zakładki. Pod nimi trzy zakładki: **Plan** – co bot ma zrobić, **Ustawienia** – jak ma wyglądać jego przeglądarka, i **Statystyki** – tabela wejść i dziennik. Start bierze ustawienia z Planu i Ustawień. Przycisk **☾ Noc / ☀ Dzień** obok nazwy przełącza motyw panelu (wybór jest zapamiętywany; bez wyboru panel idzie za ustawieniem systemu). Przy każdym polu jest podpowiedź (najedź myszą) i znaczek **[?]** – najedź na niego albo kliknij, żeby przeczytać dłuższy opis (Esc albo kliknięcie obok zamyka).
 
 ### Zakładka „Plan”
 
@@ -44,7 +44,7 @@ Lista akcji, które bot wykonuje **po kolei, od góry**, przy każdym wejściu z
 
 - **+ Dodaj akcję** – wybierz rodzaj z listy; akcja pojawi się na końcu.
 - Rodzaj akcji zmienisz listą w wierszu. **↑ ↓** albo przeciągnięcie za uchwyt **⠿** zmienia kolejność, **⧉** powiela, **✕** usuwa.
-- Nowy scenariusz zaczyna się od akcji „Ludzkie zachowanie”. Możesz ją usunąć.
+- Nowy scenariusz zaczyna się od akcji „Szum”. Możesz ją usunąć.
 
 | Akcja | Ustawienia | Co robi |
 |---|---|---|
@@ -53,7 +53,7 @@ Lista akcji, które bot wykonuje **po kolei, od góry**, przy każdym wejściu z
 | **Kliknij w element** | selektor CSS | dojeżdża myszą i klika, np. w pole, w które potem będzie pisał |
 | **Przewiń** | w dół / w górę, o ile px | przewija kółkiem myszy porcjami |
 | **Czekaj** | od–do sekund | czeka losowo, lekko ruszając myszą |
-| **Ludzkie zachowanie** | – | przez kilkanaście sekund zachowuje się jak czytający człowiek: 3–6 razy chwilę „czyta” (drobne ruchy myszy), przewija w dół – czasem wraca wyżej – i najeżdża myszą na link, nagłówek albo przycisk, niczego nie klikając |
+| **Szum** | – | przez kilkanaście sekund zachowuje się jak czytający człowiek: 3–6 razy chwilę „czyta” (drobne ruchy myszy), przewija w dół – czasem wraca wyżej – i najeżdża myszą na link, nagłówek albo przycisk, niczego nie klikając |
 
 **Klawisz lub kombinacja:** kliknij w pole z klawiszem i naciśnij kombinację na klawiaturze – zapisze się sama (np. `Ctrl+F`). Skróty, których przeglądarka nie oddaje stronie (np. Ctrl+W, Ctrl+T), wybierz z **listy** obok – są tam też klawisze nawigacji i edycji.
 
@@ -68,16 +68,16 @@ Błąd jednej akcji (np. brak elementu) nie przerywa wejścia: trafia do dzienni
 ### Zakładka „Ustawienia”
 
 #### Co zmieniać przy każdym wejściu
-Zaznaczone grupy są losowane od nowa przy każdym wejściu. Odznaczona grupa zostaje taka, jak w Twojej prawdziwej przeglądarce.
+Zaznaczone grupy są losowane od nowa przy każdym wejściu. Odznaczona grupa zostaje taka, jak w Twojej prawdziwej przeglądarce. Opcje zależne od siebie stoją obok siebie i mają ten sam kolor (legenda pod listą): **niebieski** – system i karta graficzna (karta pasuje do wylosowanego systemu), **zielony** – język i strefa czasowa (losowane w parze). Pozostałe są niezależne.
 
 | Pole | Co robi |
 |---|---|
 | System i User-Agent | udaje Windows, macOS albo Linuksa |
+| Karta graficzna (WebGL) | inny model karty, pasujący do systemu |
 | Język | inny język przeglądarki |
 | Strefa czasowa | inna strefa, dobrana do języka |
 | Ekran i okno | inna rozdzielczość, skalowanie i rozmiar okna |
 | Rdzenie i pamięć RAM | inna liczba rdzeni i ilość pamięci |
-| Karta graficzna (WebGL) | inny model karty, pasujący do systemu |
 | Szum na płótnie | inny skrót „canvas” |
 | Ukrywanie części czcionek | strona widzi mniej czcionek |
 | Motyw, animacje, „nie śledź” | jasny lub ciemny motyw i inne preferencje |
@@ -85,7 +85,7 @@ Zaznaczone grupy są losowane od nowa przy każdym wejściu. Odznaczona grupa zo
 
 #### Przeglądarka
 - **Użyj zainstalowanego Chrome'a:** zalecane. Odznacz, jeśli Chrome sprawia kłopoty (wtedy potrzebne jest Chromium z `pobierz-chromium.bat`).
-- **Bez okna przeglądarki:** szybciej i bez otwierania okien, ale przeglądarka rysuje wtedy programowo, więc karta graficzna wygląda inaczej.
+- **Bez okna przeglądarki:** szybciej i bez otwierania okien, ale przeglądarka rysuje wtedy programowo, więc karta graficzna wygląda inaczej. Nie działa z akcjami w trybie *Przeglądarka* – wtedy ta opcja, akcje i ich przełącznik są oznaczone na żółto znakiem ⚠, a ⚠ pojawia się też przy nazwach zakładek.
 
 #### Proxy
 - Wpisz jedno proxy na linię: `http://użytkownik:hasło@host:port` albo `socks5://host:port`.
@@ -99,6 +99,8 @@ Zaznaczone grupy są losowane od nowa przy każdym wejściu. Odznaczona grupa zo
 - **Stop** przerywa bieżące wejście i kończy serię. Wyniki zebrane do tej chwili zostają w raporcie.
 
 ## 4. Jak czytać wyniki
+
+Wyniki są w zakładce **Statystyki**.
 
 **Tabela „Wejścia”**, jeden wiersz na wejście:
 - **Profil:** wylosowane ustawienia, czyli system, język, strefa czasowa, ekran, sprzęt, karta graficzna, motyw i liczba ukrytych czcionek.

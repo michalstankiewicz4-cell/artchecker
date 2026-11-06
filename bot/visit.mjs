@@ -1,5 +1,5 @@
 // Jedno wejście na stronę: świeża przeglądarka z nowym profilem przeglądarki, potem scenariusz akcji
-// (pisanie, klawisze, kliknięcia, przewijanie, czekanie, ludzkie zachowanie).
+// (pisanie, klawisze, kliknięcia, przewijanie, czekanie, szum).
 import { chromium } from "playwright";
 import { makeProfile, contextOptions, describe } from "./profiles.mjs";
 import { spoof } from "./spoof.mjs";
@@ -65,8 +65,8 @@ const ACTIONS = {
   },
   async scroll(page, a){ await scroll(page, a.dir === "up" ? -a.px : a.px); return `przewinięto ${a.dir === "up" ? "w górę" : "w dół"} o ${a.px} px`; },
   async wait(page, a){ const ms = rand(a.min, Math.max(a.min, a.max)) * 1000; await idle(page, ms); return `czekanie ${(ms / 1000).toFixed(1)} s`; },
-  // ludzkie zachowanie: kilka rund „przeczytaj – przewiń”, czasem powrót wyżej i najechanie myszą na link lub nagłówek
-  async human(page, a, ctx){
+  // szum: kilka rund „przeczytaj – przewiń”, czasem powrót wyżej i najechanie myszą na link lub nagłówek
+  async noise(page, a, ctx){
     const rounds = Math.floor(rand(3, 7)); let hovers = 0;
     for (let r = 0; r < rounds; r++) {
       check(ctx.signal); await idle(page, rand(1200, 3500));
@@ -79,10 +79,10 @@ const ACTIONS = {
       }
       await scroll(page, Math.random() < 0.15 ? -rand(150, 500) : rand(250, 800));
     }
-    return `ludzkie zachowanie: ${rounds} ${plural(rounds, "runda", "rundy", "rund")} czytania i przewijania, najechania myszą: ${hovers}`;
+    return `szum: ${rounds} ${plural(rounds, "runda", "rundy", "rund")} czytania i przewijania, najechania myszą: ${hovers}`;
   },
 };
-const ANAME = { type: "Pisz tekst", keys: "Naciśnij klawisze", click: "Kliknij w element", scroll: "Przewiń", wait: "Czekaj", human: "Ludzkie zachowanie" };
+const ANAME = { type: "Pisz tekst", keys: "Naciśnij klawisze", click: "Kliknij w element", scroll: "Przewiń", wait: "Czekaj", noise: "Szum" };
 
 
 // wynik: rekord do raportu

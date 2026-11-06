@@ -45,4 +45,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: >
           gh release create "v$env:VERSION" "dist/webbot-$env:VERSION-windows-portable.zip"
-          --title "Bot odcisku $env:VERSION" --notes-file dist/opis.md --target "$env:GITHUB_SHA"
+          --title "Human Bot $env:VERSION" --notes-file dist/opis.md --target "$env:GITHUB_SHA"

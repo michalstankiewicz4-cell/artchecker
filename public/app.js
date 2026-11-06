@@ -3,7 +3,21 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const h = html => { const t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild; };
 let total = 0, running = false;
-fetch("/api/info").then(r => r.json()).then(i => { $("ver").textContent = "v" + i.version; document.title += " v" + i.version; }).catch(() => {});
+// panel działa naprawdę tylko z serwera na tym komputerze; plik albo GitHub Pages = podgląd wyglądu
+const LIVE = ["127.0.0.1", "localhost"].includes(location.hostname);
+const PREVIEW_MSG = location.protocol === "file:" ? "podgląd bez serwera – Start nieaktywny" : "podgląd panelu – bota uruchamiasz na swoim komputerze (start.bat)";
+if (LIVE) fetch("/api/info").then(r => r.json()).then(i => { $("ver").textContent = "v" + i.version; $("ver").hidden = false; document.title += " v" + i.version; }).catch(() => {});
+
+// motyw dzień / noc: domyślnie jak w systemie, wybór zapamiętany w tej przeglądarce
+const THEME_KEY = "humanbot-theme";
+const sysDark = () => matchMedia("(prefers-color-scheme: dark)").matches;
+function applyTheme(t){ const dark = t ? t === "dark" : sysDark(); if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
+  $("theme").textContent = dark ? "☀ Dzień" : "☾ Noc"; $("theme").title = dark ? "Przełącz na jasny motyw (dzień)" : "Przełącz na ciemny motyw (noc)"; }
+let theme = null; try { theme = localStorage.getItem(THEME_KEY); } catch (_) {}
+applyTheme(theme);
+$("theme").addEventListener("click", () => { const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : sysDark();
+  theme = dark ? "light" : "dark"; try { localStorage.setItem(THEME_KEY, theme); } catch (_) {} applyTheme(theme); });
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!theme) applyTheme(null); });
 
 // =====================================================================
 // Scenariusz: lista akcji wykonywanych po kolei po wczytaniu strony
@@ -23,9 +37,9 @@ const TYPES = {
   click:  { name: "Kliknij w element", def: () => ({ selector: "" }) },
   scroll: { name: "Przewiń", def: () => ({ dir: "down", px: 600 }) },
   wait:   { name: "Czekaj", def: () => ({ min: 1, max: 3 }) },
-  human:  { name: "Ludzkie zachowanie", def: () => ({}) },
+  noise:  { name: "Szum", def: () => ({}) },
 };
-let scenario = [{ type: "human" }], dragFrom = null;
+let scenario = [{ type: "noise" }], dragFrom = null;
 
 // ikonki przełącznika: kartka z tekstem = treść strony, okno z paskiem kart = przeglądarka
 const ICON_PAGE = `<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 1.5h5.5L12.5 4.5v10h-8.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M9.5 1.5v3h3M6 7.5h4.5M6 9.75h4.5M6 12h3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`;
@@ -51,8 +65,8 @@ function fieldsHTML(a, i){
     case "wait": return `<label class="num" title="Najkrótszy czas czekania, w sekundach.">od <input data-f="min" type="number" min="0" step="0.5" value="${a.min}"></label>
       <label class="num" title="Najdłuższy czas czekania, w sekundach.">do <input data-f="max" type="number" min="0" step="0.5" value="${a.max}"> s</label>
       <span class="help" tabindex="0" data-tip="Bot czeka losowy czas z tego przedziału, w tym czasie lekko poruszając myszą – jak człowiek, który czyta albo się zastanawia.">?</span>`;
-    case "human": return `<span class="sub">czytanie, przewijanie, ruchy myszy – kilkanaście sekund</span>
-      <span class="help" tabindex="0" data-tip="Bot przez kilkanaście sekund zachowuje się jak czytający człowiek: 3–6 razy chwilę „czyta” (drobne ruchy myszy), przewija kółkiem w dół – czasem wraca trochę wyżej – i co jakiś czas najeżdża myszą na link, nagłówek albo przycisk, niczego nie klikając. Działa na każdej stronie.">?</span>`;
+    case "noise": return `<span class="sub">czytanie, przewijanie, ruchy myszy – kilkanaście sekund</span>
+      <span class="help" tabindex="0" data-tip="„Szum” to tło ludzkiego zachowania: przez kilkanaście sekund bot zachowuje się jak czytający człowiek – 3–6 razy chwilę „czyta” (drobne ruchy myszy), przewija kółkiem w dół – czasem wraca trochę wyżej – i co jakiś czas najeżdża myszą na link, nagłówek albo przycisk, niczego nie klikając. Działa na każdej stronie.">?</span>`;
   }
 }
 
@@ -75,7 +89,23 @@ function renderScenario(){
   });
   $("scenario-empty").hidden = scenario.length > 0;
   if (running) setRunning(true);
+  updateConflicts();
 }
+
+// „Bez okna” nie współgra z akcjami w trybie „Przeglądarka” – obie strony konfliktu na żółto z ⚠
+const WARN = `<span class="warn-ico" aria-hidden="true">⚠</span>`;
+function updateConflicts(){
+  const head = $("headless").checked; let n = 0;
+  [...$("scenario").children].forEach((li, i) => { const bad = head && scenario[i].target === "browser"; if (bad) n++;
+    li.classList.toggle("conflict", bad);
+    const lab = li.querySelector('.seg2 label:nth-of-type(2)'); if (lab) lab.classList.toggle("conflict", bad);
+    li.querySelector(".no").title = bad ? "Ta akcja („Przeglądarka”) nie zadziała z opcją „Bez okna przeglądarki” w Ustawieniach." : ""; });
+  const hl = $("headless").closest("label"); hl.classList.toggle("conflict", n > 0);
+  hl.querySelector(".warn-note")?.remove();
+  if (n) hl.insertAdjacentHTML("beforeend", `<span class="warn-note" title="Akcje w trybie „Przeglądarka” potrzebują widocznego okna.">${WARN} nie pasuje do ${n} ${n === 1 ? "akcji" : "akcji"} w trybie „Przeglądarka” (zakładka Plan)</span>`);
+  $("tab-set").classList.toggle("has-conflict", n > 0); $("tab-plan").classList.toggle("has-conflict", n > 0);
+}
+$("headless").addEventListener("change", updateConflicts);
 
 function addAction(type, at = scenario.length){ scenario.splice(at, 0, { type, ...TYPES[type].def() }); renderScenario();
   const li = $("scenario").children[at]; li.classList.add("new"); li.querySelector(".fields input, .fields textarea, .fields select")?.focus(); }
@@ -86,7 +116,7 @@ $("scenario").addEventListener("input", e => { const li = e.target.closest(".act
 $("scenario").addEventListener("change", e => { const li = e.target.closest(".action"); if (!li) return; const i = +li.dataset.i, f = e.target.dataset.f;
   if (f === "type") { scenario[i] = { type: e.target.value, ...TYPES[e.target.value].def() }; renderScenario(); }
   else if (f === "preset" && e.target.value) { scenario[i].combo = e.target.value; const c = li.querySelector(".combo"); c.value = showCombo(e.target.value); c.dataset.combo = e.target.value; e.target.value = ""; }
-  else if (f === "target") scenario[i].target = e.target.value; });
+  else if (f === "target") { scenario[i].target = e.target.value; updateConflicts(); } });
 // przyciski wiersza
 $("scenario").addEventListener("click", e => { const b = e.target.closest("button[data-do]"); if (!b) return; const i = +b.closest(".action").dataset.i;
   if (b.dataset.do === "del") scenario.splice(i, 1);
@@ -149,6 +179,7 @@ function validate(){
 
 $("cfg").addEventListener("submit", async e => {
   e.preventDefault();
+  if (!LIVE) { $("status").textContent = PREVIEW_MSG; return; }
   const bad = validate();
   if (bad) { $("status").textContent = bad[0]; openTab(bad[1]); if (bad[2] !== undefined) { const li = $("scenario").children[bad[2]]; li.classList.add("invalid"); li.scrollIntoView({ block: "center" }); setTimeout(() => li.classList.remove("invalid"), 2500); } return; }
   const spoof = {}; document.querySelectorAll("[data-spoof]").forEach(c => spoof[c.dataset.spoof] = c.checked);
@@ -161,7 +192,8 @@ $("cfg").addEventListener("submit", async e => {
 });
 $("stop").addEventListener("click", () => fetch("/api/stop", { method: "POST" }));
 
-const es = new EventSource("/api/events");
+const es = LIVE ? new EventSource("/api/events") : { addEventListener(){} };
+if (!LIVE) $("status").textContent = PREVIEW_MSG;
 es.addEventListener("state", e => { const s = JSON.parse(e.data); setRunning(s.running);
   if (s.running) total = s.total || 0;
   if (s.file) $("report").innerHTML = `Raport: <a href="/reports/${esc(s.file)}.csv">${esc(s.file)}.csv</a> · <a href="/reports/${esc(s.file)}.json">.json</a> (folder <code>reports</code>)`; });
@@ -173,12 +205,12 @@ es.addEventListener("visit", e => { const v = JSON.parse(e.data);
     + `<td>${(v.ms / 1000).toFixed(0)} s</td>`;
   $("visits-t").tBodies[0].appendChild(tr);
   $("status").textContent = `pracuje… ${v.n}${total ? ` z ${total}` : ""}`; });
-es.onerror = () => { if (!running) $("status").textContent = location.protocol === "file:" ? "podgląd bez serwera – Start nieaktywny" : "brak połączenia z serwerem – czy okno z botem jest otwarte?"; };
+es.onerror = () => { if (!running) $("status").textContent = "brak połączenia z serwerem – czy okno z botem jest otwarte?"; };
 
 // =====================================================================
 // Zakładki Plan / Ustawienia (myszą, strzałkami ←/→); przy błędnym polu przełącza na jego zakładkę
 // =====================================================================
-const TABS = [["tab-plan", "pane-plan"], ["tab-set", "pane-set"]];
+const TABS = [["tab-plan", "pane-plan"], ["tab-set", "pane-set"], ["tab-stat", "pane-stat"]];
 function openTab(id){ for (const [t, p] of TABS) { const on = t === id;
   $(t).setAttribute("aria-selected", on); $(t).tabIndex = on ? 0 : -1; $(p).hidden = !on; } }
 TABS.forEach(([t], i) => { $(t).addEventListener("click", () => openTab(t));

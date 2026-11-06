@@ -2,6 +2,24 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.9.0] – 2026-11-06
+
+### Dodane
+- Trzecia zakładka **„Statystyki”** – przeniesione do niej tabela „Wejścia” i „Dziennik”.
+- Przełącznik motywu **dzień / noc** obok nazwy (zapamiętywany; bez wyboru – zgodnie z systemem).
+- Oznaczenie konfliktu z „Bez okna przeglądarki”: opcja, akcje w trybie „Przeglądarka” i ich przełącznik na żółto ze znakiem ⚠, ⚠ także przy nazwach zakładek.
+- Kolory opcji zależnych od siebie w „Co zmieniać przy każdym wejściu” (system + karta graficzna, język + strefa czasowa) z legendą.
+- Tryb podglądu panelu poza komputerem użytkownika: bez połączenia z serwerem, Start nieaktywny. Automat „Deploy static content to Pages” publikuje sam folder `public/` na <https://michalstankiewicz4-cell.github.io/webbot/>.
+
+### Zmienione
+- Nazwa programu: **Human Bot** (wcześniej „Bot odcisku”); pakiet `human-bot`.
+- Akcja „Ludzkie zachowanie” nazywa się teraz **„Szum”** (typ `noise` w API, wcześniej `human`).
+- Kolejność opcji w „Co zmieniać…”: zależne od siebie stoją obok siebie.
+- Przełącznik „Strona | Przeglądarka” ma wielkość przycisków ↑↓ i stoi przy prawej krawędzi wiersza.
+
+### Poprawione
+- Pusta ramka obok nazwy, gdy wersja nie była jeszcze znana.
+
 ## [0.8.2] – 2026-11-06
 
 ### Zmienione

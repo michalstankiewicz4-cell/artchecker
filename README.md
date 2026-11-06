@@ -1,8 +1,8 @@
-# Bot odcisku
+# Human Bot
 
 Bot z panelem w przeglądarce. Wchodzi na wskazaną stronę i wykonuje **scenariusz akcji** jak człowiek – pisanie tekstu z nierównymi odstępami między klawiszami, naciskanie klawiszy i skrótów, kliknięcia, przewijanie, czekanie – rusza myszą po krzywych z przyspieszaniem i drżeniem, a przy **każdym wejściu ma inny odcisk przeglądarki**. Działa na dowolnej stronie. Przebieg każdego wejścia trafia do raportu.
 
-Wersja **0.8.2** · autor: Michał Stankiewicz · repozytorium: <https://github.com/michalstankiewicz4-cell/webbot>. Działa tylko lokalnie na Twoim komputerze (panel na 127.0.0.1).
+Wersja **0.9.0** · autor: Michał Stankiewicz · repozytorium: <https://github.com/michalstankiewicz4-cell/webbot>. Działa tylko lokalnie na Twoim komputerze (panel na 127.0.0.1). Podgląd samego panelu (bez bota): <https://michalstankiewicz4-cell.github.io/webbot/>.
 
 Dokumenty: [instrukcja obsługi](docs/INSTRUKCJA.md) · [dokumentacja techniczna](docs/DOKUMENTACJA.md) · [historia zmian](CHANGELOG.md)
 
@@ -41,7 +41,7 @@ Kod: `bot/profiles.mjs` (losowanie spójnych profili) i `bot/spoof.mjs` (skrypt 
 
 ## Panel
 
-Start/Stop na górze, pod nimi dwie zakładki: **Plan** (liczba wejść, przerwy, adres, **scenariusz** – lista akcji dodawanych przyciskiem „+ Dodaj akcję”, z kolejnością ↑↓ / przeciąganiem, powielaniem i usuwaniem) i **Ustawienia** (co zmieniać przy każdym wejściu, przeglądarka, proxy). Akcje: Pisz tekst, Naciśnij klawisze (nagrywanie kombinacji albo lista), Kliknij w element, Przewiń, Czekaj, Ludzkie zachowanie. Przy pisaniu i klawiszach wybór „dokąd”: Strona albo Przeglądarka (ten drugi tryb – w przygotowaniu). Przy każdym polu jest podpowiedź po najechaniu myszą i znaczek [?] z opisem.
+Start/Stop na górze, obok nazwy przełącznik dzień/noc, pod nimi trzy zakładki: **Plan** (liczba wejść, przerwy, adres, **scenariusz** – lista akcji dodawanych przyciskiem „+ Dodaj akcję”, z kolejnością ↑↓ / przeciąganiem, powielaniem i usuwaniem) i **Ustawienia** (co zmieniać przy każdym wejściu – opcje zależne od siebie w tym samym kolorze, przeglądarka, proxy) i **Statystyki** (tabela wejść i dziennik). Ustawienia, które nie pasują do „Bez okna przeglądarki”, są oznaczone na żółto znakiem ⚠. Akcje: Pisz tekst, Naciśnij klawisze (nagrywanie kombinacji albo lista), Kliknij w element, Przewiń, Czekaj, Szum. Przy pisaniu i klawiszach wybór „dokąd”: Strona albo Przeglądarka (ten drugi tryb – w przygotowaniu) – przełącznik z ikonkami przy prawej krawędzi wiersza, obok ↑↓. Przy każdym polu jest podpowiedź po najechaniu myszą i znaczek [?] z opisem.
 
 ## Zachowanie na stronie
 
@@ -51,7 +51,7 @@ Start/Stop na górze, pod nimi dwie zakładki: **Plan** (liczba wejść, przerwy
 - kliknięcie nie w sam środek, przytrzymanie 50–140 ms; przewijanie kółkiem z przerwami i czasem cofnięciem;
 - scenariusz: akcje po kolei; błąd jednej akcji nie przerywa wejścia;
 - pisanie: znak po znaku, odstępy z rozkładu log-normalnego (mediana 150 ms), szybciej w częstych parach liter, dłużej po spacji, interpunkcji i przed wielką literą, czasem chwila namysłu, klawisz przytrzymany 50–130 ms; polskie znaki z keydown/keyup; tam, gdzie jest kursor (albo w pierwsze pole tekstowe); pole wskazujesz wcześniejszą akcją „Kliknij w element”;
-- „Ludzkie zachowanie”: 3–6 rund „czytania” (drobne ruchy myszy) i przewijania, czasem powrót wyżej i najechanie myszą na link, nagłówek albo przycisk – bez klikania; działa na każdej stronie;
+- „Szum”: 3–6 rund „czytania” (drobne ruchy myszy) i przewijania, czasem powrót wyżej i najechanie myszą na link, nagłówek albo przycisk – bez klikania; działa na każdej stronie;
 
 ## Proxy i VPN
 

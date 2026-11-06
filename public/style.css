@@ -1,5 +1,10 @@
-:root{--bg:#eef0ec;--surface:#f8f9f6;--ink:#1b2320;--muted:#5d6863;--line:#cfd5cf;--accent:#2b48c9;--ok:#2f8a57;--err:#c4402f;color-scheme:light}
-@media (prefers-color-scheme:dark){:root{--bg:#121615;--surface:#1a201e;--ink:#e3e8e4;--muted:#93a09a;--line:#2e3633;--accent:#8197ff;--ok:#5cc28a;--err:#ff7a6b;color-scheme:dark}}
+:root{--bg:#eef0ec;--surface:#f8f9f6;--ink:#1b2320;--muted:#5d6863;--line:#cfd5cf;--accent:#2b48c9;--ok:#2f8a57;--err:#c4402f;
+  --dep-a:#2b6fd6;--dep-b:#1f9466;--warn:#d9a400;--warn-bg:#fff6d6;--warn-ink:#6b5200;color-scheme:light}
+/* noc: wybrana przyciskiem albo – bez wyboru – zgodnie z systemem */
+:root[data-theme=dark]{--bg:#121615;--surface:#1a201e;--ink:#e3e8e4;--muted:#93a09a;--line:#2e3633;--accent:#8197ff;--ok:#5cc28a;--err:#ff7a6b;
+  --dep-a:#6aa3ff;--dep-b:#4cc79a;--warn:#f0c21b;--warn-bg:#3a3214;--warn-ink:#f6dd85;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme]){--bg:#121615;--surface:#1a201e;--ink:#e3e8e4;--muted:#93a09a;--line:#2e3633;--accent:#8197ff;--ok:#5cc28a;--err:#ff7a6b;
+  --dep-a:#6aa3ff;--dep-b:#4cc79a;--warn:#f0c21b;--warn-bg:#3a3214;--warn-ink:#f6dd85;color-scheme:dark}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Segoe UI",system-ui,sans-serif}
 header,main{max-width:980px;margin:0 auto;padding:0 20px}
@@ -100,3 +105,35 @@ label.row{margin-top:12px}
   .action label.times input{width:48px}
   .action .fields{gap:8px}
 }
+
+/* nagłówek: nazwa, wersja (ukryta, gdy nieznana), dzień/noc */
+.head-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ver[hidden]{display:none}
+.theme-btn{font-size:.85rem;padding:6px 12px;white-space:nowrap}
+
+/* zakładki: kropka ostrzeżenia przy konflikcie */
+.tabs button.has-conflict::after{content:"⚠";color:var(--warn);margin-left:6px;font-size:.85em}
+
+/* przełącznik Strona | Przeglądarka – wielkości przycisków ↑ ↓, przy prawej krawędzi */
+.action .tcell{justify-content:flex-end}
+.seg2 label span{height:26px;padding:0 7px;border-radius:0}
+.seg2 label:first-of-type span{border-radius:5px 0 0 5px}
+.seg2 label:nth-of-type(2) span{border-radius:0 5px 5px 0}
+.seg2 svg{width:15px;height:15px;display:block}
+
+/* Co zmieniać: kolory opcji zależnych od siebie */
+.checks.spoof label.check{padding:5px 8px;border-radius:6px;border:1px solid transparent}
+.checks.spoof label.dep-a{background:color-mix(in srgb,var(--dep-a) 12%,transparent);border-left:4px solid var(--dep-a)}
+.checks.spoof label.dep-b{background:color-mix(in srgb,var(--dep-b) 12%,transparent);border-left:4px solid var(--dep-b)}
+.checks.spoof label.dep-a.dep-b{border:2px solid var(--dep-b);border-left:4px solid var(--dep-a)}   /* opcja w dwóch grupach: ramka */
+.legend .sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:3px}
+.legend .sw.dep-a{background:var(--dep-a)}.legend .sw.dep-b{background:var(--dep-b)}
+
+/* konflikt z „Bez okna przeglądarki”: żółte tło, ramka i ⚠ */
+.warn-ico{color:var(--warn);font-weight:700}
+label.check.conflict{background:var(--warn-bg);border:1px solid var(--warn);border-radius:6px;padding:5px 8px;color:var(--warn-ink);flex-wrap:wrap}
+.warn-note{flex-basis:100%;font-size:.8rem;color:var(--warn-ink)}
+.action.conflict{border-color:var(--warn);background:var(--warn-bg)}
+.action.conflict .no::before{content:"⚠ ";color:var(--warn)}
+.action.conflict .no{color:var(--warn-ink)}
+.seg2 label.conflict input:checked+span{background:var(--warn);border-color:var(--warn);color:#1b1500}
