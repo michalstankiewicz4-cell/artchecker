@@ -2,6 +2,11 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.8.2] – 2026-11-06
+
+### Zmienione
+- Przełącznik „Strona | Przeglądarka” pokazuje ikonki (kartka z tekstem / okno przeglądarki) zamiast napisów; opis każdej opcji jest w podpowiedzi po najechaniu myszą.
+
 ## [0.8.1] – 2026-11-06
 
 ### Zmienione
