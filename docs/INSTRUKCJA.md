@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Human Bot
 
-Wersja instrukcji odpowiada wersji programu **0.17.1**.
+Wersja instrukcji odpowiada wersji programu **0.18.0**.
 
 ## 1. Co jest potrzebne
 
@@ -56,6 +56,7 @@ Lista akcji, które bot wykonuje **po kolei, od góry**, przy każdym wejściu z
 | **Zaznacz tekst** | słowo (2× klik), akapit (3× klik) albo fragment (przeciągnięcie od–do); miejsce, dokąd | zaznacza tekst jak człowiek podczas czytania |
 | **Przewiń** | w dół / w górę, o ile px, całą stronę albo nad elementem, dokąd | przewija kółkiem myszy porcjami; „nad elementem” – listy i okienka przewijane osobno od strony |
 | **Czekaj** | od–do sekund | czeka losowo, lekko ruszając myszą |
+| **Znajdź pozycję** | domena, do ilu stron, selektory (domyślnie Google) | po wyszukaniu frazy czyta wyniki po kolei i szuka domeny; gdy jej nie ma – przewija w dół i przechodzi na następną stronę wyników. W znaleziony wynik **nie wchodzi** – zapisuje pozycję w Statystykach. Gdy wyszukiwarka pokaże CAPTCHA, przerywa |
 | **Szum** | – | przez kilkanaście sekund zachowuje się jak czytający człowiek: 3–6 razy chwilę „czyta” (drobne ruchy myszy), przewija w dół – czasem wraca wyżej – i najeżdża myszą na link, nagłówek albo przycisk, niczego nie klikając |
 
 
@@ -145,6 +146,10 @@ Wyniki są w zakładce **Statystyki**.
 
 **Dziennik** pokazuje na bieżąco każdy krok: profil, każdą akcję scenariusza (np. wpisany tekst z tempem, naciśnięte klawisze), wynik, przerwy i błędy.
 
+**Pozycje w wynikach** (trzeci panel w Statystykach) – wyniki akcji „Znajdź pozycję”: dla każdej pary fraza + domena ostatnia, najlepsza i średnia pozycja, liczba sprawdzeń i mały wykres (wyżej = lepiej, czerwona kropka = brak w przejrzanych wynikach), a pod spodem historia ostatnich 50 sprawdzeń. Historia zostaje między uruchomieniami (plik `reports/pozycje.csv`).
+
+**Gotowy profil „Pozycja ipscanner w Google”** (lista Profil): Google → akceptacja ciasteczek (`#L2AGLb`) → kliknięcie w pole szukania → „osint” → Enter → Znajdź pozycję `ipscanner.pl` (do 10 stron). Język i strefa czasowa są w nim wyłączone z losowania, bo wyniki Google zależą od języka i kraju; okno przeglądarki widoczne, 1 wejście. Google może po kilku automatycznych wyszukaniach pokazać CAPTCHA – bot wtedy przerywa; nie uruchamiaj tego zbyt często.
+
 ## 5. Raporty
 
 Każda seria zapisuje dwa pliki w folderze **`reports`** w katalogu projektu. Linki do nich są też pod tabelą w panelu.
@@ -166,6 +171,8 @@ Oba pliki są uzupełniane po każdym wejściu, więc przerwanie serii nie kasuj
 | „test … nie został ukończony” w dzienniku | Bot chybił kółko. Seria toczy się dalej, w tym wejściu po prostu nie będzie werdyktu. |
 | „nie znaleziono elementu …” / „na stronie nie ma pola tekstowego” | Sprawdź selektor albo czy element jest widoczny bez klikania czegoś wcześniej. Wejście idzie dalej, bez tej akcji. |
 | Tekst trafia w złe miejsce | Przed „Pisz tekst” dodaj „Kliknij” z selektorem pola. |
+| „wyszukiwarka pokazała CAPTCHA” | Google uznał ruch za automatyczny. Odczekaj (godziny), sprawdzaj rzadziej; bot CAPTCHA nie obchodzi. |
+| „nie widać wyników” przy Znajdź pozycję | Przed tą akcją musi być wyszukanie frazy (pole szukania → tekst → Enter), a przy innej wyszukiwarce – jej selektory. |
 | Ctrl+F (lub inny skrót przeglądarki) nic nie otwiera | W trybie „Strona” to normalne – przełącz akcję na „Przeglądarka”. |
 | „okno przeglądarki bota nie jest na wierzchu” / „nie udało się zgrać kursora” | W trybie „Przeglądarka” nie zasłaniaj okna bota i nie ruszaj myszą; okno nie może być zminimalizowane. |
 | „tryb »Przeglądarka« działa tylko na Windowsie” | Na innym systemie zmień akcje na „Strona”. |

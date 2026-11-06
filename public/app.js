@@ -49,6 +49,7 @@ const TYPES = {
   scroll: { name: "Przewiń", def: () => ({ dir: "down", px: 600, over: "page", selector: "", target: "page" }) },
   wait:   { name: "Czekaj", def: () => ({ min: 1, max: 3 }) },
   noise:  { name: "Szum", def: () => ({}) },
+  rank:   { name: "Znajdź pozycję", def: () => ({ domain: "", maxPages: 10, results: "#search a:has(h3)", next: "#pnnext" }) },
 };
 let scenario = [{ type: "noise" }], dragFrom = null;
 
@@ -124,6 +125,12 @@ function fieldsHTML(a, i){
     case "wait": return `<label class="num" title="Najkrótszy czas czekania, w sekundach.">od <input data-f="min" type="number" min="0" step="0.5" value="${a.min}"></label>
       <label class="num" title="Najdłuższy czas czekania, w sekundach.">do <input data-f="max" type="number" min="0" step="0.5" value="${a.max}"> s</label>
       <span class="help" tabindex="0" data-tip="Bot czeka losowy czas z tego przedziału, w tym czasie lekko poruszając myszą – jak człowiek, który czyta albo się zastanawia.">?</span>`;
+    case "rank": return `<input data-f="domain" class="grow" placeholder="domena, np. ipscanner.pl" value="${esc(a.domain)}" title="Domena, której pozycji szukać w wynikach (bez https:// – liczą się też jej subdomeny).">
+      <label class="num" title="Ile stron wyników najwyżej przejrzeć (Google: ok. 10 wyników na stronę).">do <input data-f="maxPages" type="number" min="1" max="20" value="${a.maxPages}"> stron</label>
+      <details class="rank-sel"><summary title="Selektory CSS wyników i przycisku „następna strona” – domyślnie pod Google; zmień je dla innej wyszukiwarki.">selektory</summary>
+        <label class="num">wyniki <input data-f="results" class="sel" value="${esc(a.results)}" title="Selektor linków-wyników w kolejności na stronie (domyślnie Google: #search a:has(h3))."></label>
+        <label class="num">następna strona <input data-f="next" class="sel" value="${esc(a.next)}" title="Selektor przycisku/łącza „następna strona” (domyślnie Google: #pnnext)."></label></details>
+      <span class="help" tabindex="0" data-tip="Stosuj po wyszukaniu frazy (np. Kliknij w pole szukania → Pisz tekst → Naciśnij klawisze: Enter). Bot czyta wyniki po kolei i szuka domeny; gdy jej nie ma – przewija stronę w dół i przechodzi do następnej strony wyników, aż do podanej liczby stron. W znaleziony wynik NIE wchodzi – tylko zapisuje pozycję (Statystyki → „Pozycje w wynikach”, plik reports/pozycje.csv). Gdy wyszukiwarka pokaże CAPTCHA, bot przerywa – nie obchodzi jej. Wskazówka: w Ustawieniach odznacz „Język” i „Strefa czasowa”, bo wyniki zależą od języka i kraju.">?</span>`;
     case "noise": return `<span class="sub">czytanie, przewijanie, ruchy myszy – kilkanaście sekund</span>
       <span class="help" tabindex="0" data-tip="„Szum” to tło ludzkiego zachowania: przez kilkanaście sekund bot zachowuje się jak czytający człowiek – 3–6 razy chwilę „czyta” (drobne ruchy myszy), przewija kółkiem w dół – czasem wraca trochę wyżej – i co jakiś czas najeżdża myszą na link, nagłówek albo przycisk, niczego nie klikając. Działa na każdej stronie.">?</span>`;
   }
@@ -281,7 +288,7 @@ function validate(){
   const i = scenario.findIndex(a => (a.type === "type" && !a.text) || (a.type === "keys" && !a.combo)
     || ((a.type === "hover" || a.type === "click") && noEl(a)) || (a.type === "drag" && (noEl(a.from) || noEl(a.to)))
     || (a.type === "select" && (a.how === "range" ? noEl(a.from) || noEl(a.to) : noEl(a)))
-    || (a.type === "scroll" && a.over === "el" && !a.selector.trim()));
+    || (a.type === "scroll" && a.over === "el" && !a.selector.trim()) || (a.type === "rank" && !a.domain.trim()));
   if (i >= 0) return [`Akcja ${i + 1} (${TYPES[scenario[i].type].name}) jest niewypełniona.`, "tab-plan", i];
   return null;
 }
@@ -310,10 +317,31 @@ es.addEventListener("log", e => { const l = $("log"); l.textContent += JSON.pars
 es.addEventListener("visit", e => { const v = JSON.parse(e.data);
   const tr = document.createElement("tr"); if (v.error) tr.className = "err";
   tr.innerHTML = `<td>${v.n}${total ? `/${total}` : ""}</td><td>${esc(v.summary)}${v.proxy ? `<br><small>proxy ${esc(v.proxy)}</small>` : ""}</td>`
-    + `<td>${v.actions ? `${v.actionsDone}/${v.actions} akcji${v.typedChars ? `<br><small>${v.typedChars} zn., ${v.cpm} zn./min</small>` : ""}` : "—"}${v.actionError ? `<br><span class="bad">${esc(v.actionError)}</span>` : ""}${v.error ? `<br><span class="bad">${esc(v.error)}</span>` : ""}</td>`
+    + `<td>${v.actions ? `${v.actionsDone}/${v.actions} akcji${v.typedChars ? `<br><small>${v.typedChars} zn., ${v.cpm} zn./min</small>` : ""}` : "—"}${(v.ranks || []).map(r => `<br><small>pozycja ${esc(r.domain)}: <b>${r.position ?? "brak"}</b></small>`).join("")}${v.actionError ? `<br><span class="bad">${esc(v.actionError)}</span>` : ""}${v.error ? `<br><span class="bad">${esc(v.error)}</span>` : ""}</td>`
     + `<td>${(v.ms / 1000).toFixed(0)} s</td>`;
   $("visits-t").tBodies[0].appendChild(tr);
   $("status").textContent = `pracuje… ${v.n}${total ? ` z ${total}` : ""}`; });
+// pozycje w wynikach: historia z reports/pozycje.csv + nowe sprawdzenia na żywo
+let RANKS = [];
+function renderRanks(){
+  const groups = new Map();
+  for (const r of RANKS) { const k = r.fraza + "\u0000" + r.domena; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(r); }
+  const sb = $("ranks-sum").tBodies[0]; sb.innerHTML = "";
+  for (const list of groups.values()) { const pos = list.map(r => +r.pozycja).filter(Boolean), last = list[list.length - 1];
+    const avg = pos.length ? (pos.reduce((s, p) => s + p, 0) / pos.length).toFixed(1) : "—";
+    sb.appendChild(h(`<tr><td>${esc(last.fraza || "—")}</td><td>${esc(last.domena)}</td><td><b>${last.pozycja || "brak"}</b></td><td>${pos.length ? Math.min(...pos) : "—"}</td><td>${avg}</td><td>${list.length}</td><td class="spark">${spark(list.map(r => +r.pozycja || null))}</td></tr>`)); }
+  const hb = $("ranks-t").tBodies[0]; hb.innerHTML = "";
+  RANKS.slice(-50).reverse().forEach(r => hb.appendChild(h(`<tr><td>${esc(new Date(r.data).toLocaleString("pl-PL"))}</td><td>${esc(r.fraza || "—")}</td><td>${esc(r.domena)}</td><td><b>${r.pozycja || "brak"}</b>${r.strona ? ` <small>(str. ${esc(r.strona)})</small>` : ""}</td><td>${r.adres ? `<span title="${esc(r.adres)}">${esc(r.tytul || r.adres)}</span>` : `<small>sprawdzono ${esc(r.stron_sprawdzonych)} str.</small>`}</td></tr>`)));
+  $("ranks-empty").hidden = RANKS.length > 0; $("ranks-wrap").hidden = !RANKS.length;
+}
+// mały wykres pozycji (wyżej = lepiej; brak w wynikach – kropka na dole)
+function spark(ps){ const v = ps.slice(-30); if (v.length < 2) return ""; const max = Math.max(10, ...v.filter(Boolean)), W = 120, H = 26;
+  const pt = (p, i) => [i * (W - 4) / (v.length - 1) + 2, p ? 2 + (p - 1) / (max - 1 || 1) * (H - 6) : H - 2];
+  const line = v.map((p, i) => p ? pt(p, i).join(",") : null).filter(Boolean).join(" ");
+  return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true"><polyline points="${line}" fill="none" stroke="currentColor" stroke-width="1.6"/>${v.map((p, i) => p ? "" : `<circle cx="${pt(p, i)[0]}" cy="${H - 2}" r="1.6" fill="var(--err)"/>`).join("")}</svg>`; }
+if (LIVE) fetch("/api/ranks").then(r => r.json()).then(l => { RANKS = l; renderRanks(); }).catch(() => {});
+es.addEventListener("rank", e => { RANKS.push(JSON.parse(e.data)); renderRanks(); });
+renderRanks();
 es.onerror = () => { if (!running) $("status").textContent = "brak połączenia z serwerem – czy okno z botem jest otwarte?"; };
 
 // =====================================================================

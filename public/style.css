@@ -210,3 +210,11 @@ dialog.crop.small label.num input{flex:1;font:inherit;padding:6px 8px;border:1px
 button .ico{flex:none;display:block}
 #start,#stop,#psave,#preset,.tabs button{display:inline-flex;align-items:center;gap:7px}
 .tabs button .ico{opacity:.75}.tabs button[aria-selected=true] .ico{opacity:1;color:var(--accent)}
+
+/* Znajdź pozycję i panel „Pozycje w wynikach” */
+.action details.rank-sel{flex-basis:100%;font-size:.85rem;color:var(--muted)}
+.action details.rank-sel summary{cursor:pointer;width:max-content}
+.action details.rank-sel label{display:inline-flex;margin:6px 10px 0 0}
+.action details.rank-sel input{width:220px;font-family:Consolas,monospace}
+.sub-h{font-size:.95rem;margin:14px 0 6px}
+#ranks-sum td.spark{color:var(--accent);padding-top:2px;padding-bottom:0}

@@ -33,6 +33,25 @@ const PROFILE_COLS = {
   hiddenFonts: p => p.hiddenFonts && p.hiddenFonts.join(", "), colorScheme: p => p.colorScheme };
 const csvRow = r => CSV_COLS.map(k => csvCell(k in PROFILE_COLS ? (r.profile ? PROFILE_COLS[k](r.profile) : "") : r[k])).join(";");
 
+// pozycje w wynikach: jeden wiersz na sprawdzenie w reports/pozycje.csv (historia dla panelu „Pozycje w wynikach”)
+const RANK_FILE = join(REP, "pozycje.csv"), RANK_COLS = ["data", "fraza", "domena", "pozycja", "strona", "tytul", "adres", "stron_sprawdzonych"];
+async function saveRank(r){
+  const row = { data: new Date().toISOString(), fraza: r.query, domena: r.domain, pozycja: r.position ?? "", strona: r.page ?? "", tytul: r.title, adres: r.url, stron_sprawdzonych: r.pagesChecked };
+  if (!existsSync(RANK_FILE)) await writeFile(RANK_FILE, "\ufeff" + RANK_COLS.join(";") + "\n");
+  await appendFile(RANK_FILE, RANK_COLS.map(k => csvCell(row[k])).join(";") + "\n");
+  send("rank", row);
+}
+async function loadRanks(){
+  if (!existsSync(RANK_FILE)) return [];
+  const lines = (await readFile(RANK_FILE, "utf8")).replace(/^\ufeff/, "").split(/\r?\n/).filter(Boolean).slice(1);
+  const cells = l => { const out = []; let cur = "", q = false;
+    for (let i = 0; i < l.length; i++) { const ch = l[i];
+      if (q) { if (ch === '"' && l[i + 1] === '"') { cur += '"'; i++; } else if (ch === '"') q = false; else cur += ch; }
+      else if (ch === '"') q = true; else if (ch === ";") { out.push(cur); cur = ""; } else cur += ch; }
+    out.push(cur); return out; };
+  return lines.slice(-1000).map(l => Object.fromEntries(cells(l).map((v, i) => [RANK_COLS[i], v])));
+}
+
 async function startRun(cfg){
   await mkdir(REP, { recursive: true });
   const stamp = new Date().toISOString().replace(/[:T]/g, "-").slice(0, 19);
@@ -49,7 +68,8 @@ async function startRun(cfg){
       run.records.push(rec);
       await appendFile(file + ".csv", csvRow(rec) + "\n");
       await writeFile(file + ".json", JSON.stringify({ config: run.config, records: run.records }, null, 2));
-      send("visit", { n: rec.n, ms: rec.ms, error: rec.error, summary: rec.summary, proxy: rec.proxy, actions: rec.actions, actionsDone: rec.actionsDone, actionError: rec.actionError, typedChars: rec.typedChars, cpm: rec.cpm });
+      for (const r of rec.ranks || []) await saveRank(r);
+      send("visit", { ranks: rec.ranks || [], n: rec.n, ms: rec.ms, error: rec.error, summary: rec.summary, proxy: rec.proxy, actions: rec.actions, actionsDone: rec.actionsDone, actionError: rec.actionError, typedChars: rec.typedChars, cpm: rec.cpm });
       if (i < cfg.visits && !ctrl.signal.aborted) { const w = rand(cfg.delayMin, cfg.delayMax) * 1000; log(`przerwa ${(w / 1000).toFixed(1)} s`);
         const end = Date.now() + w; while (Date.now() < end && !ctrl.signal.aborted) await sleep(200); }
     }
@@ -61,6 +81,7 @@ async function startRun(cfg){
 
 // scenariusz z panelu: tylko znane akcje, pola przycięte do sensownych zakresów
 const num = (v, lo, hi, d) => { v = +v; return Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d; };
+const RANK_RESULTS = "#search a:has(h3)", RANK_NEXT = "#pnnext";   // domyślnie: wyniki i „Dalej” w Google
 const target = t => t === "browser" ? "browser" : "page";
 // miejsce dla myszy: element (selektor), punkt (% okna) albo – gdzie wolno – losowo
 // … albo obraz: wzorce z folderu obrazy/ szukane na zrzucie strony
@@ -92,7 +113,9 @@ function cleanScenario(list){
     case "scroll": return { type: "scroll", dir: a.dir === "up" ? "up" : "down", px: Math.round(num(a.px, 50, 20000, 600)), over: a.over === "el" ? "el" : "page", selector: String(a.selector || "").trim().slice(0, 500), target: target(a.target) };
     case "wait": { const min = num(a.min, 0, 600, 1); return { type: "wait", min, max: num(a.max, min, 600, min) }; }
     case "noise": return { type: "noise" };
-  } }).filter(a => a && !(a.type === "type" && !a.text) && !(a.type === "keys" && !a.combo) && !noEl(a) && !noEl(a.from || {}) && !noEl(a.to || {}) && !(a.type === "scroll" && a.over === "el" && !a.selector));
+    case "rank": { const d = String(a.domain || "").trim().toLowerCase().replace(/^[a-z]+:\/\//, "").replace(/^www\./, "").replace(/[/?#].*$/, "").slice(0, 100);
+      return { type: "rank", domain: d, maxPages: Math.round(num(a.maxPages, 1, 20, 10)), results: String(a.results || "").trim().slice(0, 300) || RANK_RESULTS, next: String(a.next || "").trim().slice(0, 300) || RANK_NEXT }; }
+  } }).filter(a => a && !(a.type === "type" && !a.text) && !(a.type === "keys" && !a.combo) && !(a.type === "rank" && !a.domain) && !noEl(a) && !noEl(a.from || {}) && !noEl(a.to || {}) && !(a.type === "scroll" && a.over === "el" && !a.selector));
 }
 
 const body = req => new Promise((res, rej) => { let b = ""; req.on("data", c => { b += c; if (b.length > 8e6) req.destroy(); }); req.on("end", () => { try { res(JSON.parse(b || "{}")); } catch (e) { rej(e); } }); });
@@ -170,6 +193,7 @@ const server = http.createServer(async (req, res) => {
       } catch (e) { return json(res, 500, { error: String(e.message || e).split("\n")[0] }); }
       finally { await br.close().catch(() => {}); }
     }
+    if (url.pathname === "/api/ranks") return json(res, 200, await loadRanks());
     if (url.pathname === "/api/info") return json(res, 200, { name: PKG.name, version: PKG.version });
     if (url.pathname === "/api/reports") { const f = existsSync(REP) ? (await readdir(REP)).filter(n => n.endsWith(".csv")).sort().reverse() : []; return json(res, 200, f); }
     // pliki: panel z public/, raporty z reports/

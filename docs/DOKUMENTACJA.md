@@ -1,6 +1,6 @@
 # Dokumentacja techniczna – Human Bot
 
-Wersja dokumentu odpowiada wersji programu **0.17.1**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
+Wersja dokumentu odpowiada wersji programu **0.18.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
 
 ## 1. Cel
 
@@ -34,6 +34,7 @@ przeglądarka użytkownika ──HTTP/SSE──▶ server.mjs (127.0.0.1:3777)
 | `bot/mouse.mjs` | akcje myszy scenariusza: miejsce (element, punkt, losowo, obraz), najechanie, kliknięcie, przeciąganie, zaznaczanie, przewijanie nad elementem |
 | `bot/osinput.mjs` | tryb „Przeglądarka”: sterownik prawdziwej klawiatury i myszy Windowsa (PowerShell + user32) |
 | `bot/surface.mjs` | powierzchnia dla myszy: okno strony albo ekran z przeliczeniem strona → ekran (zgranie kursora) |
+| `bot/rank.mjs` | akcja „Znajdź pozycję”: pozycja domeny w wynikach wyszukiwania, przechodzenie po stronach wyników, bez wchodzenia na wynik |
 | `bot/image.mjs` | szukanie wzorca z `obrazy/` na zrzucie strony: dekoder PNG, porównanie (szarość, kolory, krawędzie), różne skale |
 | `public/` | panel: `index.html` (Start/Stop na górze, profile – `getState`/`setState`, Zapisz, Reset do stanu z chwili otwarcia panelu, przełącznik dzień/noc, zakładki Plan, Ustawienia, Statystyki i Biblioteka, podpowiedzi `title` i znaczki [?] z `data-tip`), `app.js` (edytor scenariusza: dodawanie, kolejność ↑↓ i przeciąganie, powielanie, nagrywanie kombinacji klawiszy, walidacja przed startem, oznaczanie konfliktów z „Bez okna” (`updateConflicts`), motyw w `localStorage` pod kluczem `humanbot-theme`, tryb podglądu poza 127.0.0.1/localhost – bez `/api`, Start nieaktywny), `style.css` (motyw: `:root[data-theme=dark]` albo `prefers-color-scheme`; styl „kolorowych opcji” w całym panelu – tło i pasek z lewej w kolorze grupy (`--opt`: `dep-a`, `dep-b`, niezależne `dep-0`), ten sam pasek przy wierszach akcji i w Bibliotece; ikonki SVG w przyciskach i zakładkach; konflikty `.conflict`) |
 | `tools/check-version.mjs` | sprawdza zgodność numeru wersji we wszystkich plikach (`npm test`) |
@@ -48,6 +49,7 @@ przeglądarka użytkownika ──HTTP/SSE──▶ server.mjs (127.0.0.1:3777)
 | Metoda i ścieżka | Opis |
 |---|---|
 | `GET /` , `/app.js`, `/style.css` | panel |
+| `GET /api/ranks` | historia sprawdzeń pozycji z `reports/pozycje.csv` (ostatnie 1000): `data`, `fraza`, `domena`, `pozycja`, `strona`, `tytul`, `adres`, `stron_sprawdzonych`; nowe sprawdzenia idą też zdarzeniem SSE `rank` |
 | `GET /api/info` | `{ name, version }` z `package.json` |
 | `GET /api/events` | strumień SSE: `state` (`running`, `total`, `file`), `log` (linia dziennika), `visit` (wynik wejścia) |
 | `POST /api/start` | uruchamia serię; treść JSON jak niżej; `409`, gdy seria już trwa; `400` przy złym adresie |
@@ -81,7 +83,8 @@ Treść żądania `POST /api/start`:
     { "type": "keys", "combo": "Control+F", "times": 1, "target": "browser" },
     { "type": "scroll", "dir": "down", "px": 600, "over": "page", "selector": "", "target": "page" },
     { "type": "wait", "min": 1, "max": 3 },
-    { "type": "noise" } ],
+    { "type": "noise" },
+    { "type": "rank", "domain": "ipscanner.pl", "maxPages": 10, "results": "#search a:has(h3)", "next": "#pnnext" } ],
   "useChrome": true, "headless": false,
   "proxies": "http://user:pass@host:port\nsocks5://host:port" }
 ```
@@ -148,6 +151,7 @@ Do tego Playwright ustawia sam: `userAgent`, `locale`, `timezoneId`, `viewport`,
    - `keys`: `keyboard.press(combo)` × `times` (odstęp 120–380 ms, przytrzymanie 50–130 ms), potem czekanie na `load` (do 10 s);
    - `click`: czeka do 10 s na widoczny element, `clickEl`, potem `load`;
    - `scroll`: `scroll(±px)`; `wait`: `idle(losowo min–max)`;
+   - `rank` („Znajdź pozycję”, `bot/rank.mjs`): fraza z parametru `q` (albo `query`) adresu strony; czeka do 15 s na `results`; zbiera adresy wyników w kolejności (bez powtórek; przekierowania `/url?q=` rozwijane), szuka hosta równego domenie albo jej subdomeny; „czytanie” 1,2–3 s; gdy nie ma – przewija do dołu porcjami 400–800 px i klika `next` (`clickEl`), czeka na `load`; do `maxPages` stron. Pozycja = wyniki z poprzednich stron + numer na bieżącej. CAPTCHA (`/sorry/`, `recaptcha`, `#captcha-form`) – błąd akcji, bez obchodzenia. Wynik w `rec.ranks[]` → serwer dopisuje wiersz do `reports/pozycje.csv` i wysyła SSE `rank`; domena czyszczona z protokołu, `www.` i ścieżki;
    - `noise` („Szum”): 3–6 rund: `idle` 1,2–3,5 s; z prawdopodobieństwem 35% najechanie myszą (`moveTo`, bez kliknięcia) na losowy widoczny w oknie `a`, `h1`–`h3` lub `button` i pauza 0,3–0,9 s; potem `scroll` w dół o 250–800 px (15% – w górę o 150–500 px);
    - `target: "browser"` (tylko Windows): przy pierwszej takiej akcji start sterownika `bot/osinput.mjs` – jeden proces PowerShell (`-File` z pliku w katalogu tymczasowym), który przez `Add-Type` woła `SetCursorPos`, `mouse_event` (przyciski, kółko 120 = ok. 100 px), `keybd_event` (klawisze; rozszerzone: strzałki, Home/End, PgUp/PgDn, Delete, Insert, Win), `SendInput` z `KEYEVENTF_UNICODE` (znaki, też polskie), `SetForegroundWindow` z `AttachThreadInput`, `GetWindowRect`, `Graphics.CopyFromScreen`; proces jest DPI-aware (piksele fizyczne), `timeBeginPeriod(1)`; polecenia linia po linii, odpowiedź `OK …` / `ERR …`; na końcu `REL` puszcza przyciski i modyfikatory;
    - powierzchnia (`bot/surface.mjs`): `page.bringToFront()`, okno na wierzchu (`GetForegroundWindow`, klasa `Chrome_WidgetWin*`); **zgranie** – kursor ludzkim ruchem w dwa punkty okna, położenie w stronie odczytane z ostatniego `mousemove` (jednorazowy nasłuch bez zmiennych w stronie) → przeliczenie strona → ekran (skala i przesunięcie; uwzględnia skalowanie Windowsa i wylosowane DPR); powtarzane, gdy okno się przesunie; przed każdą akcją okno wraca na wierzch;

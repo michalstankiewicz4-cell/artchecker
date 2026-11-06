@@ -7,6 +7,7 @@ import { sleep, rand, moveTo, clickEl, scroll, idle, typeText } from "./human.mj
 import { MOUSE_ACTIONS, Skip } from "./mouse.mjs";
 import { pageSurface, browserSurface } from "./surface.mjs";
 import { OsInput } from "./osinput.mjs";
+import { findRank } from "./rank.mjs";
 
 class Stopped extends Error {}
 const check = signal => { if (signal?.aborted) throw new Stopped("zatrzymano"); };
@@ -67,7 +68,8 @@ const ACTIONS = {
     await page.waitForLoadState("load", { timeout: 10000 }).catch(() => {});
     return `naciśnięto ${showCombo(a.combo)}${a.times > 1 ? ` ×${a.times}` : ""}`;
   },
-  ...MOUSE_ACTIONS,   // najechanie, kliknięcie, przeciąganie, zaznaczanie, przewijanie (bot/mouse.mjs)
+  ...MOUSE_ACTIONS,
+  rank: (page, a, ctx) => findRank(page, a, ctx),   // pozycja domeny w wynikach wyszukiwania (bot/rank.mjs)   // najechanie, kliknięcie, przeciąganie, zaznaczanie, przewijanie (bot/mouse.mjs)
   async wait(page, a){ const ms = rand(a.min, Math.max(a.min, a.max)) * 1000; await idle(page, ms); return `czekanie ${(ms / 1000).toFixed(1)} s`; },
   // szum: kilka rund „przeczytaj – przewiń”, czasem powrót wyżej i najechanie myszą na link lub nagłówek
   async noise(page, a, ctx){
@@ -86,7 +88,7 @@ const ACTIONS = {
     return `szum: ${rounds} ${plural(rounds, "runda", "rundy", "rund")} czytania i przewijania, najechania myszą: ${hovers}`;
   },
 };
-const ANAME = { type: "Pisz tekst", keys: "Naciśnij klawisze", hover: "Najedź myszą", click: "Kliknij", drag: "Przeciągnij", select: "Zaznacz tekst", scroll: "Przewiń", wait: "Czekaj", noise: "Szum" };
+const ANAME = { type: "Pisz tekst", keys: "Naciśnij klawisze", hover: "Najedź myszą", click: "Kliknij", drag: "Przeciągnij", select: "Zaznacz tekst", scroll: "Przewiń", wait: "Czekaj", noise: "Szum", rank: "Znajdź pozycję" };
 
 
 // wynik: rekord do raportu

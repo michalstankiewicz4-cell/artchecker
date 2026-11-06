@@ -2,7 +2,7 @@
 
 Bot z panelem w przeglądarce. Wchodzi na wskazaną stronę i wykonuje **scenariusz akcji** jak człowiek – pisanie tekstu z nierównymi odstępami między klawiszami, naciskanie klawiszy i skrótów, kliknięcia, przewijanie, czekanie – rusza myszą po krzywych z przyspieszaniem i drżeniem, a przy **każdym wejściu ma inny odcisk przeglądarki**. Działa na dowolnej stronie. Przebieg każdego wejścia trafia do raportu.
 
-Wersja **0.17.1** · autor: Michał Stankiewicz · repozytorium: <https://github.com/michalstankiewicz4-cell/webbot>. Działa tylko lokalnie na Twoim komputerze (panel na 127.0.0.1). Podgląd samego panelu (bez bota): <https://michalstankiewicz4-cell.github.io/webbot/>.
+Wersja **0.18.0** · autor: Michał Stankiewicz · repozytorium: <https://github.com/michalstankiewicz4-cell/webbot>. Działa tylko lokalnie na Twoim komputerze (panel na 127.0.0.1). Podgląd samego panelu (bez bota): <https://michalstankiewicz4-cell.github.io/webbot/>.
 
 Dokumenty: [instrukcja obsługi](docs/INSTRUKCJA.md) · [dokumentacja techniczna](docs/DOKUMENTACJA.md) · [historia zmian](CHANGELOG.md)
 
@@ -41,7 +41,7 @@ Kod: `bot/profiles.mjs` (losowanie spójnych profili) i `bot/spoof.mjs` (skrypt 
 
 ## Panel
 
-Start/Stop na górze, obok nich lista **profili** (zapisanych zestawów ustawień), po prawej **Zapisz** (pyta o nazwę) i **Reset** (ustawienia domyślne); obok nazwy przełącznik dzień/noc; pod nimi cztery zakładki: **Plan** (liczba wejść, przerwy, adres, **scenariusz** – lista akcji dodawanych przyciskiem „+ Dodaj akcję”, z kolejnością ↑↓ / przeciąganiem, powielaniem i usuwaniem), **Ustawienia** (co zmieniać przy każdym wejściu – opcje zależne od siebie w tym samym kolorze, przeglądarka, proxy), **Statystyki** (tabela wejść i dziennik) i **Biblioteka** (obrazy z folderu `obrazy/` i nazwane elementy z `elementy.json`: dodawanie, zmiana nazwy, usuwanie, podgląd, gdzie użyte, „Sprawdź na stronie”). Ustawienia, które nie pasują do „Bez okna przeglądarki”, są oznaczone na żółto znakiem ⚠. Akcje: Pisz tekst, Naciśnij klawisze (nagrywanie kombinacji albo lista), Najedź myszą, Kliknij (przycisk, podwójne, ×N), Przeciągnij, Zaznacz tekst, Przewiń (całą stronę albo nad elementem), Czekaj, Szum; miejsce dla myszy: element (selektor), punkt (% okna), obraz (wycinek ze zrzutu strony lub wklejony, zapisany w folderze `obrazy/`; próg, czas szukania, co gdy brak, sposób porównywania, różne skale, kilka wzorców) albo losowo. Przy pisaniu, klawiszach i myszy wybór „dokąd”: Strona albo Przeglądarka (prawdziwa klawiatura i kursor Windowsa – działają skróty przeglądarki i jej przyciski; tylko Windows, z widocznym oknem) – przełącznik z ikonkami przy prawej krawędzi wiersza, obok ↑↓. Przy każdym polu jest podpowiedź po najechaniu myszą i znaczek [?] z opisem.
+Start/Stop na górze, obok nich lista **profili** (zapisanych zestawów ustawień), po prawej **Zapisz** (pyta o nazwę) i **Reset** (ustawienia domyślne); obok nazwy przełącznik dzień/noc; pod nimi cztery zakładki: **Plan** (liczba wejść, przerwy, adres, **scenariusz** – lista akcji dodawanych przyciskiem „+ Dodaj akcję”, z kolejnością ↑↓ / przeciąganiem, powielaniem i usuwaniem), **Ustawienia** (co zmieniać przy każdym wejściu – opcje zależne od siebie w tym samym kolorze, przeglądarka, proxy), **Statystyki** (tabela wejść, dziennik i pozycje w wynikach) i **Biblioteka** (obrazy z folderu `obrazy/` i nazwane elementy z `elementy.json`: dodawanie, zmiana nazwy, usuwanie, podgląd, gdzie użyte, „Sprawdź na stronie”). Ustawienia, które nie pasują do „Bez okna przeglądarki”, są oznaczone na żółto znakiem ⚠. Akcje: Pisz tekst, Naciśnij klawisze (nagrywanie kombinacji albo lista), Najedź myszą, Kliknij (przycisk, podwójne, ×N), Przeciągnij, Zaznacz tekst, Przewiń (całą stronę albo nad elementem), Czekaj, Szum, Znajdź pozycję (pozycja domeny w wynikach wyszukiwania, bez wchodzenia na nią – historia w Statystykach i `reports/pozycje.csv`); miejsce dla myszy: element (selektor), punkt (% okna), obraz (wycinek ze zrzutu strony lub wklejony, zapisany w folderze `obrazy/`; próg, czas szukania, co gdy brak, sposób porównywania, różne skale, kilka wzorców) albo losowo. Przy pisaniu, klawiszach i myszy wybór „dokąd”: Strona albo Przeglądarka (prawdziwa klawiatura i kursor Windowsa – działają skróty przeglądarki i jej przyciski; tylko Windows, z widocznym oknem) – przełącznik z ikonkami przy prawej krawędzi wiersza, obok ↑↓. Przy każdym polu jest podpowiedź po najechaniu myszą i znaczek [?] z opisem.
 
 ## Zachowanie na stronie
 
@@ -79,6 +79,7 @@ bot/spoof.mjs      skrypt zmieniający cechy w przeglądarce
 bot/human.mjs      ludzki ruch myszy, kliknięcia, przewijanie
 bot/mouse.mjs      akcje myszy scenariusza (najechanie, kliknięcie, przeciąganie, zaznaczanie)
 bot/image.mjs      szukanie obrazu (wzorca) na zrzucie strony
+bot/rank.mjs       akcja „Znajdź pozycję” – pozycja domeny w wynikach wyszukiwania
 bot/osinput.mjs    tryb „Przeglądarka”: prawdziwa klawiatura i mysz Windowsa
 bot/surface.mjs    przeliczanie punktów strony na ekran (zgranie kursora)
 bot/visit.mjs      przebieg jednego wejścia i odczyt wyników

@@ -2,6 +2,14 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.18.0] – 2026-11-06
+
+### Dodane
+- Akcja **„Znajdź pozycję”** (`bot/rank.mjs`): po wyszukaniu frazy czyta wyniki, przewija i przechodzi na kolejne strony wyników, aż znajdzie domenę – **bez wchodzenia na nią**. Selektory wyników i „następnej strony” (domyślnie Google) można zmienić dla innej wyszukiwarki. CAPTCHA przerywa sprawdzanie (bot jej nie obchodzi).
+- Trzeci panel w Statystykach **„Pozycje w wynikach”**: ostatnia / najlepsza / średnia pozycja, liczba sprawdzeń, mały wykres i historia ostatnich 50 sprawdzeń; zapis w `reports/pozycje.csv`, API `GET /api/ranks`, zdarzenie SSE `rank`.
+- Pozycje w tabeli „Wejścia” i w raporcie JSON (`ranks`).
+- Gotowy profil **„Pozycja ipscanner w Google”**: fraza „osint”, domena ipscanner.pl, do 10 stron, język i strefa czasowa bez losowania.
+
 ## [0.17.1] – 2026-11-06
 
 ### Zmienione

@@ -9,7 +9,7 @@
 <body>
 <header>
   <div class="head-row">
-    <h1>Human Bot <span id="ver" class="ver" title="Wersja programu">v0.17.1</span></h1>
+    <h1>Human Bot <span id="ver" class="ver" title="Wersja programu">v0.18.0</span></h1>
     <button type="button" id="theme" class="theme-btn" title="Przełącz motyw: dzień / noc" aria-label="Przełącz motyw dzień / noc"></button>
   </div>
   <p class="lead">Wchodzi na wskazaną stronę, wykonuje scenariusz jak człowiek – pisze, naciska klawisze, klika, przewija – i przy każdym wejściu ma inny odcisk przeglądarki. Działa tylko na tym komputerze. Najedź na pole albo kliknij <span class="help demo">?</span>, żeby zobaczyć opis.</p>
@@ -71,6 +71,7 @@
           <button type="button" role="menuitem" data-add="select" title="Zaznacz słowo, akapit albo fragment tekstu – jak człowiek podczas czytania.">Zaznacz tekst</button>
           <button type="button" role="menuitem" data-add="scroll" title="Przewiń kółkiem myszy całą stronę albo przewijany element w niej.">Przewiń</button>
           <button type="button" role="menuitem" data-add="wait" title="Odczekaj losowy czas z podanego przedziału.">Czekaj</button>
+          <button type="button" role="menuitem" data-add="rank" title="Po wyszukaniu frazy: znajdź pozycję domeny w wynikach, przeglądając kolejne strony – bez wchodzenia na nią.">Znajdź pozycję</button>
           <button type="button" role="menuitem" data-add="noise" title="Szum: przez kilkanaście sekund zachowuj się jak czytający człowiek – czytanie, przewijanie, ruchy myszy.">Szum</button>
         </div>
       </div>
@@ -139,6 +140,18 @@ socks5://host:port"></textarea>
   <section>
     <h2>Dziennik <span class="help" tabindex="0" data-tip="Wszystko, co bot robi, na bieżąco: profil, wpisany tekst, odwiedzone zakładki, wyniki, przerwy i błędy. To samo widać w czarnym oknie konsoli.">?</span></h2>
     <pre id="log"></pre>
+  </section>
+
+  <section>
+    <h2>Pozycje w wynikach <span class="help" tabindex="0" data-tip="Wyniki akcji „Znajdź pozycję”: na której pozycji była domena dla danej frazy (bez wchodzenia na nią). Historia jest w pliku reports/pozycje.csv – zostaje między uruchomieniami. „Najlepsza” i „średnia” liczą tylko sprawdzenia, w których domena się znalazła; wykres – ostatnie 30 sprawdzeń, wyżej = lepiej, czerwona kropka = brak w przejrzanych wynikach.">?</span></h2>
+    <p id="ranks-empty" class="hint">Brak sprawdzeń – dodaj do scenariusza akcję „Znajdź pozycję” po wyszukaniu frazy.</p>
+    <div id="ranks-wrap" hidden>
+      <div class="tablewrap"><table id="ranks-sum">
+        <thead><tr><th>Fraza</th><th>Domena</th><th>Ostatnia</th><th>Najlepsza</th><th>Średnia</th><th>Sprawdzeń</th><th>Przebieg</th></tr></thead><tbody></tbody></table></div>
+      <h3 class="sub-h">Historia (ostatnie 50)</h3>
+      <div class="tablewrap"><table id="ranks-t">
+        <thead><tr><th>Kiedy</th><th>Fraza</th><th>Domena</th><th>Pozycja</th><th>Wynik</th></tr></thead><tbody></tbody></table></div>
+    </div>
   </section>
   </div>
 
