@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Human Bot
 
-Wersja instrukcji odpowiada wersji programu **0.11.0**.
+Wersja instrukcji odpowiada wersji programu **0.11.1**.
 
 ## 1. Co jest potrzebne
 

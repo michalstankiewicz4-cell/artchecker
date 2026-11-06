@@ -2,6 +2,11 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.11.1] – 2026-11-06
+
+### Zmienione
+- Folder `obrazy/` (wzorce do szukania) trafia do repozytorium – usunięty z `.gitignore`.
+
 ## [0.11.0] – 2026-11-06
 
 ### Dodane
