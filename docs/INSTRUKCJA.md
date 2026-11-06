@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Bot odcisku
 
-Wersja instrukcji odpowiada wersji programu **0.7.0**.
+Wersja instrukcji odpowiada wersji programu **0.8.0**.
 
 ## 1. Co jest potrzebne
 
@@ -37,7 +37,7 @@ Na górze są przyciski **Start** i **Stop** – widoczne zawsze, niezależnie o
 #### Wejścia i cel
 - **Liczba wejść:** od 1 do 500. Jedno wejście trwa od kilkunastu sekund do kilku minut – zależnie od scenariusza.
 - **Przerwa od–do:** losowa pauza między wejściami, w sekundach.
-- **Adres strony:** pełny adres z `https://`.
+- **Adres strony:** pełny adres z `https://`, np. `https://przyklad.pl/`. Pole jest na starcie puste – wpisz stronę, na którą ma wchodzić bot.
 
 #### Scenariusz
 Lista akcji, które bot wykonuje **po kolei, od góry**, przy każdym wejściu zaraz po wczytaniu strony.
@@ -63,7 +63,7 @@ Lista akcji, które bot wykonuje **po kolei, od góry**, przy każdym wejściu z
 - *Strona* – klawisze trafiają tylko do treści strony. Działa też bez okna i w tle, ale skróty przeglądarki (Ctrl+F, Ctrl+T, Alt+←, F5…) nic nie otworzą – strona zobaczy tylko samo naciśnięcie.
 - *Przeglądarka* – klawisze idą do okna przeglądarki bota jak z prawdziwej klawiatury, więc działają też skróty przeglądarki (np. Ctrl+F otwiera okienko szukania). Wymaga widocznego okna (nie „Bez okna”), a w tym czasie nie można używać klawiatury ani myszy. **W wersji 0.6.0 ten tryb jest tylko w panelu – bot pomija takie akcje z informacją w dzienniku.**
 
-Błąd jednej akcji (np. brak elementu) nie przerywa wejścia: trafia do dziennika i tabeli, a bot idzie do następnej akcji. Na stronie „Cyfrowy odcisk człowieka” na końcu każdego wejścia bot zawsze odczytuje odcisk przeglądarki.
+Błąd jednej akcji (np. brak elementu) nie przerywa wejścia: trafia do dziennika i tabeli, a bot idzie do następnej akcji.
 
 ### Zakładka „Ustawienia”
 
@@ -82,7 +82,6 @@ Zaznaczone grupy są losowane od nowa przy każdym wejściu. Odznaczona grupa zo
 | Ukrywanie części czcionek | strona widzi mniej czcionek |
 | Motyw, animacje, „nie śledź” | jasny lub ciemny motyw i inne preferencje |
 
-Aby sprawdzić, która cecha najbardziej zmienia odcisk, odznacz wszystkie poza jedną i zrób kilka wejść.
 
 #### Przeglądarka
 - **Użyj zainstalowanego Chrome'a:** zalecane. Odznacz, jeśli Chrome sprawia kłopoty (wtedy potrzebne jest Chromium z `pobierz-chromium.bat`).
@@ -103,13 +102,8 @@ Aby sprawdzić, która cecha najbardziej zmienia odcisk, odznacz wszystkie poza 
 
 **Tabela „Wejścia”**, jeden wiersz na wejście:
 - **Profil:** wylosowane ustawienia, czyli system, język, strefa czasowa, ekran, sprzęt, karta graficzna, motyw i liczba ukrytych czcionek.
-- **Scenariusz:** ile akcji się udało (np. 5/6), ile znaków wpisano i w jakim tempie; na czerwono – pierwszy błąd akcji.
-- **Odcisk ze strony** (tylko „Cyfrowy odcisk”): skrót, który policzyła strona.
-  - **nowy:** strona w tej serii jeszcze takiego odcisku nie widziała.
-  - **powtórzony:** taki odcisk już był.
+- **Scenariusz:** ile akcji się udało (np. 5/6), ile znaków wpisano i w jakim tempie; na czerwono – pierwszy błąd akcji albo błąd całego wejścia (np. strona się nie wczytała).
 - **Czas:** jak długo trwało wejście.
-
-Pod tabelą jest podsumowanie „Różnych odcisków: X z Y”.
 
 **Dziennik** pokazuje na bieżąco każdy krok: profil, każdą akcję scenariusza (np. wpisany tekst z tempem, naciśnięte klawisze), wynik, przerwy i błędy.
 
@@ -136,7 +130,6 @@ Oba pliki są uzupełniane po każdym wejściu, więc przerwanie serii nie kasuj
 | Tekst trafia w złe miejsce | Przed „Pisz tekst” dodaj „Kliknij w element” z selektorem pola. |
 | Ctrl+F (lub inny skrót przeglądarki) nic nie otwiera | W trybie „Strona” to normalne. Tryb „Przeglądarka” zostanie podłączony w kolejnej wersji. |
 | „tryb »Przeglądarka« nie jest jeszcze podłączony” w dzienniku | Jak wyżej – zmień akcję na „Strona” albo poczekaj na kolejną wersję. |
-| Odcisk się powtarza | Sprawdź, czy zaznaczone są „Szum na płótnie” i „Karta graficzna”. Bez nich odcisk zmienia się rzadziej. |
 
 ## 7. Aktualizacja
 

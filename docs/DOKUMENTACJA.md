@@ -1,10 +1,10 @@
 # Dokumentacja techniczna – Bot odcisku
 
-Wersja dokumentu odpowiada wersji programu **0.7.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
+Wersja dokumentu odpowiada wersji programu **0.8.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
 
 ## 1. Cel
 
-Lokalny program, który wchodzi na wskazaną stronę i wykonuje scenariusz akcji jak człowiek – pisze z ludzkim rytmem, naciska klawisze, klika, przewija – i przy każdym wejściu ma inny profil przeglądarki. Na stronie „Cyfrowy odcisk człowieka” (repo `behavioral-biometrics`) dodatkowo odczytuje odcisk policzony przez stronę, co pozwala sprawdzić, jak łatwo podmienić odcisk przeglądarki i ruch myszy. Działa wyłącznie na komputerze użytkownika i nie ma żadnego serwera w internecie.
+Lokalny program, który wchodzi na wskazaną stronę i wykonuje scenariusz akcji jak człowiek – pisze z ludzkim rytmem, naciska klawisze, klika, przewija, czeka – i przy każdym wejściu ma inny, losowy profil przeglądarki (odcisk). Działa wyłącznie na komputerze użytkownika i nie ma żadnego serwera w internecie.
 
 ## 2. Architektura
 
@@ -131,12 +131,9 @@ Do tego Playwright ustawia sam: `userAgent`, `locale`, `timezoneId`, `viewport`,
    - `human` („Ludzkie zachowanie”): 3–6 rund: `idle` 1,2–3,5 s; z prawdopodobieństwem 35% najechanie myszą (`moveTo`, bez kliknięcia) na losowy widoczny w oknie `a`, `h1`–`h3` lub `button` i pauza 0,3–0,9 s; potem `scroll` w dół o 250–800 px (15% – w górę o 150–500 px);
    - `target: "browser"` – **jeszcze niepodłączone**: akcja pomijana z wpisem w dzienniku;
    - błąd akcji: pierwszy trafia do `actionError`, każdy do dziennika; wejście idzie dalej. `actionsDone` liczy udane akcje.
-5. Jeśli to strona „Cyfrowy odcisk człowieka” (widoczny `#tabs a[data-tab]`) – odczyt odcisku; inaczej koniec wejścia (rekord bez odcisku).
-6. Zakładka `odcisk`, przycisk `#fp-go`.
-7. Odczyt wyniku przez `import()` modułu strony `js/tests/browser-fingerprint.js` (ta sama instancja co w aplikacji): `FP.R` (`hash`, `features`).
-8. Zamknięcie przeglądarki. Każdy błąd trafia do pola `error` i nie przerywa serii.
+5. Zamknięcie przeglądarki. Każdy błąd trafia do pola `error` i nie przerywa serii.
 
-**Zależność od strony „Cyfrowy odcisk człowieka”** (tylko odczyt odcisku): selektory `#tabs a[data-tab]` i `#fp-go`, zakładka `odcisk` oraz ścieżka modułu `js/tests/browser-fingerprint.js`. Zmiana któregoś z nich na tamtej stronie wymaga zmiany tutaj. Akcje scenariusza nie zależą od żadnej konkretnej strony.
+**Niezależność od strony:** bot nie zakłada niczego o stronie docelowej – akcje scenariusza działają na dowolnej stronie (pola tekstowe wykrywa po typie elementu, elementy do kliknięcia wskazuje użytkownik selektorem).
 
 ## 8. Raporty
 
@@ -152,12 +149,16 @@ Pliki `reports/wejscia-RRRR-MM-DD-GG-MM-SS.{csv,json}` (czas UTC) są zapisywane
 | `summary` | krótki opis profilu |
 | `actions`, `actionsDone`, `actionError` | liczba akcji w scenariuszu, ile się udało, pierwszy błąd akcji |
 | `typedChars`, `typingMs`, `cpm` | wpisane znaki (suma ze wszystkich akcji „Pisz tekst”), czas pisania (ms), tempo (znaki/min) |
-| `hash` | odcisk policzony przez stronę |
-| `ua`, `platform`, `lang`, `tz`, `screen`, `cpu`, `mem`, `webgl`, `canvas`, `fonts` | cechy **tak, jak odczytała je strona** |
+| `os`, `userAgent`, `languages`, `timezone` | wylosowany system, User-Agent, języki, strefa czasowa |
+| `screen`, `scale`, `viewport` | rozdzielczość ekranu, skalowanie, rozmiar okna |
+| `cores`, `memoryGB`, `webgl` | rdzenie, pamięć, karta graficzna (WebGL) |
+| `canvasSeed`, `hiddenFonts`, `colorScheme` | ziarno szumu canvas, ukryte czcionki, motyw |
+
+Kolumny cech są puste, gdy dana grupa była odznaczona w „Co zmieniać przy każdym wejściu” (przeglądarka miała wtedy swoje prawdziwe wartości).
 
 **JSON**: `{ config, records }`.
 - `config` zawiera ustawienia serii i `version` programu.
-- Każdy rekord ma dodatkowo: pełny `profile`, `browser` (wersję), komplet `features` oraz `newHash`.
+- Każdy rekord ma dodatkowo pełny `profile` (z ziarnem `seed`) i `browser` (wersję przeglądarki).
 
 ## 9. Wersjonowanie
 
@@ -174,7 +175,7 @@ Pliki `reports/wejscia-RRRR-MM-DD-GG-MM-SS.{csv,json}` (czas UTC) są zapisywane
 ## 10. Testowanie
 
 - `npm test`: zgodność wersji.
-- Próba ręczna: `start.bat`, w panelu 2 wejścia na „Cyfrowy odcisk człowieka” z domyślnym scenariuszem i zaznaczonymi wszystkimi cechami. Oczekiwane: dwa różne odciski oznaczone „nowy”, w dzienniku opis akcji „Ludzkie zachowanie” i raport w `reports/`.
+- Próba ręczna: `start.bat`, w panelu adres dowolnej strony z wyszukiwarką, scenariusz „Kliknij w element” (pole szukania) → „Pisz tekst” → „Naciśnij klawisze: Enter”, 2 wejścia. Oczekiwane: w dzienniku opis każdej akcji, w tabeli 3/3 akcji i tempo pisania, dwa różne profile i raport w `reports/`.
 - Próba bez Chrome'a: odznaczone „Użyj zainstalowanego Chrome'a” i zaznaczone „Bez okna”.
 
 ## 11. Wydania (Releases) i wersja przenośna

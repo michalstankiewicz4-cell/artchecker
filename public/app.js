@@ -2,7 +2,7 @@
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const h = html => { const t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild; };
-let total = 0, hashes = [], running = false;
+let total = 0, running = false;
 fetch("/api/info").then(r => r.json()).then(i => { $("ver").textContent = "v" + i.version; document.title += " v" + i.version; }).catch(() => {});
 
 // =====================================================================
@@ -151,7 +151,7 @@ $("cfg").addEventListener("submit", async e => {
   const spoof = {}; document.querySelectorAll("[data-spoof]").forEach(c => spoof[c.dataset.spoof] = c.checked);
   const body = { url: $("url").value.trim(), visits: +$("visits").value, delayMin: +$("delayMin").value, delayMax: +$("delayMax").value,
     spoof, scenario, useChrome: $("useChrome").checked, headless: $("headless").checked, proxies: $("proxies").value };
-  $("visits-t").tBodies[0].innerHTML = ""; $("log").textContent = ""; $("uniq").textContent = ""; $("report").textContent = ""; hashes = [];
+  $("visits-t").tBodies[0].innerHTML = ""; $("log").textContent = ""; $("report").textContent = "";
   const r = await fetch("/api/start", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }).catch(() => null);
   if (!r) { $("status").textContent = "brak połączenia z serwerem – uruchom start.bat"; return; }
   if (!r.ok) { const j = await r.json().catch(() => ({})); $("status").textContent = j.error || "błąd"; }
@@ -164,14 +164,11 @@ es.addEventListener("state", e => { const s = JSON.parse(e.data); setRunning(s.r
   if (s.file) $("report").innerHTML = `Raport: <a href="/reports/${esc(s.file)}.csv">${esc(s.file)}.csv</a> · <a href="/reports/${esc(s.file)}.json">.json</a> (folder <code>reports</code>)`; });
 es.addEventListener("log", e => { const l = $("log"); l.textContent += JSON.parse(e.data) + "\n"; l.scrollTop = l.scrollHeight; });
 es.addEventListener("visit", e => { const v = JSON.parse(e.data);
-  if (v.hash) hashes.push(v.hash);
   const tr = document.createElement("tr"); if (v.error) tr.className = "err";
   tr.innerHTML = `<td>${v.n}${total ? `/${total}` : ""}</td><td>${esc(v.summary)}${v.proxy ? `<br><small>proxy ${esc(v.proxy)}</small>` : ""}</td>`
-    + `<td>${v.actions ? `${v.actionsDone}/${v.actions} akcji${v.typedChars ? `<br><small>${v.typedChars} zn., ${v.cpm} zn./min</small>` : ""}` : "—"}${v.actionError ? `<br><span class="bad">${esc(v.actionError)}</span>` : ""}</td>`
-    + `<td>${v.error ? `<span class="bad">${esc(v.error)}</span>` : v.hash ? `<code>${esc(v.hash)}</code> ${v.newHash ? '<span class="good">nowy</span>' : '<span class="bad">powtórzony</span>'}` : "—"}</td>`
+    + `<td>${v.actions ? `${v.actionsDone}/${v.actions} akcji${v.typedChars ? `<br><small>${v.typedChars} zn., ${v.cpm} zn./min</small>` : ""}` : "—"}${v.actionError ? `<br><span class="bad">${esc(v.actionError)}</span>` : ""}${v.error ? `<br><span class="bad">${esc(v.error)}</span>` : ""}</td>`
     + `<td>${(v.ms / 1000).toFixed(0)} s</td>`;
   $("visits-t").tBodies[0].appendChild(tr);
-  const u = new Set(hashes).size; $("uniq").textContent = `Różnych odcisków: ${u} z ${hashes.length} udanych wejść.`;
   $("status").textContent = `pracuje… ${v.n}${total ? ` z ${total}` : ""}`; });
 es.onerror = () => { if (!running) $("status").textContent = location.protocol === "file:" ? "podgląd bez serwera – Start nieaktywny" : "brak połączenia z serwerem – czy okno z botem jest otwarte?"; };
 

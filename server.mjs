@@ -21,8 +21,15 @@ const log = text => { const line = `${new Date().toLocaleTimeString("pl-PL")}  $
 
 const plural = (n, one, few, many) => n === 1 ? one : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? few : many;
 const csvCell = v => { const s = v == null ? "" : String(v); return /[",;\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
-const CSV_COLS = ["n", "start", "ms", "error", "proxy", "summary", "actions", "actionsDone", "actionError", "typedChars", "typingMs", "cpm", "hash", "ua", "platform", "lang", "tz", "screen", "cpu", "mem", "webgl", "canvas", "fonts"];
-const csvRow = r => CSV_COLS.map(k => csvCell(k in (r.features || {}) ? r.features[k] : r[k])).join(";");
+// kolumny raportu; cechy przeglądarki – z wylosowanego profilu (puste = grupa niezmieniana)
+const CSV_COLS = ["n", "start", "ms", "error", "proxy", "summary", "actions", "actionsDone", "actionError", "typedChars", "typingMs", "cpm",
+  "os", "userAgent", "languages", "timezone", "screen", "scale", "viewport", "cores", "memoryGB", "webgl", "canvasSeed", "hiddenFonts", "colorScheme"];
+const PROFILE_COLS = {
+  os: p => p.os, userAgent: p => p.userAgent, languages: p => p.languages && p.languages.join(", "), timezone: p => p.timezoneId,
+  screen: p => p.screen && `${p.screen.width}x${p.screen.height}`, scale: p => p.deviceScaleFactor, viewport: p => p.viewport && `${p.viewport.width}x${p.viewport.height}`,
+  cores: p => p.hardwareConcurrency, memoryGB: p => p.deviceMemory, webgl: p => p.webglRenderer, canvasSeed: p => p.canvasNoise ? p.seed : "",
+  hiddenFonts: p => p.hiddenFonts && p.hiddenFonts.join(", "), colorScheme: p => p.colorScheme };
+const csvRow = r => CSV_COLS.map(k => csvCell(k in PROFILE_COLS ? (r.profile ? PROFILE_COLS[k](r.profile) : "") : r[k])).join(";");
 
 async function startRun(cfg){
   await mkdir(REP, { recursive: true });
@@ -37,17 +44,15 @@ async function startRun(cfg){
     for (let i = 1; i <= cfg.visits && !ctrl.signal.aborted; i++) {
       const rec = await visit({ n: i, url: cfg.url, spoofOpts: cfg.spoof, proxy: proxies.length ? proxies[(i - 1) % proxies.length] : null,
         headless: cfg.headless, channel: cfg.useChrome ? "chrome" : undefined, scenario: cfg.scenario, log, signal: ctrl.signal });
-      const seen = run.records.filter(r => r.hash).map(r => r.hash);
-      rec.newHash = rec.hash ? !seen.includes(rec.hash) : null;
       run.records.push(rec);
       await appendFile(file + ".csv", csvRow(rec) + "\n");
       await writeFile(file + ".json", JSON.stringify({ config: run.config, records: run.records }, null, 2));
-      send("visit", { n: rec.n, ms: rec.ms, error: rec.error, summary: rec.summary, proxy: rec.proxy, actions: rec.actions, actionsDone: rec.actionsDone, actionError: rec.actionError, typedChars: rec.typedChars, cpm: rec.cpm, hash: rec.hash, newHash: rec.newHash });
+      send("visit", { n: rec.n, ms: rec.ms, error: rec.error, summary: rec.summary, proxy: rec.proxy, actions: rec.actions, actionsDone: rec.actionsDone, actionError: rec.actionError, typedChars: rec.typedChars, cpm: rec.cpm });
       if (i < cfg.visits && !ctrl.signal.aborted) { const w = rand(cfg.delayMin, cfg.delayMax) * 1000; log(`przerwa ${(w / 1000).toFixed(1)} s`);
         const end = Date.now() + w; while (Date.now() < end && !ctrl.signal.aborted) await sleep(200); }
     }
-    const ok = run.records.filter(r => !r.error), uniq = new Set(ok.filter(r => r.hash).map(r => r.hash)).size;
-    log(`Koniec: udane wejścia: ${ok.length}, różne odciski: ${uniq}. Raport: reports/${file.split(/[\\/]/).pop()}.csv i .json`);
+    const ok = run.records.filter(r => !r.error);
+    log(`Koniec: udane wejścia: ${ok.length} z ${run.records.length}. Raport: reports/${file.split(/[\\/]/).pop()}.csv i .json`);
     send("state", { running: false }); run.done = true;
   })().catch(e => { log("błąd: " + e.message); send("state", { running: false }); run.done = true; });
 }

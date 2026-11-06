@@ -1,8 +1,8 @@
 # Bot odcisku
 
-Bot z panelem w przeglądarce. Wchodzi na wskazaną stronę i wykonuje **scenariusz akcji** jak człowiek – pisanie tekstu z nierównymi odstępami między klawiszami, naciskanie klawiszy i skrótów, kliknięcia, przewijanie, czekanie – rusza myszą po krzywych z przyspieszaniem i drżeniem, a przy **każdym wejściu ma inny odcisk przeglądarki**. Na stronie [Cyfrowy odcisk człowieka](https://michalstankiewicz4-cell.github.io/behavioral-biometrics/) dodatkowo odczytuje odcisk przeglądarki policzony przez stronę. Wyniki trafiają do raportu.
+Bot z panelem w przeglądarce. Wchodzi na wskazaną stronę i wykonuje **scenariusz akcji** jak człowiek – pisanie tekstu z nierównymi odstępami między klawiszami, naciskanie klawiszy i skrótów, kliknięcia, przewijanie, czekanie – rusza myszą po krzywych z przyspieszaniem i drżeniem, a przy **każdym wejściu ma inny odcisk przeglądarki**. Działa na dowolnej stronie. Przebieg każdego wejścia trafia do raportu.
 
-Wersja **0.7.0** · autor: Michał Stankiewicz · repozytorium: <https://github.com/michalstankiewicz4-cell/webbot>. Działa tylko lokalnie na Twoim komputerze (panel na 127.0.0.1).
+Wersja **0.8.0** · autor: Michał Stankiewicz · repozytorium: <https://github.com/michalstankiewicz4-cell/webbot>. Działa tylko lokalnie na Twoim komputerze (panel na 127.0.0.1).
 
 Dokumenty: [instrukcja obsługi](docs/INSTRUKCJA.md) · [dokumentacja techniczna](docs/DOKUMENTACJA.md) · [historia zmian](CHANGELOG.md)
 
@@ -52,7 +52,6 @@ Start/Stop na górze, pod nimi dwie zakładki: **Plan** (liczba wejść, przerwy
 - scenariusz: akcje po kolei; błąd jednej akcji nie przerywa wejścia;
 - pisanie: znak po znaku, odstępy z rozkładu log-normalnego (mediana 150 ms), szybciej w częstych parach liter, dłużej po spacji, interpunkcji i przed wielką literą, czasem chwila namysłu, klawisz przytrzymany 50–130 ms; polskie znaki z keydown/keyup; tam, gdzie jest kursor (albo w pierwsze pole tekstowe); pole wskazujesz wcześniejszą akcją „Kliknij w element”;
 - „Ludzkie zachowanie”: 3–6 rund „czytania” (drobne ruchy myszy) i przewijania, czasem powrót wyżej i najechanie myszą na link, nagłówek albo przycisk – bez klikania; działa na każdej stronie;
-- na końcu zakładka „Odcisk przeglądarki”, przycisk „Pokaż mój odcisk”, odczyt wyniku z modułów strony.
 
 ## Proxy i VPN
 
@@ -60,11 +59,11 @@ Lista proxy w panelu, jedno na linię (`http://użytkownik:hasło@host:port`, `s
 
 ## Raporty
 
-Folder `reports/`: dla każdego uruchomienia `wejscia-RRRR-MM-DD-GG-MM-SS.csv` (średnik jako separator, otwiera się w Excelu) i `.json` (pełny profil, wszystkie cechy odczytane przez stronę). Pliki dopisują się po każdym wejściu, więc przerwanie nie gubi wyników. Panel pokazuje, czy odcisk z danego wejścia był **nowy**, czy **powtórzony**.
+Folder `reports/`: dla każdego uruchomienia `wejscia-RRRR-MM-DD-GG-MM-SS.csv` (średnik jako separator, otwiera się w Excelu) i `.json` (pełny profil przeglądarki i ustawienia serii). CSV zawiera wylosowane cechy przeglądarki (system, User-Agent, języki, strefa, ekran, sprzęt, karta graficzna, ziarno szumu canvas, ukryte czcionki, motyw) i wyniki scenariusza. Pliki dopisują się po każdym wejściu, więc przerwanie nie gubi wyników.
 
 ## Ograniczenia
 
-- Podmienione funkcje da się wykryć (np. po `Function.prototype.toString`), a niektóre cechy mogą sobie przeczyć, np. system „macOS” z czcionkami z Windowsa. Na stronie „Cyfrowy odcisk człowieka” to nie przeszkadza, bo ona tylko liczy skrót. Zaawansowane zabezpieczenia takie niespójności zauważą.
+- Podmienione funkcje da się wykryć (np. po `Function.prototype.toString`), a niektóre cechy mogą sobie przeczyć, np. system „macOS” z czcionkami z Windowsa. Zaawansowane zabezpieczenia takie niespójności zauważą.
 - Nie zmienia się: prawdziwe czcionki systemu (poza ukrywaniem), dźwięk (AudioContext), adres IP bez proxy/VPN.
 - „Bez okna przeglądarki” zmienia prawdziwy renderer WebGL na programowy, a część stron to wykrywa.
 

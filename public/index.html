@@ -9,7 +9,7 @@
 <body>
 <header>
   <h1>Bot odcisku <span id="ver" class="ver"></span></h1>
-  <p class="lead">Wchodzi na stronę jak człowiek – pisze, przewija, klika – i przy każdym wejściu ma inny odcisk przeglądarki. Działa tylko na tym komputerze. Najedź na pole albo kliknij <span class="help demo">?</span>, żeby zobaczyć opis.</p>
+  <p class="lead">Wchodzi na wskazaną stronę, wykonuje scenariusz jak człowiek – pisze, naciska klawisze, klika, przewija – i przy każdym wejściu ma inny odcisk przeglądarki. Działa tylko na tym komputerze. Najedź na pole albo kliknij <span class="help demo">?</span>, żeby zobaczyć opis.</p>
 </header>
 
 <main>
@@ -41,13 +41,13 @@
       </div>
 
       <label class="row" title="Pełny adres strony, na którą wchodzi bot (z https://).">
-        <span class="lbl">Adres strony <span class="help" tabindex="0" data-tip="Pełny adres z http:// lub https://. Scenariusz działa na każdej stronie. Na stronie „Cyfrowy odcisk człowieka” bot dodatkowo na końcu każdego wejścia odczytuje odcisk przeglądarki policzony przez stronę.">?</span></span>
-        <input id="url" type="url" required value="https://michalstankiewicz4-cell.github.io/behavioral-biometrics/"></label>
+        <span class="lbl">Adres strony <span class="help" tabindex="0" data-tip="Pełny adres strony z http:// lub https://, np. https://przyklad.pl/. Bot wchodzi na nią przy każdym wejściu i po wczytaniu wykonuje scenariusz poniżej.">?</span></span>
+        <input id="url" type="url" required placeholder="https://przyklad.pl/"></label>
 
     </section>
 
     <section>
-      <h2>Scenariusz <span class="opt">(po wczytaniu strony, od góry)</span> <span class="help" tabindex="0" data-tip="Lista czynności, które bot wykonuje po kolei przy każdym wejściu, zaraz po wczytaniu strony. Dodajesz je przyciskiem „+ Dodaj akcję”. Kolejność zmieniasz strzałkami ↑ ↓ albo przeciągając wiersz za uchwyt ⠿. ⧉ powiela akcję, ✕ ją usuwa. Pusta lista = bot tylko wczytuje stronę. Na stronie „Cyfrowy odcisk człowieka” na końcu każdego wejścia bot zawsze odczytuje odcisk przeglądarki.">?</span></h2>
+      <h2>Scenariusz <span class="opt">(po wczytaniu strony, od góry)</span> <span class="help" tabindex="0" data-tip="Lista czynności, które bot wykonuje po kolei przy każdym wejściu, zaraz po wczytaniu strony. Dodajesz je przyciskiem „+ Dodaj akcję”. Kolejność zmieniasz strzałkami ↑ ↓ albo przeciągając wiersz za uchwyt ⠿. ⧉ powiela akcję, ✕ ją usuwa. Pusta lista = bot tylko wczytuje stronę.">?</span></h2>
       <ol id="scenario" class="scenario"></ol>
       <p id="scenario-empty" class="hint empty">Brak akcji – bot tylko wczyta stronę.</p>
       <div class="add-wrap">
@@ -66,7 +66,7 @@
     </div>
 
     <div class="pane" id="pane-set" role="tabpanel" aria-labelledby="tab-set" hidden>    <section>
-      <h2>Co zmieniać przy każdym wejściu <span class="help" tabindex="0" data-tip="Zaznaczone grupy cech są losowane od nowa przy każdym wejściu. Odznaczona grupa zostaje taka, jak w Twojej prawdziwej przeglądarce. Żeby sprawdzić, która cecha najbardziej zmienia odcisk, zostaw zaznaczoną tylko ją.">?</span></h2>
+      <h2>Co zmieniać przy każdym wejściu <span class="help" tabindex="0" data-tip="Zaznaczone grupy cech są losowane od nowa przy każdym wejściu. Odznaczona grupa zostaje taka, jak w Twojej prawdziwej przeglądarce.">?</span></h2>
       <div class="checks">
         <label class="check" title="Udaje Windows, macOS albo Linuksa i inną wersję Chrome'a."><input type="checkbox" data-spoof="ua" checked> System i User-Agent
           <span class="help" tabindex="0" data-tip="Losuje system (Windows najczęściej, potem macOS i Linux) i podaje go w User-Agent, navigator.platform i userAgentData. Wersja Chrome'a jest prawdziwa albo o jedną starsza, żeby pasowała do silnika przeglądarki.">?</span></label>
@@ -112,12 +112,11 @@ socks5://host:port"></textarea>
   </form>
 
   <section>
-    <h2>Wejścia <span class="help" tabindex="0" data-tip="Jeden wiersz = jedno wejście. „Scenariusz” – ile akcji się udało, ile znaków wpisano i w jakim tempie, a na czerwono pierwszy błąd akcji. „Odcisk ze strony” – tylko na stronie „Cyfrowy odcisk człowieka”: skrót policzony przez stronę, „nowy”, jeśli w tej serii jeszcze takiego nie było.">?</span></h2>
+    <h2>Wejścia <span class="help" tabindex="0" data-tip="Jeden wiersz = jedno wejście. „Profil” – wylosowane cechy przeglądarki. „Scenariusz” – ile akcji się udało, ile znaków wpisano i w jakim tempie, a na czerwono pierwszy błąd akcji albo błąd całego wejścia.">?</span></h2>
     <div class="tablewrap"><table id="visits-t">
-      <thead><tr><th>#</th><th>Profil</th><th>Scenariusz</th><th>Odcisk ze strony</th><th>Czas</th></tr></thead>
+      <thead><tr><th>#</th><th>Profil</th><th>Scenariusz</th><th>Czas</th></tr></thead>
       <tbody></tbody>
     </table></div>
-    <p id="uniq" class="hint"></p>
     <p id="report" class="hint"></p>
   </section>
 

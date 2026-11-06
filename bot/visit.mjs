@@ -1,9 +1,9 @@
-// Jedno wejście na stronę: świeża przeglądarka z nowym profilem, przewijanie, zakładki,
-// odcisk przeglądarki i odczyt wyników.
+// Jedno wejście na stronę: świeża przeglądarka z nowym profilem przeglądarki, potem scenariusz akcji
+// (pisanie, klawisze, kliknięcia, przewijanie, czekanie, ludzkie zachowanie).
 import { chromium } from "playwright";
 import { makeProfile, contextOptions, describe } from "./profiles.mjs";
 import { spoof } from "./spoof.mjs";
-import { sleep, rand, moveTo, click, clickEl, scroll, idle, typeText } from "./human.mjs";
+import { sleep, rand, moveTo, clickEl, scroll, idle, typeText } from "./human.mjs";
 
 class Stopped extends Error {}
 const check = signal => { if (signal?.aborted) throw new Stopped("zatrzymano"); };
@@ -24,8 +24,6 @@ async function launch({ headless, proxy, channel }){
   return chromium.launch(o);
 }
 
-// czy na stronie jest dany element (krótka próba, bez czekania 30 s)
-const has = (page, sel) => page.locator(sel).first().isVisible().catch(() => false);
 const EDITABLE = 'textarea, input:not([type]), input[type=text], input[type=search], input[type=email], input[type=url], input[type=tel], input[type=password], [contenteditable=""], [contenteditable=true]';
 
 // ---------------------------------------------------------------------
@@ -86,10 +84,6 @@ const ACTIONS = {
 };
 const ANAME = { type: "Pisz tekst", keys: "Naciśnij klawisze", click: "Kliknij w element", scroll: "Przewiń", wait: "Czekaj", human: "Ludzkie zachowanie" };
 
-async function tab(page, name){
-  const link = page.locator(`#tabs a[data-tab="${name}"]`);
-  await clickEl(page, link); await sleep(rand(400, 900));
-}
 
 // wynik: rekord do raportu
 export async function visit({ n, url, spoofOpts, proxy, headless, channel, scenario = [], log, signal }){
@@ -119,16 +113,6 @@ export async function visit({ n, url, spoofOpts, proxy, headless, channel, scena
     }
     if (rec.typingMs) rec.cpm = Math.round(rec.typedChars / rec.typingMs * 60000);
 
-    // odczyt odcisku – tylko gdy to strona „Cyfrowy odcisk człowieka”
-    if (!(await has(page, "#tabs a[data-tab]"))) return rec;
-    check(signal); await tab(page, "odcisk");
-    await clickEl(page, page.locator("#fp-go")); await sleep(rand(600, 1200));
-    await scroll(page, rand(300, 700)); await idle(page, rand(500, 1200));
-
-    const fp = await page.evaluate(async base => (await import(base + "js/tests/browser-fingerprint.js")).FP.R, new URL(".", page.url()).href);
-    if (!fp) throw new Error("strona nie policzyła odcisku");
-    rec.hash = fp.hash; rec.features = fp.features;
-    log(`#${n} odcisk: ${rec.hash}`);
   } catch (e) {
     rec.error = e instanceof Stopped ? "zatrzymano" : String(e.message || e).split("\n")[0];
     log(`#${n} błąd: ${rec.error}`);

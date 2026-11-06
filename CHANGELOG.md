@@ -2,6 +2,17 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.8.0] – 2026-11-06
+
+### Zmienione
+- Bot jest niezależny od strony „Cyfrowy odcisk człowieka”: działa na dowolnym adresie i nie wykonuje na żadnej stronie kroków przygotowanych pod tamten projekt.
+- Pole „Adres strony” jest na starcie puste (z przykładem w podpowiedzi).
+- Raport CSV: zamiast cech odczytanych przez tamtą stronę – wylosowane cechy przeglądarki z profilu: `os`, `userAgent`, `languages`, `timezone`, `screen`, `scale`, `viewport`, `cores`, `memoryGB`, `webgl`, `canvasSeed`, `hiddenFonts`, `colorScheme`.
+
+### Usunięte
+- Odczyt odcisku przeglądarki ze strony „Cyfrowy odcisk człowieka” na końcu wejścia, kolumna „Odcisk ze strony” w tabeli (z oznaczeniem „nowy/powtórzony”) i podsumowanie „Różnych odcisków”.
+- Kolumny raportu `hash`, `ua`, `platform`, `lang`, `tz`, `cpu`, `mem`, `canvas`, `fonts` oraz pola JSON `features` i `newHash`.
+
 ## [0.7.0] – 2026-11-06
 
 ### Dodane

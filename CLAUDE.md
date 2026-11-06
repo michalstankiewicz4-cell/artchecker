@@ -17,4 +17,4 @@
 ## Struktura
 
 - `server.mjs` – serwer i pętla wejść; `bot/` – logika bota (jeden plik = jedna rola); `public/` – panel; `tools/` – narzędzia deweloperskie.
-- Bot zależy od selektorów strony „Cyfrowy odcisk człowieka” (lista w `docs/DOKUMENTACJA.md`, sekcja 7). Zmiany na tamtej stronie mogą wymagać zmian tutaj.
+- Bot nie zależy od żadnej konkretnej strony – działa na dowolnym adresie podanym w panelu.

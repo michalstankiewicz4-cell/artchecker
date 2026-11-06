@@ -33,7 +33,7 @@ const LOCALES = [
 ];
 const SCREENS = [[1920,1080],[1920,1080],[2560,1440],[1366,768],[1536,864],[1440,900],[1680,1050],[1600,900],[1280,800],[3840,2160]];
 const DPR = [1, 1, 1.25, 1.5, 2];
-// czcionki, które strona sprawdza – część z nich można „ukryć”
+// popularne czcionki, które skrypty odcisku zwykle sprawdzają – część z nich można „ukryć”
 export const FONT_POOL = ["Arial Black","Calibri","Cambria","Candara","Comic Sans MS","Consolas","Constantia","Corbel","Georgia","Impact",
   "Lucida Console","Lucida Sans Unicode","Palatino Linotype","Segoe UI","Tahoma","Trebuchet MS","Verdana"];
 
