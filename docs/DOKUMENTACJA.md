@@ -1,6 +1,6 @@
 # Dokumentacja techniczna – Human Bot
 
-Wersja dokumentu odpowiada wersji programu **0.15.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
+Wersja dokumentu odpowiada wersji programu **0.16.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
 
 ## 1. Cel
 
@@ -35,7 +35,7 @@ przeglądarka użytkownika ──HTTP/SSE──▶ server.mjs (127.0.0.1:3777)
 | `bot/osinput.mjs` | tryb „Przeglądarka”: sterownik prawdziwej klawiatury i myszy Windowsa (PowerShell + user32) |
 | `bot/surface.mjs` | powierzchnia dla myszy: okno strony albo ekran z przeliczeniem strona → ekran (zgranie kursora) |
 | `bot/image.mjs` | szukanie wzorca z `obrazy/` na zrzucie strony: dekoder PNG, porównanie (szarość, kolory, krawędzie), różne skale |
-| `public/` | panel: `index.html` (Start/Stop na górze, przełącznik dzień/noc, zakładki Plan, Ustawienia, Statystyki i Biblioteka, podpowiedzi `title` i znaczki [?] z `data-tip`), `app.js` (edytor scenariusza: dodawanie, kolejność ↑↓ i przeciąganie, powielanie, nagrywanie kombinacji klawiszy, walidacja przed startem, oznaczanie konfliktów z „Bez okna” (`updateConflicts`), motyw w `localStorage` pod kluczem `humanbot-theme`, tryb podglądu poza 127.0.0.1/localhost – bez `/api`, Start nieaktywny), `style.css` (motyw: `:root[data-theme=dark]` albo `prefers-color-scheme`; kolory grup zależnych `dep-a`, `dep-b`; konflikty `.conflict`) |
+| `public/` | panel: `index.html` (Start/Stop na górze, profile – `getState`/`setState`, Zapisz, Reset do stanu z chwili otwarcia panelu, przełącznik dzień/noc, zakładki Plan, Ustawienia, Statystyki i Biblioteka, podpowiedzi `title` i znaczki [?] z `data-tip`), `app.js` (edytor scenariusza: dodawanie, kolejność ↑↓ i przeciąganie, powielanie, nagrywanie kombinacji klawiszy, walidacja przed startem, oznaczanie konfliktów z „Bez okna” (`updateConflicts`), motyw w `localStorage` pod kluczem `humanbot-theme`, tryb podglądu poza 127.0.0.1/localhost – bez `/api`, Start nieaktywny), `style.css` (motyw: `:root[data-theme=dark]` albo `prefers-color-scheme`; kolory grup zależnych `dep-a`, `dep-b`; konflikty `.conflict`) |
 | `tools/check-version.mjs` | sprawdza zgodność numeru wersji we wszystkich plikach (`npm test`) |
 | `tools/build-portable.ps1` | buduje wersję przenośną do `dist/` (sekcja 11) |
 | `tools/release-notes.mjs` | opis release'u: instrukcja pobierania + wpis z CHANGELOG dla bieżącej wersji |
@@ -57,6 +57,9 @@ przeglądarka użytkownika ──HTTP/SSE──▶ server.mjs (127.0.0.1:3777)
 | `POST /api/images` | `{ name, data }` (`data:image/png;base64,…`, maks. 5 MB) → zapis w `obrazy/` pod oczyszczoną nazwą (przy powtórce `-2`, `-3`…); odpowiedź `{ name }` |
 | `POST /api/images/rename` | `{ from, to }` → zmiana nazwy pliku w `obrazy/`; `409`, gdy nazwa zajęta; odpowiedź `{ name }` |
 | `POST /api/images/delete` | `{ name }` → usunięcie pliku z `obrazy/` |
+| `GET /api/profiles` | nazwy profili (pliki `profile/*.json`) |
+| `GET /api/profiles/<nazwa>` | zapisany profil: `visits`, `delayMin`, `delayMax`, `url`, `proxies`, `useChrome`, `headless`, `spoof`, `scenario`, `version` |
+| `POST /api/profiles` | `{ name, data }` → zapis `profile/<nazwa>.json` (nazwa: litery, cyfry, spacje, `-`, `_`, do 60 znaków; ta sama nazwa nadpisuje) |
 | `GET /api/elements` | nazwane elementy Biblioteki z `elementy.json`: `[{ name, selector }]` |
 | `POST /api/elements` | `{ elements }` → zapis całej listy (nazwy do 60 znaków, bez powtórek, maks. 500) |
 | `POST /api/check` | jak `/api/shot`, a do tego: `selector` → `count`, `visible`, `box` pierwszego elementu (przewija do niego, gdy jest poza oknem); `image` (+ `cmp`, `scales`) → `box`, `score`, `scale` najlepszego dopasowania |

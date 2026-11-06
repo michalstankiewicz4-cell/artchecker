@@ -10,7 +10,8 @@ import { visit, launch } from "./bot/visit.mjs";
 import { findOnShot } from "./bot/image.mjs";
 import { sleep, rand } from "./bot/human.mjs";
 
-const ROOT = dirname(fileURLToPath(import.meta.url)), PUB = join(ROOT, "public"), REP = join(ROOT, "reports"), IMG = join(ROOT, "obrazy"), ELEM = join(ROOT, "elementy.json");
+const ROOT = dirname(fileURLToPath(import.meta.url)), PUB = join(ROOT, "public"), REP = join(ROOT, "reports"), IMG = join(ROOT, "obrazy"), ELEM = join(ROOT, "elementy.json"), PROF = join(ROOT, "profile");
+const profName = n => String(n || "").trim().replace(/\s+/g, " ").replace(/[^\p{L}\p{N} _-]/gu, "").slice(0, 60);
 const PORT = +(process.env.PORT || 3777);
 const PKG = JSON.parse(await readFile(join(ROOT, "package.json"), "utf8"));   // jedyne źródło numeru wersji
 const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8", ".csv": "text/csv; charset=utf-8", ".png": "image/png" };
@@ -135,6 +136,14 @@ const server = http.createServer(async (req, res) => {
       const n = imgName((await body(req)).name); if (!n || !existsSync(join(IMG, n))) return json(res, 404, { error: "nie ma takiego obrazu" });
       await unlink(join(IMG, n)); log(`Usunięto obraz obrazy/${n}`); return json(res, 200, { ok: true });
     }
+    // profile: zestawy ustawień panelu, jeden plik JSON na profil w folderze profile/
+    if (url.pathname === "/api/profiles" && req.method === "GET") { const f = existsSync(PROF) ? (await readdir(PROF)).filter(n => n.endsWith(".json")).map(n => n.slice(0, -5)).sort((a, b) => a.localeCompare(b, "pl")) : []; return json(res, 200, f); }
+    if (url.pathname.startsWith("/api/profiles/") && req.method === "GET") { const n = profName(decodeURIComponent(url.pathname.slice(14)));
+      if (!n || !existsSync(join(PROF, n + ".json"))) return json(res, 404, { error: "nie ma takiego profilu" }); return json(res, 200, JSON.parse(await readFile(join(PROF, n + ".json"), "utf8"))); }
+    if (url.pathname === "/api/profiles" && req.method === "POST") { const c = await body(req), n = profName(c.name);
+      if (!n) return json(res, 400, { error: "podaj nazwę profilu (litery, cyfry, spacje, - _)" }); if (!c.data || typeof c.data !== "object") return json(res, 400, { error: "brak ustawień" });
+      await mkdir(PROF, { recursive: true }); await writeFile(join(PROF, n + ".json"), JSON.stringify({ version: PKG.version, ...c.data }, null, 2) + "\n");
+      log(`Zapisano profil „${n}” (profile/${n}.json)`); return json(res, 200, { name: n }); }
     if (url.pathname === "/api/elements" && req.method === "GET") return json(res, 200, await loadElements());
     if (url.pathname === "/api/elements" && req.method === "POST") { const l = cleanElements((await body(req)).elements); await writeFile(ELEM, JSON.stringify(l, null, 2) + "\n"); return json(res, 200, l); }
     // zrzut strony z planu (bez zmiany odcisku); check – od razu szuka na nim obrazu albo elementu

@@ -267,7 +267,7 @@ $("crop-cancel").addEventListener("click", () => $("crop").close());
 // =====================================================================
 function setRunning(on){
   running = on; $("start").disabled = on; $("stop").disabled = !on;
-  document.querySelectorAll("#cfg input, #cfg textarea, #cfg select, #scenario button, #add-action").forEach(e => { if (e.id !== "stop" && e.id !== "start") e.disabled = on; });
+  document.querySelectorAll("#cfg input, #cfg textarea, #cfg select, #scenario button, #add-action, #psave, #preset").forEach(e => { if (e.id !== "stop" && e.id !== "start") e.disabled = on; });
   if (!on) renderScenarioButtons();
   $("status").textContent = on ? "pracuje…" : "gotowy";
 }
@@ -326,6 +326,41 @@ TABS.forEach(([t], i) => { $(t).addEventListener("click", () => openTab(t));
   $(t).addEventListener("keydown", e => { if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
     const nx = TABS[(i + (e.key === "ArrowRight" ? 1 : TABS.length - 1)) % TABS.length][0]; openTab(nx); $(nx).focus(); }); });
 $("cfg").addEventListener("invalid", e => { const p = e.target.closest(".pane"); if (p && p.hidden) openTab(TABS.find(x => x[1] === p.id)[0]); }, true);
+
+// =====================================================================
+// Profile: zapisane zestawy ustawień (Plan + Ustawienia) w folderze profile/; Reset – ustawienia domyślne
+// =====================================================================
+const FIELDS = ["visits", "delayMin", "delayMax", "url", "proxies"], CHECKS = ["useChrome", "headless"];
+function getState(){ const s = { scenario: structuredClone(scenario), spoof: {} };
+  FIELDS.forEach(id => s[id] = $(id).type === "number" ? +$(id).value : $(id).value); CHECKS.forEach(id => s[id] = $(id).checked);
+  document.querySelectorAll("[data-spoof]").forEach(c => s.spoof[c.dataset.spoof] = c.checked); return s; }
+function setState(s){ const d = DEFAULTS;
+  FIELDS.forEach(id => $(id).value = s[id] ?? d[id]); CHECKS.forEach(id => $(id).checked = s[id] ?? d[id]);
+  document.querySelectorAll("[data-spoof]").forEach(c => c.checked = (s.spoof || {})[c.dataset.spoof] ?? d.spoof[c.dataset.spoof]);
+  scenario = structuredClone(Array.isArray(s.scenario) ? s.scenario : d.scenario); renderScenario(); renderLib(); }
+const DEFAULTS = getState();   // stan panelu zaraz po otwarciu = ustawienia domyślne
+let PROFILES = [];
+const loadProfiles = (sel) => LIVE ? fetch("/api/profiles").then(r => r.json()).then(l => { PROFILES = l;
+  $("profile").innerHTML = `<option value="">— bez profilu —</option>` + l.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
+  $("savep-list").innerHTML = l.map(n => `<option value="${esc(n)}">`).join(""); if (sel !== undefined) $("profile").value = sel; }).catch(() => {}) : Promise.resolve();
+if (!LIVE) ["profile", "psave"].forEach(id => { $(id).disabled = true; $(id).title = "Profile działają w programie na Twoim komputerze."; });
+$("profile").addEventListener("change", async e => { const n = e.target.value; if (!n) return;
+  const r = await fetch("/api/profiles/" + encodeURIComponent(n)).catch(() => null), j = r && r.ok ? await r.json().catch(() => null) : null;
+  if (!j) { $("status").textContent = "nie udało się wczytać profilu"; return; }
+  setState(j); $("status").textContent = `wczytano profil „${n}”`; });
+$("psave").addEventListener("click", () => { $("savep-name").value = $("profile").value; $("savep-msg").textContent = ""; $("savep").showModal(); $("savep-name").select(); updSaveMsg(); });
+const updSaveMsg = () => { const n = $("savep-name").value.trim(); $("savep-msg").textContent = n && PROFILES.includes(n) ? `Profil „${n}” już jest – zostanie nadpisany.` : ""; $("savep-ok").disabled = !n; };
+$("savep-name").addEventListener("input", updSaveMsg);
+$("savep-name").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); $("savep-ok").click(); } });
+$("savep-cancel").addEventListener("click", () => $("savep").close());
+$("savep-ok").addEventListener("click", async () => { const name = $("savep-name").value.trim(); if (!name) return;
+  const r = await fetch("/api/profiles", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name, data: getState() }) }).catch(() => null);
+  const j = r ? await r.json().catch(() => ({})) : {}; if (!j.name) { $("savep-msg").textContent = j.error || "nie udało się zapisać"; return; }
+  $("savep").close(); await loadProfiles(j.name); $("status").textContent = `zapisano profil „${j.name}”`; });
+$("preset").addEventListener("click", e => { const b = e.currentTarget;
+  if (b.dataset.sure !== "1") { b.dataset.sure = "1"; b.textContent = "Na pewno?"; setTimeout(() => { b.dataset.sure = ""; b.textContent = "↺ Reset"; }, 3000); return; }
+  b.dataset.sure = ""; b.textContent = "↺ Reset"; setState(DEFAULTS); $("profile").value = ""; $("status").textContent = "przywrócono ustawienia domyślne"; });
+loadProfiles();
 
 // =====================================================================
 // Biblioteka: obrazy (folder obrazy/) i nazwane elementy (elementy.json); gdzie użyte, podgląd, sprawdzenie na stronie

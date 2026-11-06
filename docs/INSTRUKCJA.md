@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Human Bot
 
-Wersja instrukcji odpowiada wersji programu **0.15.0**.
+Wersja instrukcji odpowiada wersji programu **0.16.0**.
 
 ## 1. Co jest potrzebne
 
@@ -108,6 +108,12 @@ Zaznaczone grupy są losowane od nowa przy każdym wejściu. Odznaczona grupa zo
 - Linie zaczynające się od `#` są pomijane.
 - Chrome nie obsługuje proxy SOCKS5 z hasłem, w takim przypadku użyj HTTP.
 - **VPN** włączasz ręcznie w jego aplikacji, jeszcze przed startem. Bot go nie przełącza.
+
+### Profile, Zapisz i Reset (na górze)
+- **Profil** (lista obok Start) – zapisane zestawy ustawień: wszystko z zakładek Plan i Ustawienia (liczba wejść, przerwy, adres, scenariusz, „Co zmieniać”, przeglądarka, proxy). Wybór z listy od razu wczytuje profil do panelu.
+- **💾 Zapisz** (po prawej) – pyta o nazwę; ta sama nazwa nadpisuje profil (panel o tym uprzedza), nowa tworzy kolejny. Profil to plik JSON w folderze `profile` obok programu – trafia do repozytorium, **razem z wpisanymi proxy i ich hasłami**.
+- **↺ Reset** (po prawej, kliknij dwa razy: „Na pewno?”) – ustawienia domyślne, jak po pierwszym otwarciu panelu. Zapisane profile zostają.
+- Profile działają w programie na komputerze; w podglądzie panelu lista i Zapisz są nieaktywne.
 
 ### Start i Stop (na górze)
 - **Start** uruchamia serię wejść. Ustawienia są zablokowane, dopóki bot pracuje.

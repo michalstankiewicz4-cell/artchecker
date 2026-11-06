@@ -2,6 +2,13 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.16.0] – 2026-11-06
+
+### Dodane
+- **Profile** przy przycisku Start: lista zapisanych zestawów ustawień (wszystko z Planu i Ustawień); wybór z listy wczytuje profil.
+- Po prawej **💾 Zapisz** (pyta o nazwę; ta sama nazwa nadpisuje) i **↺ Reset** (ustawienia domyślne, dwa kliknięcia).
+- Folder `profile/` (jeden plik JSON na profil, trafia do repozytorium); API `GET/POST /api/profiles`, `GET /api/profiles/<nazwa>`.
+
 ## [0.15.0] – 2026-11-06
 
 ### Dodane

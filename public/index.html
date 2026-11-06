@@ -9,7 +9,7 @@
 <body>
 <header>
   <div class="head-row">
-    <h1>Human Bot <span id="ver" class="ver" title="Wersja programu">v0.15.0</span></h1>
+    <h1>Human Bot <span id="ver" class="ver" title="Wersja programu">v0.16.0</span></h1>
     <button type="button" id="theme" class="theme-btn" title="Przełącz motyw: dzień / noc" aria-label="Przełącz motyw dzień / noc"></button>
   </div>
   <p class="lead">Wchodzi na wskazaną stronę, wykonuje scenariusz jak człowiek – pisze, naciska klawisze, klika, przewija – i przy każdym wejściu ma inny odcisk przeglądarki. Działa tylko na tym komputerze. Najedź na pole albo kliknij <span class="help demo">?</span>, żeby zobaczyć opis.</p>
@@ -20,7 +20,12 @@
     <div class="actions top">
       <button type="submit" id="start" class="primary" title="Uruchom serię wejść z ustawieniami z obu zakładek (Plan i Ustawienia).">Start</button>
       <button type="button" id="stop" disabled title="Przerwij bieżące wejście i zakończ serię. Zebrane wyniki zostają w raporcie.">Stop</button>
+      <label class="prof" title="Zapisany zestaw ustawień (Plan i Ustawienia). Wybór z listy wczytuje go do panelu.">Profil
+        <select id="profile"><option value="">— bez profilu —</option></select></label>
       <span id="status" class="status">gotowy</span>
+      <span class="spacer"></span>
+      <button type="button" id="psave" title="Zapisz wszystko z Planu i Ustawień jako profil (pyta o nazwę; ta sama nazwa nadpisuje).">💾 Zapisz</button>
+      <button type="button" id="preset" title="Przywróć ustawienia domyślne (kliknij dwa razy).">↺ Reset</button>
     </div>
 
     <div class="tabs" role="tablist" aria-label="Ustawienia bota">
@@ -157,6 +162,14 @@ socks5://host:port"></textarea>
   </div>
 
 </main>
+<dialog id="savep" class="crop small" aria-labelledby="savep-h">
+  <h2 id="savep-h">Zapisz profil</h2>
+  <p class="hint">Zapisuje wszystko z zakładek Plan i Ustawienia (także scenariusz i proxy) do pliku w folderze <code>profile</code>.</p>
+  <label class="num">nazwa <input id="savep-name" maxlength="60" list="savep-list" placeholder="np. sklep – wyszukiwanie"></label>
+  <datalist id="savep-list"></datalist>
+  <p id="savep-msg" class="hint"></p>
+  <div class="crop-bar"><span class="spacer"></span><button type="button" id="savep-cancel">Anuluj</button><button type="button" id="savep-ok" class="primary">Zapisz</button></div>
+</dialog>
 <dialog id="view" class="crop" aria-labelledby="view-h">
   <h2 id="view-h"></h2>
   <p id="view-msg" class="hint"></p>

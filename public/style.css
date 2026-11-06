@@ -189,3 +189,11 @@ dialog.crop h2{margin:0 0 10px;font-size:1.1rem}
 .lib-els td:nth-child(3){white-space:nowrap}
 .action .libsel{font:.85rem Consolas,monospace;color:var(--muted);background:var(--bg);border:1px dashed var(--line);border-radius:5px;padding:4px 7px;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #view-cv{max-width:100%}
+
+/* pasek górny: profil, Zapisz i Reset po prawej */
+.actions.top .spacer{flex:1}
+.actions.top label.prof{flex-direction:row;align-items:center;gap:6px;color:var(--muted);font-size:.9rem;margin-left:8px}
+.actions.top label.prof select{font:inherit;font-size:.9rem;padding:5px 7px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--ink);max-width:220px}
+dialog.crop.small{width:440px}
+dialog.crop.small label.num{display:flex;flex-direction:row;align-items:center;gap:8px}
+dialog.crop.small label.num input{flex:1;font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--ink)}
