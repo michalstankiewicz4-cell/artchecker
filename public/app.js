@@ -34,9 +34,10 @@ const PRESETS = [
   ["Przeglądarka", ["Control+F", "F3", "Control+L", "Control+T", "Control+W", "Control+Tab", "Control+R", "F5", "Alt+ArrowLeft", "Alt+ArrowRight", "Control+Plus", "Control+Minus"]],
 ];
 // miejsce dla myszy: element (selektor CSS), punkt (% szerokości i wysokości okna) albo losowe miejsce
-const pt = at => ({ at, selector: "", x: 50, y: 50, images: [], thr: 90, wait: 10, miss: "skip", cmp: "gray", scales: true });
-let IMAGES = [];   // pliki z folderu obrazy/ (tylko gdy panel działa z programu)
-const loadImages = () => LIVE ? fetch("/api/images").then(r => r.json()).then(l => { IMAGES = l; renderScenario(); }).catch(() => {}) : Promise.resolve();
+const pt = at => ({ at, elem: "", selector: "", x: 50, y: 50, images: [], thr: 90, wait: 10, miss: "skip", cmp: "gray", scales: true });
+let IMAGES = [], ELEMS = [];   // biblioteka: pliki z folderu obrazy/ i nazwane elementy z elementy.json (tylko gdy panel działa z programu)
+const loadImages = () => LIVE ? fetch("/api/images").then(r => r.json()).then(l => { IMAGES = l; renderScenario(); renderLib(); }).catch(() => {}) : Promise.resolve();
+const loadElems = () => LIVE ? fetch("/api/elements").then(r => r.json()).then(l => { ELEMS = l; renderScenario(); renderLib(); }).catch(() => {}) : Promise.resolve();
 const MOUSE = ["hover", "click", "drag", "select", "scroll"];
 const TYPES = {
   type:   { name: "Pisz tekst", def: () => ({ text: "", target: "page" }) },
@@ -68,7 +69,11 @@ function whereHTML(w, p, label, rand){
   const opts = [["el", "element"], ["pt", "punkt"], ["img", "obraz"]]; if (rand) opts.push(["rand", "losowo"]);
   let h = `${label ? `<span class="lbl">${label}</span>` : ""}${sel(p + "at", w.at, opts, "Jak wskazać miejsce: element strony (selektor CSS), punkt w oknie (w % szerokości i wysokości), obraz (bot szuka wyciętego fragmentu na zrzucie strony) albo losowe miejsce.")}`;
   if (w.at === "img") return `<span class="where">${h}${imgHTML(w, p)}</span>`;
-  if (w.at === "el") h += `<input data-f="${p}selector" class="grow sel" placeholder="selektor CSS, np. #menu" value="${esc(w.selector)}" title="Selektor CSS elementu – bot wybierze w nim losowy punkt.">`;
+  if (w.at === "el") { const lib = ELEMS.find(e => e.name === w.elem), names = ELEMS.map(e => e.name);
+    if (w.elem && !lib) names.push(w.elem);
+    h += `<select data-f="${p}elem" class="elem" title="Element z Biblioteki (po nazwie) albo własny selektor wpisany tutaj."><option value="">własny selektor</option>${names.map(n => `<option value="${esc(n)}"${n === w.elem ? " selected" : ""}>${esc(n)}${n === w.elem && !lib ? " (brak w Bibliotece!)" : ""}</option>`).join("")}</select>`;
+    h += w.elem ? `<code class="libsel" title="Selektor z Biblioteki – zmienisz go w zakładce Biblioteka.">${esc(lib ? lib.selector : "?")}</code>`
+      : `<input data-f="${p}selector" class="grow sel" placeholder="selektor CSS, np. #menu" value="${esc(w.selector)}" title="Selektor CSS elementu – bot wybierze w nim losowy punkt.">`; }
   if (w.at === "pt") h += `<label class="num pct" title="Odległość od lewej krawędzi okna, w % jego szerokości.">x <input data-f="${p}x" type="number" min="0" max="100" value="${w.x}"> %</label><label class="num pct" title="Odległość od górnej krawędzi okna, w % jego wysokości.">y <input data-f="${p}y" type="number" min="0" max="100" value="${w.y}"> %</label>`;
   return `<span class="where">${h}</span>`;
 }
@@ -171,7 +176,7 @@ $("scenario").addEventListener("input", e => { const li = e.target.closest(".act
 // pole „from.x” → a.from.x
 const getW = (a, f) => f.includes(".") ? a[f.split(".")[0]] : a;   // obiekt miejsca dla pola (a, a.from albo a.to)
 function setF(a, f, v){ const k = f.split("."); let o = a; while (k.length > 1) o = o[k.shift()]; o[k[0]] = v; }
-const RERENDER = /(^|\.)at$|^how$|^over$/;   // zmiana tych list zmienia pola wiersza
+const RERENDER = /(^|\.)at$|(^|\.)elem$|^how$|^over$/;   // zmiana tych list zmienia pola wiersza
 $("scenario").addEventListener("change", e => { const li = e.target.closest(".action"); if (!li) return; const i = +li.dataset.i, f = e.target.dataset.f;
   if (f === "type") { scenario[i] = { type: e.target.value, ...TYPES[e.target.value].def() }; renderScenario(); }
   else if (f === "preset" && e.target.value) { scenario[i].combo = e.target.value; const c = li.querySelector(".combo"); c.value = showCombo(e.target.value); c.dataset.combo = e.target.value; e.target.value = ""; }
@@ -219,14 +224,14 @@ menu.addEventListener("keydown", e => { const items = [...menu.querySelectorAll(
   if (e.key === "ArrowUp") { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
   if (e.key === "Escape") { openMenu(false); $("add-action").focus(); } });
 document.addEventListener("click", () => openMenu(false));
-renderScenario(); loadImages();
+renderScenario(); loadImages(); loadElems();
 
 // =====================================================================
 // Nowy obraz: zrzut strony z planu albo wklejony / wczytany obrazek → zaznaczenie prostokąta → zapis do obrazy/
 // =====================================================================
 const crop = { w: null, img: null, r: null, start: null };
 const cv = $("crop-cv"), cx = cv.getContext("2d");
-function openCrop(a, p){ crop.w = getW(a, p + "x"); crop.img = null; crop.r = null; $("crop-name").value = ""; drawCrop();
+function openCrop(a, p){ crop.w = a ? getW(a, p + "x") : null; crop.img = null; crop.r = null; $("crop-name").value = ""; drawCrop();
   $("crop-shot").disabled = !LIVE; $("crop-save").disabled = true;
   $("crop-msg").textContent = LIVE ? "Zrób zrzut, wczytaj plik albo wklej obrazek (Ctrl+V), potem zaznacz myszą fragment do szukania." : "Podgląd panelu: zapis do folderu obrazy działa tylko w programie na Twoim komputerze."; $("crop").showModal(); }
 function setCropImage(src){ const im = new Image(); im.onload = () => { crop.img = im; crop.r = null; drawCrop(); $("crop-msg").textContent = "Zaznacz myszą prostokąt – tylko to bot będzie szukał."; }; im.src = src; }
@@ -254,7 +259,7 @@ $("crop-save").addEventListener("click", async () => { const s = crop.s, { x, y,
   const r = await fetch("/api/images", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: $("crop-name").value || "obraz", data: c.toDataURL("image/png") }) }).catch(() => null);
   const j = r ? await r.json().catch(() => ({})) : {};
   if (!j.name) { $("crop-msg").textContent = j.error || "nie udało się zapisać"; return; }
-  crop.w.images.push(j.name); $("crop").close(); await loadImages(); renderScenario(); });
+  if (crop.w) crop.w.images.push(j.name); $("crop").close(); await loadImages(); renderScenario(); });
 $("crop-cancel").addEventListener("click", () => $("crop").close());
 
 // =====================================================================
@@ -272,7 +277,7 @@ function renderScenarioButtons(){ const rows = $("scenario").children;
 
 function validate(){
   if ($("headless").checked && scenario.some(a => a.target === "browser")) return ["Akcje w trybie „Przeglądarka” wymagają widocznego okna – w Ustawieniach odznacz „Bez okna przeglądarki” albo zmień te akcje na „Strona”.", "tab-set"];
-  const noEl = w => (w.at === "el" && !w.selector.trim()) || (w.at === "img" && !w.images.length);
+  const noEl = w => (w.at === "el" && (w.elem ? !ELEMS.some(e => e.name === w.elem && e.selector) : !w.selector.trim())) || (w.at === "img" && !w.images.length);
   const i = scenario.findIndex(a => (a.type === "type" && !a.text) || (a.type === "keys" && !a.combo)
     || ((a.type === "hover" || a.type === "click") && noEl(a)) || (a.type === "drag" && (noEl(a.from) || noEl(a.to)))
     || (a.type === "select" && (a.how === "range" ? noEl(a.from) || noEl(a.to) : noEl(a)))
@@ -314,13 +319,102 @@ es.onerror = () => { if (!running) $("status").textContent = "brak połączenia 
 // =====================================================================
 // Zakładki Plan / Ustawienia (myszą, strzałkami ←/→); przy błędnym polu przełącza na jego zakładkę
 // =====================================================================
-const TABS = [["tab-plan", "pane-plan"], ["tab-set", "pane-set"], ["tab-stat", "pane-stat"]];
+const TABS = [["tab-plan", "pane-plan"], ["tab-set", "pane-set"], ["tab-stat", "pane-stat"], ["tab-lib", "pane-lib"]];
 function openTab(id){ for (const [t, p] of TABS) { const on = t === id;
   $(t).setAttribute("aria-selected", on); $(t).tabIndex = on ? 0 : -1; $(p).hidden = !on; } }
 TABS.forEach(([t], i) => { $(t).addEventListener("click", () => openTab(t));
   $(t).addEventListener("keydown", e => { if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
     const nx = TABS[(i + (e.key === "ArrowRight" ? 1 : TABS.length - 1)) % TABS.length][0]; openTab(nx); $(nx).focus(); }); });
 $("cfg").addEventListener("invalid", e => { const p = e.target.closest(".pane"); if (p && p.hidden) openTab(TABS.find(x => x[1] === p.id)[0]); }, true);
+
+// =====================================================================
+// Biblioteka: obrazy (folder obrazy/) i nazwane elementy (elementy.json); gdzie użyte, podgląd, sprawdzenie na stronie
+// =====================================================================
+// numery akcji scenariusza, które używają obrazu / elementu
+function usesOf(kind, name){ const out = [];
+  scenario.forEach((a, i) => { const ws = [a, a.from, a.to].filter(w => w && w.at);
+    if (ws.some(w => kind === "img" ? w.at === "img" && w.images.includes(name) : w.at === "el" && w.elem === name)) out.push(i + 1); });
+  return out; }
+const usesText = l => l.length ? `akcja ${l.join(", ")}` : "nieużyty";
+function renderLib(){
+  $("lib-note").hidden = LIVE; ["lib-newimg", "lib-addel"].forEach(id => $(id).disabled = !LIVE);
+  const g = $("lib-imgs"); g.innerHTML = "";
+  IMAGES.forEach(n => { const u = usesOf("img", n);
+    g.appendChild(h(`<div class="lib-card" data-name="${esc(n)}">
+      <button type="button" class="thumb" data-lib="view" title="Pokaż w pełnym rozmiarze"><img src="/obrazy/${encodeURIComponent(n)}?${Date.now()}" alt=""></button>
+      <span class="lib-name" title="${esc(n)}">${esc(n.replace(/\.png$/, ""))}</span>
+      <span class="hint">${usesText(u)}</span>
+      <span class="lib-btns"><button type="button" data-lib="check" title="Bot zrobi zrzut strony z zakładki Plan i pokaże, gdzie znalazł ten obrazek.">Sprawdź na stronie</button>
+        <button type="button" data-lib="rename" title="Zmień nazwę pliku (akcje, które go używają, dostaną nową nazwę).">Zmień nazwę</button>
+        <button type="button" data-lib="del" class="del" title="Usuń plik z folderu obrazy${u.length ? " (używają go akcje: " + u.join(", ") + ")" : ""}.">Usuń</button></span></div>`)); });
+  $("lib-imgs-empty").hidden = IMAGES.length > 0;
+  const tb = $("lib-els").tBodies[0]; tb.innerHTML = "";
+  ELEMS.forEach((e, i) => tb.appendChild(h(`<tr data-i="${i}">
+    <td><input data-el="name" value="${esc(e.name)}" placeholder="np. Pole szukania" title="Nazwa widoczna w akcjach."></td>
+    <td><input data-el="selector" value="${esc(e.selector)}" placeholder="np. #q albo input[name=q]" title="Selektor CSS elementu."></td>
+    <td class="hint">${usesText(usesOf("el", e.name))}</td>
+    <td class="lib-btns"><button type="button" data-lib="checkel" title="Bot zrobi zrzut strony z zakładki Plan i zaznaczy ten element.">Sprawdź na stronie</button>
+      <button type="button" data-lib="delel" class="del" title="Usuń element z Biblioteki.">Usuń</button></td></tr>`)));
+  $("lib-els-empty").hidden = ELEMS.length > 0;
+}
+// zapis elementów (chwilę po ostatniej zmianie)
+let saveT;
+function saveElems(){ clearTimeout(saveT); $("lib-saved").textContent = "zapisywanie…";
+  saveT = setTimeout(async () => { const r = await fetch("/api/elements", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ elements: ELEMS }) }).catch(() => null);
+    $("lib-saved").textContent = r && r.ok ? "zapisano w elementy.json" : "nie udało się zapisać"; }, 500); }
+// nazwa elementu zmieniona → akcje, które go używały, dostają nową
+const renameRefs = (kind, from, to) => scenario.forEach(a => [a, a.from, a.to].filter(w => w && w.at).forEach(w => {
+  if (kind === "el" && w.elem === from) w.elem = to;
+  if (kind === "img") w.images = w.images.map(n => n === from ? to : n).filter(Boolean); }));
+let elOld = null;
+$("lib-els").addEventListener("focusin", e => { if (e.target.dataset.el === "name") elOld = e.target.value; });
+$("lib-els").addEventListener("input", e => { const tr = e.target.closest("tr"); if (!tr || !e.target.dataset.el) return; ELEMS[+tr.dataset.i][e.target.dataset.el] = e.target.value; saveElems(); });
+$("lib-els").addEventListener("change", e => { if (e.target.dataset.el !== "name") return; const v = e.target.value.trim();
+  if (elOld && elOld !== v) renameRefs("el", elOld, v); elOld = v; renderScenario(); });
+$("lib-addel").addEventListener("click", () => { let k = ELEMS.length + 1; while (ELEMS.some(e => e.name === "Element " + k)) k++;
+  ELEMS.push({ name: "Element " + k, selector: "" }); renderLib(); saveElems(); const r = $("lib-els").tBodies[0].lastElementChild; r.querySelector("input").select(); });
+$("lib-newimg").addEventListener("click", () => openCrop(null));
+// podgląd / wynik sprawdzenia: obraz z opcjonalną ramką
+function showView(title, src, box, msg){ $("view-h").textContent = title; $("view-msg").textContent = msg || ""; const cv = $("view-cv"), x = cv.getContext("2d"), im = new Image();
+  im.onload = () => { const s = Math.min(1, 860 / im.naturalWidth, 560 / im.naturalHeight, im.naturalWidth < 300 ? 4 : 1);
+    cv.width = Math.round(im.naturalWidth * Math.max(s, im.naturalWidth < 300 ? Math.min(4, 300 / im.naturalWidth) : s)); cv.height = Math.round(im.naturalHeight * cv.width / im.naturalWidth);
+    x.imageSmoothingEnabled = im.naturalWidth >= 300; x.drawImage(im, 0, 0, cv.width, cv.height);
+    if (box) { const k = cv.width / im.naturalWidth; x.strokeStyle = "#ffcc00"; x.lineWidth = 3; x.strokeRect(box.x * k - 2, box.y * k - 2, box.width * k + 4, box.height * k + 4);
+      x.strokeStyle = "#000"; x.lineWidth = 1; x.strokeRect(box.x * k - 4, box.y * k - 4, box.width * k + 8, box.height * k + 8); } };
+  im.src = src; if (!$("view").open) $("view").showModal(); }
+$("view-close").addEventListener("click", () => $("view").close());
+async function checkOnPage(body, title){ const url = $("url").value.trim();
+  if (!/^https?:\/\//.test(url)) { openTab("tab-plan"); $("url").focus(); $("status").textContent = "Wpisz adres strony w zakładce Plan – na niej bot sprawdzi bibliotekę."; return; }
+  showView(title, "data:image/gif;base64,R0lGODlhAQABAAAAACw=", null, "Bot otwiera stronę i robi zrzut…");
+  const r = await fetch("/api/check", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ url, useChrome: $("useChrome").checked, ...body }) }).catch(() => null);
+  const j = r ? await r.json().catch(() => ({})) : {}; if (!j.data) { $("view-msg").textContent = j.error || "nie udało się sprawdzić"; return; }
+  let msg;
+  if (body.image) msg = j.box ? `Najlepsze dopasowanie: ${Math.round(j.score * 100)}%${j.scale !== 1 ? `, skala ${j.scale}` : ""} (żółta ramka). Domyślny próg w akcjach: 90%.` : "Nie znaleziono podobnego miejsca.";
+  else msg = j.error ? j.error : !j.count ? "Na stronie nie ma takiego elementu." : `Elementów pasujących do selektora: ${j.count}${j.count > 1 ? " (bot użyje pierwszego)" : ""}${j.visible ? "" : " – pierwszy jest niewidoczny"}${j.scrolled ? "; strona przewinięta do niego" : ""}.`;
+  showView(title, j.data, j.box, msg); }
+$("pane-lib").addEventListener("click", async e => { const b = e.target.closest("[data-lib]"); if (!b) return;
+  const card = b.closest(".lib-card"), name = card?.dataset.name, tr = b.closest("tr"), el = tr ? ELEMS[+tr.dataset.i] : null;
+  switch (b.dataset.lib) {
+    case "view": { const im = card.querySelector("img"); showView(name.replace(/\.png$/, ""), im.src, null, `${im.naturalWidth} × ${im.naturalHeight} px · ${usesText(usesOf("img", name))}`); break; }
+    case "check": checkOnPage({ image: name }, "Sprawdzenie: " + name.replace(/\.png$/, "")); break;
+    case "checkel": if (!el.selector.trim()) { tr.querySelector('[data-el="selector"]').focus(); break; } checkOnPage({ selector: el.selector }, "Sprawdzenie: " + el.name); break;
+    case "rename": { const span = card.querySelector(".lib-name"), inp = h(`<input class="lib-rename" value="${esc(name.replace(/\.png$/, ""))}" maxlength="60">`);
+      span.replaceWith(inp); inp.select();
+      const done = async ok => { inp.onblur = null; if (!ok || !inp.value.trim() || inp.value.trim() + ".png" === name) return renderLib();
+        const r = await fetch("/api/images/rename", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ from: name, to: inp.value }) }).catch(() => null);
+        const j = r ? await r.json().catch(() => ({})) : {}; if (!j.name) { $("status").textContent = j.error || "nie udało się zmienić nazwy"; return renderLib(); }
+        renameRefs("img", name, j.name); await loadImages(); };
+      inp.onkeydown = ev => { if (ev.key === "Enter") { ev.preventDefault(); done(true); } if (ev.key === "Escape") { ev.stopPropagation(); done(false); } };
+      inp.onblur = () => done(true); break; }
+    case "del": { if (b.dataset.sure !== "1") { b.dataset.sure = "1"; b.textContent = "Na pewno?"; setTimeout(() => { b.dataset.sure = ""; b.textContent = "Usuń"; }, 3000); break; }
+      const r = await fetch("/api/images/delete", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name }) }).catch(() => null);
+      if (r && r.ok) { renameRefs("img", name, ""); await loadImages(); } break; }
+    case "delel": { if (b.dataset.sure !== "1") { b.dataset.sure = "1"; b.textContent = "Na pewno?"; setTimeout(() => { b.dataset.sure = ""; b.textContent = "Usuń"; }, 3000); break; }
+      ELEMS.splice(+tr.dataset.i, 1); renderLib(); renderScenario(); saveElems(); break; }
+  } });
+// „gdzie użyty” nadąża za scenariuszem
+$("tab-lib").addEventListener("click", renderLib);
+renderLib();
 
 // =====================================================================
 // Podpowiedzi [?]: najechanie, fokus z klawiatury albo kliknięcie (przypina; Esc / klik obok zamyka).

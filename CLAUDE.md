@@ -2,7 +2,7 @@
 
 - Projekt po polsku: panel, komunikaty, dziennik, dokumentacja i commity.
 - Nie dodawaj własnych pomysłów bez pytania; proponuj je autorowi.
-- Program działa tylko lokalnie: serwer nasłuchuje wyłącznie na `127.0.0.1`, bez telemetrii, bez wysyłania danych gdziekolwiek poza wejściami bota na wskazaną stronę (i przez podane proxy). Folder `reports/` nie trafia do repo; folder `obrazy/` (wzorce do szukania) trafia.
+- Program działa tylko lokalnie: serwer nasłuchuje wyłącznie na `127.0.0.1`, bez telemetrii, bez wysyłania danych gdziekolwiek poza wejściami bota na wskazaną stronę (i przez podane proxy). Folder `reports/` nie trafia do repo; folder `obrazy/` (wzorce do szukania) i plik `elementy.json` (nazwane elementy Biblioteki) trafiają.
 
 ## Wersjonowanie – przy KAŻDEJ zmianie
 

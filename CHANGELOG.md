@@ -2,6 +2,17 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.15.0] – 2026-11-06
+
+### Dodane
+- Czwarta zakładka **„Biblioteka”**: obrazy z folderu `obrazy/` i nazwane elementy (nazwa + selektor CSS) w pliku `elementy.json`.
+- Przy każdej pozycji: dodawanie, zmiana nazwy (przenoszona do akcji), usuwanie, podgląd w pełnym rozmiarze, „gdzie użyty” i **„Sprawdź na stronie”** (zrzut strony z Planu z żółtą ramką i % dopasowania albo liczbą pasujących elementów).
+- W akcjach myszy przy miejscu „element” – wybór elementu z Biblioteki albo własny selektor; selektor z Biblioteki działa we wszystkich akcjach naraz.
+- API: `POST /api/images/rename`, `POST /api/images/delete`, `GET/POST /api/elements`, `POST /api/check`.
+
+### Zmienione
+- Plik `elementy.json` trafia do repozytorium (tak jak `obrazy/`).
+
 ## [0.14.0] – 2026-11-06
 
 ### Dodane

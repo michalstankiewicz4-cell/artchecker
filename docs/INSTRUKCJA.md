@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Human Bot
 
-Wersja instrukcji odpowiada wersji programu **0.14.0**.
+Wersja instrukcji odpowiada wersji programu **0.15.0**.
 
 ## 1. Co jest potrzebne
 
@@ -30,7 +30,7 @@ Jeśli panel się nie otworzy, wpisz adres http://127.0.0.1:3777/ ręcznie.
 
 ## 3. Panel krok po kroku
 
-Na górze są przyciski **Start** i **Stop** – widoczne zawsze, niezależnie od zakładki. Pod nimi trzy zakładki: **Plan** – co bot ma zrobić, **Ustawienia** – jak ma wyglądać jego przeglądarka, i **Statystyki** – tabela wejść i dziennik. Start bierze ustawienia z Planu i Ustawień. Przycisk **☾ Noc / ☀ Dzień** obok nazwy przełącza motyw panelu (wybór jest zapamiętywany; bez wyboru panel idzie za ustawieniem systemu). Przy każdym polu jest podpowiedź (najedź myszą) i znaczek **[?]** – najedź na niego albo kliknij, żeby przeczytać dłuższy opis (Esc albo kliknięcie obok zamyka).
+Na górze są przyciski **Start** i **Stop** – widoczne zawsze, niezależnie od zakładki. Pod nimi trzy zakładki: **Plan** – co bot ma zrobić, **Ustawienia** – jak ma wyglądać jego przeglądarka, **Statystyki** – tabela wejść i dziennik, i **Biblioteka** – obrazki i nazwane elementy do klikania. Start bierze ustawienia z Planu i Ustawień. Przycisk **☾ Noc / ☀ Dzień** obok nazwy przełącza motyw panelu (wybór jest zapamiętywany; bez wyboru panel idzie za ustawieniem systemu). Przy każdym polu jest podpowiedź (najedź myszą) i znaczek **[?]** – najedź na niego albo kliknij, żeby przeczytać dłuższy opis (Esc albo kliknięcie obok zamyka).
 
 ### Zakładka „Plan”
 
@@ -112,6 +112,21 @@ Zaznaczone grupy są losowane od nowa przy każdym wejściu. Odznaczona grupa zo
 ### Start i Stop (na górze)
 - **Start** uruchamia serię wejść. Ustawienia są zablokowane, dopóki bot pracuje.
 - **Stop** przerywa bieżące wejście i kończy serię. Wyniki zebrane do tej chwili zostają w raporcie.
+
+### Zakładka „Biblioteka”
+Wspólny zbiór celów dla akcji myszy.
+
+**Obrazy** – wzorce z folderu `obrazy`:
+- **✂ Nowy obraz…** – to samo okienko co w akcji (zrzut strony, plik albo Ctrl+V, zaznaczenie, nazwa), tylko bez dodawania do akcji.
+- Kliknięcie miniatury pokazuje obraz w pełnym rozmiarze z wymiarami.
+- Pod nazwą – **gdzie użyty** (numery akcji scenariusza).
+- **Sprawdź na stronie** – bot otwiera stronę z zakładki Plan (bez zmiany odcisku), robi zrzut i pokazuje żółtą ramką najlepsze dopasowanie z jego procentem.
+- **Zmień nazwę** (Enter zapisuje, Esc anuluje) – akcje, które go używają, dostają nową nazwę. **Usuń** (kliknij dwa razy: „Na pewno?”) – usuwa plik i zdejmuje go z akcji.
+
+**Elementy** – nazwane elementy strony (np. „Pole szukania” = `#q`), zapisywane same w pliku `elementy.json` obok programu:
+- **+ Dodaj element**, potem wpisz nazwę i selektor CSS; **Usuń** – dwa kliknięcia.
+- W akcjach myszy, przy miejscu *element*, wybierasz z listy element z Biblioteki albo „własny selektor”. Zmiana selektora w Bibliotece działa od razu we wszystkich akcjach, a zmiana nazwy – przenosi się do akcji.
+- **Sprawdź na stronie** – ile elementów pasuje do selektora, czy pierwszy jest widoczny, i ramka na zrzucie.
 
 ## 4. Jak czytać wyniki
 

@@ -172,3 +172,20 @@ dialog.crop h2{margin:0 0 10px;font-size:1.1rem}
 #crop-cv{max-width:100%;cursor:crosshair;touch-action:none}
 .imgbox .imgopts label.num input{width:54px}
 .imgbox .imgopts select{padding:4px 5px}
+
+/* Biblioteka */
+.lib-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.lib-imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.lib-card{display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--bg)}
+.lib-card .thumb{display:flex;align-items:center;justify-content:center;height:90px;padding:4px;border:1px solid var(--line);border-radius:6px;cursor:zoom-in;
+  background:repeating-conic-gradient(var(--line) 0 25%,transparent 0 50%) 0 0/12px 12px}
+.lib-card .thumb img{max-width:100%;max-height:80px;object-fit:contain}
+.lib-name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lib-rename{font:inherit;padding:3px 6px;border:1px solid var(--accent);border-radius:5px;background:var(--surface);color:var(--ink)}
+.lib-btns{display:flex;flex-wrap:wrap;gap:4px}
+.lib-btns button{font-size:.8rem;padding:3px 8px}
+.lib-els input{width:100%;font:inherit;font-size:.9rem;padding:4px 7px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--ink);box-sizing:border-box}
+.lib-els td:nth-child(2) input{font-family:Consolas,monospace}
+.lib-els td:nth-child(3){white-space:nowrap}
+.action .libsel{font:.85rem Consolas,monospace;color:var(--muted);background:var(--bg);border:1px dashed var(--line);border-radius:5px;padding:4px 7px;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#view-cv{max-width:100%}

@@ -1,6 +1,6 @@
 # Dokumentacja techniczna – Human Bot
 
-Wersja dokumentu odpowiada wersji programu **0.14.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
+Wersja dokumentu odpowiada wersji programu **0.15.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
 
 ## 1. Cel
 
@@ -35,7 +35,7 @@ przeglądarka użytkownika ──HTTP/SSE──▶ server.mjs (127.0.0.1:3777)
 | `bot/osinput.mjs` | tryb „Przeglądarka”: sterownik prawdziwej klawiatury i myszy Windowsa (PowerShell + user32) |
 | `bot/surface.mjs` | powierzchnia dla myszy: okno strony albo ekran z przeliczeniem strona → ekran (zgranie kursora) |
 | `bot/image.mjs` | szukanie wzorca z `obrazy/` na zrzucie strony: dekoder PNG, porównanie (szarość, kolory, krawędzie), różne skale |
-| `public/` | panel: `index.html` (Start/Stop na górze, przełącznik dzień/noc, zakładki Plan, Ustawienia i Statystyki, podpowiedzi `title` i znaczki [?] z `data-tip`), `app.js` (edytor scenariusza: dodawanie, kolejność ↑↓ i przeciąganie, powielanie, nagrywanie kombinacji klawiszy, walidacja przed startem, oznaczanie konfliktów z „Bez okna” (`updateConflicts`), motyw w `localStorage` pod kluczem `humanbot-theme`, tryb podglądu poza 127.0.0.1/localhost – bez `/api`, Start nieaktywny), `style.css` (motyw: `:root[data-theme=dark]` albo `prefers-color-scheme`; kolory grup zależnych `dep-a`, `dep-b`; konflikty `.conflict`) |
+| `public/` | panel: `index.html` (Start/Stop na górze, przełącznik dzień/noc, zakładki Plan, Ustawienia, Statystyki i Biblioteka, podpowiedzi `title` i znaczki [?] z `data-tip`), `app.js` (edytor scenariusza: dodawanie, kolejność ↑↓ i przeciąganie, powielanie, nagrywanie kombinacji klawiszy, walidacja przed startem, oznaczanie konfliktów z „Bez okna” (`updateConflicts`), motyw w `localStorage` pod kluczem `humanbot-theme`, tryb podglądu poza 127.0.0.1/localhost – bez `/api`, Start nieaktywny), `style.css` (motyw: `:root[data-theme=dark]` albo `prefers-color-scheme`; kolory grup zależnych `dep-a`, `dep-b`; konflikty `.conflict`) |
 | `tools/check-version.mjs` | sprawdza zgodność numeru wersji we wszystkich plikach (`npm test`) |
 | `tools/build-portable.ps1` | buduje wersję przenośną do `dist/` (sekcja 11) |
 | `tools/release-notes.mjs` | opis release'u: instrukcja pobierania + wpis z CHANGELOG dla bieżącej wersji |
@@ -55,6 +55,11 @@ przeglądarka użytkownika ──HTTP/SSE──▶ server.mjs (127.0.0.1:3777)
 | `GET /api/reports` | lista plików CSV w `reports/` |
 | `GET /api/images` | lista plików PNG w `obrazy/` |
 | `POST /api/images` | `{ name, data }` (`data:image/png;base64,…`, maks. 5 MB) → zapis w `obrazy/` pod oczyszczoną nazwą (przy powtórce `-2`, `-3`…); odpowiedź `{ name }` |
+| `POST /api/images/rename` | `{ from, to }` → zmiana nazwy pliku w `obrazy/`; `409`, gdy nazwa zajęta; odpowiedź `{ name }` |
+| `POST /api/images/delete` | `{ name }` → usunięcie pliku z `obrazy/` |
+| `GET /api/elements` | nazwane elementy Biblioteki z `elementy.json`: `[{ name, selector }]` |
+| `POST /api/elements` | `{ elements }` → zapis całej listy (nazwy do 60 znaków, bez powtórek, maks. 500) |
+| `POST /api/check` | jak `/api/shot`, a do tego: `selector` → `count`, `visible`, `box` pierwszego elementu (przewija do niego, gdy jest poza oknem); `image` (+ `cmp`, `scales`) → `box`, `score`, `scale` najlepszego dopasowania |
 | `POST /api/shot` | `{ url, useChrome, width?, height? }` → przeglądarka bez okna i bez zmiany odcisku, okno 1366×768, `load` + 1,5 s, zrzut widocznej części; odpowiedź `{ data, width, height }` |
 | `GET /obrazy/<plik>` | wzorzec PNG (miniatury w panelu) |
 | `GET /reports/<plik>` | pobranie raportu |
@@ -80,7 +85,7 @@ Treść żądania `POST /api/start`:
 
 Ograniczenia: `visits` od 1 do 500, `delayMax ≥ delayMin`, adres musi zaczynać się od `http(s)://`. Scenariusz jest czyszczony (`cleanScenario`):
 - maks. 100 akcji, nieznane typy odrzucane; puste `type.text` i `keys.combo`, miejsce `at: "el"` bez selektora (także w `from`/`to`) i `scroll` `over: "el"` bez selektora – pomijane;
-- miejsce myszy (`where`): `at` = `el` | `pt` | `img` | `rand` (`rand` tylko w `hover`); dla `img`: `images` (do 10 nazw plików z `obrazy/`, alternatywy), `thr` 50–100 (%), `wait` 0–120 s, `miss` = `skip` | `scroll` | `error`, `cmp` = `gray` | `color` | `edges`, `scales` (bool); `img` bez wzorca – akcja pomijana, `x`, `y` 0–100 (% okna); `button` = `left` | `right` | `middle`, `count` 1 | 2, `stay` 0–60 s; `select.how` = `word` | `para` | `range` (`range` używa `from`/`to`, pozostałe – `at`/`selector`/`x`/`y`);
+- miejsce myszy (`where`): `elem` – nazwa elementu z Biblioteki; przy starcie serii serwer czyta `elementy.json` i wstawia jego `selector` (brak elementu = akcja pominięta jak bez selektora); `at` = `el` | `pt` | `img` | `rand` (`rand` tylko w `hover`); dla `img`: `images` (do 10 nazw plików z `obrazy/`, alternatywy), `thr` 50–100 (%), `wait` 0–120 s, `miss` = `skip` | `scroll` | `error`, `cmp` = `gray` | `color` | `edges`, `scales` (bool); `img` bez wzorca – akcja pomijana, `x`, `y` 0–100 (% okna); `button` = `left` | `right` | `middle`, `count` 1 | 2, `stay` 0–60 s; `select.how` = `word` | `para` | `range` (`range` używa `from`/`to`, pozostałe – `at`/`selector`/`x`/`y`);
 - `text` do 20 000 znaków (CRLF → `\n`), `combo` do 60 znaków w nazwach Playwrighta (`Control`, `Alt`, `Shift`, `Meta`, `Enter`, `ArrowLeft`, litery wielkie…; `Plus` → `Equal`), `times` 1–100, `px` 50–20 000, `min`/`max` 0–600 s (`max ≥ min`), `target` = `page` | `browser`;
 - `headless` razem z akcją `target: "browser"` daje `400`.
 

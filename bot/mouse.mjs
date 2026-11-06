@@ -12,7 +12,7 @@ const ioOf = (page, ctx) => ctx.io || pageSurface(page);
 const inBox = (b, sx = [0.3, 0.7], sy = [0.35, 0.65]) => ({ x: b.x + b.width * rand(...sx), y: b.y + b.height * rand(...sy) });
 
 // opis miejsca do dziennika
-export const placeText = (w, hit) => w.at === "el" ? w.selector : w.at === "pt" ? `punkt ${w.x}%, ${w.y}%` : w.at === "rand" ? "losowe miejsce"
+export const placeText = (w, hit) => w.at === "el" ? (w.elem ? `${w.elem} (${w.selector})` : w.selector) : w.at === "pt" ? `punkt ${w.x}%, ${w.y}%` : w.at === "rand" ? "losowe miejsce"
   : hit ? `obraz ${hit.name.replace(/\.png$/, "")} (${Math.round(hit.score * 100)}%${hit.scale !== 1 ? `, skala ${hit.scale}` : ""})` : "obraz";
 
 // szukanie obrazu: do `wait` s (strona może się doczytywać); gdy brak – pomiń, przewijaj i szukaj albo błąd
