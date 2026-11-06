@@ -2,11 +2,15 @@
 
 Bot z panelem w przeglądarce. Wchodzi na stronę [Cyfrowy odcisk człowieka](https://michalstankiewicz4-cell.github.io/behavioral-biometrics/), zachowuje się jak człowiek (przewija, klika zakładki i przyciski, rusza myszą po krzywych z przyspieszaniem i drżeniem) i przy **każdym wejściu ma inny odcisk przeglądarki**. Po każdym wejściu odczytuje wynik ze strony: odcisk przeglądarki i werdykt testu „Człowiek czy bot”, i zapisuje go do raportu.
 
-Wersja **0.2.0** · autor: Michał Stankiewicz · repozytorium: <https://github.com/michalstankiewicz4-cell/webbot>. Działa tylko lokalnie na Twoim komputerze (panel na 127.0.0.1).
+Wersja **0.3.0** · autor: Michał Stankiewicz · repozytorium: <https://github.com/michalstankiewicz4-cell/webbot>. Działa tylko lokalnie na Twoim komputerze (panel na 127.0.0.1).
 
 Dokumenty: [instrukcja obsługi](docs/INSTRUKCJA.md) · [dokumentacja techniczna](docs/DOKUMENTACJA.md) · [historia zmian](CHANGELOG.md)
 
-## Uruchomienie (Windows)
+## Pobranie i uruchomienie (Windows)
+
+**Najprościej – wersja przenośna:** na stronie [Releases](https://github.com/michalstankiewicz4-cell/webbot/releases/latest) pobierz `webbot-X.Y.Z-windows-portable.zip`, rozpakuj i kliknij dwukrotnie `start.bat`. Node.js jest w paczce, więc nic nie trzeba instalować; potrzebny jest tylko Google Chrome (bez niego jednorazowo uruchom `pobierz-chromium.bat`).
+
+**Z kodu źródłowego** (do zmian w programie):
 
 Wymagany [Node.js](https://nodejs.org/) 20 lub nowszy. Chrome nie jest konieczny (bez niego bot użyje wbudowanego Chromium Playwrighta).
 
@@ -15,7 +19,7 @@ Wymagany [Node.js](https://nodejs.org/) 20 lub nowszy. Chrome nie jest konieczny
 
 Ręcznie: `npm install`, potem `npm start`. Inny port: `set PORT=4000` przed `npm start`.
 
-Jeśli Playwright zgłosi brak przeglądarki (przy odznaczonym „Użyj zainstalowanego Chrome'a”): `npx playwright install chromium`.
+Jeśli Playwright zgłosi brak przeglądarki (przy odznaczonym „Użyj zainstalowanego Chrome'a” albo bez Chrome'a): uruchom `pobierz-chromium.bat`.
 
 ## Co zmienia się przy każdym wejściu
 
@@ -62,14 +66,15 @@ Folder `reports/`: dla każdego uruchomienia `wejscia-RRRR-MM-DD-GG-MM-SS.csv` (
 ## Struktura
 
 ```
-start.bat          uruchomienie jednym kliknięciem (Windows)
+start.bat          uruchomienie jednym kliknięciem (Windows; używa node\node.exe z wersji przenośnej, jeśli jest)
+pobierz-chromium.bat  pobranie Chromium, gdy nie ma Chrome'a
 server.mjs         serwer panelu (tylko 127.0.0.1), pętla wejść, raporty, podgląd na żywo (SSE)
 public/            panel: index.html, app.js, style.css
 bot/profiles.mjs   losowe, spójne profile przeglądarki
 bot/spoof.mjs      skrypt zmieniający cechy w przeglądarce
 bot/human.mjs      ludzki ruch myszy, kliknięcia, przewijanie
 bot/visit.mjs      przebieg jednego wejścia i odczyt wyników
-tools/             check-version.mjs – zgodność numeru wersji (npm test)
+tools/             check-version.mjs – zgodność numeru wersji (npm test); build-portable.ps1 – budowa wersji przenośnej
 docs/              DOKUMENTACJA.md, INSTRUKCJA.md
 reports/           raporty CSV i JSON (tworzony automatycznie)
 ```

@@ -2,6 +2,17 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.3.0] – 2026-11-06
+
+### Dodane
+- Wersja przenośna dla Windowsa (`webbot-X.Y.Z-windows-portable.zip` w Releases na GitHubie): kod, zależności, Node.js i cała dokumentacja (wszystkie pliki `.md`) w jednym ZIP-ie – rozpakuj i uruchom `start.bat`, bez instalowania czegokolwiek.
+- `tools/build-portable.ps1` – budowa tej paczki.
+- `pobierz-chromium.bat` – pobranie Chromium, gdy nie ma Google Chrome'a.
+
+### Zmienione
+- `start.bat` używa `node\node.exe` z wersji przenośnej, jeśli jest; bez Node.js pokazuje, skąd go wziąć.
+- Instrukcja i README: pobieranie z Releases; dokumentacja: sekcja 11 o wydaniach.
+
 ## [0.2.0] – 2026-11-06
 
 ### Dodane

@@ -1,6 +1,6 @@
 # Dokumentacja techniczna – Bot odcisku
 
-Wersja dokumentu odpowiada wersji programu **0.2.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
+Wersja dokumentu odpowiada wersji programu **0.3.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
 
 ## 1. Cel
 
@@ -33,7 +33,9 @@ przeglądarka użytkownika ──HTTP/SSE──▶ server.mjs (127.0.0.1:3777)
 | `bot/human.mjs` | ruch myszy, kliknięcia, przewijanie, „czytanie” |
 | `public/` | panel: `index.html`, `app.js`, `style.css` |
 | `tools/check-version.mjs` | sprawdza zgodność numeru wersji we wszystkich plikach (`npm test`) |
-| `start.bat` | instalacja przy pierwszym uruchomieniu i start serwera (Windows) |
+| `tools/build-portable.ps1` | buduje wersję przenośną do `dist/` (sekcja 11) |
+| `start.bat` | start serwera (Windows); używa `node\node.exe`, jeśli jest (wersja przenośna), inaczej Node.js z systemu i przy pierwszym uruchomieniu `npm install` |
+| `pobierz-chromium.bat` | `playwright install chromium` tym samym Node.js co `start.bat` |
 
 ## 4. API serwera
 
@@ -144,6 +146,7 @@ Pliki `reports/wejscia-RRRR-MM-DD-GG-MM-SS.{csv,json}` (czas UTC) są zapisywane
   - **MAJOR** dla zmian niezgodnych z wcześniejszymi raportami lub API.
 - **Jedno źródło wersji:** pole `version` w `package.json`. Serwer czyta je przy starcie i pokazuje w konsoli, w panelu (`/api/info`) i w `config.version` raportu JSON.
 - Ten sam numer musi stać w `README.md`, `docs/DOKUMENTACJA.md`, `docs/INSTRUKCJA.md` i jako najnowszy wpis w `CHANGELOG.md`. Pilnuje tego `npm test` (`tools/check-version.mjs`), który zwraca błąd przy niezgodności.
+- Wydania dla innych osób: sekcja 11.
 - Każda zmiana: podniesienie wersji, wpis w `CHANGELOG.md`, aktualizacja dokumentów, których zmiana dotyczy, `npm test` i commit z numerem wersji w opisie.
 
 ## 10. Testowanie
@@ -151,3 +154,9 @@ Pliki `reports/wejscia-RRRR-MM-DD-GG-MM-SS.{csv,json}` (czas UTC) są zapisywane
 - `npm test`: zgodność wersji.
 - Próba ręczna: `start.bat`, w panelu 2 wejścia z zaznaczonymi wszystkimi opcjami. Oczekiwane: dwa różne odciski oznaczone „nowy”, werdykt „człowiek” i raport w `reports/`.
 - Próba bez Chrome'a: odznaczone „Użyj zainstalowanego Chrome'a” i zaznaczone „Bez okna”.
+
+## 11. Wydania (Releases) i wersja przenośna
+
+- Wersja przenośna to ZIP `webbot-X.Y.Z-windows-portable.zip` z kodem programu, `node_modules` (`npm install --omit=dev`), całą dokumentacją (wszystkie pliki `.md` z głównego folderu i folder `docs/`) i `node\node.exe` z licencją Node.js (`node\LICENSE`). Nie zawiera przeglądarki: używa zainstalowanego Chrome'a, a bez niego Chromium pobranego przez `pobierz-chromium.bat` (do `%LOCALAPPDATA%\ms-playwright`).
+- Budowa na Windowsie z Node.js: `powershell -ExecutionPolicy Bypass -File tools\build-portable.ps1` → `dist\webbot-X.Y.Z-windows-portable.zip` (folder `dist/` nie trafia do repo). Do paczki trafia `node.exe`, którym uruchomiono skrypt.
+- Wydanie: release na GitHubie o nazwie `vX.Y.Z` z opisem z `CHANGELOG.md` i ZIP-em jako załącznikiem. Tag `vX.Y.Z` tworzy GitHub przy publikacji release'u (lokalnie tagów nie tworzymy). Release wydajemy dla wersji, które mają trafić do innych osób – nie musi być przy każdej zmianie.

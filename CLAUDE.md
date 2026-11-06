@@ -11,7 +11,8 @@
 3. Zmień numer `**X.Y.Z**` w `README.md`, `docs/DOKUMENTACJA.md` i `docs/INSTRUKCJA.md`.
 4. Zaktualizuj treść wszystkich dokumentów, których zmiana dotyczy (dokumentacja techniczna, instrukcja, README).
 5. Uruchom `npm test` – musi zwrócić OK.
-6. Commit z numerem wersji na początku opisu, np. `v0.3.0: …`. Tagów git nie tworzymy.
+6. Commit z numerem wersji na początku opisu, np. `v0.3.0: …`. Tagów git nie tworzymy lokalnie – tag `vX.Y.Z` powstaje tylko przy publikacji release'u na GitHubie.
+7. Release (gdy wersja ma trafić do innych): zbuduj `tools/build-portable.ps1` na Windowsie, opublikuj release `vX.Y.Z` z opisem z CHANGELOG i ZIP-em (szczegóły: `docs/DOKUMENTACJA.md`, sekcja 11).
 
 ## Struktura
 

@@ -1,21 +1,30 @@
 # Instrukcja obsługi – Bot odcisku
 
-Wersja instrukcji odpowiada wersji programu **0.2.0**.
+Wersja instrukcji odpowiada wersji programu **0.3.0**.
 
 ## 1. Co jest potrzebne
 
-- Windows 10/11 (działa też na macOS i Linuksie, ale `start.bat` jest tylko dla Windowsa).
-- [Node.js](https://nodejs.org/) w wersji 20 lub nowszej. Sprawdzisz to w terminalu poleceniem `node -v`.
+- Windows 10/11 (z kodu źródłowego działa też na macOS i Linuksie, ale `start.bat` jest tylko dla Windowsa).
+- Wersja przenośna: nic więcej – Node.js jest w paczce. Z kodu źródłowego: [Node.js](https://nodejs.org/) 20 lub nowszy (sprawdzisz poleceniem `node -v`).
 - Google Chrome (zalecany). Bez niego bot użyje Chromium, które Playwright dostarcza sam.
 - Internet. Opcjonalnie lista serwerów proxy.
 
 ## 2. Pierwsze uruchomienie
 
+**Wersja przenośna (zalecana):**
+1. Wejdź na https://github.com/michalstankiewicz4-cell/webbot/releases/latest i pobierz plik `webbot-X.Y.Z-windows-portable.zip` (ok. 35 MB).
+2. Rozpakuj go w dowolnym miejscu, np. na pulpicie (prawy przycisk → *Wyodrębnij wszystkie*). Nie uruchamiaj z wnętrza ZIP-a.
+3. W rozpakowanym folderze kliknij dwukrotnie **`start.bat`**. Windows może zapytać, czy uruchomić plik z internetu – wybierz *Więcej informacji → Uruchom mimo to*.
+4. Jeśli nie masz Google Chrome'a, raz uruchom **`pobierz-chromium.bat`** (pobiera ok. 150 MB) i odznaczaj w panelu „Użyj zainstalowanego Chrome'a”.
+
+**Z kodu źródłowego:**
 1. Pobierz projekt: `git clone https://github.com/michalstankiewicz4-cell/webbot` albo na GitHubie *Code → Download ZIP* i rozpakuj.
 2. Wejdź do folderu projektu i kliknij dwukrotnie **`start.bat`**.
 3. Za pierwszym razem pojawi się „Pierwsze uruchomienie: instaluje zaleznosci…”. Trwa to około minuty.
-4. Panel otworzy się sam w przeglądarce pod adresem **http://127.0.0.1:3777/**. Obok nazwy widać numer wersji, np. `v0.2.0`.
-5. **Nie zamykaj czarnego okna konsoli**, dopóki używasz bota: to ono steruje przeglądarkami. Bota wyłączasz, zamykając to okno albo naciskając w nim `Ctrl+C`.
+
+Dalej w obu przypadkach:
+1. Panel otworzy się sam w przeglądarce pod adresem **http://127.0.0.1:3777/**. Obok nazwy widać numer wersji, np. `v0.2.0`.
+2. **Nie zamykaj czarnego okna konsoli**, dopóki używasz bota: to ono steruje przeglądarkami. Bota wyłączasz, zamykając to okno albo naciskając w nim `Ctrl+C`.
 
 Jeśli panel się nie otworzy, wpisz adres http://127.0.0.1:3777/ ręcznie.
 
@@ -87,14 +96,14 @@ Oba pliki są uzupełniane po każdym wejściu, więc przerwanie serii nie kasuj
 
 | Objaw | Co zrobić |
 |---|---|
-| `'node' is not recognized…` | Zainstaluj Node.js i uruchom `start.bat` ponownie. |
+| „Nie znaleziono Node.js” | Pobierz wersję przenośną z Releases albo zainstaluj Node.js. |
 | Panel pisze „brak połączenia z serwerem” | Okno konsoli zostało zamknięte. Uruchom `start.bat` jeszcze raz. |
 | `EADDRINUSE` w konsoli | Bot już działa w innym oknie. Zamknij je albo przed `npm start` wpisz `set PORT=4000` i otwórz http://127.0.0.1:4000/. |
-| „Executable doesn't exist…” | Odznaczony jest Chrome i brakuje Chromium. Uruchom `npx playwright install chromium` w folderze projektu. |
+| „Executable doesn't exist…” | Brak Chrome'a i Chromium. Uruchom `pobierz-chromium.bat` w folderze programu. |
 | Błąd wejścia `net::ERR_PROXY_CONNECTION_FAILED` | To proxy nie działa. Usuń je z listy. |
 | „test … nie został ukończony” w dzienniku | Bot chybił kółko. Seria toczy się dalej, w tym wejściu po prostu nie będzie werdyktu. |
 | Odcisk się powtarza | Sprawdź, czy zaznaczone są „Szum na płótnie” i „Karta graficzna”. Bez nich odcisk zmienia się rzadziej. |
 
 ## 7. Aktualizacja
 
-W folderze sklonowanym przez git: `git pull`, a potem `npm install`. Jeśli pobierałeś ZIP, pobierz nowy i przenieś do niego swój folder `reports`, żeby zachować stare raporty. Co się zmieniło w nowej wersji, opisuje [CHANGELOG.md](../CHANGELOG.md).
+Wersja przenośna: pobierz nowy ZIP z Releases, rozpakuj obok starego i przenieś do niego folder `reports`, żeby zachować stare raporty. Z kodu źródłowego: `git pull`, potem `npm install`. Co się zmieniło w nowej wersji, opisuje [CHANGELOG.md](../CHANGELOG.md).
