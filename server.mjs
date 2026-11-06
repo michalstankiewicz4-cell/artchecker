@@ -6,13 +6,13 @@ import { existsSync } from "node:fs";
 import { join, extname, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { exec } from "node:child_process";
-import { visit } from "./bot/visit.mjs";
+import { visit, launch } from "./bot/visit.mjs";
 import { sleep, rand } from "./bot/human.mjs";
 
-const ROOT = dirname(fileURLToPath(import.meta.url)), PUB = join(ROOT, "public"), REP = join(ROOT, "reports");
+const ROOT = dirname(fileURLToPath(import.meta.url)), PUB = join(ROOT, "public"), REP = join(ROOT, "reports"), IMG = join(ROOT, "obrazy");
 const PORT = +(process.env.PORT || 3777);
 const PKG = JSON.parse(await readFile(join(ROOT, "package.json"), "utf8"));   // jedyne źródło numeru wersji
-const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8", ".csv": "text/csv; charset=utf-8" };
+const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8", ".csv": "text/csv; charset=utf-8", ".png": "image/png" };
 
 let run = null;            // { ctrl, records, file, config }
 const clients = new Set(); // połączenia SSE panelu
@@ -61,9 +61,14 @@ async function startRun(cfg){
 const num = (v, lo, hi, d) => { v = +v; return Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d; };
 const target = t => t === "browser" ? "browser" : "page";
 // miejsce dla myszy: element (selektor), punkt (% okna) albo – gdzie wolno – losowo
-const where = (w, rand) => { w = w || {}; const at = w.at === "pt" ? "pt" : w.at === "rand" && rand ? "rand" : "el";
-  return { at, selector: at === "el" ? String(w.selector || "").trim().slice(0, 500) : "", x: Math.round(num(w.x, 0, 100, 50)), y: Math.round(num(w.y, 0, 100, 50)) }; };
-const noEl = w => w.at === "el" && !w.selector;
+// … albo obraz: wzorce z folderu obrazy/ szukane na zrzucie strony
+const imgName = n => { n = String(n || ""); return /^[\p{L}\p{N} _.-]{1,80}\.png$/u.test(n) && !n.includes("..") ? n : ""; };
+const where = (w, rand) => { w = w || {}; const at = ["pt", "img"].includes(w.at) ? w.at : w.at === "rand" && rand ? "rand" : "el";
+  return { at, selector: at === "el" ? String(w.selector || "").trim().slice(0, 500) : "", x: Math.round(num(w.x, 0, 100, 50)), y: Math.round(num(w.y, 0, 100, 50)),
+    images: at === "img" ? (Array.isArray(w.images) ? w.images.map(imgName).filter(Boolean).slice(0, 10) : []) : [],
+    thr: Math.round(num(w.thr, 50, 100, 90)), wait: num(w.wait, 0, 120, 10), miss: ["scroll", "error"].includes(w.miss) ? w.miss : "skip",
+    cmp: ["color", "edges"].includes(w.cmp) ? w.cmp : "gray", scales: w.scales !== false }; };
+const noEl = w => (w.at === "el" && !w.selector) || (w.at === "img" && !w.images.length);
 function cleanScenario(list){
   if (!Array.isArray(list)) return [];
   return list.slice(0, 100).map(a => { switch (a && a.type) {
@@ -80,7 +85,7 @@ function cleanScenario(list){
   } }).filter(a => a && !(a.type === "type" && !a.text) && !(a.type === "keys" && !a.combo) && !noEl(a) && !noEl(a.from || {}) && !noEl(a.to || {}) && !(a.type === "scroll" && a.over === "el" && !a.selector));
 }
 
-const body = req => new Promise((res, rej) => { let b = ""; req.on("data", c => b += c); req.on("end", () => { try { res(JSON.parse(b || "{}")); } catch (e) { rej(e); } }); });
+const body = req => new Promise((res, rej) => { let b = ""; req.on("data", c => { b += c; if (b.length > 8e6) req.destroy(); }); req.on("end", () => { try { res(JSON.parse(b || "{}")); } catch (e) { rej(e); } }); });
 const json = (res, code, obj) => { res.writeHead(code, { "content-type": TYPES[".json"] }); res.end(JSON.stringify(obj)); };
 
 const server = http.createServer(async (req, res) => {
@@ -101,11 +106,29 @@ const server = http.createServer(async (req, res) => {
       await startRun(cfg); return json(res, 200, { ok: true });
     }
     if (url.pathname === "/api/stop" && req.method === "POST") { if (run && !run.done) { run.ctrl.abort(); log("Zatrzymywanie…"); } return json(res, 200, { ok: true }); }
+    // obrazy do szukania na stronie: lista, zapis wycinka z panelu, zrzut strony do wycinania
+    if (url.pathname === "/api/images" && req.method === "GET") { const f = existsSync(IMG) ? (await readdir(IMG)).filter(n => imgName(n)).sort((a, b) => a.localeCompare(b, "pl")) : []; return json(res, 200, f); }
+    if (url.pathname === "/api/images" && req.method === "POST") {
+      const c = await body(req); const base = String(c.name || "").trim().replace(/\.png$/i, "").replace(/[^\p{L}\p{N} _-]/gu, "_").slice(0, 60) || "obraz";
+      const m = /^data:image\/png;base64,([A-Za-z0-9+/=]+)$/.exec(String(c.data || "")); if (!m) return json(res, 400, { error: "to nie jest obraz PNG" });
+      const buf = Buffer.from(m[1], "base64"); if (buf.length > 5e6) return json(res, 400, { error: "obraz za duży (maks. 5 MB)" });
+      await mkdir(IMG, { recursive: true }); let name = base + ".png", k = 2; while (existsSync(join(IMG, name))) name = `${base}-${k++}.png`;
+      await writeFile(join(IMG, name), buf); log(`Zapisano obraz obrazy/${name}`); return json(res, 200, { name });
+    }
+    if (url.pathname === "/api/shot" && req.method === "POST") {
+      const c = await body(req), u = String(c.url || ""); if (!/^https?:\/\//.test(u)) return json(res, 400, { error: "najpierw wpisz adres strony w zakładce Plan" });
+      const w = Math.round(num(c.width, 800, 2560, 1366)), hgt = Math.round(num(c.height, 600, 1600, 768));
+      const br = await launch({ headless: true, channel: c.useChrome === false ? undefined : "chrome" });
+      try { const pg = await (await br.newContext({ viewport: { width: w, height: hgt } })).newPage();
+        await pg.goto(u, { waitUntil: "load", timeout: 30000 }); await sleep(1500);
+        return json(res, 200, { data: "data:image/png;base64," + (await pg.screenshot()).toString("base64"), width: w, height: hgt });
+      } finally { await br.close().catch(() => {}); }
+    }
     if (url.pathname === "/api/info") return json(res, 200, { name: PKG.name, version: PKG.version });
     if (url.pathname === "/api/reports") { const f = existsSync(REP) ? (await readdir(REP)).filter(n => n.endsWith(".csv")).sort().reverse() : []; return json(res, 200, f); }
     // pliki: panel z public/, raporty z reports/
     const rel = decodeURIComponent(url.pathname === "/" ? "/index.html" : url.pathname).replace(/\.\.+/g, "");
-    const path = rel.startsWith("/reports/") ? join(REP, rel.slice(9)) : join(PUB, rel);
+    const path = rel.startsWith("/reports/") ? join(REP, rel.slice(9)) : rel.startsWith("/obrazy/") ? join(IMG, rel.slice(8)) : join(PUB, rel);
     const data = await readFile(path);
     res.writeHead(200, { "content-type": TYPES[extname(path)] || "application/octet-stream" }); res.end(data);
   } catch (e) { if (!res.headersSent) { res.writeHead(e.code === "ENOENT" ? 404 : 500); res.end(e.code === "ENOENT" ? "nie ma" : String(e.message)); } }

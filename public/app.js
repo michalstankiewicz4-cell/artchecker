@@ -32,7 +32,9 @@ const PRESETS = [
   ["Przeglądarka", ["Control+F", "F3", "Control+L", "Control+T", "Control+W", "Control+Tab", "Control+R", "F5", "Alt+ArrowLeft", "Alt+ArrowRight", "Control+Plus", "Control+Minus"]],
 ];
 // miejsce dla myszy: element (selektor CSS), punkt (% szerokości i wysokości okna) albo losowe miejsce
-const pt = at => ({ at, selector: "", x: 50, y: 50 });
+const pt = at => ({ at, selector: "", x: 50, y: 50, images: [], thr: 90, wait: 10, miss: "skip", cmp: "gray", scales: true });
+let IMAGES = [];   // pliki z folderu obrazy/ (tylko gdy panel działa z programu)
+const loadImages = () => LIVE ? fetch("/api/images").then(r => r.json()).then(l => { IMAGES = l; renderScenario(); }).catch(() => {}) : Promise.resolve();
 const MOUSE = ["hover", "click", "drag", "select", "scroll"];
 const TYPES = {
   type:   { name: "Pisz tekst", def: () => ({ text: "", target: "page" }) },
@@ -61,13 +63,30 @@ const targetHTML = (a, i) => { const m = MOUSE.includes(a.type), tp = m ? TIP_PA
 // pola „gdzie”: lista element / punkt / losowo i pola zależne; p = ścieżka w obiekcie akcji ("" albo "from.", "to.")
 const sel = (name, val, opts, title) => `<select data-f="${name}" title="${title}">${opts.map(([v, t]) => `<option value="${v}"${String(v) === String(val) ? " selected" : ""}>${t}</option>`).join("")}</select>`;
 function whereHTML(w, p, label, rand){
-  const opts = [["el", "element"], ["pt", "punkt"]]; if (rand) opts.push(["rand", "losowo"]);
-  let h = `${label ? `<span class="lbl">${label}</span>` : ""}${sel(p + "at", w.at, opts, "Jak wskazać miejsce: element strony (selektor CSS), punkt w oknie (w % szerokości i wysokości) albo losowe miejsce.")}`;
+  const opts = [["el", "element"], ["pt", "punkt"], ["img", "obraz"]]; if (rand) opts.push(["rand", "losowo"]);
+  let h = `${label ? `<span class="lbl">${label}</span>` : ""}${sel(p + "at", w.at, opts, "Jak wskazać miejsce: element strony (selektor CSS), punkt w oknie (w % szerokości i wysokości), obraz (bot szuka wyciętego fragmentu na zrzucie strony) albo losowe miejsce.")}`;
+  if (w.at === "img") return `<span class="where">${h}${imgHTML(w, p)}</span>`;
   if (w.at === "el") h += `<input data-f="${p}selector" class="grow sel" placeholder="selektor CSS, np. #menu" value="${esc(w.selector)}" title="Selektor CSS elementu – bot wybierze w nim losowy punkt.">`;
   if (w.at === "pt") h += `<label class="num pct" title="Odległość od lewej krawędzi okna, w % jego szerokości.">x <input data-f="${p}x" type="number" min="0" max="100" value="${w.x}"> %</label><label class="num pct" title="Odległość od górnej krawędzi okna, w % jego wysokości.">y <input data-f="${p}y" type="number" min="0" max="100" value="${w.y}"> %</label>`;
   return `<span class="where">${h}</span>`;
 }
-const SEL_TIP = "Selektor znajdziesz w Chrome: prawy przycisk na elemencie → Zbadaj → na podświetlonym kodzie prawy przycisk → Copy → Copy selector. Punkt: x i y w % okna (0,0 = lewy górny róg, 50,50 = środek).";
+// obraz: wzorce (kilka = alternatywy, np. wersja jasna i ciemna) i ustawienia szukania
+function imgHTML(w, p){
+  const chips = w.images.map((n, k) => `<span class="chip" title="${esc(n)}">${LIVE ? `<img src="/obrazy/${encodeURIComponent(n)}" alt="">` : ""}<span>${esc(n.replace(/\.png$/, ""))}</span><button type="button" data-do="imgdel" data-p="${p}" data-k="${k}" title="Usuń ten wzorzec z akcji (plik zostaje w folderze obrazy)">✕</button></span>`).join("");
+  const free = IMAGES.filter(n => !w.images.includes(n));
+  return `<span class="imgbox">
+    <span class="chips">${chips || `<span class="sub">brak wzorca</span>`}
+      <select data-f="${p}imgadd" title="Dodaj wzorzec z folderu obrazy. Kilka wzorców = alternatywy: wystarczy, że znajdzie się jeden (np. przycisk w jasnym i ciemnym motywie)."><option value="">+ z folderu…</option>${free.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("")}</select>
+      <button type="button" class="newimg" data-do="newimg" data-p="${p}" title="Zrób zrzut strony albo wklej / wczytaj obrazek i wytnij z niego fragment do szukania.">✂ Nowy…</button></span>
+    <span class="imgopts">
+      <label class="num" title="Jak bardzo znaleziony fragment musi przypominać wzorzec (100% = identyczny).">próg <input data-f="${p}thr" type="number" min="50" max="100" value="${w.thr}"> %</label>
+      <label class="num" title="Jak długo szukać – strona może się jeszcze doczytywać.">szukaj do <input data-f="${p}wait" type="number" min="0" max="120" step="0.5" value="${w.wait}"> s</label>
+      <label class="num">gdy brak ${sel(p + "miss", w.miss, [["skip", "pomiń"], ["scroll", "przewijaj i szukaj"], ["error", "błąd akcji"]], "Co zrobić, gdy obrazka nie ma na stronie.")}</label>
+      <label class="num">porównuj ${sel(p + "cmp", w.cmp, [["gray", "szarość"], ["color", "kolory"], ["edges", "krawędzie"]], "Jak porównywać: kolory – najdokładniej, ale motyw jasny/ciemny psuje dopasowanie; szarość – odporne na drobne zmiany kolorów; krawędzie – odporne też na zmianę motywu.")}</label>
+      <label class="check sm" title="Szukaj też w innych rozmiarach – wzorzec jest dopasowywany do wylosowanego skalowania i rozmiaru okna."><input type="checkbox" data-f="${p}scales"${w.scales ? " checked" : ""}> różne skale</label>
+    </span></span>`;
+}
+const SEL_TIP = "Selektor znajdziesz w Chrome: prawy przycisk na elemencie → Zbadaj → na podświetlonym kodzie prawy przycisk → Copy → Copy selector. Punkt: x i y w % okna (0,0 = lewy górny róg, 50,50 = środek). Obraz: bot robi zrzut strony i szuka na nim wyciętego fragmentu (wzorca), a potem trafia w losowe miejsce w nim.";
 
 function fieldsHTML(a, i){
   switch (a.type) {
@@ -145,18 +164,23 @@ function addAction(type, at = scenario.length){ scenario.splice(at, 0, { type, .
 
 // zmiany pól
 $("scenario").addEventListener("input", e => { const li = e.target.closest(".action"), f = e.target.dataset.f; if (!li || !f || f === "type" || f === "preset") return;
-  setF(scenario[+li.dataset.i], f, e.target.type === "number" ? +e.target.value : e.target.value); });
+  if (/(^|\.)imgadd$/.test(f)) return;
+  setF(scenario[+li.dataset.i], f, e.target.type === "checkbox" ? e.target.checked : e.target.type === "number" ? +e.target.value : e.target.value); });
 // pole „from.x” → a.from.x
+const getW = (a, f) => f.includes(".") ? a[f.split(".")[0]] : a;   // obiekt miejsca dla pola (a, a.from albo a.to)
 function setF(a, f, v){ const k = f.split("."); let o = a; while (k.length > 1) o = o[k.shift()]; o[k[0]] = v; }
 const RERENDER = /(^|\.)at$|^how$|^over$/;   // zmiana tych list zmienia pola wiersza
 $("scenario").addEventListener("change", e => { const li = e.target.closest(".action"); if (!li) return; const i = +li.dataset.i, f = e.target.dataset.f;
   if (f === "type") { scenario[i] = { type: e.target.value, ...TYPES[e.target.value].def() }; renderScenario(); }
   else if (f === "preset" && e.target.value) { scenario[i].combo = e.target.value; const c = li.querySelector(".combo"); c.value = showCombo(e.target.value); c.dataset.combo = e.target.value; e.target.value = ""; }
   else if (f === "target") { scenario[i].target = e.target.value; updateConflicts(); }
+  else if (f && /(^|\.)imgadd$/.test(f)) { if (e.target.value) { getW(scenario[i], f).images.push(e.target.value); renderScenario(); } }
   else if (f && RERENDER.test(f)) { setF(scenario[i], f, e.target.value); renderScenario(); $("scenario").children[i].querySelector(`[data-f="${f}"]`)?.focus(); }
   else if (f === "button" || f === "count") setF(scenario[i], f, f === "count" ? +e.target.value : e.target.value); });
 // przyciski wiersza
 $("scenario").addEventListener("click", e => { const b = e.target.closest("button[data-do]"); if (!b) return; const i = +b.closest(".action").dataset.i;
+  if (b.dataset.do === "newimg") { openCrop(scenario[i], b.dataset.p); return; }
+  if (b.dataset.do === "imgdel") { getW(scenario[i], b.dataset.p + "x").images.splice(+b.dataset.k, 1); renderScenario(); return; }
   if (b.dataset.do === "del") scenario.splice(i, 1);
   if (b.dataset.do === "dup") scenario.splice(i + 1, 0, structuredClone(scenario[i]));
   if (b.dataset.do === "up" && i > 0) [scenario[i - 1], scenario[i]] = [scenario[i], scenario[i - 1]];
@@ -193,7 +217,43 @@ menu.addEventListener("keydown", e => { const items = [...menu.querySelectorAll(
   if (e.key === "ArrowUp") { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
   if (e.key === "Escape") { openMenu(false); $("add-action").focus(); } });
 document.addEventListener("click", () => openMenu(false));
-renderScenario();
+renderScenario(); loadImages();
+
+// =====================================================================
+// Nowy obraz: zrzut strony z planu albo wklejony / wczytany obrazek → zaznaczenie prostokąta → zapis do obrazy/
+// =====================================================================
+const crop = { w: null, img: null, r: null, start: null };
+const cv = $("crop-cv"), cx = cv.getContext("2d");
+function openCrop(a, p){ crop.w = getW(a, p + "x"); crop.img = null; crop.r = null; $("crop-name").value = ""; drawCrop();
+  $("crop-shot").disabled = !LIVE; $("crop-save").disabled = true;
+  $("crop-msg").textContent = LIVE ? "Zrób zrzut, wczytaj plik albo wklej obrazek (Ctrl+V), potem zaznacz myszą fragment do szukania." : "Podgląd panelu: zapis do folderu obrazy działa tylko w programie na Twoim komputerze."; $("crop").showModal(); }
+function setCropImage(src){ const im = new Image(); im.onload = () => { crop.img = im; crop.r = null; drawCrop(); $("crop-msg").textContent = "Zaznacz myszą prostokąt – tylko to bot będzie szukał."; }; im.src = src; }
+function drawCrop(){ const im = crop.img; if (!im) { cv.width = 640; cv.height = 200; cx.fillStyle = getComputedStyle(document.body).getPropertyValue("--bg"); cx.fillRect(0, 0, 640, 200); return; }
+  const s = Math.min(1, 860 / im.naturalWidth, 520 / im.naturalHeight); cv.width = Math.round(im.naturalWidth * s); cv.height = Math.round(im.naturalHeight * s); crop.s = s;
+  cx.drawImage(im, 0, 0, cv.width, cv.height);
+  if (crop.r) { const { x, y, w, h } = crop.r; cx.fillStyle = "rgba(0,0,0,.45)"; cx.fillRect(0, 0, cv.width, cv.height); cx.drawImage(im, x / s, y / s, w / s, h / s, x, y, w, h);
+    cx.strokeStyle = "#ffcc00"; cx.lineWidth = 2; cx.strokeRect(x + 1, y + 1, w - 2, h - 2); }
+  $("crop-save").disabled = !LIVE || !crop.r || crop.r.w < 4 || crop.r.h < 4;
+  $("crop-size").textContent = crop.r ? `${Math.round(crop.r.w / s)} × ${Math.round(crop.r.h / s)} px` : ""; }
+const cpos = e => { const b = cv.getBoundingClientRect(); return { x: Math.max(0, Math.min(cv.width, (e.clientX - b.left) * cv.width / b.width)), y: Math.max(0, Math.min(cv.height, (e.clientY - b.top) * cv.height / b.height)) }; };
+cv.addEventListener("pointerdown", e => { if (!crop.img) return; cv.setPointerCapture(e.pointerId); crop.start = cpos(e); crop.r = null; drawCrop(); });
+cv.addEventListener("pointermove", e => { if (!crop.start) return; const q = cpos(e), s = crop.start;
+  crop.r = { x: Math.min(s.x, q.x), y: Math.min(s.y, q.y), w: Math.abs(q.x - s.x), h: Math.abs(q.y - s.y) }; drawCrop(); });
+cv.addEventListener("pointerup", () => { crop.start = null; });
+$("crop-file").addEventListener("change", e => { const f = e.target.files[0]; if (f) { const rd = new FileReader(); rd.onload = () => setCropImage(rd.result); rd.readAsDataURL(f); } e.target.value = ""; });
+$("crop").addEventListener("paste", e => { const it = [...e.clipboardData.items].find(x => x.type.startsWith("image/")); if (!it) return;
+  e.preventDefault(); const rd = new FileReader(); rd.onload = () => setCropImage(rd.result); rd.readAsDataURL(it.getAsFile()); });
+$("crop-shot").addEventListener("click", async () => { $("crop-msg").textContent = "Robię zrzut strony z zakładki Plan…"; $("crop-shot").disabled = true;
+  const r = await fetch("/api/shot", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ url: $("url").value.trim(), useChrome: $("useChrome").checked }) }).catch(() => null);
+  $("crop-shot").disabled = false; const j = r ? await r.json().catch(() => ({})) : {};
+  if (j.data) setCropImage(j.data); else $("crop-msg").textContent = j.error || "nie udało się zrobić zrzutu"; });
+$("crop-save").addEventListener("click", async () => { const s = crop.s, { x, y, w, h } = crop.r, c = document.createElement("canvas");
+  c.width = Math.round(w / s); c.height = Math.round(h / s); c.getContext("2d").drawImage(crop.img, x / s, y / s, w / s, h / s, 0, 0, c.width, c.height);
+  const r = await fetch("/api/images", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: $("crop-name").value || "obraz", data: c.toDataURL("image/png") }) }).catch(() => null);
+  const j = r ? await r.json().catch(() => ({})) : {};
+  if (!j.name) { $("crop-msg").textContent = j.error || "nie udało się zapisać"; return; }
+  crop.w.images.push(j.name); $("crop").close(); await loadImages(); renderScenario(); });
+$("crop-cancel").addEventListener("click", () => $("crop").close());
 
 // =====================================================================
 // Start / Stop i podgląd na żywo
@@ -210,7 +270,7 @@ function renderScenarioButtons(){ const rows = $("scenario").children;
 
 function validate(){
   if ($("headless").checked && scenario.some(a => a.target === "browser")) return ["Akcje w trybie „Przeglądarka” wymagają widocznego okna – w Ustawieniach odznacz „Bez okna przeglądarki” albo zmień te akcje na „Strona”.", "tab-set"];
-  const noEl = w => w.at === "el" && !w.selector.trim();
+  const noEl = w => (w.at === "el" && !w.selector.trim()) || (w.at === "img" && !w.images.length);
   const i = scenario.findIndex(a => (a.type === "type" && !a.text) || (a.type === "keys" && !a.combo)
     || ((a.type === "hover" || a.type === "click") && noEl(a)) || (a.type === "drag" && (noEl(a.from) || noEl(a.to)))
     || (a.type === "select" && (a.how === "range" ? noEl(a.from) || noEl(a.to) : noEl(a)))

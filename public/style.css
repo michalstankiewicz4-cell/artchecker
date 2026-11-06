@@ -147,3 +147,28 @@ label.check.conflict{background:var(--warn-bg);border:1px solid var(--warn);bord
 .action .fields .where .sel{flex:0 1 230px;width:230px;min-width:140px}
 /* akcje myszy mają więcej pól – zawijają się do kolejnych linii */
 @media (min-width:821px){.action.mouse .fields{flex-wrap:wrap}.action.mouse .fields .sel{flex:1 1 200px;min-width:160px}}
+
+/* obraz jako miejsce: wzorce (miniatury) i ustawienia szukania */
+.action .fields .where:has(.imgbox){flex:1 1 100%;flex-wrap:wrap;align-items:flex-start}
+.imgbox{display:flex;flex-direction:column;gap:6px;flex:1 1 300px;min-width:0}
+.imgbox .chips,.imgbox .imgopts{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+.chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:5px;background:var(--surface);padding:2px 4px 2px 3px;font-size:.82rem;max-width:220px}
+.chip img{height:22px;max-width:60px;object-fit:contain;border-radius:3px;background:repeating-conic-gradient(var(--line) 0 25%,transparent 0 50%) 0 0/8px 8px}
+.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip button{border:0;background:none;padding:0 3px;min-width:0;font-size:.8rem;color:var(--muted)}
+.action button.newimg{font-size:.85rem;padding:4px 9px}
+.action label.check.sm{flex-direction:row;align-items:center;gap:5px;font-size:.88rem;color:var(--muted)}
+.action label.check.sm input{width:auto}
+
+/* okienko wycinania */
+dialog.crop{border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:16px 18px;max-width:min(920px,96vw);width:920px}
+dialog.crop::backdrop{background:rgba(0,0,0,.45)}
+dialog.crop h2{margin:0 0 10px;font-size:1.1rem}
+.crop-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.crop-bar .spacer{flex:1}
+.crop-bar label.num{flex-direction:row;align-items:center;gap:6px}
+.filebtn{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:6px;padding:6px 12px;cursor:pointer;background:var(--surface)}
+.crop-area{margin:8px 0 12px;border:1px dashed var(--line);border-radius:6px;padding:6px;display:flex;justify-content:center;background:var(--bg);overflow:auto}
+#crop-cv{max-width:100%;cursor:crosshair;touch-action:none}
+.imgbox .imgopts label.num input{width:54px}
+.imgbox .imgopts select{padding:4px 5px}

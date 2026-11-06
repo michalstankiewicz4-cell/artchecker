@@ -18,7 +18,7 @@ export function parseProxy(line){
 }
 export const maskProxy = line => line ? line.replace(/\/\/([^:@/]+):([^@/]+)@/, "//$1:***@") : "";
 
-async function launch({ headless, proxy, channel }){
+export async function launch({ headless, proxy, channel }){
   const o = { headless, proxy: proxy ? parseProxy(proxy) : undefined, args: ["--disable-blink-features=AutomationControlled"] };
   if (channel) { try { return await chromium.launch({ ...o, channel }); } catch (_) { /* brak Chrome – wbudowany Chromium */ } }
   return chromium.launch(o);
@@ -86,7 +86,8 @@ const ANAME = { type: "Pisz tekst", keys: "Naciśnij klawisze", hover: "Najedź 
 // które warianty są już podłączone; reszta (nowe akcje myszy) jest na razie tylko w panelu
 const wired = a => !!ACTIONS[a.type]
   && !(a.type === "click" && (a.at !== "el" || a.button !== "left" || a.count !== 1 || a.times !== 1))
-  && !(a.type === "scroll" && a.over === "el");
+  && !(a.type === "scroll" && a.over === "el")
+  && ![a, a.from, a.to].some(w => w && w.at === "img");
 
 
 // wynik: rekord do raportu

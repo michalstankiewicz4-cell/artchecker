@@ -137,6 +137,23 @@ socks5://host:port"></textarea>
   </div>
 
 </main>
+<dialog id="crop" class="crop" aria-labelledby="crop-h">
+  <h2 id="crop-h">Nowy obraz do szukania</h2>
+  <div class="crop-bar">
+    <button type="button" id="crop-shot" title="Bot otworzy stronę z zakładki Plan (bez zmiany odcisku) i zrobi zrzut jej widocznej części.">📷 Zrób zrzut strony</button>
+    <label class="filebtn" title="Wczytaj obrazek z dysku (PNG, JPG…).">📁 Wczytaj plik<input type="file" id="crop-file" accept="image/*" hidden></label>
+    <span class="hint">albo wklej obrazek: Ctrl+V</span>
+  </div>
+  <p id="crop-msg" class="hint"></p>
+  <div class="crop-area"><canvas id="crop-cv" title="Zaznacz myszą prostokąt – tylko ten fragment bot będzie szukał na stronie."></canvas></div>
+  <div class="crop-bar">
+    <label class="num">nazwa <input id="crop-name" maxlength="60" placeholder="np. przycisk-szukaj"></label>
+    <span id="crop-size" class="hint"></span>
+    <span class="spacer"></span>
+    <button type="button" id="crop-cancel">Anuluj</button>
+    <button type="button" id="crop-save" class="primary" title="Zapisz wycinek jako plik PNG w folderze obrazy i dodaj go do akcji.">Zapisz w obrazy/</button>
+  </div>
+</dialog>
 <div id="tip" class="tip" role="tooltip" hidden></div>
 <script src="app.js"></script>
 </body>

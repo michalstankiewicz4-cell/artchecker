@@ -1,6 +1,6 @@
 # Dokumentacja techniczna – Human Bot
 
-Wersja dokumentu odpowiada wersji programu **0.10.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
+Wersja dokumentu odpowiada wersji programu **0.11.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
 
 ## 1. Cel
 
@@ -49,6 +49,10 @@ przeglądarka użytkownika ──HTTP/SSE──▶ server.mjs (127.0.0.1:3777)
 | `POST /api/start` | uruchamia serię; treść JSON jak niżej; `409`, gdy seria już trwa; `400` przy złym adresie |
 | `POST /api/stop` | przerywa serię (`AbortController`) |
 | `GET /api/reports` | lista plików CSV w `reports/` |
+| `GET /api/images` | lista plików PNG w `obrazy/` |
+| `POST /api/images` | `{ name, data }` (`data:image/png;base64,…`, maks. 5 MB) → zapis w `obrazy/` pod oczyszczoną nazwą (przy powtórce `-2`, `-3`…); odpowiedź `{ name }` |
+| `POST /api/shot` | `{ url, useChrome, width?, height? }` → przeglądarka bez okna i bez zmiany odcisku, okno 1366×768, `load` + 1,5 s, zrzut widocznej części; odpowiedź `{ data, width, height }` |
+| `GET /obrazy/<plik>` | wzorzec PNG (miniatury w panelu) |
 | `GET /reports/<plik>` | pobranie raportu |
 
 Treść żądania `POST /api/start`:
@@ -72,7 +76,7 @@ Treść żądania `POST /api/start`:
 
 Ograniczenia: `visits` od 1 do 500, `delayMax ≥ delayMin`, adres musi zaczynać się od `http(s)://`. Scenariusz jest czyszczony (`cleanScenario`):
 - maks. 100 akcji, nieznane typy odrzucane; puste `type.text` i `keys.combo`, miejsce `at: "el"` bez selektora (także w `from`/`to`) i `scroll` `over: "el"` bez selektora – pomijane;
-- miejsce myszy (`where`): `at` = `el` | `pt` | `rand` (`rand` tylko w `hover`), `x`, `y` 0–100 (% okna); `button` = `left` | `right` | `middle`, `count` 1 | 2, `stay` 0–60 s; `select.how` = `word` | `para` | `range` (`range` używa `from`/`to`, pozostałe – `at`/`selector`/`x`/`y`);
+- miejsce myszy (`where`): `at` = `el` | `pt` | `img` | `rand` (`rand` tylko w `hover`); dla `img`: `images` (do 10 nazw plików z `obrazy/`, alternatywy), `thr` 50–100 (%), `wait` 0–120 s, `miss` = `skip` | `scroll` | `error`, `cmp` = `gray` | `color` | `edges`, `scales` (bool); `img` bez wzorca – akcja pomijana, `x`, `y` 0–100 (% okna); `button` = `left` | `right` | `middle`, `count` 1 | 2, `stay` 0–60 s; `select.how` = `word` | `para` | `range` (`range` używa `from`/`to`, pozostałe – `at`/`selector`/`x`/`y`);
 - `text` do 20 000 znaków (CRLF → `\n`), `combo` do 60 znaków w nazwach Playwrighta (`Control`, `Alt`, `Shift`, `Meta`, `Enter`, `ArrowLeft`, litery wielkie…; `Plus` → `Equal`), `times` 1–100, `px` 50–20 000, `min`/`max` 0–600 s (`max ≥ min`), `target` = `page` | `browser`;
 - `headless` razem z akcją `target: "browser"` daje `400`.
 
@@ -134,7 +138,7 @@ Do tego Playwright ustawia sam: `userAgent`, `locale`, `timezoneId`, `viewport`,
    - `scroll`: `scroll(±px)`; `wait`: `idle(losowo min–max)`;
    - `noise` („Szum”): 3–6 rund: `idle` 1,2–3,5 s; z prawdopodobieństwem 35% najechanie myszą (`moveTo`, bez kliknięcia) na losowy widoczny w oknie `a`, `h1`–`h3` lub `button` i pauza 0,3–0,9 s; potem `scroll` w dół o 250–800 px (15% – w górę o 150–500 px);
    - `target: "browser"` – **jeszcze niepodłączone**: akcja pomijana z wpisem w dzienniku;
-   - **jeszcze niepodłączone** (`wired()`): `hover`, `drag`, `select`, `click` inny niż `at: "el"` + `left` + `count 1` + `times 1`, `scroll` z `over: "el"` – pomijane z wpisem w dzienniku;
+   - **jeszcze niepodłączone** (`wired()`): każde miejsce `at: "img"`, `hover`, `drag`, `select`, `click` inny niż `at: "el"` + `left` + `count 1` + `times 1`, `scroll` z `over: "el"` – pomijane z wpisem w dzienniku;
    - błąd akcji: pierwszy trafia do `actionError`, każdy do dziennika; wejście idzie dalej. `actionsDone` liczy udane akcje.
 5. Zamknięcie przeglądarki. Każdy błąd trafia do pola `error` i nie przerywa serii.
 

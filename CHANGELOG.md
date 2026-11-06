@@ -2,6 +2,18 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.11.0] – 2026-11-06
+
+### Dodane
+- Miejsce **„obraz”** w akcjach myszy: bot ma szukać na zrzucie strony wyciętego fragmentu (wzorca) i trafić w niego.
+- Okienko **„✂ Nowy…”**: zrzut strony z zakładki Plan, wczytanie pliku albo wklejenie obrazka (Ctrl+V), zaznaczenie prostokąta myszą, zapis jako PNG w folderze `obrazy/`.
+- Ustawienia szukania: kilka wzorców jako alternatywy, próg podobieństwa, czas szukania, co zrobić, gdy brak (pomiń / przewijaj i szukaj / błąd), sposób porównywania (szarość / kolory / krawędzie), różne skale.
+- API: `GET/POST /api/images`, `POST /api/shot`, pliki `/obrazy/…`.
+
+### Zmienione
+- Folder `obrazy/` nie trafia do repozytorium (`.gitignore`).
+- Szukanie obrazu w bocie jeszcze nie jest podłączone – takie akcje są pomijane z wpisem w dzienniku.
+
 ## [0.10.0] – 2026-11-06
 
 ### Dodane

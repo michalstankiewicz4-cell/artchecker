@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Human Bot
 
-Wersja instrukcji odpowiada wersji programu **0.10.0**.
+Wersja instrukcji odpowiada wersji programu **0.11.0**.
 
 ## 1. Co jest potrzebne
 
@@ -58,10 +58,17 @@ Lista akcji, które bot wykonuje **po kolei, od góry**, przy każdym wejściu z
 | **Czekaj** | od–do sekund | czeka losowo, lekko ruszając myszą |
 | **Szum** | – | przez kilkanaście sekund zachowuje się jak czytający człowiek: 3–6 razy chwilę „czyta” (drobne ruchy myszy), przewija w dół – czasem wraca wyżej – i najeżdża myszą na link, nagłówek albo przycisk, niczego nie klikając |
 
-¹ W wersji 0.10.0 tylko w panelu – bot pomija tę akcję z informacją w dzienniku.
-² Działa wariant podstawowy: *Kliknij* – element, lewy przycisk, pojedyncze, ×1; *Przewiń* – cała strona. Pozostałe warianty bot na razie pomija z informacją w dzienniku.
+¹ W wersji 0.11.0 tylko w panelu – bot pomija tę akcję z informacją w dzienniku.
+² Działa wariant podstawowy (miejsce: element): *Kliknij* – element, lewy przycisk, pojedyncze, ×1; *Przewiń* – cała strona. Pozostałe warianty bot na razie pomija z informacją w dzienniku.
 
-**Miejsce dla myszy:** lista w wierszu – *element* (selektor CSS; bot wybiera w nim losowy punkt), *punkt* (x i y w % szerokości i wysokości okna; 0,0 = lewy górny róg, 50,50 = środek) albo – przy „Najedź myszą” – *losowo* (dowolne miejsce w widocznej części okna).
+**Miejsce dla myszy:** lista w wierszu – *element* (selektor CSS; bot wybiera w nim losowy punkt), *punkt* (x i y w % szerokości i wysokości okna; 0,0 = lewy górny róg, 50,50 = środek) *obraz* (bot szuka na zrzucie strony wyciętego fragmentu – patrz niżej) albo – przy „Najedź myszą” – *losowo* (dowolne miejsce w widocznej części okna).
+
+**Obraz jako miejsce** ¹ – zamiast selektora wskazujesz wycinek, np. przycisk albo ikonkę; bot trafia w losowe miejsce znalezionego fragmentu:
+- **✂ Nowy…** otwiera okienko: **📷 Zrób zrzut strony** (bot otwiera stronę z zakładki Plan, bez zmiany odcisku), **📁 Wczytaj plik** albo wklej obrazek (Ctrl+V). Zaznacz myszą prostokąt, nadaj nazwę i **Zapisz w obrazy/** – wycinek trafia jako PNG do folderu `obrazy` obok programu i od razu do akcji.
+- **+ z folderu…** dodaje zapisany wcześniej wzorzec. Kilka wzorców w jednej akcji to alternatywy – wystarczy, że znajdzie się jeden (np. przycisk w jasnym i w ciemnym motywie). ✕ przy miniaturce usuwa wzorzec z akcji (plik zostaje).
+- **próg** – jak bardzo fragment musi przypominać wzorzec (100% = identyczny); **szukaj do** – ile sekund szukać, bo strona może się doczytywać; **gdy brak** – pomiń akcję, przewijaj stronę i szukaj dalej albo zgłoś błąd akcji;
+- **porównuj** – *szarość* (odporne na drobne zmiany kolorów), *kolory* (najdokładniej, ale zmiana motywu psuje dopasowanie), *krawędzie* (odporne też na zmianę motywu); **różne skale** – szukaj też w innych rozmiarach, bo bot losuje skalowanie i rozmiar okna.
+- W podglądzie panelu (bez programu) można obejrzeć okienko, ale zapis do folderu `obrazy` działa tylko w programie na komputerze.
 
 **Klawisz lub kombinacja:** kliknij w pole z klawiszem i naciśnij kombinację na klawiaturze – zapisze się sama (np. `Ctrl+F`). Skróty, których przeglądarka nie oddaje stronie (np. Ctrl+W, Ctrl+T), wybierz z **listy** obok – są tam też klawisze nawigacji i edycji.
 
