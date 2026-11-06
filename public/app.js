@@ -31,11 +31,17 @@ const PRESETS = [
   ["Edycja", ["Control+A", "Control+C", "Control+V", "Control+X", "Control+Z"]],
   ["Przeglądarka", ["Control+F", "F3", "Control+L", "Control+T", "Control+W", "Control+Tab", "Control+R", "F5", "Alt+ArrowLeft", "Alt+ArrowRight", "Control+Plus", "Control+Minus"]],
 ];
+// miejsce dla myszy: element (selektor CSS), punkt (% szerokości i wysokości okna) albo losowe miejsce
+const pt = at => ({ at, selector: "", x: 50, y: 50 });
+const MOUSE = ["hover", "click", "drag", "select", "scroll"];
 const TYPES = {
   type:   { name: "Pisz tekst", def: () => ({ text: "", target: "page" }) },
   keys:   { name: "Naciśnij klawisze", def: () => ({ combo: "Enter", times: 1, target: "page" }) },
-  click:  { name: "Kliknij w element", def: () => ({ selector: "" }) },
-  scroll: { name: "Przewiń", def: () => ({ dir: "down", px: 600 }) },
+  hover:  { name: "Najedź myszą", def: () => ({ ...pt("rand"), stay: 1, target: "page" }) },
+  click:  { name: "Kliknij", def: () => ({ ...pt("el"), button: "left", count: 1, times: 1, target: "page" }) },
+  drag:   { name: "Przeciągnij", def: () => ({ from: pt("el"), to: pt("pt"), target: "page" }) },
+  select: { name: "Zaznacz tekst", def: () => ({ how: "word", ...pt("el"), from: pt("el"), to: pt("el"), target: "page" }) },
+  scroll: { name: "Przewiń", def: () => ({ dir: "down", px: 600, over: "page", selector: "", target: "page" }) },
   wait:   { name: "Czekaj", def: () => ({ min: 1, max: 3 }) },
   noise:  { name: "Szum", def: () => ({}) },
 };
@@ -46,22 +52,49 @@ const ICON_PAGE = `<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="
 const ICON_BROWSER = `<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 5.75h13" stroke="currentColor" stroke-width="1.2"/><circle cx="3.6" cy="4.15" r=".7" fill="currentColor"/><circle cx="5.6" cy="4.15" r=".7" fill="currentColor"/><path d="M7.5 3.4h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`;
 const TIP_PAGE = "Strona – klawisze trafiają tylko do treści strony. Działa też bez okna i w tle, ale skróty przeglądarki (Ctrl+F, Ctrl+T, Alt+←, F5…) nic nie otworzą.";
 const TIP_BROWSER = "Przeglądarka – klawisze idą do okna przeglądarki jak z prawdziwej klawiatury: działają skróty przeglądarki (np. Ctrl+F otwiera okienko szukania). Wymaga widocznego okna; w tym czasie nie używaj klawiatury ani myszy.";
-const targetHTML = (a, i) => `<span class="target seg2" role="radiogroup" aria-label="Dokąd idą klawisze">
-  <label title="${TIP_PAGE}"><input type="radio" name="tg${i}" value="page"${a.target === "page" ? " checked" : ""} data-f="target" aria-label="Strona"><span>${ICON_PAGE}</span></label><label title="${TIP_BROWSER}"><input type="radio" name="tg${i}" value="browser"${a.target === "browser" ? " checked" : ""} data-f="target" aria-label="Przeglądarka"><span>${ICON_BROWSER}</span></label></span>`;
+const TIP_PAGE_M = "Strona – mysz działa tylko w treści strony. Działa też bez okna i w tle.";
+const TIP_BROWSER_M = "Przeglądarka – prawdziwy kursor nad oknem przeglądarki, więc można trafić też w jej przyciski (np. „Wstecz”, karty). Punkt liczony w % całego okna. Wymaga widocznego okna; w tym czasie nie ruszaj myszą. (Tryb w przygotowaniu.)";
+const targetHTML = (a, i) => { const m = MOUSE.includes(a.type), tp = m ? TIP_PAGE_M : TIP_PAGE, tb = m ? TIP_BROWSER_M : TIP_BROWSER;
+  return `<span class="target seg2" role="radiogroup" aria-label="${m ? "Gdzie działa mysz" : "Dokąd idą klawisze"}">
+  <label title="${tp}"><input type="radio" name="tg${i}" value="page"${a.target === "page" ? " checked" : ""} data-f="target" aria-label="Strona"><span>${ICON_PAGE}</span></label><label title="${tb}"><input type="radio" name="tg${i}" value="browser"${a.target === "browser" ? " checked" : ""} data-f="target" aria-label="Przeglądarka"><span>${ICON_BROWSER}</span></label></span>`; };
+
+// pola „gdzie”: lista element / punkt / losowo i pola zależne; p = ścieżka w obiekcie akcji ("" albo "from.", "to.")
+const sel = (name, val, opts, title) => `<select data-f="${name}" title="${title}">${opts.map(([v, t]) => `<option value="${v}"${String(v) === String(val) ? " selected" : ""}>${t}</option>`).join("")}</select>`;
+function whereHTML(w, p, label, rand){
+  const opts = [["el", "element"], ["pt", "punkt"]]; if (rand) opts.push(["rand", "losowo"]);
+  let h = `${label ? `<span class="lbl">${label}</span>` : ""}${sel(p + "at", w.at, opts, "Jak wskazać miejsce: element strony (selektor CSS), punkt w oknie (w % szerokości i wysokości) albo losowe miejsce.")}`;
+  if (w.at === "el") h += `<input data-f="${p}selector" class="grow sel" placeholder="selektor CSS, np. #menu" value="${esc(w.selector)}" title="Selektor CSS elementu – bot wybierze w nim losowy punkt.">`;
+  if (w.at === "pt") h += `<label class="num pct" title="Odległość od lewej krawędzi okna, w % jego szerokości.">x <input data-f="${p}x" type="number" min="0" max="100" value="${w.x}"> %</label><label class="num pct" title="Odległość od górnej krawędzi okna, w % jego wysokości.">y <input data-f="${p}y" type="number" min="0" max="100" value="${w.y}"> %</label>`;
+  return `<span class="where">${h}</span>`;
+}
+const SEL_TIP = "Selektor znajdziesz w Chrome: prawy przycisk na elemencie → Zbadaj → na podświetlonym kodzie prawy przycisk → Copy → Copy selector. Punkt: x i y w % okna (0,0 = lewy górny róg, 50,50 = środek).";
 
 function fieldsHTML(a, i){
   switch (a.type) {
     case "type": return `<textarea data-f="text" rows="2" placeholder="tekst do wpisania; nowa linia = Enter" title="Tekst, który bot wpisze znak po znaku z ludzkim rytmem. Nowa linia = Enter.">${esc(a.text)}</textarea>
-      <span class="help" tabindex="0" data-tip="Bot wpisuje tekst znak po znaku jak człowiek: nierówne odstępy między klawiszami (średnio ok. 150–200 ms), szybciej w częstych parach liter, dłużej po spacji i interpunkcji, czasem chwila namysłu, każdy klawisz chwilę przytrzymany. Polskie znaki są „naciskane” jak na polskiej klawiaturze. Pisze tam, gdzie jest kursor – żeby wskazać pole, dodaj wcześniej akcję „Kliknij w element”. Jeśli kursora nie ma nigdzie, bot kliknie w pierwsze widoczne pole tekstowe.">?</span>`;
+      <span class="help" tabindex="0" data-tip="Bot wpisuje tekst znak po znaku jak człowiek: nierówne odstępy między klawiszami (średnio ok. 150–200 ms), szybciej w częstych parach liter, dłużej po spacji i interpunkcji, czasem chwila namysłu, każdy klawisz chwilę przytrzymany. Polskie znaki są „naciskane” jak na polskiej klawiaturze. Pisze tam, gdzie jest kursor – żeby wskazać pole, dodaj wcześniej akcję „Kliknij”. Jeśli kursora nie ma nigdzie, bot kliknie w pierwsze widoczne pole tekstowe.">?</span>`;
     case "keys": return `<input data-f="combo" class="combo" readonly value="${esc(showCombo(a.combo))}" data-combo="${esc(a.combo)}" title="Kliknij tutaj i naciśnij klawisz albo kombinację (np. Ctrl+F). Skrótów, które przeglądarka przechwytuje sama (np. Ctrl+W), nie da się tu nacisnąć – wybierz je z listy obok.">
       <select data-f="preset" title="Gotowe klawisze i kombinacje – także te, których nie da się nacisnąć w polu obok."><option value="">lista…</option>${PRESETS.map(([g, ks]) => `<optgroup label="${g}">${ks.map(k => `<option value="${k}">${esc(showCombo(k))}</option>`).join("")}</optgroup>`).join("")}</select>
       <label class="times" title="Ile razy nacisnąć – z ludzkimi odstępami między naciśnięciami.">× <input data-f="times" type="number" min="1" max="100" value="${a.times}"></label>
       <span class="help" tabindex="0" data-tip="Kliknij w pole z klawiszem i naciśnij kombinację na klawiaturze – zapisze się sama (np. Ctrl+F, Shift+Tab, Alt+←). Niektórych skrótów (np. Ctrl+W, Ctrl+T, Ctrl+N) przeglądarka nie oddaje stronie – takie wybierz z listy. „×” = ile razy nacisnąć. Skróty przeglądarki (Ctrl+F, Ctrl+T, Alt+←, F5…) zadziałają tylko w trybie „Przeglądarka”.">?</span>`;
-    case "click": return `<input data-f="selector" class="grow" placeholder="selektor CSS, np. #search albo textarea[name=q]" value="${esc(a.selector)}" title="Selektor CSS elementu, w który bot kliknie (np. pole do pisania).">
-      <span class="help" tabindex="0" data-tip="Bot dojeżdża myszą do elementu ludzkim ruchem i klika w niego – np. w pole, w które potem będzie pisał. Selektor znajdziesz w Chrome: prawy przycisk na elemencie → Zbadaj → na podświetlonym kodzie prawy przycisk → Copy → Copy selector. Przykłady: #search, input[name=q], textarea, button[type=submit]. Bot czeka na element do 10 s.">?</span>`;
-    case "scroll": return `<select data-f="dir" title="Kierunek przewijania."><option value="down"${a.dir === "down" ? " selected" : ""}>w dół</option><option value="up"${a.dir === "up" ? " selected" : ""}>w górę</option></select>
+    case "hover": return `${whereHTML(a, "", "", true)}
+      <label class="num" title="Ile sekund kursor stoi w miejscu (z drobnym drżeniem ręki).">stój <input data-f="stay" type="number" min="0" max="60" step="0.5" value="${a.stay}"> s</label>
+      <span class="help" tabindex="0" data-tip="Bot dojeżdża kursorem ludzkim ruchem i chwilę stoi, niczego nie klikając – np. żeby rozwinąć menu po najechaniu albo pokazać podpowiedź. ${SEL_TIP} „Losowo” – dowolne miejsce w widocznej części okna.">?</span>`;
+    case "click": return `${whereHTML(a, "", "", false)}
+      ${sel("button", a.button, [["left", "lewy"], ["right", "prawy"], ["middle", "środkowy"]], "Którym przyciskiem myszy kliknąć.")}
+      ${sel("count", a.count, [[1, "pojedyncze"], [2, "podwójne"]], "Pojedyncze albo podwójne kliknięcie.")}
+      <label class="times" title="Ile razy powtórzyć kliknięcie – z ludzkimi przerwami.">× <input data-f="times" type="number" min="1" max="100" value="${a.times}"></label>
+      <span class="help" tabindex="0" data-tip="Bot dojeżdża myszą ludzkim ruchem i klika – np. w pole, w które potem będzie pisał. Prawy przycisk otwiera menu kontekstowe, środkowy zwykle otwiera link w nowej karcie. ${SEL_TIP} Przykłady selektorów: #search, input[name=q], button[type=submit]. Bot czeka na element do 10 s.">?</span>`;
+    case "drag": return `${whereHTML(a.from, "from.", "z", false)}${whereHTML(a.to, "to.", "do", false)}
+      <span class="help" tabindex="0" data-tip="Bot wciska lewy przycisk, przesuwa kursor ludzkim ruchem i puszcza – np. suwak, przeciąganie elementu albo zaznaczenie. ${SEL_TIP}">?</span>`;
+    case "select": return `${sel("how", a.how, [["word", "słowo (2× klik)"], ["para", "akapit (3× klik)"], ["range", "fragment (przeciągnij)"]], "Jak zaznaczyć: podwójne kliknięcie zaznacza słowo, potrójne – akapit, przeciągnięcie – fragment od miejsca do miejsca.")}
+      ${a.how === "range" ? `${whereHTML(a.from, "from.", "od", false)}${whereHTML(a.to, "to.", "do", false)}` : whereHTML(a, "", "w", false)}
+      <span class="help" tabindex="0" data-tip="Ludzie często zaznaczają tekst podczas czytania. Słowo – podwójne kliknięcie w losowe słowo elementu, akapit – potrójne kliknięcie, fragment – przeciągnięcie od miejsca do miejsca. ${SEL_TIP}">?</span>`;
+    case "scroll": return `${sel("dir", a.dir, [["down", "w dół"], ["up", "w górę"]], "Kierunek przewijania.")}
       <label class="num" title="O ile pikseli przewinąć (ok. 100 px = jedno „kliknięcie” kółka).">o <input data-f="px" type="number" min="50" max="20000" step="50" value="${a.px}"> px</label>
-      <span class="help" tabindex="0" data-tip="Bot przewija kółkiem myszy porcjami z krótkimi przerwami, jak przy czytaniu. Jedno „kliknięcie” kółka to ok. 100 px, cały ekran – ok. 700–900 px.">?</span>`;
+      ${sel("over", a.over, [["page", "całą stronę"], ["el", "nad elementem"]], "Co przewijać: całą stronę albo przewijany element wewnątrz niej (lista, okienko) – bot najpierw najedzie na niego kursorem.")}
+      ${a.over === "el" ? `<input data-f="selector" class="grow sel" placeholder="selektor CSS, np. .lista albo #czat" value="${esc(a.selector)}" title="Selektor CSS przewijanego elementu.">` : ""}
+      <span class="help" tabindex="0" data-tip="Bot przewija kółkiem myszy porcjami z krótkimi przerwami, jak przy czytaniu. Jedno „kliknięcie” kółka to ok. 100 px, cały ekran – ok. 700–900 px. „Nad elementem” – dla list i okienek, które przewijają się osobno od strony.">?</span>`;
     case "wait": return `<label class="num" title="Najkrótszy czas czekania, w sekundach.">od <input data-f="min" type="number" min="0" step="0.5" value="${a.min}"></label>
       <label class="num" title="Najdłuższy czas czekania, w sekundach.">do <input data-f="max" type="number" min="0" step="0.5" value="${a.max}"> s</label>
       <span class="help" tabindex="0" data-tip="Bot czeka losowy czas z tego przedziału, w tym czasie lekko poruszając myszą – jak człowiek, który czyta albo się zastanawia.">?</span>`;
@@ -73,7 +106,7 @@ function fieldsHTML(a, i){
 function renderScenario(){
   const ol = $("scenario"); ol.innerHTML = "";
   scenario.forEach((a, i) => {
-    const li = h(`<li class="action" data-i="${i}">
+    const li = h(`<li class="action${MOUSE.includes(a.type) ? " mouse" : ""}" data-i="${i}">
       <span class="no">${i + 1}</span>
       <span class="grip" draggable="true" title="Przeciągnij, żeby zmienić kolejność.">⠿</span>
       <select class="kind" data-f="type" title="Rodzaj akcji.">${Object.entries(TYPES).map(([k, t]) => `<option value="${k}"${k === a.type ? " selected" : ""}>${t.name}</option>`).join("")}</select>
@@ -112,11 +145,16 @@ function addAction(type, at = scenario.length){ scenario.splice(at, 0, { type, .
 
 // zmiany pól
 $("scenario").addEventListener("input", e => { const li = e.target.closest(".action"), f = e.target.dataset.f; if (!li || !f || f === "type" || f === "preset") return;
-  const a = scenario[+li.dataset.i]; a[f] = e.target.type === "number" ? +e.target.value : e.target.value; });
+  setF(scenario[+li.dataset.i], f, e.target.type === "number" ? +e.target.value : e.target.value); });
+// pole „from.x” → a.from.x
+function setF(a, f, v){ const k = f.split("."); let o = a; while (k.length > 1) o = o[k.shift()]; o[k[0]] = v; }
+const RERENDER = /(^|\.)at$|^how$|^over$/;   // zmiana tych list zmienia pola wiersza
 $("scenario").addEventListener("change", e => { const li = e.target.closest(".action"); if (!li) return; const i = +li.dataset.i, f = e.target.dataset.f;
   if (f === "type") { scenario[i] = { type: e.target.value, ...TYPES[e.target.value].def() }; renderScenario(); }
   else if (f === "preset" && e.target.value) { scenario[i].combo = e.target.value; const c = li.querySelector(".combo"); c.value = showCombo(e.target.value); c.dataset.combo = e.target.value; e.target.value = ""; }
-  else if (f === "target") { scenario[i].target = e.target.value; updateConflicts(); } });
+  else if (f === "target") { scenario[i].target = e.target.value; updateConflicts(); }
+  else if (f && RERENDER.test(f)) { setF(scenario[i], f, e.target.value); renderScenario(); $("scenario").children[i].querySelector(`[data-f="${f}"]`)?.focus(); }
+  else if (f === "button" || f === "count") setF(scenario[i], f, f === "count" ? +e.target.value : e.target.value); });
 // przyciski wiersza
 $("scenario").addEventListener("click", e => { const b = e.target.closest("button[data-do]"); if (!b) return; const i = +b.closest(".action").dataset.i;
   if (b.dataset.do === "del") scenario.splice(i, 1);
@@ -172,7 +210,11 @@ function renderScenarioButtons(){ const rows = $("scenario").children;
 
 function validate(){
   if ($("headless").checked && scenario.some(a => a.target === "browser")) return ["Akcje w trybie „Przeglądarka” wymagają widocznego okna – w Ustawieniach odznacz „Bez okna przeglądarki” albo zmień te akcje na „Strona”.", "tab-set"];
-  const i = scenario.findIndex(a => (a.type === "click" && !a.selector.trim()) || (a.type === "type" && !a.text) || (a.type === "keys" && !a.combo));
+  const noEl = w => w.at === "el" && !w.selector.trim();
+  const i = scenario.findIndex(a => (a.type === "type" && !a.text) || (a.type === "keys" && !a.combo)
+    || ((a.type === "hover" || a.type === "click") && noEl(a)) || (a.type === "drag" && (noEl(a.from) || noEl(a.to)))
+    || (a.type === "select" && (a.how === "range" ? noEl(a.from) || noEl(a.to) : noEl(a)))
+    || (a.type === "scroll" && a.over === "el" && !a.selector.trim()));
   if (i >= 0) return [`Akcja ${i + 1} (${TYPES[scenario[i].type].name}) jest niewypełniona.`, "tab-plan", i];
   return null;
 }

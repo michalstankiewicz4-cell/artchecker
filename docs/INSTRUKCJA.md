@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Human Bot
 
-Wersja instrukcji odpowiada wersji programu **0.9.1**.
+Wersja instrukcji odpowiada wersji programu **0.10.0**.
 
 ## 1. Co jest potrzebne
 
@@ -50,18 +50,28 @@ Lista akcji, które bot wykonuje **po kolei, od góry**, przy każdym wejściu z
 |---|---|---|
 | **Pisz tekst** | tekst, dokąd | wpisuje tekst znak po znaku z ludzkim rytmem tam, gdzie jest kursor (jeśli nigdzie – w pierwsze widoczne pole tekstowe); nowa linia = Enter |
 | **Naciśnij klawisze** | klawisz lub kombinacja, ile razy, dokąd | naciska np. Enter, Tab, Ctrl+F, Alt+← |
-| **Kliknij w element** | selektor CSS | dojeżdża myszą i klika, np. w pole, w które potem będzie pisał |
-| **Przewiń** | w dół / w górę, o ile px | przewija kółkiem myszy porcjami |
+| **Najedź myszą** | miejsce (element, punkt, losowo), postój w s, dokąd | dojeżdża kursorem i chwilę stoi, niczego nie klikając – np. żeby rozwinąć menu albo pokazać podpowiedź ¹ |
+| **Kliknij** | miejsce (element, punkt), przycisk (lewy, prawy, środkowy), pojedyncze / podwójne, ile razy, dokąd | dojeżdża myszą i klika, np. w pole, w które potem będzie pisał ² |
+| **Przeciągnij** | z miejsca, do miejsca, dokąd | wciska lewy przycisk, przesuwa kursor i puszcza – suwaki, przenoszenie elementów ¹ |
+| **Zaznacz tekst** | słowo (2× klik), akapit (3× klik) albo fragment (przeciągnięcie od–do); miejsce, dokąd | zaznacza tekst jak człowiek podczas czytania ¹ |
+| **Przewiń** | w dół / w górę, o ile px, całą stronę albo nad elementem, dokąd | przewija kółkiem myszy porcjami; „nad elementem” – listy i okienka przewijane osobno od strony ² |
 | **Czekaj** | od–do sekund | czeka losowo, lekko ruszając myszą |
 | **Szum** | – | przez kilkanaście sekund zachowuje się jak czytający człowiek: 3–6 razy chwilę „czyta” (drobne ruchy myszy), przewija w dół – czasem wraca wyżej – i najeżdża myszą na link, nagłówek albo przycisk, niczego nie klikając |
+
+¹ W wersji 0.10.0 tylko w panelu – bot pomija tę akcję z informacją w dzienniku.
+² Działa wariant podstawowy: *Kliknij* – element, lewy przycisk, pojedyncze, ×1; *Przewiń* – cała strona. Pozostałe warianty bot na razie pomija z informacją w dzienniku.
+
+**Miejsce dla myszy:** lista w wierszu – *element* (selektor CSS; bot wybiera w nim losowy punkt), *punkt* (x i y w % szerokości i wysokości okna; 0,0 = lewy górny róg, 50,50 = środek) albo – przy „Najedź myszą” – *losowo* (dowolne miejsce w widocznej części okna).
 
 **Klawisz lub kombinacja:** kliknij w pole z klawiszem i naciśnij kombinację na klawiaturze – zapisze się sama (np. `Ctrl+F`). Skróty, których przeglądarka nie oddaje stronie (np. Ctrl+W, Ctrl+T), wybierz z **listy** obok – są tam też klawisze nawigacji i edycji.
 
 **Selektor CSS:** w Chrome kliknij element prawym przyciskiem → *Zbadaj*, potem na podświetlonym kodzie prawy przycisk → *Copy* → *Copy selector*. Przykłady: `#search`, `input[name=q]`, `textarea`. Bot czeka na element do 10 s.
 
-**Dokąd** – przełącznik z dwiema ikonkami w wierszu akcji, tuż przed strzałkami (tylko przy pisaniu i klawiszach); zaznaczona ikonka jest podświetlona, a po najechaniu myszą pokazuje się opis:
+**Dokąd** – przełącznik z dwiema ikonkami w wierszu akcji, tuż przed strzałkami (przy pisaniu, klawiszach i akcjach myszy); zaznaczona ikonka jest podświetlona, a po najechaniu myszą pokazuje się opis:
 - *Strona* (ikonka kartki z tekstem) – klawisze trafiają tylko do treści strony. Działa też bez okna i w tle, ale skróty przeglądarki (Ctrl+F, Ctrl+T, Alt+←, F5…) nic nie otworzą – strona zobaczy tylko samo naciśnięcie.
-- *Przeglądarka* (ikonka okna z paskiem) – klawisze idą do okna przeglądarki bota jak z prawdziwej klawiatury, więc działają też skróty przeglądarki (np. Ctrl+F otwiera okienko szukania). Wymaga widocznego okna (nie „Bez okna”), a w tym czasie nie można używać klawiatury ani myszy. **W wersji 0.6.0 ten tryb jest tylko w panelu – bot pomija takie akcje z informacją w dzienniku.**
+- *Strona* przy akcjach myszy – mysz działa tylko w treści strony; działa też bez okna i w tle.
+- *Przeglądarka* przy akcjach myszy – prawdziwy kursor nad oknem przeglądarki, więc można trafić też w jej przyciski (np. „Wstecz”, karty); punkt liczony w % całego okna.
+- *Przeglądarka* (ikonka okna z paskiem) – klawisze idą do okna przeglądarki bota jak z prawdziwej klawiatury, więc działają też skróty przeglądarki (np. Ctrl+F otwiera okienko szukania). Wymaga widocznego okna (nie „Bez okna”), a w tym czasie nie można używać klawiatury ani myszy. **Ten tryb (klawisze i mysz) jest na razie tylko w panelu – bot pomija takie akcje z informacją w dzienniku.**
 
 Błąd jednej akcji (np. brak elementu) nie przerywa wejścia: trafia do dziennika i tabeli, a bot idzie do następnej akcji.
 
@@ -129,7 +139,7 @@ Oba pliki są uzupełniane po każdym wejściu, więc przerwanie serii nie kasuj
 | Błąd wejścia `net::ERR_PROXY_CONNECTION_FAILED` | To proxy nie działa. Usuń je z listy. |
 | „test … nie został ukończony” w dzienniku | Bot chybił kółko. Seria toczy się dalej, w tym wejściu po prostu nie będzie werdyktu. |
 | „nie znaleziono elementu …” / „na stronie nie ma pola tekstowego” | Sprawdź selektor albo czy element jest widoczny bez klikania czegoś wcześniej. Wejście idzie dalej, bez tej akcji. |
-| Tekst trafia w złe miejsce | Przed „Pisz tekst” dodaj „Kliknij w element” z selektorem pola. |
+| Tekst trafia w złe miejsce | Przed „Pisz tekst” dodaj „Kliknij” z selektorem pola. |
 | Ctrl+F (lub inny skrót przeglądarki) nic nie otwiera | W trybie „Strona” to normalne. Tryb „Przeglądarka” zostanie podłączony w kolejnej wersji. |
 | „tryb »Przeglądarka« nie jest jeszcze podłączony” w dzienniku | Jak wyżej – zmień akcję na „Strona” albo poczekaj na kolejną wersję. |
 

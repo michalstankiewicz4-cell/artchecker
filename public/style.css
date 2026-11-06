@@ -138,3 +138,12 @@ label.check.conflict{background:var(--warn-bg);border:1px solid var(--warn);bord
 .action.conflict .no::before{content:"⚠ ";color:var(--warn)}
 .action.conflict .no{color:var(--warn-ink)}
 .seg2 label.conflict input:checked+span{background:var(--warn);border-color:var(--warn);color:#1b1500}
+
+/* akcje myszy: miejsce (element / punkt / losowo) */
+.action .fields .lbl{color:var(--muted);font-size:.85rem}
+.action .fields .sel{flex:1 1 200px;min-width:160px}
+.action label.num.pct input{width:58px}
+.action .fields .where{display:flex;align-items:center;gap:8px;flex:0 1 auto;min-width:0}
+.action .fields .where .sel{flex:0 1 230px;width:230px;min-width:140px}
+/* akcje myszy mają więcej pól – zawijają się do kolejnych linii */
+@media (min-width:821px){.action.mouse .fields{flex-wrap:wrap}.action.mouse .fields .sel{flex:1 1 200px;min-width:160px}}

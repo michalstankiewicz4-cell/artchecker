@@ -2,6 +2,19 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.10.0] – 2026-11-06
+
+### Dodane
+- Akcje myszy w panelu: **„Najedź myszą”** (element, punkt w % okna albo losowo; postój), **„Przeciągnij”** (z miejsca do miejsca), **„Zaznacz tekst”** (słowo, akapit albo fragment).
+- **„Kliknij”**: miejsce – element albo punkt, przycisk lewy / prawy / środkowy, pojedyncze lub podwójne, liczba powtórzeń.
+- **„Przewiń”**: całą stronę albo nad wskazanym elementem.
+- Przełącznik Strona / Przeglądarka także przy akcjach myszy (z osobnymi opisami).
+- Bot przyjmuje nowe ustawienia, ale nowe akcje i warianty pomija z wpisem w dzienniku, dopóki nie zostaną podłączone.
+
+### Zmienione
+- „Kliknij w element” nazywa się teraz **„Kliknij”**; w API pola `at`, `x`, `y`, `button`, `count`, `times`, `target` (stary format bez `at` jest traktowany jak element).
+- Wiersze akcji myszy zawijają pola do kolejnych linii.
+
 ## [0.9.1] – 2026-11-06
 
 ### Zmienione

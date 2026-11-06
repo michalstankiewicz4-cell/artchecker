@@ -60,16 +60,24 @@ async function startRun(cfg){
 // scenariusz z panelu: tylko znane akcje, pola przycięte do sensownych zakresów
 const num = (v, lo, hi, d) => { v = +v; return Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d; };
 const target = t => t === "browser" ? "browser" : "page";
+// miejsce dla myszy: element (selektor), punkt (% okna) albo – gdzie wolno – losowo
+const where = (w, rand) => { w = w || {}; const at = w.at === "pt" ? "pt" : w.at === "rand" && rand ? "rand" : "el";
+  return { at, selector: at === "el" ? String(w.selector || "").trim().slice(0, 500) : "", x: Math.round(num(w.x, 0, 100, 50)), y: Math.round(num(w.y, 0, 100, 50)) }; };
+const noEl = w => w.at === "el" && !w.selector;
 function cleanScenario(list){
   if (!Array.isArray(list)) return [];
   return list.slice(0, 100).map(a => { switch (a && a.type) {
     case "type": return { type: "type", text: String(a.text || "").replace(/\r\n?/g, "\n").slice(0, 20000), target: target(a.target) };
     case "keys": return { type: "keys", combo: String(a.combo || "").slice(0, 60), times: Math.round(num(a.times, 1, 100, 1)), target: target(a.target) };
-    case "click": return { type: "click", selector: String(a.selector || "").trim().slice(0, 500) };
-    case "scroll": return { type: "scroll", dir: a.dir === "up" ? "up" : "down", px: Math.round(num(a.px, 50, 20000, 600)) };
+    case "hover": return { type: "hover", ...where(a, true), stay: num(a.stay, 0, 60, 1), target: target(a.target) };
+    case "click": return { type: "click", ...where(a), button: ["right", "middle"].includes(a.button) ? a.button : "left", count: +a.count === 2 ? 2 : 1, times: Math.round(num(a.times, 1, 100, 1)), target: target(a.target) };
+    case "drag": return { type: "drag", from: where(a.from), to: where(a.to), target: target(a.target) };
+    case "select": { const how = ["para", "range"].includes(a.how) ? a.how : "word";
+      return how === "range" ? { type: "select", how, from: where(a.from), to: where(a.to), target: target(a.target) } : { type: "select", how, ...where(a), target: target(a.target) }; }
+    case "scroll": return { type: "scroll", dir: a.dir === "up" ? "up" : "down", px: Math.round(num(a.px, 50, 20000, 600)), over: a.over === "el" ? "el" : "page", selector: String(a.selector || "").trim().slice(0, 500), target: target(a.target) };
     case "wait": { const min = num(a.min, 0, 600, 1); return { type: "wait", min, max: num(a.max, min, 600, min) }; }
     case "noise": return { type: "noise" };
-  } }).filter(a => a && !(a.type === "type" && !a.text) && !(a.type === "keys" && !a.combo) && !(a.type === "click" && !a.selector));
+  } }).filter(a => a && !(a.type === "type" && !a.text) && !(a.type === "keys" && !a.combo) && !noEl(a) && !noEl(a.from || {}) && !noEl(a.to || {}) && !(a.type === "scroll" && a.over === "el" && !a.selector));
 }
 
 const body = req => new Promise((res, rej) => { let b = ""; req.on("data", c => b += c); req.on("end", () => { try { res(JSON.parse(b || "{}")); } catch (e) { rej(e); } }); });

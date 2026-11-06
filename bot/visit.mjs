@@ -82,7 +82,11 @@ const ACTIONS = {
     return `szum: ${rounds} ${plural(rounds, "runda", "rundy", "rund")} czytania i przewijania, najechania myszą: ${hovers}`;
   },
 };
-const ANAME = { type: "Pisz tekst", keys: "Naciśnij klawisze", click: "Kliknij w element", scroll: "Przewiń", wait: "Czekaj", noise: "Szum" };
+const ANAME = { type: "Pisz tekst", keys: "Naciśnij klawisze", hover: "Najedź myszą", click: "Kliknij", drag: "Przeciągnij", select: "Zaznacz tekst", scroll: "Przewiń", wait: "Czekaj", noise: "Szum" };
+// które warianty są już podłączone; reszta (nowe akcje myszy) jest na razie tylko w panelu
+const wired = a => !!ACTIONS[a.type]
+  && !(a.type === "click" && (a.at !== "el" || a.button !== "left" || a.count !== 1 || a.times !== 1))
+  && !(a.type === "scroll" && a.over === "el");
 
 
 // wynik: rekord do raportu
@@ -107,6 +111,7 @@ export async function visit({ n, url, spoofOpts, proxy, headless, channel, scena
       check(signal);
       const label = `#${n} akcja ${k + 1}/${scenario.length} (${ANAME[a.type]})`;
       if (a.target === "browser") { log(`${label}: tryb „Przeglądarka” nie jest jeszcze podłączony – pomijam`); continue; }
+      if (!wired(a)) { log(`${label}: ta akcja (ten wariant) nie jest jeszcze podłączona – pomijam`); continue; }
       try { const msg = await ACTIONS[a.type](page, a, { rec, signal }); rec.actionsDone++; log(`${label}: ${msg}`); }
       catch (e) { check(signal); const m = String(e.message || e).split("\n")[0]; rec.actionError ||= `akcja ${k + 1}: ${m}`; log(`${label}: błąd – ${m}; dalej`); }
       await sleep(rand(200, 600));
