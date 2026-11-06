@@ -8,7 +8,7 @@
 
 1. Podnieś `version` w `package.json` (SemVer: PATCH poprawka, MINOR nowa funkcja, MAJOR zmiana niezgodna z wcześniejszymi raportami lub API). To jedyne źródło wersji w kodzie.
 2. Dodaj wpis na górze `CHANGELOG.md` (`## [X.Y.Z] – RRRR-MM-DD`, sekcje Dodane / Zmienione / Poprawione / Usunięte).
-3. Zmień numer `**X.Y.Z**` w `README.md`, `docs/DOKUMENTACJA.md` i `docs/INSTRUKCJA.md`.
+3. Zmień numer `**X.Y.Z**` w `README.md`, `docs/DOKUMENTACJA.md` i `docs/INSTRUKCJA.md` oraz `vX.Y.Z` przy nazwie w `public/index.html`.
 4. Zaktualizuj treść wszystkich dokumentów, których zmiana dotyczy (dokumentacja techniczna, instrukcja, README).
 5. Uruchom `npm test` – musi zwrócić OK.
 6. Commit z numerem wersji na początku opisu, np. `v0.3.0: …`. Tagów git nie tworzymy lokalnie – tag `vX.Y.Z` powstaje tylko przy publikacji release'u na GitHubie.

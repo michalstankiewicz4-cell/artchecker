@@ -2,7 +2,7 @@
 
 Bot z panelem w przeglądarce. Wchodzi na wskazaną stronę i wykonuje **scenariusz akcji** jak człowiek – pisanie tekstu z nierównymi odstępami między klawiszami, naciskanie klawiszy i skrótów, kliknięcia, przewijanie, czekanie – rusza myszą po krzywych z przyspieszaniem i drżeniem, a przy **każdym wejściu ma inny odcisk przeglądarki**. Działa na dowolnej stronie. Przebieg każdego wejścia trafia do raportu.
 
-Wersja **0.11.1** · autor: Michał Stankiewicz · repozytorium: <https://github.com/michalstankiewicz4-cell/webbot>. Działa tylko lokalnie na Twoim komputerze (panel na 127.0.0.1). Podgląd samego panelu (bez bota): <https://michalstankiewicz4-cell.github.io/webbot/>.
+Wersja **0.12.0** · autor: Michał Stankiewicz · repozytorium: <https://github.com/michalstankiewicz4-cell/webbot>. Działa tylko lokalnie na Twoim komputerze (panel na 127.0.0.1). Podgląd samego panelu (bez bota): <https://michalstankiewicz4-cell.github.io/webbot/>.
 
 Dokumenty: [instrukcja obsługi](docs/INSTRUKCJA.md) · [dokumentacja techniczna](docs/DOKUMENTACJA.md) · [historia zmian](CHANGELOG.md)
 

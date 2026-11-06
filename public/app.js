@@ -6,7 +6,9 @@ let total = 0, running = false;
 // panel działa naprawdę tylko z serwera na tym komputerze; plik albo GitHub Pages = podgląd wyglądu
 const LIVE = ["127.0.0.1", "localhost"].includes(location.hostname);
 const PREVIEW_MSG = location.protocol === "file:" ? "podgląd bez serwera – Start nieaktywny" : "podgląd panelu – bota uruchamiasz na swoim komputerze (start.bat)";
-if (LIVE) fetch("/api/info").then(r => r.json()).then(i => { $("ver").textContent = "v" + i.version; $("ver").hidden = false; document.title += " v" + i.version; }).catch(() => {});
+// numer wersji stoi w index.html (pilnuje go npm test); działający program podaje swój – gdyby panel był z innej wersji
+document.title += " " + $("ver").textContent;
+if (LIVE) fetch("/api/info").then(r => r.json()).then(i => { $("ver").textContent = "v" + i.version; document.title = "Human Bot – panel v" + i.version; }).catch(() => {});
 
 // motyw dzień / noc: domyślnie jak w systemie, wybór zapamiętany w tej przeglądarce
 const THEME_KEY = "humanbot-theme";

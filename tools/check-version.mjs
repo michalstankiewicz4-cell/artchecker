@@ -11,6 +11,7 @@ const errors = [];
 if (!/^\d+\.\d+\.\d+$/.test(version)) errors.push(`package.json: „${version}” to nie jest wersja MAJOR.MINOR.PATCH`);
 for (const f of ["README.md", "docs/DOKUMENTACJA.md", "docs/INSTRUKCJA.md"])
   if (!(await read(f)).includes(`**${version}**`)) errors.push(`${f}: brak „**${version}**”`);
+if (!(await read("public/index.html")).includes(`<span id="ver" class="ver" title="Wersja programu">v${version}</span>`)) errors.push(`public/index.html: brak „v${version}” przy nazwie`);
 const top = /^## \[(\d+\.\d+\.\d+)\]/m.exec(await read("CHANGELOG.md"));
 if (!top || top[1] !== version) errors.push(`CHANGELOG.md: najnowszy wpis to ${top ? top[1] : "(brak)"}, a powinien być ${version}`);
 
