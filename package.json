@@ -1,12 +1,13 @@
 {
   "name": "bot-odcisku",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Bot z panelem w przeglądarce: wchodzi na stronę „Cyfrowy odcisk człowieka”, przewija i klika jak człowiek, przy każdym wejściu z innym odciskiem przeglądarki.",
   "type": "module",
   "author": "Michał Stankiewicz",
   "scripts": {
-    "start": "node server.mjs"
+    "start": "node server.mjs",
+    "test": "node tools/check-version.mjs"
   },
   "dependencies": {
     "playwright": "^1.56.0"

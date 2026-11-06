@@ -31,3 +31,4 @@ code{font-family:Consolas,monospace}
 .good{color:var(--ok);font-weight:600}.bad{color:var(--err);font-weight:600}
 tr.err td{opacity:.8}
 pre#log{margin:0;max-height:300px;overflow:auto;font:12px/1.45 Consolas,monospace;white-space:pre-wrap;color:var(--muted)}
+.ver{display:inline-block;vertical-align:middle;font:500 .8rem Consolas,monospace;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:1px 8px;margin-left:6px}

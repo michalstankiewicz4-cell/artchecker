@@ -11,6 +11,7 @@ import { sleep, rand } from "./bot/human.mjs";
 
 const ROOT = dirname(fileURLToPath(import.meta.url)), PUB = join(ROOT, "public"), REP = join(ROOT, "reports");
 const PORT = +(process.env.PORT || 3777);
+const PKG = JSON.parse(await readFile(join(ROOT, "package.json"), "utf8"));   // jedyne źródło numeru wersji
 const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8", ".csv": "text/csv; charset=utf-8" };
 
 let run = null;            // { ctrl, records, file, config }
@@ -29,7 +30,7 @@ async function startRun(cfg){
   const file = join(REP, `wejscia-${stamp}`);
   await writeFile(file + ".csv", "﻿" + CSV_COLS.join(";") + "\n");
   const ctrl = new AbortController(), proxies = cfg.proxies.split(/\r?\n/).map(s => s.trim()).filter(s => s && !s.startsWith("#"));
-  run = { ctrl, records: [], file, config: { ...cfg, proxies: proxies.length } };
+  run = { ctrl, records: [], file, config: { version: PKG.version, ...cfg, proxies: proxies.length } };
   send("state", { running: true, total: cfg.visits, file: file.split(/[\\/]/).pop() });
   log(`Start: ${cfg.visits} ${plural(cfg.visits, "wejście", "wejścia", "wejść")} na ${cfg.url}${proxies.length ? `, ${proxies.length} proxy na zmianę` : ", bez proxy"}`);
   (async () => {
@@ -71,6 +72,7 @@ const server = http.createServer(async (req, res) => {
       await startRun(cfg); return json(res, 200, { ok: true });
     }
     if (url.pathname === "/api/stop" && req.method === "POST") { if (run && !run.done) { run.ctrl.abort(); log("Zatrzymywanie…"); } return json(res, 200, { ok: true }); }
+    if (url.pathname === "/api/info") return json(res, 200, { name: PKG.name, version: PKG.version });
     if (url.pathname === "/api/reports") { const f = existsSync(REP) ? (await readdir(REP)).filter(n => n.endsWith(".csv")).sort().reverse() : []; return json(res, 200, f); }
     // pliki: panel z public/, raporty z reports/
     const rel = decodeURIComponent(url.pathname === "/" ? "/index.html" : url.pathname).replace(/\.\.+/g, "");
@@ -82,6 +84,6 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, "127.0.0.1", () => {
   const addr = `http://127.0.0.1:${PORT}/`;
-  console.log(`Panel bota: ${addr}  (Ctrl+C kończy)`);
+  console.log(`Bot odcisku v${PKG.version} – panel: ${addr}  (Ctrl+C kończy)`);
   if (!process.env.NO_OPEN) exec(process.platform === "win32" ? `start "" "${addr}"` : process.platform === "darwin" ? `open ${addr}` : `xdg-open ${addr}`);
 });

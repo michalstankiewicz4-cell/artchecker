@@ -2,6 +2,7 @@
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 let total = 0, hashes = [];
+fetch("/api/info").then(r => r.json()).then(i => { $("ver").textContent = "v" + i.version; document.title += " v" + i.version; }).catch(() => {});
 
 function setRunning(on){
   $("start").disabled = on; $("stop").disabled = !on;

@@ -1,0 +1,19 @@
+# Zasady dla tego repo
+
+- Projekt po polsku: panel, komunikaty, dziennik, dokumentacja i commity.
+- Nie dodawaj własnych pomysłów bez pytania; proponuj je autorowi.
+- Program działa tylko lokalnie: serwer nasłuchuje wyłącznie na `127.0.0.1`, bez telemetrii, bez wysyłania danych gdziekolwiek poza wejściami bota na wskazaną stronę (i przez podane proxy). Folder `reports/` nie trafia do repo.
+
+## Wersjonowanie – przy KAŻDEJ zmianie
+
+1. Podnieś `version` w `package.json` (SemVer: PATCH poprawka, MINOR nowa funkcja, MAJOR zmiana niezgodna z wcześniejszymi raportami lub API). To jedyne źródło wersji w kodzie.
+2. Dodaj wpis na górze `CHANGELOG.md` (`## [X.Y.Z] – RRRR-MM-DD`, sekcje Dodane / Zmienione / Poprawione / Usunięte).
+3. Zmień numer `**X.Y.Z**` w `README.md`, `docs/DOKUMENTACJA.md` i `docs/INSTRUKCJA.md`.
+4. Zaktualizuj treść wszystkich dokumentów, których zmiana dotyczy (dokumentacja techniczna, instrukcja, README).
+5. Uruchom `npm test` – musi zwrócić OK.
+6. Commit z numerem wersji na początku opisu, np. `v0.3.0: …`. Tagów git nie tworzymy.
+
+## Struktura
+
+- `server.mjs` – serwer i pętla wejść; `bot/` – logika bota (jeden plik = jedna rola); `public/` – panel; `tools/` – narzędzia deweloperskie.
+- Bot zależy od selektorów strony „Cyfrowy odcisk człowieka” (lista w `docs/DOKUMENTACJA.md`, sekcja 7). Zmiany na tamtej stronie mogą wymagać zmian tutaj.
