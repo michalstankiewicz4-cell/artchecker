@@ -2,7 +2,7 @@
 
 Bot z panelem w przeglądarce. Wchodzi na stronę [Cyfrowy odcisk człowieka](https://michalstankiewicz4-cell.github.io/behavioral-biometrics/), zachowuje się jak człowiek (przewija, klika zakładki i przyciski, rusza myszą po krzywych z przyspieszaniem i drżeniem) i przy **każdym wejściu ma inny odcisk przeglądarki**. Po każdym wejściu odczytuje wynik ze strony: odcisk przeglądarki i werdykt testu „Człowiek czy bot”, i zapisuje go do raportu.
 
-Wersja **0.3.0** · autor: Michał Stankiewicz · repozytorium: <https://github.com/michalstankiewicz4-cell/webbot>. Działa tylko lokalnie na Twoim komputerze (panel na 127.0.0.1).
+Wersja **0.4.0** · autor: Michał Stankiewicz · repozytorium: <https://github.com/michalstankiewicz4-cell/webbot>. Działa tylko lokalnie na Twoim komputerze (panel na 127.0.0.1).
 
 Dokumenty: [instrukcja obsługi](docs/INSTRUKCJA.md) · [dokumentacja techniczna](docs/DOKUMENTACJA.md) · [historia zmian](CHANGELOG.md)
 
@@ -74,7 +74,8 @@ bot/profiles.mjs   losowe, spójne profile przeglądarki
 bot/spoof.mjs      skrypt zmieniający cechy w przeglądarce
 bot/human.mjs      ludzki ruch myszy, kliknięcia, przewijanie
 bot/visit.mjs      przebieg jednego wejścia i odczyt wyników
-tools/             check-version.mjs – zgodność numeru wersji (npm test); build-portable.ps1 – budowa wersji przenośnej
+tools/             check-version.mjs – zgodność numeru wersji (npm test); build-portable.ps1 – budowa wersji przenośnej; release-notes.mjs – opis wydania
+.github/workflows/ release.yml – automat wydań (Actions → „Wydanie” → Run workflow)
 docs/              DOKUMENTACJA.md, INSTRUKCJA.md
 reports/           raporty CSV i JSON (tworzony automatycznie)
 ```

@@ -1,0 +1,48 @@
+# Wydanie: buduje wersję przenośną dla Windowsa i publikuje release vX.Y.Z (X.Y.Z z package.json).
+# Uruchamianie ręczne: zakładka Actions → „Wydanie” → Run workflow.
+name: Wydanie
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Sprawdzenie wersji
+        run: npm test
+
+      - name: Czy ta wersja nie jest już wydana
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ver = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          gh release view "v$ver" *> $null
+          if ($LASTEXITCODE -eq 0) { Write-Error "Release v$ver już istnieje – najpierw podnieś wersję w package.json."; exit 1 }
+          "VERSION=$ver" >> $env:GITHUB_ENV
+          exit 0
+
+      - name: Budowa paczki
+        shell: pwsh
+        run: ./tools/build-portable.ps1
+
+      - name: Opis wydania
+        run: node tools/release-notes.mjs > dist/opis.md
+
+      - name: Publikacja
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >
+          gh release create "v$env:VERSION" "dist/webbot-$env:VERSION-windows-portable.zip"
+          --title "Bot odcisku $env:VERSION" --notes-file dist/opis.md --target "$env:GITHUB_SHA"

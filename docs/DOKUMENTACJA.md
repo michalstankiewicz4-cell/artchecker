@@ -1,6 +1,6 @@
 # Dokumentacja techniczna – Bot odcisku
 
-Wersja dokumentu odpowiada wersji programu **0.3.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
+Wersja dokumentu odpowiada wersji programu **0.4.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
 
 ## 1. Cel
 
@@ -34,6 +34,8 @@ przeglądarka użytkownika ──HTTP/SSE──▶ server.mjs (127.0.0.1:3777)
 | `public/` | panel: `index.html`, `app.js`, `style.css` |
 | `tools/check-version.mjs` | sprawdza zgodność numeru wersji we wszystkich plikach (`npm test`) |
 | `tools/build-portable.ps1` | buduje wersję przenośną do `dist/` (sekcja 11) |
+| `tools/release-notes.mjs` | opis release'u: instrukcja pobierania + wpis z CHANGELOG dla bieżącej wersji |
+| `.github/workflows/release.yml` | automat wydań w GitHub Actions (sekcja 11) |
 | `start.bat` | start serwera (Windows); używa `node\node.exe`, jeśli jest (wersja przenośna), inaczej Node.js z systemu i przy pierwszym uruchomieniu `npm install` |
 | `pobierz-chromium.bat` | `playwright install chromium` tym samym Node.js co `start.bat` |
 
@@ -159,4 +161,11 @@ Pliki `reports/wejscia-RRRR-MM-DD-GG-MM-SS.{csv,json}` (czas UTC) są zapisywane
 
 - Wersja przenośna to ZIP `webbot-X.Y.Z-windows-portable.zip` z kodem programu, `node_modules` (`npm install --omit=dev`), całą dokumentacją (wszystkie pliki `.md` z głównego folderu i folder `docs/`) i `node\node.exe` z licencją Node.js (`node\LICENSE`). Nie zawiera przeglądarki: używa zainstalowanego Chrome'a, a bez niego Chromium pobranego przez `pobierz-chromium.bat` (do `%LOCALAPPDATA%\ms-playwright`).
 - Budowa na Windowsie z Node.js: `powershell -ExecutionPolicy Bypass -File tools\build-portable.ps1` → `dist\webbot-X.Y.Z-windows-portable.zip` (folder `dist/` nie trafia do repo). Do paczki trafia `node.exe`, którym uruchomiono skrypt.
-- Wydanie: release na GitHubie o nazwie `vX.Y.Z` z opisem z `CHANGELOG.md` i ZIP-em jako załącznikiem. Tag `vX.Y.Z` tworzy GitHub przy publikacji release'u (lokalnie tagów nie tworzymy). Release wydajemy dla wersji, które mają trafić do innych osób – nie musi być przy każdej zmianie.
+- **Wydanie automatem (zalecane):** w repozytorium zakładka *Actions* → „Wydanie” → *Run workflow* (gałąź `main`). Automat na Windowsie w chmurze GitHuba:
+  1. instaluje Node.js 24 i uruchamia `npm test` (zgodność wersji);
+  2. przerywa, jeśli release `vX.Y.Z` dla wersji z `package.json` już istnieje;
+  3. buduje paczkę `tools/build-portable.ps1` (z Node.js 24 i jego licencją);
+  4. tworzy opis `tools/release-notes.mjs`;
+  5. publikuje release `vX.Y.Z` z ZIP-em; tag tworzy GitHub na commicie, z którego zbudowano paczkę.
+- **Wydanie ręczne** (bez automatu): `build-portable.ps1` lokalnie, `node tools/release-notes.mjs > opis.md`, a potem na GitHubie *Releases → Draft a new release*, tag `vX.Y.Z`, opis i ZIP.
+- Lokalnie tagów nie tworzymy. Release wydajemy dla wersji, które mają trafić do innych osób – nie musi być przy każdej zmianie.

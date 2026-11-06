@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Bot odcisku
 
-Wersja instrukcji odpowiada wersji programu **0.3.0**.
+Wersja instrukcji odpowiada wersji programu **0.4.0**.
 
 ## 1. Co jest potrzebne
 

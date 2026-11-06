@@ -2,6 +2,12 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.4.0] – 2026-11-06
+
+### Dodane
+- Automat wydań w GitHub Actions (`.github/workflows/release.yml`, „Wydanie”): po kliknięciu *Run workflow* buduje na serwerach GitHuba wersję przenośną dla Windowsa i publikuje release `vX.Y.Z` z ZIP-em i opisem. Nie trzeba niczego budować ani wgrywać ręcznie.
+- `tools/release-notes.mjs` – opis release'u z instrukcją pobierania i wpisem z CHANGELOG.
+
 ## [0.3.0] – 2026-11-06
 
 ### Dodane
