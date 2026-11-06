@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.14.0] – 2026-11-06
+
+### Dodane
+- Działa **tryb „Przeglądarka”** (tylko Windows, z widocznym oknem) dla pisania, klawiszy i wszystkich akcji myszy: prawdziwa klawiatura i kursor przez PowerShell i user32 (`bot/osinput.mjs`). Działają skróty przeglądarki (Ctrl+F, Ctrl+L, Alt+← …) i jej przyciski.
+- Zgranie kursora ze stroną (`bot/surface.mjs`): dwa ludzkie ruchy myszy na początku, przeliczenie punktów strony na ekran z uwzględnieniem skalowania Windowsa; okno bota wraca na wierzch przed każdą akcją.
+- W tym trybie obraz jest szukany na zrzucie całego okna (także przyciski przeglądarki), a „Pisz tekst” pisze tam, gdzie jest kursor tekstowy (np. okienko Ctrl+F).
+
+### Zmienione
+- Podpowiedzi przełącznika Strona / Przeglądarka i instrukcja – bez „w przygotowaniu”.
+
 ## [0.13.0] – 2026-11-06
 
 ### Dodane

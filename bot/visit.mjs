@@ -5,6 +5,8 @@ import { makeProfile, contextOptions, describe } from "./profiles.mjs";
 import { spoof } from "./spoof.mjs";
 import { sleep, rand, moveTo, clickEl, scroll, idle, typeText } from "./human.mjs";
 import { MOUSE_ACTIONS, Skip } from "./mouse.mjs";
+import { pageSurface, browserSurface } from "./surface.mjs";
+import { OsInput } from "./osinput.mjs";
 
 class Stopped extends Error {}
 const check = signal => { if (signal?.aborted) throw new Stopped("zatrzymano"); };
@@ -29,7 +31,7 @@ const EDITABLE = 'textarea, input:not([type]), input[type=text], input[type=sear
 
 // ---------------------------------------------------------------------
 // Akcje scenariusza. Każda zwraca opis do dziennika; błąd akcji nie przerywa wejścia.
-// Tryb „Przeglądarka” (klawisze i mysz na poziomie Windowsa) jest w panelu, ale jeszcze nie jest podłączony.
+// Tryb „Przeglądarka”: klawisze i mysz przez prawdziwą klawiaturę i kursor Windowsa (bot/osinput.mjs, bot/surface.mjs).
 // ---------------------------------------------------------------------
 const PW_KEY = { Plus: "Equal" };   // nazwy z panelu → nazwy Playwrighta
 const toPw = combo => combo.split("+").map(k => PW_KEY[k] || k).join("+");
@@ -48,13 +50,20 @@ async function focusEditable(page){
 
 const ACTIONS = {
   async type(page, a, ctx){
-    const where = await focusEditable(page);
-    const r = await typeText(page, a.text, { signal: ctx.signal });
+    const os = ctx.io.mode === "browser" ? ctx.io.os : null;
+    const where = os ? "tam, gdzie jest kursor w oknie przeglądarki" : await focusEditable(page);   // w trybie „Przeglądarka” – bez szukania pola (np. okienko Ctrl+F, pasek adresu)
+    const r = await typeText(page, a.text, { signal: ctx.signal, os });
     ctx.rec.typedChars = (ctx.rec.typedChars || 0) + r.chars; ctx.rec.typingMs = (ctx.rec.typingMs || 0) + r.ms;
     return `wpisano ${r.chars} ${plural(r.chars, "znak", "znaki", "znaków")} (${where}) w ${(r.ms / 1000).toFixed(1)} s, ${Math.round(r.chars / r.ms * 60000)} znaków/min`;
   },
   async keys(page, a, ctx){
-    for (let k = 0; k < a.times; k++) { check(ctx.signal); if (k) await sleep(rand(120, 380)); await page.keyboard.press(toPw(a.combo), { delay: rand(50, 130) }); }
+    const os = ctx.io.mode === "browser" ? ctx.io.os : null;
+    for (let k = 0; k < a.times; k++) { check(ctx.signal); if (k) await sleep(rand(120, 380));
+      if (!os) { await page.keyboard.press(toPw(a.combo), { delay: rand(50, 130) }); continue; }
+      // prawdziwa klawiatura: modyfikatory w dół po kolei, klawisz, potem puszczanie od końca
+      const keys = a.combo.split("+");
+      try { for (const key of keys) { await os.key(key); await sleep(rand(30, 90)); } await sleep(rand(50, 130)); }
+      finally { for (const key of [...keys].reverse()) { await os.key(key, true).catch(() => {}); await sleep(rand(15, 50)); } } }
     await page.waitForLoadState("load", { timeout: 10000 }).catch(() => {});
     return `naciśnięto ${showCombo(a.combo)}${a.times > 1 ? ` ×${a.times}` : ""}`;
   },
@@ -81,9 +90,10 @@ const ANAME = { type: "Pisz tekst", keys: "Naciśnij klawisze", hover: "Najedź 
 
 
 // wynik: rekord do raportu
-export async function visit({ n, url, spoofOpts, proxy, headless, channel, scenario = [], log, signal }){
+// openOs – sterownik prawdziwej klawiatury i myszy (do testów można podać zastępczy)
+export async function visit({ n, url, spoofOpts, proxy, headless, channel, scenario = [], log, signal, openOs = () => OsInput.open() }){
   const t0 = Date.now(), rec = { n, start: new Date().toISOString(), proxy: maskProxy(proxy) };
-  let browser;
+  let browser, os = null, browserIo = null;
   try {
     browser = await launch({ headless, proxy, channel });
     const major = parseInt(browser.version(), 10) || 130;
@@ -98,11 +108,17 @@ export async function visit({ n, url, spoofOpts, proxy, headless, channel, scena
     await idle(page, rand(800, 2000));
 
     rec.actions = scenario.length; rec.actionsDone = 0;
+    const pageIo = pageSurface(page);
+
     for (const [k, a] of scenario.entries()) {
       check(signal);
       const label = `#${n} akcja ${k + 1}/${scenario.length} (${ANAME[a.type]})`;
-      if (a.target === "browser") { log(`${label}: tryb „Przeglądarka” nie jest jeszcze podłączony – pomijam`); continue; }
-      try { const msg = await ACTIONS[a.type](page, a, { rec, signal }); rec.actionsDone++; log(`${label}: ${msg}`); }
+      try {
+        let io = pageIo;
+        if (a.target === "browser") {
+          if (!os) { os = await openOs(); log(`#${n} tryb „Przeglądarka”: nie ruszaj myszą ani klawiaturą, dopóki bot pracuje w oknie`); }
+          browserIo ||= await browserSurface(page, os); io = browserIo; await io.ready(); }
+        const msg = await ACTIONS[a.type](page, a, { rec, signal, io }); rec.actionsDone++; log(`${label}: ${msg}${a.target === "browser" ? " [przeglądarka]" : ""}`); }
       catch (e) { check(signal); if (e instanceof Skip) { log(`${label}: pominięto – ${e.message}`); continue; } const m = String(e.message || e).split("\n")[0]; rec.actionError ||= `akcja ${k + 1}: ${m}`; log(`${label}: błąd – ${m}; dalej`); }
       await sleep(rand(200, 600));
     }
@@ -112,6 +128,7 @@ export async function visit({ n, url, spoofOpts, proxy, headless, channel, scena
     rec.error = e instanceof Stopped ? "zatrzymano" : String(e.message || e).split("\n")[0];
     log(`#${n} błąd: ${rec.error}`);
   } finally {
+    if (os) await os.close();
     if (browser) await browser.close().catch(() => {});
     rec.ms = Date.now() - t0;
   }

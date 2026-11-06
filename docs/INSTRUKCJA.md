@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Human Bot
 
-Wersja instrukcji odpowiada wersji programu **0.13.0**.
+Wersja instrukcji odpowiada wersji programu **0.14.0**.
 
 ## 1. Co jest potrzebne
 
@@ -76,7 +76,7 @@ Lista akcji, które bot wykonuje **po kolei, od góry**, przy każdym wejściu z
 - *Strona* (ikonka kartki z tekstem) – klawisze trafiają tylko do treści strony. Działa też bez okna i w tle, ale skróty przeglądarki (Ctrl+F, Ctrl+T, Alt+←, F5…) nic nie otworzą – strona zobaczy tylko samo naciśnięcie.
 - *Strona* przy akcjach myszy – mysz działa tylko w treści strony; działa też bez okna i w tle.
 - *Przeglądarka* przy akcjach myszy – prawdziwy kursor nad oknem przeglądarki, więc można trafić też w jej przyciski (np. „Wstecz”, karty); punkt liczony w % całego okna.
-- *Przeglądarka* (ikonka okna z paskiem) – klawisze idą do okna przeglądarki bota jak z prawdziwej klawiatury, więc działają też skróty przeglądarki (np. Ctrl+F otwiera okienko szukania). Wymaga widocznego okna (nie „Bez okna”), a w tym czasie nie można używać klawiatury ani myszy. **Ten tryb (klawisze i mysz) jest na razie tylko w panelu – bot pomija takie akcje z informacją w dzienniku.**
+- *Przeglądarka* (ikonka okna z paskiem) – klawisze idą do okna przeglądarki bota jak z prawdziwej klawiatury, więc działają też skróty przeglądarki (np. Ctrl+F otwiera okienko szukania). Wymaga widocznego okna (nie „Bez okna”), a w tym czasie nie można używać klawiatury ani myszy. Tylko na Windowsie. Bot wyciąga swoje okno na wierzch i przy pierwszej takiej akcji „zgrywa” kursor ze stroną (dwa krótkie ruchy myszy). *Pisz tekst* w tym trybie nie szuka pola – pisze tam, gdzie jest kursor tekstowy (np. w okienku Ctrl+F albo w pasku adresu po Ctrl+L). *Obraz* w tym trybie jest szukany na zrzucie całego okna, więc może być też przyciskiem przeglądarki; wzorzec wycięty przy innym skalowaniu ekranu Windowsa (np. 125%) znajdzie się dzięki „różnym skalom”.
 
 Błąd jednej akcji (np. brak elementu) nie przerywa wejścia: trafia do dziennika i tabeli, a bot idzie do następnej akcji.
 
@@ -145,8 +145,9 @@ Oba pliki są uzupełniane po każdym wejściu, więc przerwanie serii nie kasuj
 | „test … nie został ukończony” w dzienniku | Bot chybił kółko. Seria toczy się dalej, w tym wejściu po prostu nie będzie werdyktu. |
 | „nie znaleziono elementu …” / „na stronie nie ma pola tekstowego” | Sprawdź selektor albo czy element jest widoczny bez klikania czegoś wcześniej. Wejście idzie dalej, bez tej akcji. |
 | Tekst trafia w złe miejsce | Przed „Pisz tekst” dodaj „Kliknij” z selektorem pola. |
-| Ctrl+F (lub inny skrót przeglądarki) nic nie otwiera | W trybie „Strona” to normalne. Tryb „Przeglądarka” zostanie podłączony w kolejnej wersji. |
-| „tryb »Przeglądarka« nie jest jeszcze podłączony” w dzienniku | Jak wyżej – zmień akcję na „Strona” albo poczekaj na kolejną wersję. |
+| Ctrl+F (lub inny skrót przeglądarki) nic nie otwiera | W trybie „Strona” to normalne – przełącz akcję na „Przeglądarka”. |
+| „okno przeglądarki bota nie jest na wierzchu” / „nie udało się zgrać kursora” | W trybie „Przeglądarka” nie zasłaniaj okna bota i nie ruszaj myszą; okno nie może być zminimalizowane. |
+| „tryb »Przeglądarka« działa tylko na Windowsie” | Na innym systemie zmień akcje na „Strona”. |
 
 ## 7. Aktualizacja
 

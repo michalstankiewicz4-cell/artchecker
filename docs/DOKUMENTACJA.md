@@ -1,6 +1,6 @@
 # Dokumentacja techniczna – Human Bot
 
-Wersja dokumentu odpowiada wersji programu **0.13.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
+Wersja dokumentu odpowiada wersji programu **0.14.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
 
 ## 1. Cel
 
@@ -32,6 +32,8 @@ przeglądarka użytkownika ──HTTP/SSE──▶ server.mjs (127.0.0.1:3777)
 | `bot/spoof.mjs` | funkcja wstrzykiwana do strony przed jej skryptami (`addInitScript`) |
 | `bot/human.mjs` | ruch myszy, kliknięcia, przewijanie, „czytanie” |
 | `bot/mouse.mjs` | akcje myszy scenariusza: miejsce (element, punkt, losowo, obraz), najechanie, kliknięcie, przeciąganie, zaznaczanie, przewijanie nad elementem |
+| `bot/osinput.mjs` | tryb „Przeglądarka”: sterownik prawdziwej klawiatury i myszy Windowsa (PowerShell + user32) |
+| `bot/surface.mjs` | powierzchnia dla myszy: okno strony albo ekran z przeliczeniem strona → ekran (zgranie kursora) |
 | `bot/image.mjs` | szukanie wzorca z `obrazy/` na zrzucie strony: dekoder PNG, porównanie (szarość, kolory, krawędzie), różne skale |
 | `public/` | panel: `index.html` (Start/Stop na górze, przełącznik dzień/noc, zakładki Plan, Ustawienia i Statystyki, podpowiedzi `title` i znaczki [?] z `data-tip`), `app.js` (edytor scenariusza: dodawanie, kolejność ↑↓ i przeciąganie, powielanie, nagrywanie kombinacji klawiszy, walidacja przed startem, oznaczanie konfliktów z „Bez okna” (`updateConflicts`), motyw w `localStorage` pod kluczem `humanbot-theme`, tryb podglądu poza 127.0.0.1/localhost – bez `/api`, Start nieaktywny), `style.css` (motyw: `:root[data-theme=dark]` albo `prefers-color-scheme`; kolory grup zależnych `dep-a`, `dep-b`; konflikty `.conflict`) |
 | `tools/check-version.mjs` | sprawdza zgodność numeru wersji we wszystkich plikach (`npm test`) |
@@ -139,7 +141,9 @@ Do tego Playwright ustawia sam: `userAgent`, `locale`, `timezoneId`, `viewport`,
    - `click`: czeka do 10 s na widoczny element, `clickEl`, potem `load`;
    - `scroll`: `scroll(±px)`; `wait`: `idle(losowo min–max)`;
    - `noise` („Szum”): 3–6 rund: `idle` 1,2–3,5 s; z prawdopodobieństwem 35% najechanie myszą (`moveTo`, bez kliknięcia) na losowy widoczny w oknie `a`, `h1`–`h3` lub `button` i pauza 0,3–0,9 s; potem `scroll` w dół o 250–800 px (15% – w górę o 150–500 px);
-   - `target: "browser"` – **jeszcze niepodłączone**: akcja pomijana z wpisem w dzienniku;
+   - `target: "browser"` (tylko Windows): przy pierwszej takiej akcji start sterownika `bot/osinput.mjs` – jeden proces PowerShell (`-File` z pliku w katalogu tymczasowym), który przez `Add-Type` woła `SetCursorPos`, `mouse_event` (przyciski, kółko 120 = ok. 100 px), `keybd_event` (klawisze; rozszerzone: strzałki, Home/End, PgUp/PgDn, Delete, Insert, Win), `SendInput` z `KEYEVENTF_UNICODE` (znaki, też polskie), `SetForegroundWindow` z `AttachThreadInput`, `GetWindowRect`, `Graphics.CopyFromScreen`; proces jest DPI-aware (piksele fizyczne), `timeBeginPeriod(1)`; polecenia linia po linii, odpowiedź `OK …` / `ERR …`; na końcu `REL` puszcza przyciski i modyfikatory;
+   - powierzchnia (`bot/surface.mjs`): `page.bringToFront()`, okno na wierzchu (`GetForegroundWindow`, klasa `Chrome_WidgetWin*`); **zgranie** – kursor ludzkim ruchem w dwa punkty okna, położenie w stronie odczytane z ostatniego `mousemove` (jednorazowy nasłuch bez zmiennych w stronie) → przeliczenie strona → ekran (skala i przesunięcie; uwzględnia skalowanie Windowsa i wylosowane DPR); powtarzane, gdy okno się przesunie; przed każdą akcją okno wraca na wierzch;
+   - w tym trybie: element → punkt strony przeliczony na ekran; punkt i losowo – % całego okna (z paskiem kart); obraz – zrzut całego okna; `type` pisze bez szukania pola; `keys` – modyfikatory w dół po kolei, klawisz, puszczanie od końca;
    - akcje myszy (`bot/mouse.mjs`): `locate()` zamienia miejsce na punkt – `el`: czeka do 10 s na widoczny element, przewija do niego, losowy punkt w 30–70% szerokości i 35–65% wysokości; `pt`: % okna; `rand`: 10–90% okna; `img`: szukanie obrazu (niżej);
    - `hover`: dojazd `moveTo` i postój `stay` (±15%) z drżeniem ręki (ruchy do 1,5 px);
    - `click`: dojazd, pauza 60–220 ms, `count` naciśnięć przyciskiem `button` z `clickCount` 1, 2… (przytrzymanie 50–120 ms, odstęp 70–150 ms), × `times` z przerwą 250–700 ms, potem `load`;

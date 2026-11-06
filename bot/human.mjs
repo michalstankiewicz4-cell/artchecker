@@ -6,6 +6,7 @@ const gauss = () => { let u = 0, v = 0; while (!u) u = Math.random(); while (!v)
 // pozycja kursora pamiętana per strona
 const POS = new WeakMap();
 export const cursor = page => POS.get(page) || { x: rand(100, 400), y: rand(100, 300) };
+export const setCursor = (page, p) => POS.set(page, { x: p.x, y: p.y });
 
 // krzywa Béziera z losowymi punktami kontrolnymi, przyspieszanie i hamowanie, drobne drżenie,
 // czasem lekkie przestrzelenie celu z korektą
@@ -86,7 +87,8 @@ async function pressExotic(page, ch, dwell){
   await s.send("Input.dispatchKeyEvent", { type: "keyUp", key: ch, code, modifiers: mods });
 }
 
-export async function typeText(page, text, { signal } = {}){
+// os – tryb „Przeglądarka”: znaki przez prawdziwą klawiaturę Windowsa (Unicode), Enter i Tab jako klawisze
+export async function typeText(page, text, { signal, os } = {}){
   const t0 = Date.now(); let prev = "", count = 0;
   for (const ch of text) {
     if (signal?.aborted) break;
@@ -98,7 +100,9 @@ export async function typeText(page, text, { signal } = {}){
     if (/[A-ZĄĆĘŁŃÓŚŹŻ]/.test(ch)) gap += rand(40, 120);        // sięgnięcie po Shift
     if (Math.random() < 0.03) gap += rand(500, 1500);          // chwila namysłu
     await sleep(Math.min(gap, 2500));
-    if (ch === "\n") { await page.keyboard.press("Enter", { delay: rand(50, 130) }); }
+    if (os) { const k = ch === "\n" ? "Enter" : ch === "\t" ? "Tab" : null, d = rand(50, 130);
+      if (k) { await os.key(k); await sleep(d); await os.key(k, true); } else { await os.char(ch); await sleep(d); await os.char(ch, true); } }
+    else if (ch === "\n") { await page.keyboard.press("Enter", { delay: rand(50, 130) }); }
     else if (ch === "\t") { await page.keyboard.press("Tab", { delay: rand(50, 130) }); }
     else if (typable(ch)) { await page.keyboard.press(ch, { delay: rand(50, 130) }); }
     else { try { await pressExotic(page, ch, rand(50, 130)); } catch (_) { await page.keyboard.insertText(ch); } }   // polskie znaki: keydown/keyup przez CDP; awaryjnie samo wstawienie
