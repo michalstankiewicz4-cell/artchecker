@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Bot odcisku
 
-Wersja instrukcji odpowiada wersji programu **0.8.0**.
+Wersja instrukcji odpowiada wersji programu **0.8.1**.
 
 ## 1. Co jest potrzebne
 
@@ -59,7 +59,7 @@ Lista akcji, które bot wykonuje **po kolei, od góry**, przy każdym wejściu z
 
 **Selektor CSS:** w Chrome kliknij element prawym przyciskiem → *Zbadaj*, potem na podświetlonym kodzie prawy przycisk → *Copy* → *Copy selector*. Przykłady: `#search`, `input[name=q]`, `textarea`. Bot czeka na element do 10 s.
 
-**Dokąd** (przy pisaniu i klawiszach):
+**Dokąd** – przełącznik **Strona | Przeglądarka** w wierszu akcji, tuż przed strzałkami (tylko przy pisaniu i klawiszach):
 - *Strona* – klawisze trafiają tylko do treści strony. Działa też bez okna i w tle, ale skróty przeglądarki (Ctrl+F, Ctrl+T, Alt+←, F5…) nic nie otworzą – strona zobaczy tylko samo naciśnięcie.
 - *Przeglądarka* – klawisze idą do okna przeglądarki bota jak z prawdziwej klawiatury, więc działają też skróty przeglądarki (np. Ctrl+F otwiera okienko szukania). Wymaga widocznego okna (nie „Bez okna”), a w tym czasie nie można używać klawiatury ani myszy. **W wersji 0.6.0 ten tryb jest tylko w panelu – bot pomija takie akcje z informacją w dzienniku.**
 

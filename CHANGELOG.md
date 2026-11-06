@@ -2,6 +2,11 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.8.1] – 2026-11-06
+
+### Zmienione
+- Przełącznik „Strona | Przeglądarka” jest teraz zwartym przyciskiem w wierszu akcji, tuż przed strzałkami ↑ ↓ (zamiast w osobnej linii pod polami); pola akcji mieszczą się w jednym wierszu.
+
 ## [0.8.0] – 2026-11-06
 
 ### Zmienione
