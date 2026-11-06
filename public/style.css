@@ -115,8 +115,9 @@ label.row{margin-top:12px}
 .tabs button.has-conflict::after{content:"⚠";color:var(--warn);margin-left:6px;font-size:.85em}
 
 /* przełącznik Strona | Przeglądarka – wielkości przycisków ↑ ↓, przy prawej krawędzi */
-.action .tcell{justify-content:flex-end}
-.seg2 label span{height:26px;padding:0 7px;border-radius:0}
+.action .tcell{justify-content:flex-end;align-items:flex-start;min-height:0}
+.seg2 label span{box-sizing:border-box;height:calc(.85rem*1.2 + 8px);min-width:29px;padding:0 6px;border-radius:0}
+.seg2 label:nth-of-type(2) span{padding-left:7px}
 .seg2 label:first-of-type span{border-radius:5px 0 0 5px}
 .seg2 label:nth-of-type(2) span{border-radius:0 5px 5px 0}
 .seg2 svg{width:15px;height:15px;display:block}

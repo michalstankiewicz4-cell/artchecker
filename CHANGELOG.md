@@ -2,6 +2,11 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.9.1] – 2026-11-06
+
+### Zmienione
+- Przyciski przełącznika „Strona | Przeglądarka” mają dokładnie wielkość przycisków ↑ ↓ ⧉ ✕ i stoją z nimi w jednej linii.
+
 ## [0.9.0] – 2026-11-06
 
 ### Dodane
