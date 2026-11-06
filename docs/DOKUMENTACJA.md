@@ -1,6 +1,6 @@
 # Dokumentacja techniczna – Human Bot
 
-Wersja dokumentu odpowiada wersji programu **0.12.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
+Wersja dokumentu odpowiada wersji programu **0.13.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
 
 ## 1. Cel
 
@@ -31,6 +31,8 @@ przeglądarka użytkownika ──HTTP/SSE──▶ server.mjs (127.0.0.1:3777)
 | `bot/profiles.mjs` | losowanie spójnego profilu, opcje kontekstu Playwrighta, krótki opis profilu |
 | `bot/spoof.mjs` | funkcja wstrzykiwana do strony przed jej skryptami (`addInitScript`) |
 | `bot/human.mjs` | ruch myszy, kliknięcia, przewijanie, „czytanie” |
+| `bot/mouse.mjs` | akcje myszy scenariusza: miejsce (element, punkt, losowo, obraz), najechanie, kliknięcie, przeciąganie, zaznaczanie, przewijanie nad elementem |
+| `bot/image.mjs` | szukanie wzorca z `obrazy/` na zrzucie strony: dekoder PNG, porównanie (szarość, kolory, krawędzie), różne skale |
 | `public/` | panel: `index.html` (Start/Stop na górze, przełącznik dzień/noc, zakładki Plan, Ustawienia i Statystyki, podpowiedzi `title` i znaczki [?] z `data-tip`), `app.js` (edytor scenariusza: dodawanie, kolejność ↑↓ i przeciąganie, powielanie, nagrywanie kombinacji klawiszy, walidacja przed startem, oznaczanie konfliktów z „Bez okna” (`updateConflicts`), motyw w `localStorage` pod kluczem `humanbot-theme`, tryb podglądu poza 127.0.0.1/localhost – bez `/api`, Start nieaktywny), `style.css` (motyw: `:root[data-theme=dark]` albo `prefers-color-scheme`; kolory grup zależnych `dep-a`, `dep-b`; konflikty `.conflict`) |
 | `tools/check-version.mjs` | sprawdza zgodność numeru wersji we wszystkich plikach (`npm test`) |
 | `tools/build-portable.ps1` | buduje wersję przenośną do `dist/` (sekcja 11) |
@@ -138,7 +140,13 @@ Do tego Playwright ustawia sam: `userAgent`, `locale`, `timezoneId`, `viewport`,
    - `scroll`: `scroll(±px)`; `wait`: `idle(losowo min–max)`;
    - `noise` („Szum”): 3–6 rund: `idle` 1,2–3,5 s; z prawdopodobieństwem 35% najechanie myszą (`moveTo`, bez kliknięcia) na losowy widoczny w oknie `a`, `h1`–`h3` lub `button` i pauza 0,3–0,9 s; potem `scroll` w dół o 250–800 px (15% – w górę o 150–500 px);
    - `target: "browser"` – **jeszcze niepodłączone**: akcja pomijana z wpisem w dzienniku;
-   - **jeszcze niepodłączone** (`wired()`): każde miejsce `at: "img"`, `hover`, `drag`, `select`, `click` inny niż `at: "el"` + `left` + `count 1` + `times 1`, `scroll` z `over: "el"` – pomijane z wpisem w dzienniku;
+   - akcje myszy (`bot/mouse.mjs`): `locate()` zamienia miejsce na punkt – `el`: czeka do 10 s na widoczny element, przewija do niego, losowy punkt w 30–70% szerokości i 35–65% wysokości; `pt`: % okna; `rand`: 10–90% okna; `img`: szukanie obrazu (niżej);
+   - `hover`: dojazd `moveTo` i postój `stay` (±15%) z drżeniem ręki (ruchy do 1,5 px);
+   - `click`: dojazd, pauza 60–220 ms, `count` naciśnięć przyciskiem `button` z `clickCount` 1, 2… (przytrzymanie 50–120 ms, odstęp 70–150 ms), × `times` z przerwą 250–700 ms, potem `load`;
+   - `drag`: dojazd do `from`, potem cel `to` liczony bez przewijania, wciśnięcie, wolne ruszenie (10% drogi), ruch do celu (`speed` 0,6), puszczenie;
+   - `select`: `word`/`para` – dla elementu losowe słowo (min. 3 litery) widoczne w oknie, dwu- albo trzyklik; `range` – wciśnięcie w `from`, ruch do `to`, puszczenie; do dziennika trafia zaznaczony tekst (`getSelection`);
+   - `scroll` z `over: "el"`: dojazd kursorem nad element i przewijanie kółkiem (przewija się element pod kursorem);
+   - **szukanie obrazu** (`bot/image.mjs`): zrzut widocznej części (`scale: "css"`, więc piksele = piksele CSS bez względu na wylosowane skalowanie); dekoder PNG bez bibliotek (`zlib`); porównanie ZNCC na kanale szarości (`gray`), R/G/B (`color`) albo sile krawędzi Sobela (`edges`); prawie jednolity wzorzec – średnia różnica; najpierw zgrubnie po pomniejszeniu (wzorzec ok. 10 px), potem dokładnie wokół 5 najlepszych miejsc; `scales` – skale 1, 0,9, 1,1, 0,8, 1,25, 0,67, 1,5, 0,5, 2; kilka wzorców – najlepszy; ≥ 98,5% kończy szukanie od razu. Powtarza co 0,5 s do `wait` s; potem `miss`: `skip` – akcja pominięta (wpis „pominięto”, bez błędu), `scroll` – przewinięcie o 55–75% okna i szukanie od nowa (do 25 razy, do końca strony), `error` – błąd akcji;
    - błąd akcji: pierwszy trafia do `actionError`, każdy do dziennika; wejście idzie dalej. `actionsDone` liczy udane akcje.
 5. Zamknięcie przeglądarki. Każdy błąd trafia do pola `error` i nie przerywa serii.
 

@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Human Bot
 
-Wersja instrukcji odpowiada wersji programu **0.12.0**.
+Wersja instrukcji odpowiada wersji programu **0.13.0**.
 
 ## 1. Co jest potrzebne
 
@@ -50,20 +50,18 @@ Lista akcji, które bot wykonuje **po kolei, od góry**, przy każdym wejściu z
 |---|---|---|
 | **Pisz tekst** | tekst, dokąd | wpisuje tekst znak po znaku z ludzkim rytmem tam, gdzie jest kursor (jeśli nigdzie – w pierwsze widoczne pole tekstowe); nowa linia = Enter |
 | **Naciśnij klawisze** | klawisz lub kombinacja, ile razy, dokąd | naciska np. Enter, Tab, Ctrl+F, Alt+← |
-| **Najedź myszą** | miejsce (element, punkt, losowo), postój w s, dokąd | dojeżdża kursorem i chwilę stoi, niczego nie klikając – np. żeby rozwinąć menu albo pokazać podpowiedź ¹ |
-| **Kliknij** | miejsce (element, punkt), przycisk (lewy, prawy, środkowy), pojedyncze / podwójne, ile razy, dokąd | dojeżdża myszą i klika, np. w pole, w które potem będzie pisał ² |
-| **Przeciągnij** | z miejsca, do miejsca, dokąd | wciska lewy przycisk, przesuwa kursor i puszcza – suwaki, przenoszenie elementów ¹ |
-| **Zaznacz tekst** | słowo (2× klik), akapit (3× klik) albo fragment (przeciągnięcie od–do); miejsce, dokąd | zaznacza tekst jak człowiek podczas czytania ¹ |
-| **Przewiń** | w dół / w górę, o ile px, całą stronę albo nad elementem, dokąd | przewija kółkiem myszy porcjami; „nad elementem” – listy i okienka przewijane osobno od strony ² |
+| **Najedź myszą** | miejsce (element, punkt, losowo), postój w s, dokąd | dojeżdża kursorem i chwilę stoi, niczego nie klikając – np. żeby rozwinąć menu albo pokazać podpowiedź |
+| **Kliknij** | miejsce (element, punkt), przycisk (lewy, prawy, środkowy), pojedyncze / podwójne, ile razy, dokąd | dojeżdża myszą i klika, np. w pole, w które potem będzie pisał |
+| **Przeciągnij** | z miejsca, do miejsca, dokąd | wciska lewy przycisk, przesuwa kursor i puszcza – suwaki, przenoszenie elementów |
+| **Zaznacz tekst** | słowo (2× klik), akapit (3× klik) albo fragment (przeciągnięcie od–do); miejsce, dokąd | zaznacza tekst jak człowiek podczas czytania |
+| **Przewiń** | w dół / w górę, o ile px, całą stronę albo nad elementem, dokąd | przewija kółkiem myszy porcjami; „nad elementem” – listy i okienka przewijane osobno od strony |
 | **Czekaj** | od–do sekund | czeka losowo, lekko ruszając myszą |
 | **Szum** | – | przez kilkanaście sekund zachowuje się jak czytający człowiek: 3–6 razy chwilę „czyta” (drobne ruchy myszy), przewija w dół – czasem wraca wyżej – i najeżdża myszą na link, nagłówek albo przycisk, niczego nie klikając |
 
-¹ W wersji 0.11.0 tylko w panelu – bot pomija tę akcję z informacją w dzienniku.
-² Działa wariant podstawowy (miejsce: element): *Kliknij* – element, lewy przycisk, pojedyncze, ×1; *Przewiń* – cała strona. Pozostałe warianty bot na razie pomija z informacją w dzienniku.
 
 **Miejsce dla myszy:** lista w wierszu – *element* (selektor CSS; bot wybiera w nim losowy punkt), *punkt* (x i y w % szerokości i wysokości okna; 0,0 = lewy górny róg, 50,50 = środek) *obraz* (bot szuka na zrzucie strony wyciętego fragmentu – patrz niżej) albo – przy „Najedź myszą” – *losowo* (dowolne miejsce w widocznej części okna).
 
-**Obraz jako miejsce** ¹ – zamiast selektora wskazujesz wycinek, np. przycisk albo ikonkę; bot trafia w losowe miejsce znalezionego fragmentu:
+**Obraz jako miejsce** – zamiast selektora wskazujesz wycinek, np. przycisk albo ikonkę; bot trafia w losowe miejsce znalezionego fragmentu:
 - **✂ Nowy…** otwiera okienko: **📷 Zrób zrzut strony** (bot otwiera stronę z zakładki Plan, bez zmiany odcisku), **📁 Wczytaj plik** albo wklej obrazek (Ctrl+V). Zaznacz myszą prostokąt, nadaj nazwę i **Zapisz w obrazy/** – wycinek trafia jako PNG do folderu `obrazy` obok programu i od razu do akcji.
 - **+ z folderu…** dodaje zapisany wcześniej wzorzec. Kilka wzorców w jednej akcji to alternatywy – wystarczy, że znajdzie się jeden (np. przycisk w jasnym i w ciemnym motywie). ✕ przy miniaturce usuwa wzorzec z akcji (plik zostaje).
 - **próg** – jak bardzo fragment musi przypominać wzorzec (100% = identyczny); **szukaj do** – ile sekund szukać, bo strona może się doczytywać; **gdy brak** – pomiń akcję, przewijaj stronę i szukaj dalej albo zgłoś błąd akcji;

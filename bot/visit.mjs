@@ -4,6 +4,7 @@ import { chromium } from "playwright";
 import { makeProfile, contextOptions, describe } from "./profiles.mjs";
 import { spoof } from "./spoof.mjs";
 import { sleep, rand, moveTo, clickEl, scroll, idle, typeText } from "./human.mjs";
+import { MOUSE_ACTIONS, Skip } from "./mouse.mjs";
 
 class Stopped extends Error {}
 const check = signal => { if (signal?.aborted) throw new Stopped("zatrzymano"); };
@@ -28,7 +29,7 @@ const EDITABLE = 'textarea, input:not([type]), input[type=text], input[type=sear
 
 // ---------------------------------------------------------------------
 // Akcje scenariusza. Każda zwraca opis do dziennika; błąd akcji nie przerywa wejścia.
-// Tryb „Przeglądarka” (klawisze na poziomie Windowsa) jest w panelu, ale jeszcze nie jest podłączony.
+// Tryb „Przeglądarka” (klawisze i mysz na poziomie Windowsa) jest w panelu, ale jeszcze nie jest podłączony.
 // ---------------------------------------------------------------------
 const PW_KEY = { Plus: "Equal" };   // nazwy z panelu → nazwy Playwrighta
 const toPw = combo => combo.split("+").map(k => PW_KEY[k] || k).join("+");
@@ -57,13 +58,7 @@ const ACTIONS = {
     await page.waitForLoadState("load", { timeout: 10000 }).catch(() => {});
     return `naciśnięto ${showCombo(a.combo)}${a.times > 1 ? ` ×${a.times}` : ""}`;
   },
-  async click(page, a){
-    const loc = page.locator(a.selector).first();
-    try { await loc.waitFor({ state: "visible", timeout: 10000 }); } catch (_) { throw new Error(`nie znaleziono elementu „${a.selector}”`); }
-    await clickEl(page, loc); await page.waitForLoadState("load", { timeout: 10000 }).catch(() => {});
-    return `kliknięto ${a.selector}`;
-  },
-  async scroll(page, a){ await scroll(page, a.dir === "up" ? -a.px : a.px); return `przewinięto ${a.dir === "up" ? "w górę" : "w dół"} o ${a.px} px`; },
+  ...MOUSE_ACTIONS,   // najechanie, kliknięcie, przeciąganie, zaznaczanie, przewijanie (bot/mouse.mjs)
   async wait(page, a){ const ms = rand(a.min, Math.max(a.min, a.max)) * 1000; await idle(page, ms); return `czekanie ${(ms / 1000).toFixed(1)} s`; },
   // szum: kilka rund „przeczytaj – przewiń”, czasem powrót wyżej i najechanie myszą na link lub nagłówek
   async noise(page, a, ctx){
@@ -83,11 +78,6 @@ const ACTIONS = {
   },
 };
 const ANAME = { type: "Pisz tekst", keys: "Naciśnij klawisze", hover: "Najedź myszą", click: "Kliknij", drag: "Przeciągnij", select: "Zaznacz tekst", scroll: "Przewiń", wait: "Czekaj", noise: "Szum" };
-// które warianty są już podłączone; reszta (nowe akcje myszy) jest na razie tylko w panelu
-const wired = a => !!ACTIONS[a.type]
-  && !(a.type === "click" && (a.at !== "el" || a.button !== "left" || a.count !== 1 || a.times !== 1))
-  && !(a.type === "scroll" && a.over === "el")
-  && ![a, a.from, a.to].some(w => w && w.at === "img");
 
 
 // wynik: rekord do raportu
@@ -112,9 +102,8 @@ export async function visit({ n, url, spoofOpts, proxy, headless, channel, scena
       check(signal);
       const label = `#${n} akcja ${k + 1}/${scenario.length} (${ANAME[a.type]})`;
       if (a.target === "browser") { log(`${label}: tryb „Przeglądarka” nie jest jeszcze podłączony – pomijam`); continue; }
-      if (!wired(a)) { log(`${label}: ta akcja (ten wariant) nie jest jeszcze podłączona – pomijam`); continue; }
       try { const msg = await ACTIONS[a.type](page, a, { rec, signal }); rec.actionsDone++; log(`${label}: ${msg}`); }
-      catch (e) { check(signal); const m = String(e.message || e).split("\n")[0]; rec.actionError ||= `akcja ${k + 1}: ${m}`; log(`${label}: błąd – ${m}; dalej`); }
+      catch (e) { check(signal); if (e instanceof Skip) { log(`${label}: pominięto – ${e.message}`); continue; } const m = String(e.message || e).split("\n")[0]; rec.actionError ||= `akcja ${k + 1}: ${m}`; log(`${label}: błąd – ${m}; dalej`); }
       await sleep(rand(200, 600));
     }
     if (rec.typingMs) rec.cpm = Math.round(rec.typedChars / rec.typingMs * 60000);

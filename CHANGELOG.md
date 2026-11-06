@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.13.0] – 2026-11-06
+
+### Dodane
+- Działają akcje myszy w trybie „Strona”: **Najedź myszą** (z postojem i drżeniem ręki), **Kliknij** (lewy / prawy / środkowy, pojedyncze / podwójne, × N, element / punkt / obraz), **Przeciągnij**, **Zaznacz tekst** (słowo, akapit, fragment – w dzienniku zaznaczony tekst), **Przewiń nad elementem**.
+- Działa **szukanie obrazu** (`bot/image.mjs`, bez dodatkowych bibliotek): zrzut strony, porównanie w szarości / kolorach / na krawędziach, różne skale, kilka wzorców, próg, czas szukania i „gdy brak” (pomiń / przewijaj i szukaj / błąd).
+- Wpis „pominięto” w dzienniku, gdy obrazu nie ma, a ustawione jest „pomiń” – bez błędu akcji.
+
+### Zmienione
+- Akcje myszy wydzielone do `bot/mouse.mjs`. Tryb „Przeglądarka” nadal tylko w panelu.
+
 ## [0.12.0] – 2026-11-06
 
 ### Dodane
