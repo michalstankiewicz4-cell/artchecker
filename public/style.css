@@ -1,0 +1,33 @@
+:root{--bg:#eef0ec;--surface:#f8f9f6;--ink:#1b2320;--muted:#5d6863;--line:#cfd5cf;--accent:#2b48c9;--ok:#2f8a57;--err:#c4402f;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#121615;--surface:#1a201e;--ink:#e3e8e4;--muted:#93a09a;--line:#2e3633;--accent:#8197ff;--ok:#5cc28a;--err:#ff7a6b;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Segoe UI",system-ui,sans-serif}
+header,main{max-width:980px;margin:0 auto;padding:0 20px}
+header{padding-top:28px}
+h1{margin:0 0 4px;font-size:1.7rem}
+h2{font-size:1rem;margin:0 0 10px}
+.lead{color:var(--muted);margin:0 0 18px}
+section{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin:0 0 14px}
+label{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--muted)}
+label.row{margin-bottom:10px}
+input[type=url],input[type=number],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:6px 8px}
+textarea{width:100%;font-family:Consolas,monospace;font-size:.85rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px 16px}
+.checks label{flex-direction:row;align-items:center;gap:8px;color:var(--ink);cursor:pointer}
+input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px}
+.hint{font-size:.82rem;color:var(--muted);margin:8px 0 0}
+.opt{font-weight:400;color:var(--muted);font-size:.85rem}
+.actions{display:flex;align-items:center;gap:10px;margin:0 0 14px}
+button{font:inherit;padding:8px 18px;border-radius:5px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button:disabled{opacity:.45;cursor:default}
+.status{color:var(--muted);font-size:.9rem}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:500}
+code{font-family:Consolas,monospace}
+.good{color:var(--ok);font-weight:600}.bad{color:var(--err);font-weight:600}
+tr.err td{opacity:.8}
+pre#log{margin:0;max-height:300px;overflow:auto;font:12px/1.45 Consolas,monospace;white-space:pre-wrap;color:var(--muted)}

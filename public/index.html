@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bot odcisku – panel</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Bot odcisku</h1>
+  <p class="lead">Wchodzi na stronę jak człowiek – przewija, klika zakładki i przyciski – i przy każdym wejściu ma inny odcisk przeglądarki. Działa tylko na tym komputerze.</p>
+</header>
+
+<main>
+  <form id="cfg">
+    <section>
+      <h2>Cel i liczba wejść</h2>
+      <label class="row">Adres strony <input id="url" type="url" required value="https://michalstankiewicz4-cell.github.io/behavioral-biometrics/"></label>
+      <div class="grid3">
+        <label>Liczba wejść <input id="visits" type="number" min="1" max="500" value="5"></label>
+        <label>Przerwa od (s) <input id="delayMin" type="number" min="0" step="1" value="5"></label>
+        <label>do (s) <input id="delayMax" type="number" min="0" step="1" value="20"></label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Co zmieniać przy każdym wejściu</h2>
+      <div class="checks">
+        <label><input type="checkbox" data-spoof="ua" checked> System i User-Agent</label>
+        <label><input type="checkbox" data-spoof="lang" checked> Język</label>
+        <label><input type="checkbox" data-spoof="tz" checked> Strefa czasowa</label>
+        <label><input type="checkbox" data-spoof="screen" checked> Ekran i okno</label>
+        <label><input type="checkbox" data-spoof="hw" checked> Rdzenie i pamięć RAM</label>
+        <label><input type="checkbox" data-spoof="webgl" checked> Karta graficzna (WebGL)</label>
+        <label><input type="checkbox" data-spoof="canvas" checked> Szum na płótnie (canvas)</label>
+        <label><input type="checkbox" data-spoof="fonts" checked> Ukrywanie części czcionek</label>
+        <label><input type="checkbox" data-spoof="prefs" checked> Motyw, animacje, „nie śledź”</label>
+      </div>
+      <p class="hint">Język i strefa czasowa są dobierane w pary (np. pl-PL z Europe/Warsaw), a karta graficzna pasuje do systemu.</p>
+    </section>
+
+    <section>
+      <h2>Zachowanie</h2>
+      <div class="checks">
+        <label><input type="checkbox" id="browse" checked> Przewijanie i klikanie w kilka losowych zakładek</label>
+        <label><input type="checkbox" id="botTest" checked> Zrób test „Człowiek czy bot” (ludzkim ruchem myszy)</label>
+        <label><input type="checkbox" id="useChrome" checked> Użyj zainstalowanego Chrome'a (inaczej wbudowany Chromium)</label>
+        <label><input type="checkbox" id="headless"> Bez okna przeglądarki (szybciej, ale inna karta graficzna)</label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Proxy <span class="opt">(opcjonalnie)</span></h2>
+      <textarea id="proxies" rows="4" spellcheck="false" placeholder="jedno na linię, używane po kolei:
+http://użytkownik:hasło@host:port
+socks5://host:port"></textarea>
+      <p class="hint">Puste = łączysz się ze swojego adresu IP. Proxy SOCKS5 z hasłem nie działa w Chrome – użyj HTTP. VPN-a włączasz ręcznie w jego aplikacji.</p>
+    </section>
+
+    <div class="actions">
+      <button type="submit" id="start" class="primary">Start</button>
+      <button type="button" id="stop" disabled>Stop</button>
+      <span id="status" class="status">gotowy</span>
+    </div>
+  </form>
+
+  <section>
+    <h2>Wejścia</h2>
+    <div class="tablewrap"><table id="visits-t">
+      <thead><tr><th>#</th><th>Profil</th><th>Odcisk ze strony</th><th>Człowiek czy bot</th><th>Czas</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <p id="uniq" class="hint"></p>
+    <p id="report" class="hint"></p>
+  </section>
+
+  <section>
+    <h2>Dziennik</h2>
+    <pre id="log"></pre>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
