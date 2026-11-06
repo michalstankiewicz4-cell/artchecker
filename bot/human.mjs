@@ -67,3 +67,42 @@ export async function idle(page, ms){
     await sleep(rand(300, 900));
   }
 }
+
+// ---------------------------------------------------------------------
+// Pisanie jak człowiek: nierówne odstępy między znakami (rozkład log-normalny, średnio ok. 170 ms),
+// szybciej w częstych parach liter, dłużej po spacji i interpunkcji, czasem pauza „na myślenie”,
+// klawisz przytrzymany 50–130 ms. Nowa linia w tekście = Enter.
+const COMMON = new Set(["th","he","in","er","an","re","on","at","en","nd","ie","ni","ow","po","na","za","ra","ro","st","pr","ch","cz","sz","rz","wa","ta","ko","ka","to","no","ze","je","em","ał","ię","ią"]);
+const lognormal = (median, sigma) => median * Math.exp(sigma * gauss());
+const typable = ch => /^[\x20-\x7e]$/.test(ch);
+// polskie znaki (układ „polski programisty”: prawy Alt + litera) – kod fizycznego klawisza
+const PL = { ą: "KeyA", ć: "KeyC", ę: "KeyE", ł: "KeyL", ń: "KeyN", ó: "KeyO", ś: "KeyS", ź: "KeyX", ż: "KeyZ" };
+const CDP = new WeakMap();
+async function pressExotic(page, ch, dwell){
+  let s = CDP.get(page); if (!s) { s = await page.context().newCDPSession(page); CDP.set(page, s); }
+  const code = PL[ch.toLowerCase()] || "", mods = ch !== ch.toLowerCase() ? 8 : 0;   // 8 = Shift (bez Ctrl/Alt – inaczej Chrome traktuje to jak skrót)
+  await s.send("Input.dispatchKeyEvent", { type: "keyDown", key: ch, code, text: ch, unmodifiedText: ch, modifiers: mods });
+  await sleep(dwell);
+  await s.send("Input.dispatchKeyEvent", { type: "keyUp", key: ch, code, modifiers: mods });
+}
+
+export async function typeText(page, text, { signal } = {}){
+  const t0 = Date.now(); let prev = "", count = 0;
+  for (const ch of text) {
+    if (signal?.aborted) break;
+    let gap = lognormal(150, 0.45);
+    if (COMMON.has((prev + ch).toLowerCase())) gap *= 0.7;
+    if (prev === " ") gap *= 1.25;
+    if (/[.,;:!?]/.test(prev)) gap += rand(150, 450);
+    if (prev === "\n") gap += rand(300, 900);
+    if (/[A-ZĄĆĘŁŃÓŚŹŻ]/.test(ch)) gap += rand(40, 120);        // sięgnięcie po Shift
+    if (Math.random() < 0.03) gap += rand(500, 1500);          // chwila namysłu
+    await sleep(Math.min(gap, 2500));
+    if (ch === "\n") { await page.keyboard.press("Enter", { delay: rand(50, 130) }); }
+    else if (ch === "\t") { await page.keyboard.press("Tab", { delay: rand(50, 130) }); }
+    else if (typable(ch)) { await page.keyboard.press(ch, { delay: rand(50, 130) }); }
+    else { try { await pressExotic(page, ch, rand(50, 130)); } catch (_) { await page.keyboard.insertText(ch); } }   // polskie znaki: keydown/keyup przez CDP; awaryjnie samo wstawienie
+    prev = ch; count++;
+  }
+  return { chars: count, ms: Date.now() - t0 };
+}

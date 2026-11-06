@@ -2,6 +2,21 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.5.0] – 2026-11-06
+
+### Dodane
+- Pisanie tekstu jak człowiek: pole „Tekst do wpisania” w panelu. Bot wpisuje znak po znaku z nierównymi odstępami (rozkład log-normalny, szybciej w częstych parach liter, dłużej po spacji i interpunkcji, czasem chwila namysłu) i przytrzymaniem klawisza. Polskie znaki są „naciskane” jak na polskiej klawiaturze (zdarzenia keydown/keyup), nowa linia = Enter.
+- Wybór „Gdzie pisać”: *Pisz od razu* (w pole aktywne po wczytaniu strony, a gdy żadne nie jest aktywne – w pierwsze widoczne pole tekstowe) albo *We wskazane pole* (selektor CSS).
+- „Naciśnij Enter po wpisaniu” – np. wysłanie wyszukiwania lub formularza.
+- Podpowiedzi przy każdym polu (po najechaniu myszą) i znaczki [?] z dłuższymi opisami (najechanie, klawiatura albo kliknięcie; Esc zamyka).
+- Zakładki panelu: **Plan** (co bot ma zrobić) i **Ustawienia** (co zmieniać w przeglądarce, przeglądarka, proxy).
+- Raport: kolumny `typedChars`, `typingMs`, `cpm` (znaki na minutę) i `typingError`; w tabeli panelu kolumna „Pisanie”.
+
+### Zmienione
+- „Liczba wejść” i przerwy są teraz nad adresem strony.
+- Na stronach innych niż „Cyfrowy odcisk człowieka” bot pomija zakładki, test „Człowiek czy bot” i odczyt odcisku (zamiast zgłaszać błąd) i tylko przewija stronę.
+- Błąd pisania (np. brak pola) nie przerywa wejścia – jest zapisany osobno, a dalsze kroki idą normalnie.
+
 ## [0.4.0] – 2026-11-06
 
 ### Dodane

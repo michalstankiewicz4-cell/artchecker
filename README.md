@@ -1,8 +1,8 @@
 # Bot odcisku
 
-Bot z panelem w przeglądarce. Wchodzi na stronę [Cyfrowy odcisk człowieka](https://michalstankiewicz4-cell.github.io/behavioral-biometrics/), zachowuje się jak człowiek (przewija, klika zakładki i przyciski, rusza myszą po krzywych z przyspieszaniem i drżeniem) i przy **każdym wejściu ma inny odcisk przeglądarki**. Po każdym wejściu odczytuje wynik ze strony: odcisk przeglądarki i werdykt testu „Człowiek czy bot”, i zapisuje go do raportu.
+Bot z panelem w przeglądarce. Wchodzi na wskazaną stronę, **wpisuje podany tekst jak człowiek** (nierówne odstępy między klawiszami, opcjonalnie Enter), przewija i klika, rusza myszą po krzywych z przyspieszaniem i drżeniem, a przy **każdym wejściu ma inny odcisk przeglądarki**. Na stronie [Cyfrowy odcisk człowieka](https://michalstankiewicz4-cell.github.io/behavioral-biometrics/) dodatkowo odwiedza zakładki, robi test „Człowiek czy bot” i odczytuje odcisk przeglądarki. Wyniki trafiają do raportu.
 
-Wersja **0.4.0** · autor: Michał Stankiewicz · repozytorium: <https://github.com/michalstankiewicz4-cell/webbot>. Działa tylko lokalnie na Twoim komputerze (panel na 127.0.0.1).
+Wersja **0.5.0** · autor: Michał Stankiewicz · repozytorium: <https://github.com/michalstankiewicz4-cell/webbot>. Działa tylko lokalnie na Twoim komputerze (panel na 127.0.0.1).
 
 Dokumenty: [instrukcja obsługi](docs/INSTRUKCJA.md) · [dokumentacja techniczna](docs/DOKUMENTACJA.md) · [historia zmian](CHANGELOG.md)
 
@@ -39,13 +39,18 @@ Każde wejście to nowa, czysta przeglądarka (bez ciasteczek i pamięci) z loso
 
 Kod: `bot/profiles.mjs` (losowanie spójnych profili) i `bot/spoof.mjs` (skrypt wstrzykiwany przed skryptami strony).
 
+## Panel
+
+Dwie zakładki: **Plan** (liczba wejść, przerwy, adres, tekst, gdzie pisać, Enter, co robić na stronie) i **Ustawienia** (co zmieniać przy każdym wejściu, przeglądarka, proxy). Przy każdym polu jest podpowiedź po najechaniu myszą i znaczek [?] z opisem.
+
 ## Zachowanie na stronie
 
 `bot/human.mjs`, `bot/visit.mjs`:
 
 - ruch myszy po krzywej Béziera, czas ruchu rosnący z odległością (w stylu prawa Fittsa), przyspieszanie i hamowanie, drobne drżenie, czasem przestrzelenie i korekta;
 - kliknięcie nie w sam środek, przytrzymanie 50–140 ms; przewijanie kółkiem z przerwami i czasem cofnięciem;
-- przy włączonym „Przewijanie i klikanie”: przewija stronę główną i odwiedza 2–4 losowe zakładki;
+- pisanie: znak po znaku, odstępy z rozkładu log-normalnego (mediana 150 ms), szybciej w częstych parach liter, dłużej po spacji, interpunkcji i przed wielką literą, czasem chwila namysłu, klawisz przytrzymany 50–130 ms; polskie znaki z keydown/keyup; w pole aktywne / pierwsze pole tekstowe albo wskazane selektorem; opcjonalnie Enter na końcu;
+- przy włączonym „Przewijanie i klikanie”: przewija stronę; na „Cyfrowym odcisku” odwiedza też 2–4 losowe zakładki;
 - test „Człowiek czy bot”: znajduje kółka na płótnie po kolorze pikseli i klika je 5 razy ludzkim ruchem;
 - na końcu zakładka „Odcisk przeglądarki”, przycisk „Pokaż mój odcisk”, odczyt wyniku z modułów strony.
 

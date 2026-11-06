@@ -12,7 +12,7 @@
 4. Zaktualizuj treść wszystkich dokumentów, których zmiana dotyczy (dokumentacja techniczna, instrukcja, README).
 5. Uruchom `npm test` – musi zwrócić OK.
 6. Commit z numerem wersji na początku opisu, np. `v0.3.0: …`. Tagów git nie tworzymy lokalnie – tag `vX.Y.Z` powstaje tylko przy publikacji release'u na GitHubie.
-7. Release (gdy wersja ma trafić do innych): po wypchnięciu zmian uruchom automat *Actions → „Wydanie” → Run workflow* – sam zbuduje paczkę i opublikuje release `vX.Y.Z` (szczegóły: `docs/DOKUMENTACJA.md`, sekcja 11).
+7. Release **tylko na wyraźną prośbę autora** – samo podniesienie wersji go nie oznacza. Wtedy po wypchnięciu zmian uruchom automat *Actions → „Wydanie” → Run workflow* – sam zbuduje paczkę i opublikuje release `vX.Y.Z` (szczegóły: `docs/DOKUMENTACJA.md`, sekcja 11).
 
 ## Struktura
 

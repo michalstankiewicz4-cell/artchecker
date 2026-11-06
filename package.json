@@ -1,8 +1,8 @@
 {
   "name": "bot-odcisku",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
-  "description": "Bot z panelem w przeglądarce: wchodzi na stronę „Cyfrowy odcisk człowieka”, przewija i klika jak człowiek, przy każdym wejściu z innym odciskiem przeglądarki.",
+  "description": "Bot z panelem w przeglądarce: wchodzi na stronę, pisze tekst i przewija jak człowiek, przy każdym wejściu z innym odciskiem przeglądarki.",
   "type": "module",
   "author": "Michał Stankiewicz",
   "scripts": {

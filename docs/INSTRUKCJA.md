@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Bot odcisku
 
-Wersja instrukcji odpowiada wersji programu **0.4.0**.
+Wersja instrukcji odpowiada wersji programu **0.5.0**.
 
 ## 1. Co jest potrzebne
 
@@ -30,12 +30,27 @@ Jeśli panel się nie otworzy, wpisz adres http://127.0.0.1:3777/ ręcznie.
 
 ## 3. Panel krok po kroku
 
-### Cel i liczba wejść
-- **Adres strony:** domyślnie „Cyfrowy odcisk człowieka”. Bot zakłada układ tej strony (zakładki, test „Człowiek czy bot”, odcisk przeglądarki), więc z innymi stronami nie zadziała.
-- **Liczba wejść:** od 1 do 500. Jedno wejście trwa zwykle 40–70 sekund.
-- **Przerwa od–do:** losowa pauza między wejściami, w sekundach.
+Panel ma dwie zakładki: **Plan** – co bot ma zrobić, i **Ustawienia** – jak ma wyglądać jego przeglądarka. Start bierze ustawienia z obu. Przy każdym polu jest podpowiedź (najedź myszą) i znaczek **[?]** – najedź na niego albo kliknij, żeby przeczytać dłuższy opis (Esc albo kliknięcie obok zamyka).
 
-### Co zmieniać przy każdym wejściu
+### Zakładka „Plan”
+
+#### Wejścia i cel
+- **Liczba wejść:** od 1 do 500. Jedno wejście trwa od kilkunastu sekund do ok. minuty – zależnie od długości tekstu i włączonych kroków.
+- **Przerwa od–do:** losowa pauza między wejściami, w sekundach.
+- **Adres strony:** pełny adres z `https://`. Pisanie działa na każdej stronie. Zakładki, test „Człowiek czy bot” i odczyt odcisku działają tylko na „Cyfrowym odcisku człowieka” – na innych stronach bot je pomija i tylko przewija.
+- **Tekst do wpisania:** bot wpisze go znak po znaku z nierównymi, ludzkimi odstępami. Nowa linia w tekście = naciśnięcie Enter. Puste pole = bez pisania.
+- **Gdzie pisać:**
+  - *Pisz od razu* – zaraz po wczytaniu strony w pole, które ma kursor (np. wyszukiwarka). Jeśli żadne go nie ma, bot klika w pierwsze widoczne pole tekstowe.
+  - *We wskazane pole* – wpisz selektor CSS pola, np. `#search` albo `textarea[name=q]`. Jak go znaleźć: w Chrome kliknij pole prawym przyciskiem → *Zbadaj*, potem na podświetlonym kodzie prawy przycisk → *Copy* → *Copy selector*. Bot czeka na pole do 10 s.
+- **Naciśnij Enter po wpisaniu:** po całym tekście bot naciśnie Enter (np. wysłanie wyszukiwania) i poczeka na przeładowanie strony.
+
+#### Co robić na stronie
+- **Przewijanie i klikanie:** bot przewija stronę; na „Cyfrowym odcisku” odwiedza też 2–4 losowe zakładki.
+- **Test „Człowiek czy bot”:** tylko na „Cyfrowym odcisku” – bot sam wykonuje ten test ruchem myszy podobnym do ludzkiego, a panel pokazuje werdykt strony.
+
+### Zakładka „Ustawienia”
+
+#### Co zmieniać przy każdym wejściu
 Zaznaczone grupy są losowane od nowa przy każdym wejściu. Odznaczona grupa zostaje taka, jak w Twojej prawdziwej przeglądarce.
 
 | Pole | Co robi |
@@ -52,20 +67,18 @@ Zaznaczone grupy są losowane od nowa przy każdym wejściu. Odznaczona grupa zo
 
 Aby sprawdzić, która cecha najbardziej zmienia odcisk, odznacz wszystkie poza jedną i zrób kilka wejść.
 
-### Zachowanie
-- **Przewijanie i klikanie:** bot przewija stronę i odwiedza 2–4 losowe zakładki, zanim przejdzie do odcisku.
-- **Test „Człowiek czy bot”:** bot sam wykonuje ten test ruchem myszy podobnym do ludzkiego, a panel pokazuje werdykt strony.
-- **Użyj zainstalowanego Chrome'a:** zalecane. Odznacz, jeśli Chrome sprawia kłopoty.
+#### Przeglądarka
+- **Użyj zainstalowanego Chrome'a:** zalecane. Odznacz, jeśli Chrome sprawia kłopoty (wtedy potrzebne jest Chromium z `pobierz-chromium.bat`).
 - **Bez okna przeglądarki:** szybciej i bez otwierania okien, ale przeglądarka rysuje wtedy programowo, więc karta graficzna wygląda inaczej.
 
-### Proxy
+#### Proxy
 - Wpisz jedno proxy na linię: `http://użytkownik:hasło@host:port` albo `socks5://host:port`.
 - Każde kolejne wejście używa następnego proxy z listy; po ostatnim bot wraca do pierwszego.
 - Linie zaczynające się od `#` są pomijane.
 - Chrome nie obsługuje proxy SOCKS5 z hasłem, w takim przypadku użyj HTTP.
 - **VPN** włączasz ręcznie w jego aplikacji, jeszcze przed startem. Bot go nie przełącza.
 
-### Start i Stop
+### Start i Stop (pod zakładkami)
 - **Start** uruchamia serię wejść. Ustawienia są zablokowane, dopóki bot pracuje.
 - **Stop** przerywa bieżące wejście i kończy serię. Wyniki zebrane do tej chwili zostają w raporcie.
 
@@ -73,7 +86,8 @@ Aby sprawdzić, która cecha najbardziej zmienia odcisk, odznacz wszystkie poza 
 
 **Tabela „Wejścia”**, jeden wiersz na wejście:
 - **Profil:** wylosowane ustawienia, czyli system, język, strefa czasowa, ekran, sprzęt, karta graficzna, motyw i liczba ukrytych czcionek.
-- **Odcisk ze strony:** skrót, który policzyła strona.
+- **Pisanie:** ile znaków wpisano i w jakim tempie (znaki na minutę); na czerwono – dlaczego się nie udało (np. brak pola).
+- **Odcisk ze strony** (tylko „Cyfrowy odcisk”): skrót, który policzyła strona.
   - **nowy:** strona w tej serii jeszcze takiego odcisku nie widziała.
   - **powtórzony:** taki odcisk już był.
 - **Człowiek czy bot:** liczba oznak bota (z 5) i werdykt strony. Od 3 oznak strona uznaje, że to bot.
@@ -81,7 +95,7 @@ Aby sprawdzić, która cecha najbardziej zmienia odcisk, odznacz wszystkie poza 
 
 Pod tabelą jest podsumowanie „Różnych odcisków: X z Y”.
 
-**Dziennik** pokazuje na bieżąco każdy krok: profil, odwiedzone zakładki, wynik, przerwy i błędy.
+**Dziennik** pokazuje na bieżąco każdy krok: profil, wpisany tekst (liczba znaków, czas, tempo), odwiedzone zakładki, wynik, przerwy i błędy.
 
 ## 5. Raporty
 
@@ -102,6 +116,8 @@ Oba pliki są uzupełniane po każdym wejściu, więc przerwanie serii nie kasuj
 | „Executable doesn't exist…” | Brak Chrome'a i Chromium. Uruchom `pobierz-chromium.bat` w folderze programu. |
 | Błąd wejścia `net::ERR_PROXY_CONNECTION_FAILED` | To proxy nie działa. Usuń je z listy. |
 | „test … nie został ukończony” w dzienniku | Bot chybił kółko. Seria toczy się dalej, w tym wejściu po prostu nie będzie werdyktu. |
+| „nie znaleziono pola …” / „na stronie nie ma pola tekstowego” | Sprawdź selektor (patrz „Gdzie pisać”) albo czy pole jest widoczne bez klikania czegoś wcześniej. Wejście idzie dalej, tylko bez pisania. |
+| Tekst trafia w złe miejsce przy „Pisz od razu” | Użyj „We wskazane pole” z selektorem. |
 | Odcisk się powtarza | Sprawdź, czy zaznaczone są „Szum na płótnie” i „Karta graficzna”. Bez nich odcisk zmienia się rzadziej. |
 
 ## 7. Aktualizacja

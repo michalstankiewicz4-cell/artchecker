@@ -32,3 +32,27 @@ code{font-family:Consolas,monospace}
 tr.err td{opacity:.8}
 pre#log{margin:0;max-height:300px;overflow:auto;font:12px/1.45 Consolas,monospace;white-space:pre-wrap;color:var(--muted)}
 .ver{display:inline-block;vertical-align:middle;font:500 .8rem Consolas,monospace;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:1px 8px;margin-left:6px}
+.lbl{display:inline-flex;align-items:center;gap:6px}
+.help{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;border:1px solid var(--muted);color:var(--muted);font:600 11px/1 "Segoe UI",system-ui,sans-serif;cursor:help;user-select:none;flex:none;vertical-align:middle;margin-left:4px}
+.help:hover,.help:focus-visible{border-color:var(--accent);color:var(--accent);outline:none}
+.help.demo{cursor:default}
+.tip{position:absolute;z-index:10;background:var(--ink);color:var(--bg);font-size:.82rem;line-height:1.45;padding:8px 11px;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.25);pointer-events:none}
+.typing-opts{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:flex-start}
+fieldset.radios{border:0;margin:0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;flex:1 1 520px}
+fieldset.radios legend{padding:0;margin-bottom:6px;font-size:.9rem;color:var(--muted);width:100%}
+fieldset.radios label,label.check{flex-direction:row;align-items:center;gap:8px;color:var(--ink);cursor:pointer}
+#selector{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:6px 8px;flex:1 1 260px;min-width:220px}
+#selector:disabled{opacity:.5}
+input[type=radio]{accent-color:var(--accent);width:16px;height:16px}
+#text{font-family:"Segoe UI",system-ui,sans-serif;font-size:.95rem}
+label.row{margin-top:12px}
+.typing-opts{flex-direction:column;gap:12px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:0 0 14px}
+.tabs button{border:1px solid transparent;border-bottom:0;border-radius:6px 6px 0 0;background:none;color:var(--muted);padding:9px 20px;margin-bottom:-1px;font-weight:500}
+.tabs button[aria-selected=true]{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.tabs button:hover{color:var(--ink)}
+.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.typing-opts fieldset.radios{flex:none}.typing-opts>label.check{align-self:flex-start}
+.typing-opts fieldset.radios{display:block;align-self:stretch}
+.radio-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px}
+.radio-row label{white-space:nowrap}

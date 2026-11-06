@@ -21,7 +21,7 @@ const log = text => { const line = `${new Date().toLocaleTimeString("pl-PL")}  $
 
 const plural = (n, one, few, many) => n === 1 ? one : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? few : many;
 const csvCell = v => { const s = v == null ? "" : String(v); return /[",;\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
-const CSV_COLS = ["n", "start", "ms", "error", "proxy", "summary", "hash", "botSigns", "botVerdict", "ua", "platform", "lang", "tz", "screen", "cpu", "mem", "webgl", "canvas", "fonts"];
+const CSV_COLS = ["n", "start", "ms", "error", "proxy", "summary", "typedChars", "typingMs", "cpm", "typingError", "hash", "botSigns", "botVerdict", "ua", "platform", "lang", "tz", "screen", "cpu", "mem", "webgl", "canvas", "fonts"];
 const csvRow = r => CSV_COLS.map(k => csvCell(k in (r.features || {}) ? r.features[k] : r[k])).join(";");
 
 async function startRun(cfg){
@@ -36,17 +36,17 @@ async function startRun(cfg){
   (async () => {
     for (let i = 1; i <= cfg.visits && !ctrl.signal.aborted; i++) {
       const rec = await visit({ n: i, url: cfg.url, spoofOpts: cfg.spoof, proxy: proxies.length ? proxies[(i - 1) % proxies.length] : null,
-        headless: cfg.headless, channel: cfg.useChrome ? "chrome" : undefined, browse: cfg.browse, botTest: cfg.botTest, log, signal: ctrl.signal });
+        headless: cfg.headless, channel: cfg.useChrome ? "chrome" : undefined, browse: cfg.browse, botTest: cfg.botTest, typing: cfg.typing, log, signal: ctrl.signal });
       const seen = run.records.filter(r => r.hash).map(r => r.hash);
       rec.newHash = rec.hash ? !seen.includes(rec.hash) : null;
       run.records.push(rec);
       await appendFile(file + ".csv", csvRow(rec) + "\n");
       await writeFile(file + ".json", JSON.stringify({ config: run.config, records: run.records }, null, 2));
-      send("visit", { n: rec.n, ms: rec.ms, error: rec.error, summary: rec.summary, proxy: rec.proxy, hash: rec.hash, newHash: rec.newHash, botSigns: rec.botSigns, botVerdict: rec.botVerdict });
+      send("visit", { n: rec.n, ms: rec.ms, error: rec.error, summary: rec.summary, proxy: rec.proxy, typedChars: rec.typedChars, cpm: rec.cpm, typingError: rec.typingError, hash: rec.hash, newHash: rec.newHash, botSigns: rec.botSigns, botVerdict: rec.botVerdict });
       if (i < cfg.visits && !ctrl.signal.aborted) { const w = rand(cfg.delayMin, cfg.delayMax) * 1000; log(`przerwa ${(w / 1000).toFixed(1)} s`);
         const end = Date.now() + w; while (Date.now() < end && !ctrl.signal.aborted) await sleep(200); }
     }
-    const ok = run.records.filter(r => r.hash), uniq = new Set(ok.map(r => r.hash)).size;
+    const ok = run.records.filter(r => !r.error), uniq = new Set(ok.filter(r => r.hash).map(r => r.hash)).size;
     log(`Koniec: udane wejścia: ${ok.length}, różne odciski: ${uniq}. Raport: reports/${file.split(/[\\/]/).pop()}.csv i .json`);
     send("state", { running: false }); run.done = true;
   })().catch(e => { log("błąd: " + e.message); send("state", { running: false }); run.done = true; });
@@ -67,8 +67,10 @@ const server = http.createServer(async (req, res) => {
       if (run && !run.done) return json(res, 409, { error: "bot już działa" });
       const c = await body(req);
       const cfg = { url: String(c.url || ""), visits: Math.max(1, Math.min(500, +c.visits || 1)), delayMin: Math.max(0, +c.delayMin || 0), delayMax: Math.max(+c.delayMin || 0, +c.delayMax || 0),
-        headless: !!c.headless, useChrome: c.useChrome !== false, browse: c.browse !== false, botTest: !!c.botTest, spoof: c.spoof || {}, proxies: String(c.proxies || "") };
+        headless: !!c.headless, useChrome: c.useChrome !== false, browse: c.browse !== false, botTest: !!c.botTest, spoof: c.spoof || {}, proxies: String(c.proxies || ""),
+        typing: { text: String(c.text || "").replace(/\r\n?/g, "\n").slice(0, 20000), typeMode: c.typeMode === "selector" ? "selector" : "now", selector: String(c.selector || "").trim(), enter: !!c.enter } };
       if (!/^https?:\/\//.test(cfg.url)) return json(res, 400, { error: "adres musi zaczynać się od http:// lub https://" });
+      if (cfg.typing.text && cfg.typing.typeMode === "selector" && !cfg.typing.selector) return json(res, 400, { error: "podaj selektor pola albo wybierz „Pisz od razu”" });
       await startRun(cfg); return json(res, 200, { ok: true });
     }
     if (url.pathname === "/api/stop" && req.method === "POST") { if (run && !run.done) { run.ctrl.abort(); log("Zatrzymywanie…"); } return json(res, 200, { ok: true }); }

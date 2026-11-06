@@ -3,7 +3,7 @@
 import { chromium } from "playwright";
 import { makeProfile, contextOptions, describe } from "./profiles.mjs";
 import { spoof } from "./spoof.mjs";
-import { sleep, rand, moveTo, click, clickEl, scroll, idle } from "./human.mjs";
+import { sleep, rand, moveTo, click, clickEl, scroll, idle, typeText } from "./human.mjs";
 
 class Stopped extends Error {}
 const check = signal => { if (signal?.aborted) throw new Stopped("zatrzymano"); };
@@ -51,13 +51,41 @@ async function waitDot(page, cssVar, signal){
   throw new Error("nie znaleziono kółka w teście „Człowiek czy bot”");
 }
 
+// czy na stronie jest dany element (krótka próba, bez czekania 30 s)
+const has = (page, sel) => page.locator(sel).first().isVisible().catch(() => false);
+const EDITABLE = 'textarea, input:not([type]), input[type=text], input[type=search], input[type=email], input[type=url], input[type=tel], input[type=password], [contenteditable=""], [contenteditable=true]';
+
+// krok pisania: „od razu” = w pole aktywne po wczytaniu (a gdy żadne nie jest aktywne – w pierwsze widoczne pole tekstowe),
+// „pole” = w element wskazany selektorem CSS
+async function typeStep(page, { text, typeMode, selector, enter }, log, n, signal){
+  let target;
+  if (typeMode === "selector") {
+    const loc = page.locator(selector).first();
+    try { await loc.waitFor({ state: "visible", timeout: 10000 }); } catch (_) { throw new Error(`nie znaleziono pola „${selector}”`); }
+    await clickEl(page, loc); target = selector;
+  } else {
+    const focused = await page.evaluate(() => { const a = document.activeElement;
+      return !!a && (a.isContentEditable || a.tagName === "TEXTAREA" || (a.tagName === "INPUT" && !["button","submit","checkbox","radio","range","color","file","hidden","image","reset"].includes(a.type))); });
+    if (focused) target = "aktywne pole";
+    else { const loc = page.locator(EDITABLE).filter({ visible: true }).first();
+      if (!(await loc.count())) throw new Error("na stronie nie ma pola tekstowego do pisania");
+      await clickEl(page, loc); target = "pierwsze pole tekstowe"; }
+  }
+  await sleep(rand(300, 800));
+  const r = await typeText(page, text, { signal });
+  if (enter && !signal?.aborted) { await sleep(rand(250, 700)); await page.keyboard.press("Enter", { delay: rand(50, 130) }); }
+  const zn = r.chars === 1 ? "znak" : (r.chars % 10 >= 2 && r.chars % 10 <= 4 && (r.chars % 100 < 12 || r.chars % 100 > 14)) ? "znaki" : "znaków";
+  log(`#${n} wpisano ${r.chars} ${zn} w ${target} w ${(r.ms / 1000).toFixed(1)} s (${Math.round(r.chars / r.ms * 60000)} znaków/min)${enter ? " + Enter" : ""}`);
+  return r;
+}
+
 async function tab(page, name){
   const link = page.locator(`#tabs a[data-tab="${name}"]`);
   await clickEl(page, link); await sleep(rand(400, 900));
 }
 
 // wynik: rekord do raportu
-export async function visit({ n, url, spoofOpts, proxy, headless, channel, browse, botTest, log, signal }){
+export async function visit({ n, url, spoofOpts, proxy, headless, channel, browse, botTest, typing, log, signal }){
   const t0 = Date.now(), rec = { n, start: new Date().toISOString(), proxy: maskProxy(proxy) };
   let browser;
   try {
@@ -73,7 +101,21 @@ export async function visit({ n, url, spoofOpts, proxy, headless, channel, brows
     await page.goto(url, { waitUntil: "load", timeout: 45000 });
     await idle(page, rand(800, 2000));
 
-    if (browse) {
+    if (typing && typing.text) {
+      check(signal);
+      try {
+        const r = await typeStep(page, typing, log, n, signal);
+        rec.typedChars = r.chars; rec.typingMs = r.ms; rec.cpm = Math.round(r.chars / r.ms * 60000);
+        if (typing.enter) { await page.waitForLoadState("load", { timeout: 15000 }).catch(() => {}); await idle(page, rand(800, 1600)); }
+      } catch (e) { check(signal); rec.typingError = String(e.message || e).split("\n")[0]; log(`#${n} pisanie się nie udało: ${rec.typingError} – dalsze kroki idą normalnie`); }
+    }
+
+    // dalsze kroki są dopasowane do strony „Cyfrowy odcisk człowieka”; gdzie indziej są pomijane
+    const ours = await has(page, "#tabs a[data-tab]");
+    if ((browse || botTest) && !ours) log(`#${n} to nie jest strona „Cyfrowy odcisk człowieka” – pomijam zakładki i test „Człowiek czy bot”`);
+
+    if (browse && !ours) { await scroll(page, rand(400, 1200)); await idle(page, rand(600, 1500)); await scroll(page, -rand(200, 800)); }
+    if (browse && ours) {
       await scroll(page, rand(400, 1200)); await idle(page, rand(600, 1500)); await scroll(page, -rand(200, 800));
       const tabs = await page.$$eval("#tabs a[data-tab]", as => as.map(a => a.dataset.tab).filter(t => t !== "bot" && t !== "odcisk"));
       const visits = tabs.sort(() => Math.random() - 0.5).slice(0, Math.floor(rand(2, 5)));
@@ -81,7 +123,7 @@ export async function visit({ n, url, spoofOpts, proxy, headless, channel, brows
       log(`#${n} odwiedzone zakładki: ${visits.join(", ")}`);
     }
 
-    if (botTest) {
+    if (botTest && ours) {
       check(signal); await tab(page, "bot");
       await clickEl(page, page.locator("#bot-go")); await sleep(rand(300, 600));
       await page.locator("#cv-bot").evaluate(c => c.scrollIntoView({ block: "center" })); await sleep(rand(300, 500));
@@ -94,6 +136,7 @@ export async function visit({ n, url, spoofOpts, proxy, headless, channel, brows
       if (!done) log(`#${n} uwaga: test „Człowiek czy bot” nie został ukończony (chybione kliknięcie?)`);
     }
 
+    if (!ours) return rec;
     check(signal); await tab(page, "odcisk");
     await clickEl(page, page.locator("#fp-go")); await sleep(rand(600, 1200));
     await scroll(page, rand(300, 700)); await idle(page, rand(500, 1200));

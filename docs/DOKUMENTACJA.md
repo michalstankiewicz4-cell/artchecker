@@ -1,10 +1,10 @@
 # Dokumentacja techniczna – Bot odcisku
 
-Wersja dokumentu odpowiada wersji programu **0.4.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
+Wersja dokumentu odpowiada wersji programu **0.5.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
 
 ## 1. Cel
 
-Lokalny program do sprawdzania, jak łatwo podmienić odcisk przeglądarki i ruch myszy. Wchodzi na stronę „Cyfrowy odcisk człowieka” (repo `behavioral-biometrics`) i przy każdym wejściu ma inny profil przeglądarki. Zachowuje się jak człowiek, a po każdym wejściu odczytuje wynik strony. Działa wyłącznie na komputerze użytkownika i nie ma żadnego serwera w internecie.
+Lokalny program, który wchodzi na wskazaną stronę jak człowiek – wpisuje podany tekst z ludzkim rytmem, przewija i klika – i przy każdym wejściu ma inny profil przeglądarki. Na stronie „Cyfrowy odcisk człowieka” (repo `behavioral-biometrics`) dodatkowo robi test „Człowiek czy bot” i odczytuje wynik strony, co pozwala sprawdzić, jak łatwo podmienić odcisk przeglądarki i ruch myszy. Działa wyłącznie na komputerze użytkownika i nie ma żadnego serwera w internecie.
 
 ## 2. Architektura
 
@@ -31,7 +31,7 @@ przeglądarka użytkownika ──HTTP/SSE──▶ server.mjs (127.0.0.1:3777)
 | `bot/profiles.mjs` | losowanie spójnego profilu, opcje kontekstu Playwrighta, krótki opis profilu |
 | `bot/spoof.mjs` | funkcja wstrzykiwana do strony przed jej skryptami (`addInitScript`) |
 | `bot/human.mjs` | ruch myszy, kliknięcia, przewijanie, „czytanie” |
-| `public/` | panel: `index.html`, `app.js`, `style.css` |
+| `public/` | panel: `index.html` (zakładki Plan i Ustawienia, podpowiedzi `title` i znaczki [?] z `data-tip`), `app.js`, `style.css` |
 | `tools/check-version.mjs` | sprawdza zgodność numeru wersji we wszystkich plikach (`npm test`) |
 | `tools/build-portable.ps1` | buduje wersję przenośną do `dist/` (sekcja 11) |
 | `tools/release-notes.mjs` | opis release'u: instrukcja pobierania + wpis z CHANGELOG dla bieżącej wersji |
@@ -56,11 +56,12 @@ Treść żądania `POST /api/start`:
 ```json
 { "url": "https://…", "visits": 5, "delayMin": 5, "delayMax": 20,
   "spoof": { "ua": true, "lang": true, "tz": true, "screen": true, "hw": true, "webgl": true, "canvas": true, "fonts": true, "prefs": true },
+  "text": "tekst do wpisania\nz nową linią", "typeMode": "now", "selector": "", "enter": false,
   "browse": true, "botTest": true, "useChrome": true, "headless": false,
   "proxies": "http://user:pass@host:port\nsocks5://host:port" }
 ```
 
-Ograniczenia: `visits` od 1 do 500, `delayMax ≥ delayMin`, adres musi zaczynać się od `http(s)://`.
+Ograniczenia: `visits` od 1 do 500, `delayMax ≥ delayMin`, adres musi zaczynać się od `http(s)://`; `text` do 20 000 znaków (CRLF zamieniane na `\n`); `typeMode` = `now` lub `selector` – przy `selector` z tekstem pusty `selector` daje `400`.
 
 ## 5. Profil przeglądarki (`bot/profiles.mjs`)
 
@@ -104,19 +105,29 @@ Do tego Playwright ustawia sam: `userAgent`, `locale`, `timezoneId`, `viewport`,
 - **`clickEl`**: najpierw przewija do elementu, potem klika w losowy punkt środkowej części elementu.
 - **`scroll`**: porcje kółka po 60–140 px. Z prawdopodobieństwem 15% robi pauzę 0,3–0,9 s, a z prawdopodobieństwem 25% na końcu cofa się o kawałek.
 - **`idle`**: drobne ruchy kursora co 0,3–0,9 s.
+- **`typeText`**: pisanie znak po znaku.
+  - Odstęp przed znakiem: log-normalny, mediana 150 ms, σ = 0,45; ×0,7 dla częstych par liter (lista ok. 35 par polskich i angielskich); ×1,25 po spacji; +150–450 ms po `.,;:!?`; +300–900 ms po nowej linii; +40–120 ms przed wielką literą (Shift); z prawdopodobieństwem 3% dodatkowe 0,5–1,5 s „namysłu”; górny limit 2,5 s.
+  - Przytrzymanie klawisza 50–130 ms. Znaki ASCII – `keyboard.press`. Inne (np. `ą`, `Ż`) – bezpośrednio przez CDP `Input.dispatchKeyEvent` (keyDown z `text` + keyUp) z kodem klawisza jak w układzie „polski programisty” (`ą` → `KeyA`, `ź` → `KeyX` itd.), Shift dla wielkich; bez Ctrl/Alt, bo wtedy Chrome traktuje to jak skrót i nie wstawia znaku. Gdy CDP zawiedzie – `keyboard.insertText`.
+  - `\n` = Enter, `\t` = Tab. Zwraca `{ chars, ms }`.
 
 ### `bot/visit.mjs`
 1. Start Chrome'a (`channel: "chrome"`). Jeśli się nie da, start wbudowanego Chromium. Opcjonalnie przez proxy.
 2. Losowanie profilu i utworzenie kontekstu z wstrzykiwanym skryptem.
 3. `goto` strony i chwila „czytania”.
-4. Przy włączonym przeglądaniu: przewijanie w dół i w górę, potem 2–4 losowe zakładki z `#tabs a[data-tab]` (bez `bot` i `odcisk`), w każdej przewinięcie i „czytanie”.
-5. Test „Człowiek czy bot”: zakładka `bot`, przycisk `#bot-go`, płótno `#cv-bot` przewinięte na środek. Potem 5 razy:
+4. Pisanie (gdy `text` niepusty):
+   - `now`: jeśli `document.activeElement` jest polem edycyjnym (input tekstowy, textarea, contenteditable) – pisze w nie; inaczej klika (`clickEl`) w pierwsze widoczne pole tekstowe; brak pola = błąd pisania;
+   - `selector`: czeka do 10 s na widoczny element, klika w niego i pisze;
+   - `enter`: po 0,25–0,7 s Enter, potem czekanie na `load` (do 15 s);
+   - błąd pisania trafia do `typingError` i do dziennika, ale nie przerywa wejścia.
+5. Rozpoznanie strony: „Cyfrowy odcisk człowieka”, jeśli jest widoczny `#tabs a[data-tab]`. Na innych stronach przy włączonym przeglądaniu tylko przewijanie, a dalsze kroki są pomijane (rekord bez odcisku).
+6. Przy włączonym przeglądaniu (tylko „Cyfrowy odcisk”): przewijanie w dół i w górę, potem 2–4 losowe zakładki z `#tabs a[data-tab]` (bez `bot` i `odcisk`), w każdej przewinięcie i „czytanie”.
+7. Test „Człowiek czy bot” (tylko „Cyfrowy odcisk”): zakładka `bot`, przycisk `#bot-go`, płótno `#cv-bot` przewinięte na środek. Potem 5 razy:
    - szukanie kółka w kolorze `--muted` (start) i `--accent` (cel) po pikselach płótna, z tolerancją ±28 na kanał;
    - kolory są czytane ze zmiennych CSS strony, więc działa w jasnym i ciemnym motywie;
    - jeśli kółko jest poza oknem, bot przewija do niego.
-6. Zakładka `odcisk`, przycisk `#fp-go`.
-7. Odczyt wyników przez `import()` modułów strony, który zwraca te same instancje co w aplikacji: `FP.R` (`hash`, `features`) i `Bot.R.human` (miary, `signs`).
-8. Zamknięcie przeglądarki. Każdy błąd trafia do pola `error` i nie przerywa serii.
+8. Zakładka `odcisk`, przycisk `#fp-go`.
+9. Odczyt wyników przez `import()` modułów strony, który zwraca te same instancje co w aplikacji: `FP.R` (`hash`, `features`) i `Bot.R.human` (miary, `signs`).
+10. Zamknięcie przeglądarki. Każdy błąd trafia do pola `error` i nie przerywa serii.
 
 **Zależność od strony docelowej:** selektory `#tabs a[data-tab]`, `#bot-go`, `#cv-bot`, `#st-bot`, `#fp-go`, ścieżki modułów `js/tests/browser-fingerprint.js` i `js/tests/human-or-bot.js` oraz zmienne CSS `--muted` i `--accent`. Zmiana któregoś z nich na stronie wymaga zmiany tutaj.
 
@@ -132,6 +143,8 @@ Pliki `reports/wejscia-RRRR-MM-DD-GG-MM-SS.{csv,json}` (czas UTC) są zapisywane
 | `error` | błąd lub puste |
 | `proxy` | użyte proxy (hasło zamaskowane) |
 | `summary` | krótki opis profilu |
+| `typedChars`, `typingMs`, `cpm` | wpisane znaki, czas pisania (ms), tempo (znaki/min) |
+| `typingError` | dlaczego pisanie się nie udało, albo puste |
 | `hash` | odcisk policzony przez stronę |
 | `botSigns`, `botVerdict` | oznaki bota (0–5), `człowiek` lub `bot` |
 | `ua`, `platform`, `lang`, `tz`, `screen`, `cpu`, `mem`, `webgl`, `canvas`, `fonts` | cechy **tak, jak odczytała je strona** |
@@ -149,6 +162,7 @@ Pliki `reports/wejscia-RRRR-MM-DD-GG-MM-SS.{csv,json}` (czas UTC) są zapisywane
 - **Jedno źródło wersji:** pole `version` w `package.json`. Serwer czyta je przy starcie i pokazuje w konsoli, w panelu (`/api/info`) i w `config.version` raportu JSON.
 - Ten sam numer musi stać w `README.md`, `docs/DOKUMENTACJA.md`, `docs/INSTRUKCJA.md` i jako najnowszy wpis w `CHANGELOG.md`. Pilnuje tego `npm test` (`tools/check-version.mjs`), który zwraca błąd przy niezgodności.
 - Wydania dla innych osób: sekcja 11.
+- Release tylko na wyraźną prośbę autora (sekcja 11).
 - Każda zmiana: podniesienie wersji, wpis w `CHANGELOG.md`, aktualizacja dokumentów, których zmiana dotyczy, `npm test` i commit z numerem wersji w opisie.
 
 ## 10. Testowanie
@@ -168,4 +182,4 @@ Pliki `reports/wejscia-RRRR-MM-DD-GG-MM-SS.{csv,json}` (czas UTC) są zapisywane
   4. tworzy opis `tools/release-notes.mjs`;
   5. publikuje release `vX.Y.Z` z ZIP-em; tag tworzy GitHub na commicie, z którego zbudowano paczkę.
 - **Wydanie ręczne** (bez automatu): `build-portable.ps1` lokalnie, `node tools/release-notes.mjs > opis.md`, a potem na GitHubie *Releases → Draft a new release*, tag `vX.Y.Z`, opis i ZIP.
-- Lokalnie tagów nie tworzymy. Release wydajemy dla wersji, które mają trafić do innych osób – nie musi być przy każdej zmianie.
+- Lokalnie tagów nie tworzymy. Release wydajemy **tylko na wyraźną prośbę autora** – nie przy każdej zmianie wersji.
