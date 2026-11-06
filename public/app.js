@@ -23,10 +23,9 @@ const TYPES = {
   click:  { name: "Kliknij w element", def: () => ({ selector: "" }) },
   scroll: { name: "Przewiń", def: () => ({ dir: "down", px: 600 }) },
   wait:   { name: "Czekaj", def: () => ({ min: 1, max: 3 }) },
-  browse: { name: "Przeglądaj losowo", def: () => ({}) },
-  botTest:{ name: "Test „Człowiek czy bot”", def: () => ({}) },
+  human:  { name: "Ludzkie zachowanie", def: () => ({}) },
 };
-let scenario = [{ type: "browse" }, { type: "botTest" }], dragFrom = null;   // domyślnie to, co bot robił dotąd
+let scenario = [{ type: "human" }], dragFrom = null;
 
 const targetHTML = (a, i) => `<span class="target" role="radiogroup" aria-label="Dokąd idą klawisze">
   <span class="sub">dokąd:</span>
@@ -50,10 +49,8 @@ function fieldsHTML(a, i){
     case "wait": return `<label class="num" title="Najkrótszy czas czekania, w sekundach.">od <input data-f="min" type="number" min="0" step="0.5" value="${a.min}"></label>
       <label class="num" title="Najdłuższy czas czekania, w sekundach.">do <input data-f="max" type="number" min="0" step="0.5" value="${a.max}"> s</label>
       <span class="help" tabindex="0" data-tip="Bot czeka losowy czas z tego przedziału, w tym czasie lekko poruszając myszą – jak człowiek, który czyta albo się zastanawia.">?</span>`;
-    case "browse": return `<span class="sub">przewijanie; na „Cyfrowym odcisku” też 2–4 losowe zakładki</span>
-      <span class="help" tabindex="0" data-tip="Bot przewija stronę kółkiem myszy z przerwami, jak przy czytaniu. Na stronie „Cyfrowy odcisk człowieka” klika też w 2–4 losowe zakładki i w każdej chwilę „czyta”. Na innych stronach tylko przewija.">?</span>`;
-    case "botTest": return `<span class="sub">tylko na „Cyfrowym odcisku”; na innych stronach pomijany</span>
-      <span class="help" tabindex="0" data-tip="Tylko na stronie „Cyfrowy odcisk człowieka”: bot otwiera zakładkę „Człowiek czy bot”, znajduje kółka na płótnie i klika je 5 razy ruchem jak człowiek (krzywe, przyspieszanie, drżenie, przytrzymanie przycisku). W tabeli zobaczysz, czy strona uznała go za człowieka.">?</span>`;
+    case "human": return `<span class="sub">czytanie, przewijanie, ruchy myszy – kilkanaście sekund</span>
+      <span class="help" tabindex="0" data-tip="Bot przez kilkanaście sekund zachowuje się jak czytający człowiek: 3–6 razy chwilę „czyta” (drobne ruchy myszy), przewija kółkiem w dół – czasem wraca trochę wyżej – i co jakiś czas najeżdża myszą na link, nagłówek albo przycisk, niczego nie klikając. Działa na każdej stronie.">?</span>`;
   }
 }
 
@@ -172,7 +169,7 @@ es.addEventListener("visit", e => { const v = JSON.parse(e.data);
   tr.innerHTML = `<td>${v.n}${total ? `/${total}` : ""}</td><td>${esc(v.summary)}${v.proxy ? `<br><small>proxy ${esc(v.proxy)}</small>` : ""}</td>`
     + `<td>${v.actions ? `${v.actionsDone}/${v.actions} akcji${v.typedChars ? `<br><small>${v.typedChars} zn., ${v.cpm} zn./min</small>` : ""}` : "—"}${v.actionError ? `<br><span class="bad">${esc(v.actionError)}</span>` : ""}</td>`
     + `<td>${v.error ? `<span class="bad">${esc(v.error)}</span>` : v.hash ? `<code>${esc(v.hash)}</code> ${v.newHash ? '<span class="good">nowy</span>' : '<span class="bad">powtórzony</span>'}` : "—"}</td>`
-    + `<td>${v.botVerdict ? `${v.botSigns}/5 → <span class="${v.botVerdict === "bot" ? "bad" : "good"}">${esc(v.botVerdict)}</span>` : "—"}</td><td>${(v.ms / 1000).toFixed(0)} s</td>`;
+    + `<td>${(v.ms / 1000).toFixed(0)} s</td>`;
   $("visits-t").tBodies[0].appendChild(tr);
   const u = new Set(hashes).size; $("uniq").textContent = `Różnych odcisków: ${u} z ${hashes.length} udanych wejść.`;
   $("status").textContent = `pracuje… ${v.n}${total ? ` z ${total}` : ""}`; });

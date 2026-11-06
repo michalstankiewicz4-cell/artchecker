@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Bot odcisku
 
-Wersja instrukcji odpowiada wersji programu **0.6.0**.
+Wersja instrukcji odpowiada wersji programu **0.7.0**.
 
 ## 1. Co jest potrzebne
 
@@ -44,7 +44,7 @@ Lista akcji, które bot wykonuje **po kolei, od góry**, przy każdym wejściu z
 
 - **+ Dodaj akcję** – wybierz rodzaj z listy; akcja pojawi się na końcu.
 - Rodzaj akcji zmienisz listą w wierszu. **↑ ↓** albo przeciągnięcie za uchwyt **⠿** zmienia kolejność, **⧉** powiela, **✕** usuwa.
-- Nowy scenariusz zaczyna się od „Przeglądaj losowo” i „Test »Człowiek czy bot«” – czyli od tego, co bot robił wcześniej. Możesz je usunąć.
+- Nowy scenariusz zaczyna się od akcji „Ludzkie zachowanie”. Możesz ją usunąć.
 
 | Akcja | Ustawienia | Co robi |
 |---|---|---|
@@ -53,8 +53,7 @@ Lista akcji, które bot wykonuje **po kolei, od góry**, przy każdym wejściu z
 | **Kliknij w element** | selektor CSS | dojeżdża myszą i klika, np. w pole, w które potem będzie pisał |
 | **Przewiń** | w dół / w górę, o ile px | przewija kółkiem myszy porcjami |
 | **Czekaj** | od–do sekund | czeka losowo, lekko ruszając myszą |
-| **Przeglądaj losowo** | – | przewija stronę; na „Cyfrowym odcisku” odwiedza też 2–4 losowe zakładki |
-| **Test „Człowiek czy bot”** | – | tylko na „Cyfrowym odcisku”: robi test ludzkim ruchem myszy; na innych stronach pomijany |
+| **Ludzkie zachowanie** | – | przez kilkanaście sekund zachowuje się jak czytający człowiek: 3–6 razy chwilę „czyta” (drobne ruchy myszy), przewija w dół – czasem wraca wyżej – i najeżdża myszą na link, nagłówek albo przycisk, niczego nie klikając |
 
 **Klawisz lub kombinacja:** kliknij w pole z klawiszem i naciśnij kombinację na klawiaturze – zapisze się sama (np. `Ctrl+F`). Skróty, których przeglądarka nie oddaje stronie (np. Ctrl+W, Ctrl+T), wybierz z **listy** obok – są tam też klawisze nawigacji i edycji.
 
@@ -108,12 +107,11 @@ Aby sprawdzić, która cecha najbardziej zmienia odcisk, odznacz wszystkie poza 
 - **Odcisk ze strony** (tylko „Cyfrowy odcisk”): skrót, który policzyła strona.
   - **nowy:** strona w tej serii jeszcze takiego odcisku nie widziała.
   - **powtórzony:** taki odcisk już był.
-- **Człowiek czy bot:** liczba oznak bota (z 5) i werdykt strony. Od 3 oznak strona uznaje, że to bot.
 - **Czas:** jak długo trwało wejście.
 
 Pod tabelą jest podsumowanie „Różnych odcisków: X z Y”.
 
-**Dziennik** pokazuje na bieżąco każdy krok: profil, każdą akcję scenariusza (np. wpisany tekst z tempem, naciśnięte klawisze), odwiedzone zakładki, wynik, przerwy i błędy.
+**Dziennik** pokazuje na bieżąco każdy krok: profil, każdą akcję scenariusza (np. wpisany tekst z tempem, naciśnięte klawisze), wynik, przerwy i błędy.
 
 ## 5. Raporty
 

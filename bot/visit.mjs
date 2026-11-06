@@ -1,5 +1,5 @@
 // Jedno wejście na stronę: świeża przeglądarka z nowym profilem, przewijanie, zakładki,
-// test „Człowiek czy bot”, odcisk przeglądarki i odczyt wyników.
+// odcisk przeglądarki i odczyt wyników.
 import { chromium } from "playwright";
 import { makeProfile, contextOptions, describe } from "./profiles.mjs";
 import { spoof } from "./spoof.mjs";
@@ -22,33 +22,6 @@ async function launch({ headless, proxy, channel }){
   const o = { headless, proxy: proxy ? parseProxy(proxy) : undefined, args: ["--disable-blink-features=AutomationControlled"] };
   if (channel) { try { return await chromium.launch({ ...o, channel }); } catch (_) { /* brak Chrome – wbudowany Chromium */ } }
   return chromium.launch(o);
-}
-
-// szuka na płótnie testu koła w danym kolorze (zmienna CSS strony) i zwraca jego środek w pikselach strony
-async function findDot(page, cssVar){
-  return page.evaluate(v => {
-    const c = document.getElementById("cv-bot"); if (!c || !c.width) return null;
-    const hex = getComputedStyle(document.documentElement).getPropertyValue(v).trim().replace("#", "");
-    const full = hex.length === 3 ? hex.split("").map(h => h + h).join("") : hex;
-    const [R, G, B] = [0, 2, 4].map(i => parseInt(full.slice(i, i + 2), 16));
-    const d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
-    let sx = 0, sy = 0, n = 0;
-    for (let y = 0; y < c.height; y += 2) for (let x = 0; x < c.width; x += 2) {
-      const i = (y * c.width + x) * 4;
-      if (d[i + 3] > 180 && Math.abs(d[i] - R) < 28 && Math.abs(d[i + 1] - G) < 28 && Math.abs(d[i + 2] - B) < 28) { sx += x; sy += y; n++; }
-    }
-    if (n < 15) return null;
-    const r = c.getBoundingClientRect(), k = c.width / r.width;
-    return { x: r.left + sx / n / k, y: r.top + sy / n / k };
-  }, cssVar);
-}
-async function waitDot(page, cssVar, signal){
-  for (let i = 0; i < 40; i++) { check(signal); const p = await findDot(page, cssVar);
-    if (p) { const vh = (page.viewportSize() || { height: 720 }).height;
-      if (p.y > 40 && p.y < vh - 40) return p;
-      await page.mouse.wheel(0, p.y - vh / 2); await sleep(rand(250, 450)); continue; }   // kółko poza oknem – przewiń do niego
-    await sleep(100); }
-  throw new Error("nie znaleziono kółka w teście „Człowiek czy bot”");
 }
 
 // czy na stronie jest dany element (krótka próba, bez czekania 30 s)
@@ -94,30 +67,24 @@ const ACTIONS = {
   },
   async scroll(page, a){ await scroll(page, a.dir === "up" ? -a.px : a.px); return `przewinięto ${a.dir === "up" ? "w górę" : "w dół"} o ${a.px} px`; },
   async wait(page, a){ const ms = rand(a.min, Math.max(a.min, a.max)) * 1000; await idle(page, ms); return `czekanie ${(ms / 1000).toFixed(1)} s`; },
-  async browse(page, a, ctx){
-    await scroll(page, rand(400, 1200)); await idle(page, rand(600, 1500)); await scroll(page, -rand(200, 800));
-    if (!ctx.ours) return "przewijanie (to nie jest „Cyfrowy odcisk” – bez zakładek)";
-    const tabs = await page.$$eval("#tabs a[data-tab]", as => as.map(x => x.dataset.tab).filter(t => t !== "bot" && t !== "odcisk"));
-    const pick = tabs.sort(() => Math.random() - 0.5).slice(0, Math.floor(rand(2, 5)));
-    for (const t of pick) { check(ctx.signal); await tab(page, t); await scroll(page, rand(200, 700)); await idle(page, rand(500, 1500)); }
-    return `przewijanie i zakładki: ${pick.join(", ")}`;
-  },
-  async botTest(page, a, ctx){
-    if (!ctx.ours) return "pominięty – to nie jest „Cyfrowy odcisk”";
-    await tab(page, "bot");
-    await clickEl(page, page.locator("#bot-go")); await sleep(rand(300, 600));
-    await page.locator("#cv-bot").evaluate(c => c.scrollIntoView({ block: "center" })); await sleep(rand(300, 500));
-    for (let i = 0; i < 5; i++) {
-      const g = await waitDot(page, "--muted", ctx.signal); await click(page, g.x, g.y, 3); await sleep(rand(150, 400));
-      const b = await waitDot(page, "--accent", ctx.signal); await click(page, b.x, b.y, 4); await sleep(rand(250, 600));
+  // ludzkie zachowanie: kilka rund „przeczytaj – przewiń”, czasem powrót wyżej i najechanie myszą na link lub nagłówek
+  async human(page, a, ctx){
+    const rounds = Math.floor(rand(3, 7)); let hovers = 0;
+    for (let r = 0; r < rounds; r++) {
+      check(ctx.signal); await idle(page, rand(1200, 3500));
+      if (Math.random() < 0.35) {
+        const els = page.locator("a:visible, h1:visible, h2:visible, h3:visible, button:visible");
+        const n = await els.count();
+        if (n) { const b = await els.nth(Math.floor(Math.random() * n)).boundingBox().catch(() => null);
+          const vp = page.viewportSize() || { width: 1280, height: 720 };
+          if (b && b.y > 0 && b.y + b.height < vp.height) { await moveTo(page, b.x + b.width * rand(0.2, 0.8), b.y + b.height * rand(0.3, 0.7)); hovers++; await sleep(rand(300, 900)); } }
+      }
+      await scroll(page, Math.random() < 0.15 ? -rand(150, 500) : rand(250, 800));
     }
-    await sleep(500);
-    const done = await page.evaluate(() => /Gotowe|Done/.test(document.getElementById("st-bot").textContent));
-    if (!done) throw new Error("test „Człowiek czy bot” nie został ukończony (chybione kliknięcie?)");
-    return "test „Człowiek czy bot” wykonany";
+    return `ludzkie zachowanie: ${rounds} ${plural(rounds, "runda", "rundy", "rund")} czytania i przewijania, najechania myszą: ${hovers}`;
   },
 };
-const ANAME = { type: "Pisz tekst", keys: "Naciśnij klawisze", click: "Kliknij w element", scroll: "Przewiń", wait: "Czekaj", browse: "Przeglądaj losowo", botTest: "Test „Człowiek czy bot”" };
+const ANAME = { type: "Pisz tekst", keys: "Naciśnij klawisze", click: "Kliknij w element", scroll: "Przewiń", wait: "Czekaj", human: "Ludzkie zachowanie" };
 
 async function tab(page, name){
   const link = page.locator(`#tabs a[data-tab="${name}"]`);
@@ -141,32 +108,27 @@ export async function visit({ n, url, spoofOpts, proxy, headless, channel, scena
     await page.goto(url, { waitUntil: "load", timeout: 45000 });
     await idle(page, rand(800, 2000));
 
-    // czy to strona „Cyfrowy odcisk człowieka” (zakładki, test bota i odcisk działają tylko na niej)
-    const ours = await has(page, "#tabs a[data-tab]");
     rec.actions = scenario.length; rec.actionsDone = 0;
     for (const [k, a] of scenario.entries()) {
       check(signal);
       const label = `#${n} akcja ${k + 1}/${scenario.length} (${ANAME[a.type]})`;
       if (a.target === "browser") { log(`${label}: tryb „Przeglądarka” nie jest jeszcze podłączony – pomijam`); continue; }
-      try { const msg = await ACTIONS[a.type](page, a, { rec, ours, signal }); rec.actionsDone++; log(`${label}: ${msg}`); }
+      try { const msg = await ACTIONS[a.type](page, a, { rec, signal }); rec.actionsDone++; log(`${label}: ${msg}`); }
       catch (e) { check(signal); const m = String(e.message || e).split("\n")[0]; rec.actionError ||= `akcja ${k + 1}: ${m}`; log(`${label}: błąd – ${m}; dalej`); }
       await sleep(rand(200, 600));
     }
     if (rec.typingMs) rec.cpm = Math.round(rec.typedChars / rec.typingMs * 60000);
 
-    if (!ours || !(await has(page, "#tabs a[data-tab]"))) return rec;
+    // odczyt odcisku – tylko gdy to strona „Cyfrowy odcisk człowieka”
+    if (!(await has(page, "#tabs a[data-tab]"))) return rec;
     check(signal); await tab(page, "odcisk");
     await clickEl(page, page.locator("#fp-go")); await sleep(rand(600, 1200));
     await scroll(page, rand(300, 700)); await idle(page, rand(500, 1200));
 
-    const res = await page.evaluate(async base => {
-      const fp = (await import(base + "js/tests/browser-fingerprint.js")).FP, bot = (await import(base + "js/tests/human-or-bot.js")).Bot;
-      return { fp: fp.R, bot: bot.R && bot.R.human ? bot.R.human : null };
-    }, new URL(".", page.url()).href);
-    if (!res.fp) throw new Error("strona nie policzyła odcisku");
-    rec.hash = res.fp.hash; rec.features = res.fp.features;
-    if (res.bot) { rec.botSigns = res.bot.signs; rec.botVerdict = res.bot.signs >= 3 ? "bot" : "człowiek"; rec.botMetrics = res.bot; }
-    log(`#${n} odcisk: ${rec.hash}${res.bot ? ` · „Człowiek czy bot”: ${rec.botSigns}/5 oznak → ${rec.botVerdict}` : ""}`);
+    const fp = await page.evaluate(async base => (await import(base + "js/tests/browser-fingerprint.js")).FP.R, new URL(".", page.url()).href);
+    if (!fp) throw new Error("strona nie policzyła odcisku");
+    rec.hash = fp.hash; rec.features = fp.features;
+    log(`#${n} odcisk: ${rec.hash}`);
   } catch (e) {
     rec.error = e instanceof Stopped ? "zatrzymano" : String(e.message || e).split("\n")[0];
     log(`#${n} błąd: ${rec.error}`);

@@ -2,6 +2,15 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.7.0] – 2026-11-06
+
+### Dodane
+- Akcja **„Ludzkie zachowanie”**: przez kilkanaście sekund 3–6 rund „czytania” (drobne ruchy myszy) i przewijania, czasem powrót wyżej i najechanie myszą na link, nagłówek albo przycisk – bez klikania. Działa na każdej stronie; jest domyślną akcją nowego scenariusza.
+
+### Usunięte
+- Akcja „Test »Człowiek czy bot«” i wszystko, co z nią związane: kolumna w tabeli panelu, kolumny raportu `botSigns`, `botVerdict` i pole `botMetrics` w JSON.
+- Akcja „Przeglądaj losowo” razem z klikaniem w zakładki strony „Cyfrowy odcisk człowieka” – zastąpiona przez „Ludzkie zachowanie”.
+
 ## [0.6.0] – 2026-11-06
 
 ### Dodane

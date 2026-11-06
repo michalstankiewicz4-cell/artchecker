@@ -21,7 +21,7 @@ const log = text => { const line = `${new Date().toLocaleTimeString("pl-PL")}  $
 
 const plural = (n, one, few, many) => n === 1 ? one : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? few : many;
 const csvCell = v => { const s = v == null ? "" : String(v); return /[",;\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
-const CSV_COLS = ["n", "start", "ms", "error", "proxy", "summary", "actions", "actionsDone", "actionError", "typedChars", "typingMs", "cpm", "hash", "botSigns", "botVerdict", "ua", "platform", "lang", "tz", "screen", "cpu", "mem", "webgl", "canvas", "fonts"];
+const CSV_COLS = ["n", "start", "ms", "error", "proxy", "summary", "actions", "actionsDone", "actionError", "typedChars", "typingMs", "cpm", "hash", "ua", "platform", "lang", "tz", "screen", "cpu", "mem", "webgl", "canvas", "fonts"];
 const csvRow = r => CSV_COLS.map(k => csvCell(k in (r.features || {}) ? r.features[k] : r[k])).join(";");
 
 async function startRun(cfg){
@@ -42,7 +42,7 @@ async function startRun(cfg){
       run.records.push(rec);
       await appendFile(file + ".csv", csvRow(rec) + "\n");
       await writeFile(file + ".json", JSON.stringify({ config: run.config, records: run.records }, null, 2));
-      send("visit", { n: rec.n, ms: rec.ms, error: rec.error, summary: rec.summary, proxy: rec.proxy, actions: rec.actions, actionsDone: rec.actionsDone, actionError: rec.actionError, typedChars: rec.typedChars, cpm: rec.cpm, hash: rec.hash, newHash: rec.newHash, botSigns: rec.botSigns, botVerdict: rec.botVerdict });
+      send("visit", { n: rec.n, ms: rec.ms, error: rec.error, summary: rec.summary, proxy: rec.proxy, actions: rec.actions, actionsDone: rec.actionsDone, actionError: rec.actionError, typedChars: rec.typedChars, cpm: rec.cpm, hash: rec.hash, newHash: rec.newHash });
       if (i < cfg.visits && !ctrl.signal.aborted) { const w = rand(cfg.delayMin, cfg.delayMax) * 1000; log(`przerwa ${(w / 1000).toFixed(1)} s`);
         const end = Date.now() + w; while (Date.now() < end && !ctrl.signal.aborted) await sleep(200); }
     }
@@ -63,7 +63,7 @@ function cleanScenario(list){
     case "click": return { type: "click", selector: String(a.selector || "").trim().slice(0, 500) };
     case "scroll": return { type: "scroll", dir: a.dir === "up" ? "up" : "down", px: Math.round(num(a.px, 50, 20000, 600)) };
     case "wait": { const min = num(a.min, 0, 600, 1); return { type: "wait", min, max: num(a.max, min, 600, min) }; }
-    case "browse": case "botTest": return { type: a.type };
+    case "human": return { type: "human" };
   } }).filter(a => a && !(a.type === "type" && !a.text) && !(a.type === "keys" && !a.combo) && !(a.type === "click" && !a.selector));
 }
 

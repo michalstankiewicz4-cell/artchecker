@@ -41,7 +41,7 @@
       </div>
 
       <label class="row" title="Pełny adres strony, na którą wchodzi bot (z https://).">
-        <span class="lbl">Adres strony <span class="help" tabindex="0" data-tip="Pełny adres z http:// lub https://. Pisanie działa na każdej stronie. Losowe zakładki, test „Człowiek czy bot” i odczyt odcisku działają tylko na stronie „Cyfrowy odcisk człowieka” – na innych stronach bot je pomija.">?</span></span>
+        <span class="lbl">Adres strony <span class="help" tabindex="0" data-tip="Pełny adres z http:// lub https://. Scenariusz działa na każdej stronie. Na stronie „Cyfrowy odcisk człowieka” bot dodatkowo na końcu każdego wejścia odczytuje odcisk przeglądarki policzony przez stronę.">?</span></span>
         <input id="url" type="url" required value="https://michalstankiewicz4-cell.github.io/behavioral-biometrics/"></label>
 
     </section>
@@ -58,8 +58,7 @@
           <button type="button" role="menuitem" data-add="click" title="Kliknij w element strony wskazany selektorem CSS (np. pole do pisania).">Kliknij w element</button>
           <button type="button" role="menuitem" data-add="scroll" title="Przewiń stronę kółkiem myszy w dół albo w górę.">Przewiń</button>
           <button type="button" role="menuitem" data-add="wait" title="Odczekaj losowy czas z podanego przedziału.">Czekaj</button>
-          <button type="button" role="menuitem" data-add="browse" title="Poprzewijaj stronę jak przy czytaniu; na „Cyfrowym odcisku” odwiedź też kilka losowych zakładek.">Przeglądaj losowo</button>
-          <button type="button" role="menuitem" data-add="botTest" title="Zrób test „Człowiek czy bot” na stronie „Cyfrowy odcisk człowieka”.">Test „Człowiek czy bot”</button>
+          <button type="button" role="menuitem" data-add="human" title="Przez kilkanaście sekund zachowuj się jak czytający człowiek: czytanie, przewijanie, ruchy myszy.">Ludzkie zachowanie</button>
         </div>
       </div>
     </section>
@@ -113,9 +112,9 @@ socks5://host:port"></textarea>
   </form>
 
   <section>
-    <h2>Wejścia <span class="help" tabindex="0" data-tip="Jeden wiersz = jedno wejście. „Scenariusz” – ile akcji się udało, ile znaków wpisano i w jakim tempie, a na czerwono pierwszy błąd akcji. „Odcisk ze strony” – skrót policzony przez „Cyfrowy odcisk człowieka”: „nowy”, jeśli w tej serii jeszcze takiego nie było. „Człowiek czy bot” – ile z 5 oznak bota zobaczyła strona (od 3 = bot).">?</span></h2>
+    <h2>Wejścia <span class="help" tabindex="0" data-tip="Jeden wiersz = jedno wejście. „Scenariusz” – ile akcji się udało, ile znaków wpisano i w jakim tempie, a na czerwono pierwszy błąd akcji. „Odcisk ze strony” – tylko na stronie „Cyfrowy odcisk człowieka”: skrót policzony przez stronę, „nowy”, jeśli w tej serii jeszcze takiego nie było.">?</span></h2>
     <div class="tablewrap"><table id="visits-t">
-      <thead><tr><th>#</th><th>Profil</th><th>Scenariusz</th><th>Odcisk ze strony</th><th>Człowiek czy bot</th><th>Czas</th></tr></thead>
+      <thead><tr><th>#</th><th>Profil</th><th>Scenariusz</th><th>Odcisk ze strony</th><th>Czas</th></tr></thead>
       <tbody></tbody>
     </table></div>
     <p id="uniq" class="hint"></p>
