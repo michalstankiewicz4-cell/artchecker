@@ -1,6 +1,6 @@
 # Instrukcja obsługi – Human Bot
 
-Wersja instrukcji odpowiada wersji programu **0.17.0**.
+Wersja instrukcji odpowiada wersji programu **0.17.1**.
 
 ## 1. Co jest potrzebne
 
@@ -30,7 +30,7 @@ Jeśli panel się nie otworzy, wpisz adres http://127.0.0.1:3777/ ręcznie.
 
 ## 3. Panel krok po kroku
 
-Na górze są przyciski **Start** i **Stop** – widoczne zawsze, niezależnie od zakładki. Pod nimi trzy zakładki: **Plan** – co bot ma zrobić, **Ustawienia** – jak ma wyglądać jego przeglądarka, **Statystyki** – tabela wejść i dziennik, i **Biblioteka** – obrazki i nazwane elementy do klikania. Start bierze ustawienia z Planu i Ustawień. Przycisk **☾ Noc / ☀ Dzień** obok nazwy przełącza motyw panelu (wybór jest zapamiętywany; bez wyboru panel idzie za ustawieniem systemu). Przy każdym polu jest podpowiedź (najedź myszą) i znaczek **[?]** – najedź na niego albo kliknij, żeby przeczytać dłuższy opis (Esc albo kliknięcie obok zamyka).
+Na górze są przyciski **Start** i **Stop**, lista **Profil** oraz – po prawej – **Zapisz** i **Reset** (opis niżej); widoczne zawsze, niezależnie od zakładki. Pod nimi cztery zakładki: **Plan** – co bot ma zrobić, **Ustawienia** – jak ma wyglądać jego przeglądarka, **Statystyki** – tabela wejść i dziennik, i **Biblioteka** – obrazki i nazwane elementy do klikania. Start bierze ustawienia z Planu i Ustawień. Przycisk **☾ Noc / ☀ Dzień** obok nazwy przełącza motyw panelu (wybór jest zapamiętywany; bez wyboru panel idzie za ustawieniem systemu). Przy każdym polu jest podpowiedź (najedź myszą) i znaczek **[?]** – najedź na niego albo kliknij, żeby przeczytać dłuższy opis (Esc albo kliknięcie obok zamyka).
 
 ### Zakładka „Plan”
 

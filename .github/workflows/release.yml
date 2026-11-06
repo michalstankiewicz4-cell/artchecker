@@ -37,7 +37,13 @@ jobs:
         run: ./tools/build-portable.ps1
 
       - name: Opis wydania
-        run: node tools/release-notes.mjs > dist/opis.md
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $prev = gh release list --limit 1 --json tagName --jq '.[0].tagName' 2>$null
+          $env:PREV = "$prev"
+          node tools/release-notes.mjs > dist/opis.md
 
       - name: Publikacja
         shell: pwsh

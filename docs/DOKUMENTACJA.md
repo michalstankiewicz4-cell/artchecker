@@ -1,6 +1,6 @@
 # Dokumentacja techniczna – Human Bot
 
-Wersja dokumentu odpowiada wersji programu **0.17.0**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
+Wersja dokumentu odpowiada wersji programu **0.17.1**. Obsługę krok po kroku opisuje [INSTRUKCJA.md](INSTRUKCJA.md), a historię zmian [CHANGELOG.md](../CHANGELOG.md).
 
 ## 1. Cel
 
@@ -212,13 +212,13 @@ Kolumny cech są puste, gdy dana grupa była odznaczona w „Co zmieniać przy k
 Podgląd panelu: `.github/workflows/static.yml` przy każdym wypchnięciu na `main` publikuje sam folder `public/` na GitHub Pages (<https://michalstankiewicz4-cell.github.io/webbot/>). Tam panel działa w trybie podglądu – bez serwera, Start nieaktywny; bota uruchamia się tylko lokalnie.
 
 
-- Wersja przenośna to ZIP `webbot-X.Y.Z-windows-portable.zip` z kodem programu, `node_modules` (`npm install --omit=dev`), całą dokumentacją (wszystkie pliki `.md` z głównego folderu i folder `docs/`) i `node\node.exe` z licencją Node.js (`node\LICENSE`). Nie zawiera przeglądarki: używa zainstalowanego Chrome'a, a bez niego Chromium pobranego przez `pobierz-chromium.bat` (do `%LOCALAPPDATA%\ms-playwright`).
+- Wersja przenośna to ZIP `webbot-X.Y.Z-windows-portable.zip` z kodem programu, `node_modules` (`npm install --omit=dev`), całą dokumentacją (wszystkie pliki `.md` z głównego folderu i folder `docs/`), danymi z repozytorium, jeśli są (`obrazy/`, `elementy.json`, `profile/`) i `node\node.exe` z licencją Node.js (`node\LICENSE`). Nie zawiera przeglądarki: używa zainstalowanego Chrome'a, a bez niego Chromium pobranego przez `pobierz-chromium.bat` (do `%LOCALAPPDATA%\ms-playwright`).
 - Budowa na Windowsie z Node.js: `powershell -ExecutionPolicy Bypass -File tools\build-portable.ps1` → `dist\webbot-X.Y.Z-windows-portable.zip` (folder `dist/` nie trafia do repo). Do paczki trafia `node.exe`, którym uruchomiono skrypt.
 - **Wydanie automatem (zalecane):** w repozytorium zakładka *Actions* → „Wydanie” → *Run workflow* (gałąź `main`). Automat na Windowsie w chmurze GitHuba:
   1. instaluje Node.js 24 i uruchamia `npm test` (zgodność wersji);
   2. przerywa, jeśli release `vX.Y.Z` dla wersji z `package.json` już istnieje;
   3. buduje paczkę `tools/build-portable.ps1` (z Node.js 24 i jego licencją);
-  4. tworzy opis `tools/release-notes.mjs`;
+  4. tworzy opis `tools/release-notes.mjs` – z wpisami `CHANGELOG.md` od poprzedniego wydania (jego tag automat bierze z `gh release list` i podaje w zmiennej `PREV`);
   5. publikuje release `vX.Y.Z` z ZIP-em; tag tworzy GitHub na commicie, z którego zbudowano paczkę.
-- **Wydanie ręczne** (bez automatu): `build-portable.ps1` lokalnie, `node tools/release-notes.mjs > opis.md`, a potem na GitHubie *Releases → Draft a new release*, tag `vX.Y.Z`, opis i ZIP.
+- **Wydanie ręczne** (bez automatu): `build-portable.ps1` lokalnie, `PREV=0.4.0 node tools/release-notes.mjs > opis.md` (`PREV` – poprzednie wydanie), a potem na GitHubie *Releases → Draft a new release*, tag `vX.Y.Z`, opis i ZIP.
 - Lokalnie tagów nie tworzymy. Release wydajemy **tylko na wyraźną prośbę autora** – nie przy każdej zmianie wersji.

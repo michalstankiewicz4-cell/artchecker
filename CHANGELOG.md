@@ -2,6 +2,15 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), numeracja: [SemVer](https://semver.org/lang/pl/). Najnowsza wersja na górze.
 
+## [0.17.1] – 2026-11-06
+
+### Zmienione
+- Opis wydania na GitHubie zawiera wszystkie zmiany od poprzedniego wydania (automat podaje jego tag w `PREV`), a nie tylko z ostatniej wersji.
+- Wersja przenośna zawiera też `obrazy/`, `elementy.json` i `profile/`, jeśli są w repozytorium.
+
+### Poprawione
+- README, instrukcja i CLAUDE.md: cztery zakładki, profile, Zapisz i Reset w opisie górnego paska.
+
 ## [0.17.0] – 2026-11-06
 
 ### Zmienione

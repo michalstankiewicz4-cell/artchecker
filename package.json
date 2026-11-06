@@ -1,6 +1,6 @@
 {
   "name": "human-bot",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "private": true,
   "description": "Bot z panelem w przeglądarce: wchodzi na wskazaną stronę i wykonuje scenariusz akcji (pisanie, klawisze, kliknięcia, przewijanie) jak człowiek, przy każdym wejściu z innym odciskiem przeglądarki.",
   "type": "module",
