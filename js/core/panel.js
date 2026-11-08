@@ -66,4 +66,4 @@ function onChange(){if(tool!==TILT.tool){TILT.tool=tool;TILT.lo=TILT.v<20;TILT.h
  document.querySelectorAll('#verdicts button').forEach(b=>b.disabled=!KIND&&!sel);
  if(MODE==='sculpt'){apply3View();mark3Dirty();schedule3Gates()}else{render();scheduleGates()}
  updatePanel()}
-const VIEWNAME={trans:'światło przechodzące (pod światło)',normal:'światło dzienne',uv:'promieniowanie UV',back:'odwrocie obrazu',crackview:'wzmocniona krakelura',raking:'światło boczne',xray:'RTG',ir:'reflektografia IR'};
+const VIEWNAME={trans:'światło przechodzące (pod światło)',normal:'światło dzienne',uv:'promieniowanie UV',back:'odwrocie',crackview:'wzmocniona krakelura',raking:'światło boczne',xray:'RTG',ir:'reflektografia IR'};
