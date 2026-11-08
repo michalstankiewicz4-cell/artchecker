@@ -12,6 +12,7 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 | Znajdź oryginał – rzeźby 3D | brązowe popiersia (Three.js) |
 | Pamięć eksperta | zapamiętaj oryginał przez lupę, potem znajdź minimalne różnice |
 | Weryfikacja banknotów | fikcyjna waluta, wszystkie typowe zabezpieczenia |
+| Weryfikacja rękopisów | atrament, papier czerpany, ductus, pieczęć, korozja – [opis](docs/tryby/rekopis.md) |
 | Weryfikacja znaczków | ząbkowanie, znak wodny, druk, guma, przedruk – [opis](docs/tryby/znaczek.md) |
 | Weryfikacja monet | waga, średnica, stop, magnes, rant, bicie czy odlew, zużycie – [opis](docs/tryby/moneta.md) |
 
@@ -24,6 +25,7 @@ Tryb 3D pobiera Three.js z CDN (cdnjs), więc wymaga internetu.
 ## Dokumentacja
 - [docs/ARCHITEKTURA.md](docs/ARCHITEKTURA.md) – struktura plików i jak dodać nowy tryb
 - [docs/ROADMAPA.md](docs/ROADMAPA.md) – plan rozwoju
+- [docs/POMYSLY.md](docs/POMYSLY.md) – bank pomysłów
 - [CHANGELOG.md](CHANGELOG.md) – historia wersji
 
 ## Wersjonowanie

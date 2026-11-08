@@ -62,4 +62,4 @@ function whyBad(p,id){if(MODE==='sculpt')return why3(p,id);if(KIND)return KIND.w
   micro:()=>microMode(p)==='print'?'Raster kolorowych punktów druku atramentowego – to reprodukcja.':'Jednolita, plastyczna warstwa akrylu z przemysłowymi cząstkami – farba współczesna.',
   mark:()=>`Ukryty monogram „${p.markTxt}” – znak fałszerza, widoczny dopiero przy dużym zoomie.`};return f[id]?f[id]():''}
 const MICRO_OBS={brush:'bruzdy po włosiu pędzla, cząstki pigmentu nieregularne i różnej wielkości.',print:'regularny raster drobnych punktów w kolorach C, M, Y, K – brak bruzd pędzla.',acryl:'gładka, plastyczna warstwa, jednakowe drobne cząstki, brak bruzd po włosiu.'};
-function note(p,id,txt){if(!p||!txt)return false;if(id==='pigment'||id==='micro'||id==='xrf'){(p.notes[id]=p.notes[id]||[]).push(txt);return true}if(p.notes[id])return false;p.notes[id]=txt;return true}
+function note(p,id,txt){if(!p||!txt)return false;if(id==='pigment'||id==='micro'||id==='xrf'||id==='ink'){(p.notes[id]=p.notes[id]||[]).push(txt);return true}if(p.notes[id])return false;p.notes[id]=txt;return true}
