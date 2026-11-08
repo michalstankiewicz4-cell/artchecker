@@ -12,6 +12,7 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 | Znajdź oryginał – rzeźby 3D | brązowe popiersia (Three.js) |
 | Pamięć eksperta | zapamiętaj oryginał przez lupę, potem znajdź minimalne różnice |
 | Weryfikacja banknotów | fikcyjna waluta, wszystkie typowe zabezpieczenia |
+| Weryfikacja monet | waga, średnica, stop, magnes, rant, bicie czy odlew, zużycie – [opis](docs/tryby/moneta.md) |
 
 Artyści, dzieła i waluta są fikcyjne.
 

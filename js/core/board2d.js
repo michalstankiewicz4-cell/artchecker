@@ -17,7 +17,7 @@ function render(){if(MODE==='sculpt'||!P.length||!ART)return;const dpr=devicePix
  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='#0e0c0a';ctx.fillRect(0,0,cv.width,cv.height);
  ctx.setTransform(dpr*vw.z,0,0,dpr*vw.z,dpr*vw.x,dpr*vw.y);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
  for(const p of P){
-  if(p.kind){ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(p.x+6,p.y+8,W,H)}
+  if(p.kind){ctx.fillStyle='rgba(0,0,0,.5)';if(p.kind.shadow)p.kind.shadow(p);else ctx.fillRect(p.x+6,p.y+8,W,H)}
   if(v!=='back'&&!p.frag&&!p.kind){ctx.fillStyle=lin(p.x-28,p.y-28,p.x+W+28,p.y+H+28,[[0,'#8a6a2a'],[.5,'#d6b058'],[1,'#6e521e']])(ctx);ctx.fillRect(p.x-28,p.y-28,W+56,H+56);ctx.fillStyle='#4a3712';ctx.fillRect(p.x-6,p.y-6,W+12,H+12)}
   if(p.frag){ctx.fillStyle='#1c1814';ctx.fillRect(p.x-60,p.y-60,W+120,H+120);ctx.save();ctx.beginPath();ctx.rect(p.x,p.y,W,H);polyPath(ctx,p.frag.missing,p.x,p.y);ctx.clip('evenodd')}
   ctx.drawImage(getView(p,v),p.x,p.y,W,H);

@@ -3,7 +3,7 @@
 ## W realizacji
 - Rzeźba z marmuru (3D): dłuto, szpicak, tarnik kontra ślady frezu CNC; patyna w zagłębieniach; postarzanie kwasem.
 - Rękopis / stary dokument: atrament żelazowo-galasowy kontra nowoczesny, papier czerpany (znak wodny, linie sita), pismo i ductus, pieczęć lakowa, korozja atramentu na odwrociu.
-- Moneta: waga, średnica, skład stopu, rant, ślady odlewu kontra bicia, zużycie wypukłości, magnetyzm.
+- ~~Moneta~~ (gotowe w 1.3.0): waga, średnica, skład stopu, rant, ślady odlewu kontra bicia, zużycie wypukłości, magnetyzm.
 - Znaczek pocztowy: ząbkowanie (miarka), znak wodny w kąpieli, druk, guma na odwrocie, przedruki.
 
 ## Wkrótce
