@@ -1,7 +1,7 @@
 # Roadmapa
 
 ## W realizacji
-- Rzeźba z marmuru (3D): dłuto, szpicak, tarnik kontra ślady frezu CNC; patyna w zagłębieniach; postarzanie kwasem.
+- ~~Rzeźba z marmuru (3D)~~ (gotowe w 1.6.0): dłuto, szpicak, tarnik kontra ślady frezu CNC; patyna w zagłębieniach; postarzanie kwasem.
 - ~~Rękopis / stary dokument~~ (gotowe w 1.5.0): atrament żelazowo-galasowy kontra nowoczesny, papier czerpany (znak wodny, linie sita), pismo i ductus, pieczęć lakowa, korozja atramentu na odwrociu.
 - ~~Moneta~~ (gotowe w 1.3.0): waga, średnica, skład stopu, rant, ślady odlewu kontra bicia, zużycie wypukłości, magnetyzm.
 - ~~Znaczek pocztowy~~ (gotowe w 1.4.0): ząbkowanie (miarka), znak wodny w kąpieli, druk, guma na odwrocie, przedruki.

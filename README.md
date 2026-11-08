@@ -9,7 +9,8 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 |---|---|
 | Znajdź oryginał – obrazy | 1 oryginał i 4 kopie, każda wykonana inną metodą fałszerską |
 | Zniszczony fragment | czy fragment pochodzi z zaginionego dzieła znanego tylko z opisu |
-| Znajdź oryginał – rzeźby 3D | brązowe popiersia (Three.js) |
+| Znajdź oryginał – rzeźby z brązu (3D) | brązowe popiersia (Three.js) |
+| Znajdź oryginał – rzeźby z marmuru (3D) | dłuto kontra CNC, patyna, kwas – [opis](docs/tryby/marmur.md) |
 | Pamięć eksperta | zapamiętaj oryginał przez lupę, potem znajdź minimalne różnice |
 | Weryfikacja banknotów | fikcyjna waluta, wszystkie typowe zabezpieczenia |
 | Weryfikacja rękopisów | atrament, papier czerpany, ductus, pieczęć, korozja – [opis](docs/tryby/rekopis.md) |

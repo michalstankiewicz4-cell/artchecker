@@ -27,7 +27,7 @@ const DEF={
 const SET={memory:[],paint5:[['1. Materiały i wiek',['pigment','uv','back','crack','texture']],['2. Sygnatura i styl',['sig','style']],['3. Proweniencja i dokumenty',['prov','cert']],['4. Technologie nieinwazyjne',['xray','ir','micro']]],
  frag:[['1. Materiały i wiek',['pigment','uv','back','crack','texture']],['2. Sygnatura i kompozycja',['sig','style']],['3. Dokumentacja oryginału',['docs']],['4. Technologie nieinwazyjne',['xray','ir','micro']]]};
 const EXTRA={weave:'Gęstość płótna (zoom ×8)',mark:'Ukryty znak (zoom ×8)'};
-function buildToolDefs(){TB={};TLIST=[];GROUPS=MODE==='sculpt'?SET3:KIND?KIND.sets:SET[MODE];const F=MODE==='frag';
- for(const[g,ids]of GROUPS)for(const id of ids){const d=MODE==='sculpt'?DEF3[id]:KIND?KIND.defs[id]:DEF[id];
+function buildToolDefs(){TB={};TLIST=[];GROUPS=MODE==='sculpt'?SV.sets:KIND?KIND.sets:SET[MODE];const F=MODE==='frag';
+ for(const[g,ids]of GROUPS)for(const id of ids){const d=MODE==='sculpt'?SV.defs[id]:KIND?KIND.defs[id]:DEF[id];
   const t={id,g,name:F&&d.nameF||d.name,view:F&&d.viewF||d.view,gate:F&&d.gateF||d.gate,gate3:d.gate3,probe:d.probe,hint:F&&d.hintF||d.hint};TB[id]=t;TLIST.push(t)}}
 const curView=()=>tool&&TB[tool]?TB[tool].view||'normal':'normal';
