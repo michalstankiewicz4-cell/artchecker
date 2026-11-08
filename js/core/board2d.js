@@ -7,7 +7,7 @@ function fit(){const r=cv.getBoundingClientRect();const z=Math.min(r.width/BW,r.
 function focusRect(x,y,w,h){const r=cv.getBoundingClientRect();const z=Math.min(24,Math.min(r.width/w,r.height/h)*0.92);vw={z,x:r.width/2-(x+w/2)*z,y:r.height/2-(y+h/2)*z};render();scheduleGates()}
 function zoomAt(sx,sy,f){const z=Math.min(24,Math.max(0.12,vw.z*f)),k=z/vw.z;vw.x=sx-(sx-vw.x)*k;vw.y=sy-(sy-vw.y)*k;vw.z=z;render();scheduleGates()}
 function viewportWorld(){const r=cv.getBoundingClientRect();return{x0:-vw.x/vw.z,y0:-vw.y/vw.z,x1:(r.width-vw.x)/vw.z,y1:(r.height-vw.y)/vw.z,cx:(r.width/2-vw.x)/vw.z,cy:(r.height/2-vw.y)/vw.z}}
-function areaOK(p,area,v){if(p.note)return noteArea(p,area,v);const lx=v.cx-p.x,ly=v.cy-p.y,inP=lx>=0&&lx<=W&&ly>=0&&ly<=H&&!(p.frag&&inPoly(lx,ly,p.frag.missing));
+function areaOK(p,area,v){if(p.kind)return p.kind.area(p,area,v);const lx=v.cx-p.x,ly=v.cy-p.y,inP=lx>=0&&lx<=W&&ly>=0&&ly<=H&&!(p.frag&&inPoly(lx,ly,p.frag.missing));
  if(area==='all')return inP;
  if(area==='sig'){const s=C.sig;return lx>s.x-25&&lx<s.x+s.w+25&&ly>s.y-32&&ly<s.y+18}
  if(area==='style'){const[x,y,w,h]=SC.styleRect(C);return lx>=x&&lx<=x+w&&ly>=y&&ly<=y+h}
@@ -17,11 +17,11 @@ function render(){if(MODE==='sculpt'||!P.length||!ART)return;const dpr=devicePix
  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='#0e0c0a';ctx.fillRect(0,0,cv.width,cv.height);
  ctx.setTransform(dpr*vw.z,0,0,dpr*vw.z,dpr*vw.x,dpr*vw.y);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
  for(const p of P){
-  if(p.note){ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(p.x+6,p.y+8,W,H)}
-  if(v!=='back'&&!p.frag&&!p.note){ctx.fillStyle=lin(p.x-28,p.y-28,p.x+W+28,p.y+H+28,[[0,'#8a6a2a'],[.5,'#d6b058'],[1,'#6e521e']])(ctx);ctx.fillRect(p.x-28,p.y-28,W+56,H+56);ctx.fillStyle='#4a3712';ctx.fillRect(p.x-6,p.y-6,W+12,H+12)}
+  if(p.kind){ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(p.x+6,p.y+8,W,H)}
+  if(v!=='back'&&!p.frag&&!p.kind){ctx.fillStyle=lin(p.x-28,p.y-28,p.x+W+28,p.y+H+28,[[0,'#8a6a2a'],[.5,'#d6b058'],[1,'#6e521e']])(ctx);ctx.fillRect(p.x-28,p.y-28,W+56,H+56);ctx.fillStyle='#4a3712';ctx.fillRect(p.x-6,p.y-6,W+12,H+12)}
   if(p.frag){ctx.fillStyle='#1c1814';ctx.fillRect(p.x-60,p.y-60,W+120,H+120);ctx.save();ctx.beginPath();ctx.rect(p.x,p.y,W,H);polyPath(ctx,p.frag.missing,p.x,p.y);ctx.clip('evenodd')}
   ctx.drawImage(getView(p,v),p.x,p.y,W,H);
-  if(p.note&&v==='normal')noteLive(p);
+  if(p.kind&&p.kind.live&&v==='normal')p.kind.live(p);
   if(p.frag){ctx.strokeStyle='rgba(35,18,5,.35)';ctx.lineWidth=14;ctx.beginPath();polyPath(ctx,p.frag.torn,p.x,p.y);ctx.stroke();ctx.strokeStyle='rgba(30,14,4,.6)';ctx.lineWidth=5;ctx.stroke();ctx.restore();drawFringe(p)}
   if(['normal','crackview'].includes(v))for(const s of p.samples){ctx.strokeStyle=s.kind==='pigment'?'#ffe066':'#7fd6ff';ctx.lineWidth=Math.max(0.15,1.2/vw.z);ctx.beginPath();ctx.arc(p.x+s.x,p.y+s.y,Math.max(0.6,4/Math.sqrt(vw.z)),0,7);ctx.stroke()}
  }
@@ -33,7 +33,7 @@ function render(){if(MODE==='sculpt'||!P.length||!ART)return;const dpr=devicePix
   if(p.umark==='susp'){ctx.fillStyle='#f0a030';ctx.beginPath();ctx.arc(p.x+W+28,p.y-28,30,0,7);ctx.fill();ctx.fillStyle='#1d1916';ctx.font='bold 40px Georgia';ctx.textAlign='center';ctx.fillText('?',p.x+W+28,p.y-14);ctx.textAlign='left'}
   if(MODE==='memory'&&MEM.reveal&&p.muts)for(const m of p.muts){const[a,b,c2,d]=m.box;ctx.strokeStyle='#ff3b30';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(p.x+(a+c2)/2,p.y+(b+d)/2,(c2-a)/2+12,(d-b)/2+12,0,0,7);ctx.stroke()}
   if(sel===p){ctx.strokeStyle='#ffd27a';ctx.lineWidth=Math.max(3,3/vw.z);ctx.strokeRect(p.x-36,p.y-36,W+72,H+72)}
-  if(!p.frag){ctx.fillStyle=sel===p?'#ffd27a':'#cbb894';ctx.font='bold 34px Georgia,serif';ctx.textAlign='center';ctx.fillText((MODE==='memory'&&MEM.phase===1?'Oryginał':(p.note?'Banknot ':'Obraz ')+p.letter)+(p.umark==='excl'?(MODE==='memory'||p.note?' – falsyfikat':' – wykluczony'):p.umark==='susp'?' – podejrzany':p.umark==='ok'?' – prawdziwy':''),p.x+W/2,p.y+H+72);ctx.textAlign='left'}}
+  if(!p.frag){ctx.fillStyle=sel===p?'#ffd27a':'#cbb894';ctx.font='bold 34px Georgia,serif';ctx.textAlign='center';ctx.fillText((MODE==='memory'&&MEM.phase===1?'Oryginał':(p.kind?p.kind.noun+' ':'Obraz ')+p.letter)+(p.umark==='excl'?(MODE==='memory'||p.kind?' – falsyfikat':' – wykluczony'):p.umark==='susp'?' – podejrzany':p.umark==='ok'?' – prawdziwy':''),p.x+W/2,p.y+H+72);ctx.textAlign='left'}}
  ctx.setTransform(dpr,0,0,dpr,0,0);
  if(vw.z>=3){const r=cv.getBoundingClientRect(),L=pxPerCm()*vw.z,x0=12,y0=r.height-46;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(x0-6,y0-20,L+60,32);ctx.fillStyle='#fff';ctx.fillRect(x0,y0,L,3);
   for(let i=0;i<=10;i++)ctx.fillRect(x0+L*i/10-0.5,y0-(i%5?4:8),1,i%5?4:8);ctx.font='11px system-ui';ctx.fillText('1 cm',x0+L+6,y0+4)}
@@ -51,7 +51,7 @@ function drawWeave(p,x0,y0,x1,y1,col){const sp=pxPerCm()/p.thread,sp2=pxPerCm()/
  for(let i=Math.floor((x0-p.x)/sp)-1;i*sp<x1-p.x+sp;i++){const j=p.linen?(h1(i,1)-.5)*sp*0.35:0;ctx.lineWidth=sp*(p.linen?0.25+h1(i,2)*0.3:0.4);ctx.beginPath();ctx.moveTo(p.x+i*sp+j,y0);ctx.lineTo(p.x+i*sp+j,y1);ctx.stroke()}
  for(let i=Math.floor((y0-p.y)/sp2)-1;i*sp2<y1-p.y+sp2;i++){const j=p.linen?(h1(i,3)-.5)*sp2*0.35:0;ctx.lineWidth=sp2*(p.linen?0.25+h1(i,4)*0.3:0.4);ctx.beginPath();ctx.moveTo(x0,p.y+i*sp2+j);ctx.lineTo(x1,p.y+i*sp2+j);ctx.stroke()}}
 function drawDetail(view){const z=vw.z;if(z<5)return;const V=viewportWorld();
- for(const p of P){if(p.note)continue;const x0=Math.max(V.x0,p.x),y0=Math.max(V.y0,p.y),x1=Math.min(V.x1,p.x+W),y1=Math.min(V.y1,p.y+H);if(x0>=x1||y0>=y1)continue;
+ for(const p of P){if(p.kind)continue;const x0=Math.max(V.x0,p.x),y0=Math.max(V.y0,p.y),x1=Math.min(V.x1,p.x+W),y1=Math.min(V.y1,p.y+H);if(x0>=x1||y0>=y1)continue;
   ctx.save();ctx.beginPath();ctx.rect(p.x,p.y,W,H);if(p.frag)polyPath(ctx,p.frag.missing,p.x,p.y);ctx.clip('evenodd');
   if(view==='back'&&z>=6)drawWeave(p,x0,y0,x1,y1,'rgba(60,42,25,.45)');
   else if(view==='normal'||view==='crackview'){microLayer(p,x0,y0,x1,y1);
@@ -72,7 +72,7 @@ function microLayer(p,x0,y0,x1,y1){const T=5,mode=microMode(p);ctx.globalAlpha=M
 let gateT=0;function scheduleGates(){clearTimeout(gateT);gateT=setTimeout(checkGates2D,140)}
 function checkGates2D(){if(MODE==='sculpt')return;const v=viewportWorld(),T=tool&&TB[tool],view=curView();let ch=false;
  for(const p of P){
-  if(T&&T.gate&&T.gate.area&&vw.z>=T.gate.z&&tiltOK(T.gate)&&areaOK(p,T.gate.area,v)&&!p.notes[tool]){if(note(p,tool,obs(p,tool))){ch=true;toast(`Zapisano: ${MODE==='frag'?'fragment':(p.note?'banknot ':'obraz ')+p.letter} – ${T.name}`)}}
+  if(T&&T.gate&&T.gate.area&&vw.z>=T.gate.z&&tiltOK(T.gate)&&areaOK(p,T.gate.area,v)&&!p.notes[tool]){if(note(p,tool,obs(p,tool))){ch=true;toast(`Zapisano: ${MODE==='frag'?'fragment':(p.kind?p.kind.noun.toLowerCase()+' ':'obraz ')+p.letter} – ${T.name}`)}}
   if(MODE==='paint5'&&view==='back'&&vw.z>=8&&areaOK(p,'all',v)&&!p.notes.weave){note(p,'weave',obs(p,'weave'));ch=true;toast(`Zapisano: obraz ${p.letter} – gęstość płótna`)}
   if(p.t.mark&&vw.z>=8&&(view==='normal'||view==='crackview')&&!p.notes.mark){const mx=p.x+p.markPos.x,my=p.y+p.markPos.y;if(mx>v.x0&&mx<v.x1&&my>v.y0&&my<v.y1){note(p,'mark',obs(p,'mark'));ch=true;toast(`Odkrycie przy dużym zoomie: obraz ${p.letter} – ukryty napis!`)}}}
  if(ch)onChange();else if(tool)updatePanel()}
@@ -89,7 +89,6 @@ cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 cv.addEventListener('wheel',e=>{e.preventDefault();if(MODE==='memory')return;zoomAt(e.offsetX,e.offsetY,Math.exp(-e.deltaY*0.0016))},{passive:false});
 function clickAt(sx,sy){const wx=(sx-vw.x)/vw.z,wy=(sy-vw.y)/vw.z,p=P.find(q=>wx>=q.x-30&&wx<=q.x+W+30&&wy>=q.y-30&&wy<=q.y+H+80);if(!p)return;sel=p;
  const lx=wx-p.x,ly=wy-p.y,T=tool&&TB[tool];
- if(T&&T.probe==='mag'&&p.note){const inMag=(lx>596&&ly>22&&ly<50)||(lx>194&&lx<214&&ly>236&&ly<336)||(lx>290&&lx<440&&ly>85&&ly<330);
-  if(!inMag)toast('Brak sygnału w tym miejscu – przyłóż czujnik do numeru seryjnego lub motywu głównego.');else if(note(p,'mag',obsN(p,'mag')))toast(`Banknot ${p.letter}: ${obsN(p,'mag')}`)}
+ if(T&&T.probe&&p.kind){if(p.kind.probe)p.kind.probe(p,lx,ly,tool)}
  else if(T&&T.probe&&lx>=0&&lx<W&&ly>=0&&ly<H&&!(p.frag&&inPoly(lx,ly,p.frag.missing))){if(vw.z<T.gate.z)toast(`Przybliż do ×${fmt(T.gate.z)}, aby ${T.probe==='pigment'?'próbka objęła jeden obszar':'zobaczyć mikrostrukturę'}.`);else sampleAt(p,lx,ly)}
  onChange()}

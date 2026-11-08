@@ -9,13 +9,7 @@
 <body>
 <header>
   <h1>Pracownia ekspertyz <small id="appver" style="font:12px system-ui;color:var(--mut)"></small></h1>
-  <select id="mode">
-    <option value="paint5">Znajdź oryginał – obrazy</option>
-    <option value="frag">Zniszczony fragment – czy to oryginał?</option>
-    <option value="sculpt">Znajdź oryginał – rzeźby 3D</option>
-    <option value="memory">Pamięć eksperta – zapamiętaj oryginał</option>
-    <option value="notes">Weryfikacja banknotów</option>
-  </select>
+  <select id="mode"></select>
   <select id="artist"></select>
   <button class="btn" id="newgame">Nowa partia</button>
   <div class="case" id="case"></div>
@@ -55,6 +49,7 @@
 <script src="js/data/artists.js"></script>
 <script src="js/paint/scenes.js"></script>
 <script src="js/core/state.js"></script>
+<script src="js/core/kinds.js"></script>
 <script src="js/paint/painting.js"></script>
 <script src="js/paint/views.js"></script>
 <script src="js/paint/paint5.js"></script>
@@ -65,7 +60,7 @@
 <script src="js/core/panel.js"></script>
 <script src="js/core/board2d.js"></script>
 <script src="js/modes/sculpture3d.js"></script>
-<script src="js/modes/banknotes.js"></script>
+<script src="js/kinds/banknote.js"></script>
 <script src="js/modes/memory.js"></script>
 <script src="js/core/game.js"></script>
 <script src="js/main.js"></script>

@@ -27,7 +27,7 @@ function descItems(){const s=ART.sig,side=P[0].frag.side,ra=side==='r'?'w prawej
 function descHTML(){const d=descItems(),lab={back:'Podobrazie i grunt',pigment:'Pigmenty',uv:'Werniks i stan',crack:'Krakelura',texture:'Faktura',sig:'Sygnatura',style:'Kompozycja',ir:'Reflektografia IR',xray:'RTG',micro:'Technika'};
  return`<div class="doc"><h4>${ART.name.toUpperCase()} – „${ART.title}”</h4><div class="cap" style="color:#5a4a30;text-align:center">Katalog raisonné (2004), nr ${ART.crn} · ${fmt(ART.wcm)} × ${fmt(ART.hcm)} cm · ${ART.year}</div><ul>${Object.keys(lab).map(k=>`<li><b>${lab[k]}:</b> ${d[k]}</li>`).join('')}</ul>
  <div class="stamp">Historia: ${ART.year+2} – wystawa TZSP, Warszawa; 1902–1944 – kolekcja dworska pod Radomiem; 1944 – obraz uszkodzony w pożarze dworu, zaginiony. 2026 – fragment zgłoszony do ekspertyzy.</div></div>`}
-function obs(p,id){if(MODE==='sculpt')return obs3(p,id);if(MODE==='notes')return obsN(p,id);const t=p.t,m=p.m,F=MODE==='frag';
+function obs(p,id){if(MODE==='sculpt')return obs3(p,id);if(KIND)return KIND.obs(p,id);const t=p.t,m=p.m,F=MODE==='frag';
  switch(id){
  case'uv':if(F){const ra=p.frag.side==='r'?'w prawej górnej części':'w lewej górnej części';return t.uv?(m.uvKind==='fresh'?'Brak fluorescencji starego werniksu – powierzchnia jednolicie ciemnofioletowa; brak śladów retuszy.':`Zielonkawa fluorescencja werniksu, ale ${ra} żadnych retuszy.`):`Zielonkawa fluorescencja starego werniksu; ciemne plamy retuszy ${ra}.`+(sigLater(p)?' Sygnatura ciemna i ostra na tle świecącego werniksu.':'')}
   return(t.uv?'Brak fluorescencji starego werniksu – powierzchnia jednolicie ciemnofioletowa.':'Równomierna, zielonkawo-mleczna fluorescencja starego werniksu.')+(p.retouch?' Kilka ciemnych plam (retusze).':'')+(sigLater(p)&&!t.uv?' Sygnatura ciemna i ostra na tle świecącego werniksu.':'');
@@ -45,7 +45,7 @@ function obs(p,id){if(MODE==='sculpt')return obs3(p,id);if(MODE==='notes')return
   return(t.xray?'Pod powierzchnią inna kompozycja: owalny portret ułożony w poprzek płótna.':'Jasne pola bieli ołowiowej zgodne z kompozycją; widoczny blejtram.')+(t.back?' Na krawędziach metalowe zszywki.':' Na krawędziach gwoździe.');
  case'ir':return{real:`Szkic węglem pod farbą; zmiany kompozycji (pentimenti): ${SC.pentiText}.`,grid:'Regularna siatka kwadratów i precyzyjne, jednolite kontury bez poprawek.',none:'Brak rysunku przygotowawczego.'}[irMode(p)];
  }}
-function whyBad(p,id){if(MODE==='sculpt')return why3(p,id);if(MODE==='notes')return whyN(p,id);const m=p.m,F=MODE==='frag';
+function whyBad(p,id){if(MODE==='sculpt')return why3(p,id);if(KIND)return KIND.why(p,id);const m=p.m,F=MODE==='frag';
  const f={pigment:()=>{const R=SC.REG[m.pigReg],o=R.pig[0];if(MODE==='paint5'&&p.profile==='giclee')return'Wyłącznie współczesne pigmenty organiczne tuszów drukarskich.';
    return m.pigKind==='alt'?`${m.pigReg}: ${PG[ALT[o]||'zn'][0]} zamiast ${PG[o][0].toLowerCase()} z analizy oryginału.`:`${m.pigReg}: ${PG[R.an][0]} – pigment wprowadzony ok. ${PG[R.an][1]} r., po dacie obrazu (${ART.year}).`},
   uv:()=>F?(m.uvKind==='fresh'?'Świeży werniks bez fluorescencji i bez opisanych retuszy z 1958 r.':'Brak retuszy w miejscu wskazanym w opisie.'):'Brak fluorescencji starego werniksu – świeży werniks, niezgodny z wiekiem obrazu.',

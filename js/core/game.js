@@ -4,15 +4,15 @@
    ===================================================================== */
 document.querySelectorAll('#markbtns button').forEach(b=>b.onclick=()=>{if(!sel)return;sel.umark=b.dataset.mark;if(MODE==='sculpt'){const bb=T3.busts.find(x=>x.q===sel);updateLabel(bb)}else render()});
 function setVerdicts(){const v=document.getElementById('verdicts');
- v.innerHTML=MODE==='notes'?'<button class="btn primary" data-v="end">Zakończ ekspertyzę</button>':MODE==='frag'?'<button class="btn primary" data-v="yes" disabled>Pochodzi z oryginału</button> <button class="btn primary" data-v="no" disabled>To nie oryginał</button>':'<button class="btn primary" data-v="pick" disabled>To jest oryginał</button>';
+ v.innerHTML=KIND?'<button class="btn primary" data-v="end">Zakończ ekspertyzę</button>':MODE==='frag'?'<button class="btn primary" data-v="yes" disabled>Pochodzi z oryginału</button> <button class="btn primary" data-v="no" disabled>To nie oryginał</button>':'<button class="btn primary" data-v="pick" disabled>To jest oryginał</button>';
  v.querySelectorAll('button').forEach(b=>b.onclick=()=>verdict(b.dataset.v));document.getElementById('markbtns').style.display=MODE==='frag'||(MODE==='memory'&&MEM.phase===1)?'none':'';
- document.querySelector('#markbtns [data-mark=excl]').textContent=MODE==='memory'||MODE==='notes'?'✕ Falsyfikat':'✕ Wykluczony';document.getElementById('markok').style.display=MODE==='notes'?'':'none';if(MODE==='memory'&&MEM.phase===1)v.innerHTML=''}
-function verdict(v){if(!sel&&MODE!=='notes')return;const m=document.getElementById('modal');let h='';
- if(MODE==='notes'){const good=P.filter(p=>(p.orig&&p.umark==='ok')||(!p.orig&&p.umark==='excl')).length;
+ document.querySelector('#markbtns [data-mark=excl]').textContent=MODE==='memory'||KIND?'✕ Falsyfikat':'✕ Wykluczony';document.getElementById('markok').style.display=KIND?'':'none';if(MODE==='memory'&&MEM.phase===1)v.innerHTML=''}
+function verdict(v){if(!sel&&!KIND)return;const m=document.getElementById('modal');let h='';
+ if(KIND){const good=P.filter(p=>(p.orig&&p.umark==='ok')||(!p.orig&&p.umark==='excl')).length;
   h=`<h2 style="color:${good===5?'var(--ok)':'var(--bad)'}">Poprawnie sklasyfikowano ${good} z 5 banknotów.</h2>`;
   h+=`<table class="mx"><tr><th>Zabezpieczenie</th>${P.map(p=>`<th>${p.letter}<br><small>${p.orig?'prawdziwy':'fałszywy'} · ${p.umark==='ok'?'oznaczono ✓':p.umark==='excl'?'oznaczono ✕':'bez oznaczenia'}</small></th>`).join('')}</tr>`+
    TLIST.map(t=>`<tr><td>${t.name}</td>${P.map(p=>`<td>${p.t[t.id]?'<span class="x">✖</span>':'<span class="v">✓</span>'}${p.notes[t.id]?'':' <small class="nb">(nie badano)</small>'}</td>`).join('')}</tr>`).join('')+'</table>';
-  h+=P.filter(p=>!p.orig).map(p=>`<div class="cp"><b>Banknot ${p.letter} – ${NOTE_PROF[p.profile].name}</b><ul>${TLIST.filter(t=>p.t[t.id]).map(t=>`<li>${t.name}: ${whyN(p,t.id)}</li>`).join('')}</ul></div>`).join('')}
+  h+=P.filter(p=>!p.orig).map(p=>`<div class="cp"><b>${KIND.noun} ${p.letter} – ${KIND.profiles[p.profile].name}</b><ul>${TLIST.filter(t=>p.t[t.id]).map(t=>`<li>${t.name}: ${KIND.why(p,t.id)}</li>`).join('')}</ul></div>`).join('')}
  else 
  if(MODE==='memory'){const orig=P.find(p=>p.orig),ok=sel===orig,good=P.filter(p=>!p.orig&&p.umark==='excl').length,bad=orig.umark==='excl';
   h=`<h2 style="color:${ok?'var(--ok)':'var(--bad)'}">${ok?`Trafnie! Oryginałem jest obraz ${orig.letter}.`:`Pudło – wskazano obraz ${sel.letter}, a oryginałem jest obraz ${orig.letter}.`}</h2><div class="cp">Poprawnie oznaczone falsyfikaty: <b>${good}/4</b>${bad?' · oryginał błędnie oznaczony jako falsyfikat':''}.</div>`+
@@ -30,27 +30,27 @@ function verdict(v){if(!sel&&MODE!=='notes')return;const m=document.getElementBy
  h+=checkReport();h+=`<div style="display:flex;gap:8px;margin-top:12px"><button class="btn primary" id="mnew">Nowa partia</button><button class="btn" id="mclose">Wróć do stołu</button></div>`;
  document.getElementById('mbox').innerHTML=h;m.classList.add('show');document.getElementById('mnew').onclick=()=>{m.classList.remove('show');newGame()};document.getElementById('mclose').onclick=()=>m.classList.remove('show')}
 function setCase(){const e=document.getElementById('case');
- if(MODE==='notes')e.textContent='Weryfikacja banknotów: 100 florenów Banku Narodowego Arkadii (waluta fikcyjna). Na stole 5 banknotów – część prawdziwa, część fałszywa. Sprawdź wszystkie zabezpieczenia i oznacz każdy banknot.';else
+ if(KIND)e.textContent=KIND.caseText();else
  if(MODE==='memory')e.textContent=`Pamięć eksperta: „${ART.title}” – ${ART.name} (${ART.life}). Zapamiętaj oryginał, a potem wskaż go wśród prawie identycznych falsyfikatów. (Artyści i dzieła są fikcyjne.)`;else
  if(MODE==='sculpt')e.textContent='Sprawa: „Popiersie Heleny”, Stanisław Rudnicki (1840–1905), 1888, brąz, wys. 52 cm. Na postumentach 5 odlewów – jeden jest oryginałem. (Artyści i dzieła są fikcyjne.)';
  else if(MODE==='frag')e.textContent=`Sprawa: fragment obrazu, który może pochodzić z zaginionego dzieła „${ART.title}” – ${ART.name} (${ART.life}), ${ART.year}. Oryginał znany tylko z opisu. (Artyści i dzieła są fikcyjne.)`;
  else e.textContent=`Sprawa: „${ART.title}”, przypisywany: ${ART.name} (${ART.life}), ${ART.year}, olej na płótnie, ${fmt(ART.wcm)} × ${fmt(ART.hcm)} cm. Na stole 5 obrazów – jeden jest oryginałem. (Artyści i dzieła są fikcyjne.)`}
-async function newGame(){MODE=document.getElementById('mode').value;const r=rng((Math.random()*1e9)|0);sel=null;tool=null;REFC=null;
- document.getElementById('artist').style.display=MODE==='sculpt'||MODE==='notes'?'none':'';document.getElementById('tiltw').style.display=MODE==='notes'?'':'none';const is3=MODE==='sculpt';cv.style.display=is3?'none':'block';document.getElementById('three').style.display=is3?'block':'none';
+async function newGame(){MODE=document.getElementById('mode').value;KIND=KINDS[MODE]||null;const r=rng((Math.random()*1e9)|0);sel=null;tool=null;REFC=null;
+ document.getElementById('artist').style.display=MODE==='sculpt'||KIND?'none':'';document.getElementById('tiltw').style.display=KIND&&KIND.tilt?'':'none';const is3=MODE==='sculpt';cv.style.display=is3?'none':'block';document.getElementById('three').style.display=is3?'block':'none';
  document.getElementById('help').textContent=is3?'Przeciągnij – obracaj · prawy przycisk / Shift – przesuń · kółko / szczypanie – przybliż · kliknij rzeźbę – wybierz':'Kółko myszy / szczypanie – zoom (do ×24) · przeciągnij – przesuń · kliknij obiekt – wybierz';
- document.getElementById('zsig').textContent=is3?'Tył cokołu':MODE==='notes'?'Numer':'Sygnatura';
+ document.getElementById('zsig').textContent=is3?'Tył cokołu':KIND?KIND.focusLabel:'Sygnatura';
  document.querySelector('.zoom').style.display=MODE==='memory'?'none':'';if(MODE!=='memory'){clearInterval(MEM.iv);MEM.phase=0}else MEM.phase=1;
  if(MODE==='memory')document.getElementById('help').textContent='Najedź kursorem – lupa ×4 · kliknij obraz – wybierz';
  buildToolDefs();setVerdicts();
  if(is3){document.getElementById('panel').innerHTML='<div class="obs">Ładowanie sceny 3D…</div>';try{await loadThree()}catch(e){document.getElementById('panel').innerHTML='<div class="obs">Nie udało się wczytać biblioteki 3D (three.js). Sprawdź połączenie z internetem.</div>';return}
   init3D();newSculpt(r);build3Scene()}
- else{if(MODE==='frag')newFrag(r);else if(MODE==='memory')newMemory(r);else if(MODE==='notes')newNotes(r);else newPaint5(r);fit()}
+ else{if(MODE==='frag')newFrag(r);else if(MODE==='memory')newMemory(r);else if(KIND)KIND.newGame(r);else newPaint5(r);fit()}
  setCase();buildTools();onChange()}
 document.getElementById('zin').onclick=()=>{if(MODE==='sculpt')return zoom3(1/1.4);const r=cv.getBoundingClientRect();zoomAt(r.width/2,r.height/2,1.6)};
 document.getElementById('zout').onclick=()=>{if(MODE==='sculpt')return zoom3(1.4);const r=cv.getBoundingClientRect();zoomAt(r.width/2,r.height/2,1/1.6)};
 document.getElementById('zfit').onclick=()=>{if(MODE==='sculpt'){anim3(new THREE.Vector3(0,1.15,0),5.6,0,0.16);return}fit()};
 document.getElementById('zsel').onclick=()=>{if(!sel)return;if(MODE==='sculpt'){const b=T3.busts.find(b=>b.q===sel);anim3(b.center.clone(),0.9,0,0.1);return}focusRect(sel.x-40,sel.y-40,W+80,H+80)};
-document.getElementById('zsig').onclick=()=>{if(!sel)return;if(MODE==='sculpt'){const b=T3.busts.find(b=>b.q===sel);anim3(new THREE.Vector3(b.center.x,1.05,0),0.4,Math.PI,0.15);return}if(sel.note)return focusRect(sel.x+598,sel.y+26,100,22);focusRect(sel.x+C.sig.x-14,sel.y+C.sig.y-26,C.sig.w+28,40)};
+document.getElementById('zsig').onclick=()=>{if(!sel)return;if(MODE==='sculpt'){const b=T3.busts.find(b=>b.q===sel);anim3(new THREE.Vector3(b.center.x,1.05,0),0.4,Math.PI,0.15);return}if(sel.kind)return focusRect(...sel.kind.focus(sel));focusRect(sel.x+C.sig.x-14,sel.y+C.sig.y-26,C.sig.w+28,40)};
 document.getElementById('tilt').oninput=e=>{TILT.v=+e.target.value;if(TILT.v<20)TILT.lo=true;if(TILT.v>60)TILT.hi=true;document.getElementById('tiltv').textContent=TILT.v+'°';render();scheduleGates()};
 document.getElementById('artist').innerHTML='<option value="">Losowy artysta</option>'+ARTISTS.map(a=>`<option value="${a.id}">${a.name} – ${({pejzaz:'pejzaż',portret:'portret',martwa:'martwa natura',marina:'marina'})[a.scene]}</option>`).join('');
 document.getElementById('newgame').onclick=newGame;document.getElementById('mode').onchange=newGame;document.getElementById('artist').onchange=newGame;
