@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pracownia ekspertyz – znajdź oryginał</title>
+<style>
+:root{--bg:#12100e;--panel:#1d1916;--line:#3a322b;--ink:#ece3d4;--mut:#a39580;--acc:#d8a64c;--bad:#e0584f;--ok:#76b86f;--sus:#f0a030}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,"Segoe UI",sans-serif}
+header{padding:8px 14px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+h1{font:600 18px Georgia,serif;margin:0;color:var(--acc)}
+.case{color:var(--mut);font-size:12.5px;flex:1 1 400px}
+select{background:#2a231d;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:13px}
+main{display:grid;grid-template-columns:215px minmax(0,1fr) 370px;gap:10px;padding:10px;height:calc(100vh - 52px)}
+@media(max-width:1100px){main{grid-template-columns:1fr;height:auto}#boardwrap{height:62vh!important;flex:none!important}}
+.col{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;overflow:auto;min-height:0}
+.grp h3{font:600 11px system-ui;text-transform:uppercase;letter-spacing:.07em;color:var(--mut);margin:12px 0 5px}
+.grp:first-child h3{margin-top:0}
+.tool{display:block;width:100%;text-align:left;background:#28221d;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px 9px;margin:3px 0;cursor:pointer;font-size:13px}
+.tool:hover{border-color:var(--acc)}
+.tool.on{background:#3d301c;border-color:var(--acc)}
+.tool.used::after{content:" ✓";color:var(--acc)}
+#center{display:flex;flex-direction:column;gap:8px;min-height:0}
+#boardwrap{position:relative;flex:1;min-height:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#0d0b0a}
+#board,#three{position:absolute;inset:0;width:100%;height:100%}
+#board{display:block;touch-action:none;cursor:grab}
+#board.drag{cursor:grabbing}
+#board.probe{cursor:crosshair}
+#three{display:none;touch-action:none}
+#three canvas{display:block;width:100%!important;height:100%!important}
+.zoom{position:absolute;right:8px;top:8px;display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.zoom button,.btn{background:#2a231d;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:5px 9px;cursor:pointer;font-size:13px}
+.zoom button:hover,.btn:hover{border-color:var(--acc)}
+#zlv{background:rgba(0,0,0,.65);padding:4px 7px;border-radius:5px;font-variant-numeric:tabular-nums;min-width:60px;text-align:center}
+.viewlbl{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.65);padding:4px 9px;border-radius:5px;font-size:12px;color:var(--acc);max-width:45%}
+.help{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.55);padding:3px 8px;border-radius:5px;font-size:11px;color:var(--mut)}
+#toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%);background:#3d301c;border:1px solid var(--acc);padding:7px 14px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;max-width:80%;text-align:center}
+#toast.show{opacity:1}
+#bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn.primary{background:#5a431c;border-color:var(--acc);font-weight:600}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.m-susp{border-color:var(--sus)}.btn.m-excl{border-color:var(--bad)}
+#sel{color:var(--mut)}
+#panel h2{font:600 15px Georgia,serif;margin:0 0 4px;color:var(--acc)}
+.hint{color:var(--mut);font-size:12.5px;margin:0 0 8px;border-left:2px solid var(--line);padding-left:8px}
+.gate{font-size:12px;margin:4px 0 8px;padding:5px 8px;border-radius:6px;background:#221d18;border:1px dashed var(--line)}
+.gate.ok{border-color:var(--ok);color:#cfe8c9}.gate.no{border-color:var(--sus)}
+.obs{background:#26201b;border:1px solid var(--line);border-radius:6px;padding:7px 9px;margin:6px 0;font-size:13px}
+#panel canvas,#panel img{width:100%;height:auto;display:block;border-radius:4px;border:1px solid var(--line);margin:4px 0}
+.cap{font-size:11.5px;color:var(--mut);margin:2px 0 8px}
+table.pig{width:100%;border-collapse:collapse;font-size:12.5px}
+table.pig td,table.pig th{border-bottom:1px solid var(--line);padding:3px 4px;text-align:left}
+.doc{background:#efe6d0;color:#2b241b;border-radius:4px;padding:12px 14px;font:13px/1.5 Georgia,serif}
+.doc h4{margin:0 0 6px;text-align:center;letter-spacing:.05em;font-size:13px}
+.doc .row{display:flex;gap:6px}.doc .row b{min-width:112px;display:inline-block}
+.doc .stamp{margin-top:8px;font-style:italic}
+.doc ul{margin:4px 0;padding-left:18px}.doc li{margin:3px 0}
+.tl{list-style:none;padding:0;margin:0;font-size:13px}
+.tl li{padding:4px 0 4px 10px;border-left:2px solid var(--acc);margin-left:4px}
+.tl li b{color:var(--acc)}
+#notes{margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
+#notes h3{font:600 12px system-ui;text-transform:uppercase;letter-spacing:.07em;color:var(--mut);margin:0 0 6px}
+#notes ul{padding-left:16px;margin:0;font-size:12.5px}
+#notes li{margin:3px 0}
+#notes li span{color:var(--acc)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;z-index:9;padding:14px}
+.modal.show{display:flex}
+.box{background:var(--panel);border:1px solid var(--acc);border-radius:10px;max-width:1040px;width:100%;max-height:92vh;overflow:auto;padding:18px}
+.box h2{font:600 20px Georgia,serif;margin:0 0 8px}
+table.mx{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0}
+table.mx th,table.mx td{border:1px solid var(--line);padding:4px 6px;text-align:center}
+table.mx td:first-child,table.mx th:first-child{text-align:left}
+.x{color:var(--bad);font-weight:700}.v{color:var(--ok)}
+.cp{margin:8px 0;font-size:13px}.cp b{color:var(--acc)}
+.cp ul{margin:3px 0 0;padding-left:18px}
+small.nb{color:var(--mut)}
+#check{margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
+#check h3{font:600 12px system-ui;text-transform:uppercase;letter-spacing:.07em;color:var(--mut);margin:0 0 6px}
+#check label{display:flex;gap:7px;align-items:flex-start;font-size:12.5px;padding:3px 4px;border-radius:5px;cursor:pointer}
+#check label:hover{background:#26201b}#check label.on{color:#ffb3ad}
+#check input{accent-color:#e0584f;margin-top:2px}
+#check .cnt{font-size:12px;color:var(--mut);margin-top:4px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Pracownia ekspertyz</h1>
+  <select id="mode">
+    <option value="paint5">Znajdź oryginał – obrazy</option>
+    <option value="frag">Zniszczony fragment – czy to oryginał?</option>
+    <option value="sculpt">Znajdź oryginał – rzeźby 3D</option>
+    <option value="memory">Pamięć eksperta – zapamiętaj oryginał</option>
+    <option value="notes">Weryfikacja banknotów</option>
+  </select>
+  <select id="artist"></select>
+  <button class="btn" id="newgame">Nowa partia</button>
+  <div class="case" id="case"></div>
+</header>
+<main>
+  <div class="col" id="tools"></div>
+  <div id="center">
+    <div id="boardwrap">
+      <canvas id="board"></canvas>
+      <div id="three"></div>
+      <div class="viewlbl" id="viewlbl"></div>
+      <div class="zoom">
+        <button id="zout" title="Oddal">−</button><span id="zlv">×1</span><button id="zin" title="Przybliż">+</button>
+        <label id="tiltw" style="display:none;background:rgba(0,0,0,.65);padding:4px 8px;border-radius:6px;font-size:12px">Nachylenie <input type="range" id="tilt" min="0" max="90" value="0" style="vertical-align:middle;width:110px"> <span id="tiltv">0°</span></label><button id="zfit">Całość</button><button id="zsel">Wybrany</button><button id="zsig">Sygnatura</button>
+      </div>
+      <div class="help" id="help"></div>
+      <div id="toast"></div>
+    </div>
+    <div id="bar">
+      <span id="sel">Nie wybrano obiektu.</span>
+      <span id="markbtns">
+        <button class="btn m-susp" data-mark="susp">? Podejrzany</button>
+        <button class="btn m-excl" data-mark="excl">✕ Wykluczony</button>
+        <button class="btn" data-mark="ok" id="markok" style="border-color:var(--ok);display:none">✓ Prawdziwy</button>
+        <button class="btn" data-mark="">Bez oznaczenia</button>
+      </span>
+      <span id="verdicts"></span>
+    </div>
+  </div>
+  <div class="col" id="right"><div id="panel"></div><div id="check"></div><div id="notes"></div></div>
+</main>
+<div class="modal" id="modal"><div class="box" id="mbox"></div></div>
+
+<script>
+"use strict";
+/* =====================================================================
+   NARZĘDZIA OGÓLNE
+   ===================================================================== */
+const S=2;let W=640,H=480,IW=W*S,IH=H*S,G=110,BW=1,BH=1;
+const mk=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c};
+function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const pick=(a,r)=>a[Math.floor(r()*a.length)];
+function shuffle(a,r){for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const range=(a,b,s)=>{const o=[];for(let i=a;i<=b+1e-9;i+=s)o.push(i);return o};
+const lin=(x0,y0,x1,y1,st)=>x=>{const g=x.createLinearGradient(x0,y0,x1,y1);st.forEach(s=>g.addColorStop(s[0],s[1]));return g};
+const rad=(cx,cy,r0,r1,st)=>x=>{const g=x.createRadialGradient(cx,cy,r0,cx,cy,r1);st.forEach(s=>g.addColorStop(s[0],s[1]));return g};
+const quad=(t,a,b,c)=>[(1-t)*(1-t)*a[0]+2*(1-t)*t*b[0]+t*t*c[0],(1-t)*(1-t)*a[1]+2*(1-t)*t*b[1]+t*t*c[1]];
+const fmt=n=>String(n).replace('.',',');
+const h1=(i,s)=>{const v=Math.sin(i*12.9898+s*78.233)*43758.5453;return v-Math.floor(v)};
+function inPoly(x,y,p){let ins=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const xi=p[i][0],yi=p[i][1],xj=p[j][0],yj=p[j][1];if(((yi>y)!=(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))ins=!ins}return ins}
+function distSeg(px,py,a,b){const dx=b[0]-a[0],dy=b[1]-a[1],l=dx*dx+dy*dy||1;let t=((px-a[0])*dx+(py-a[1])*dy)/l;t=Math.max(0,Math.min(1,t));return Math.hypot(px-a[0]-t*dx,py-a[1]-t*dy)}
+function distPath(px,py,pts){let m=1e9;for(let i=1;i<pts.length;i++)m=Math.min(m,distSeg(px,py,pts[i-1],pts[i]));return m}
+let toastT=0;function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),2600)}
+
+/* =====================================================================
+   PIGMENTY
+   ===================================================================== */
+const PG={ultr:['Ultramaryna syntetyczna',1828,'Na, Al, Si, S'],pb:['Biel ołowiowa',0,'Pb'],prus:['Błękit pruski',1706,'Fe, K'],vir:['Zieleń szmaragdowa (wiridian)',1838,'Cr'],
+ ochy:['Ochra żółta',0,'Fe'],sien:['Siena palona',0,'Fe, Mn'],umb:['Umbra palona',0,'Fe, Mn'],cyn:['Cynober',0,'Hg, S'],ochr:['Ochra czerwona',0,'Fe'],bone:['Czerń kostna',0,'Ca, P'],
+ cob:['Błękit kobaltowy',1802,'Co, Al'],cadY:['Żółcień kadmowa',1840,'Cd, S'],lake:['Laka karminowa',0,'Al, Ca (organiczny)'],naples:['Żółcień neapolitańska',0,'Pb, Sb'],au:['Złoto płatkowe',0,'Au'],
+ tiw:['Biel tytanowa',1921,'Ti'],phB:['Błękit ftalocyjaninowy',1935,'Cu, Cl'],phG:['Zieleń ftalocyjaninowa',1938,'Cu, Cl'],quin:['Czerwień chinakrydonowa',1958,'C, N, O (organiczny)'],
+ hansa:['Żółcień arylidowa (Hansa)',1910,'C, N, O (organiczny)'],diox:['Fiolet dioksazynowy',1952,'C, N, O, Cl (organiczny)'],
+ zn:['Biel cynkowa',1834,'Zn'],schw:['Zieleń szwajnfurcka',1814,'Cu, As'],minium:['Minia',0,'Pb'],chromY:['Żółcień chromowa',1809,'Pb, Cr'],
+ chalk:['Grunt kredowo-klejowy (biały)',0,'Ca'],greyOil:['Grunt olejny szary (biel ołowiowa + czerń)',0,'Pb, Ca, P'],redBole:['Grunt czerwony (bolus)',0,'Fe, Al, Si'],gessoA:['Grunt akrylowy z bielą tytanową',1955,'Ti, C']};
+const ALT={ultr:'cob',prus:'cob',cob:'ultr',vir:'schw',pb:'zn',cyn:'minium',ochy:'chromY',naples:'chromY',lake:'cyn',umb:'sien',sien:'umb',ochr:'minium',bone:'umb',cadY:'chromY',au:'ochy'};
+const XW={pb:.92,naples:.85,cyn:.78,minium:.88,chromY:.8,zn:.55,tiw:.6,au:.97,greyOil:.8,chalk:.35};
+const GROUND_COL={chalk:'#ece4d0',greyOil:'#8f8a82',redBole:'#9a4a2c',gessoA:'#f6f6f3'};
+const yr=k=>PG[k][1]?String(PG[k][1]):'starożytności';
+
+/* =====================================================================
+   ARTYŚCI (fikcyjni)
+   ===================================================================== */
+const ARTISTS=[
+ {id:'wierz',name:'Antoni Wierzbicki',life:'1838–1901',scene:'pejzaz',title:'Pejzaż z jeziorem i postacią',year:1872,wcm:64.5,hcm:48,crn:214,ref:'„Droga do wsi”, 1869 (kat. rais. nr 198)',
+  sig:{text:'A. Wierzbicki 1872',corner:'br',color:'#2a1d14',pig:'bone',font:'italic 14px Georgia,"Times New Roman",serif',slant:-0.4}},
+ {id:'brzo',name:'Helena Brzostowska',life:'1851–1919',scene:'portret',title:'Portret kobiety w ciemnej sukni',year:1889,wcm:48,hcm:60,crn:87,ref:'„Portret siostry artystki”, 1886 (kat. rais. nr 61)',
+  sig:{text:'H. Brzostowska 89',corner:'bl',color:'#8a2e1e',pig:'cyn',font:'italic 600 14px "Times New Roman",Georgia,serif',slant:-0.22}},
+ {id:'mora',name:'Feliks Moraczewski',life:'1829–1897',scene:'martwa',title:'Martwa natura z dzbanem i owocami',year:1864,wcm:64,hcm:48,crn:132,ref:'„Martwa natura z cytrynami”, 1862 (kat. rais. nr 117)',
+  sig:{text:'F. MORACZEWSKI 1864',corner:'br',color:'#2a1d14',pig:'bone',font:'12px Georgia,serif',slant:-0.08}},
+ {id:'lind',name:'Józef Lindorf',life:'1846–1912',scene:'marina',title:'Żaglowiec u skalistego brzegu',year:1881,wcm:68,hcm:44,crn:305,ref:'„Przed burzą”, 1879 (kat. rais. nr 288)',
+  sig:{text:'J. Lindorf 1881',corner:'br',color:'#e6dcc4',pig:'pb',font:'italic 15px Palatino,Georgia,serif',slant:-0.5}},
+];
+
+/* =====================================================================
+   KSZTAŁTY SCEN
+   ===================================================================== */
+const Sr=(reg,x,y,w,h,fill,o={})=>({t:'rect',reg,x,y,w,h,fill,...o});
+const Se=(reg,cx,cy,rx,ry,fill,o={})=>({t:'ell',reg,cx,cy,rx,ry,rot:0,fill,...o});
+const Sp=(reg,pts,fill,o={})=>({t:'poly',reg,pts,fill,...o});
+const Sl=(pts,stroke,lw,o={})=>({t:'line',pts,stroke,lw,noHit:true,...o});
+const Sd=fn=>({t:'deco',fn,noHit:true});
+function pathShape(x,s){x.beginPath();if(s.t==='rect')x.rect(s.x,s.y,s.w,s.h);else if(s.t==='ell')x.ellipse(s.cx,s.cy,s.rx,s.ry,s.rot,0,Math.PI*2);else{s.pts.forEach((q,i)=>i?x.lineTo(q[0],q[1]):x.moveTo(q[0],q[1]));if(s.t==='poly')x.closePath()}}
+function drawShapes(x,L,r){for(const s of L){if(s.hidden)continue;if(s.t==='deco'){s.fn(x,r);continue}pathShape(x,s);
+ if(s.t==='line'){x.strokeStyle=s.stroke;x.lineWidth=s.lw;x.lineCap='round';x.lineJoin='round';x.stroke();continue}
+ x.fillStyle=typeof s.fill==='function'?s.fill(x):s.fill;x.fill()}}
+function hitShape(s,x,y){if(s.t==='rect')return x>=s.x&&x<=s.x+s.w&&y>=s.y&&y<=s.y+s.h;
+ if(s.t==='ell'){const dx=(x-s.cx)/s.rx,dy=(y-s.cy)/s.ry;return dx*dx+dy*dy<=1}
+ if(s.t==='poly')return inPoly(x,y,s.pts);return false}
+function contour(s){if(s.t==='rect')return[[s.x,s.y],[s.x+s.w,s.y],[s.x+s.w,s.y+s.h],[s.x,s.y+s.h]];
+ if(s.t==='ell'){const a=[];for(let i=0;i<22;i++){const t=i/22*6.283;a.push([s.cx+Math.cos(t)*s.rx,s.cy+Math.sin(t)*s.ry])}return a}return s.pts}
+
+/* ---------------- PEJZAŻ ---------------- */
+function foliage(x,t,r){const cy=t.y-t.s*1.7,cols=['#2c4521','#34522a','#3e5d2c','#4a6a33'];
+ for(let i=0;i<10;i++){const a=r()*6.28,d=r()*0.55;x.fillStyle=pick(cols,r);x.beginPath();x.arc(t.x+Math.cos(a)*t.s*d,cy+Math.sin(a)*t.s*d*0.8,t.s*(0.42+r()*0.2),0,7);x.fill()}
+ for(let i=0;i<6;i++){x.fillStyle='rgba(135,160,85,.55)';x.beginPath();x.arc(t.x-t.s*(0.2+r()*0.4),cy-t.s*(0.1+r()*0.4),t.s*(0.12+r()*0.12),0,7);x.fill()}}
+function clouds(r,n,y0,y1){const a=[];for(let k=0;k<n;k++){const cx=W*(0.28+r()*0.66),cy=H*(y0+r()*(y1-y0)),sz=24+r()*26;for(let i=0;i<5;i++)a.push({x:cx+(r()-.5)*sz*2.2,y:cy+(r()-.5)*sz*0.4,rx:sz*(0.5+r()*0.5),ry:sz*(0.24+r()*0.18)})}return a}
+const SCENES={};
+SCENES.pejzaz={W:640,H:480,bg:'grunt',
+ REG:{niebo:{pig:['ultr','pb'],dir:'h',an:'phB'},chmury:{pig:['pb','ochy'],dir:'swirl',an:'tiw'},'góry':{pig:['ultr','pb','ochy'],dir:'h'},grunt:{pig:['ochy','sien','umb'],dir:'diag',an:'hansa'},
+  droga:{pig:['ochy','pb'],dir:'diag'},woda:{pig:['prus','pb'],dir:'h',an:'phB'},dom:{pig:['pb','ochr'],dir:'hv',an:'tiw'},dach:{pig:['ochr','umb'],dir:'hv'},'pień':{pig:['umb'],dir:'v'},
+  listowie:{pig:['vir','ochy'],dir:'dab',an:'phG'},'postać':{pig:['cyn','pb'],dir:'v',an:'quin'},karnacja:{pig:['pb','ochr','cyn'],dir:'dab'}},
+ make(r){const c={ph:r()*6};c.hz=H*(0.42+r()*0.07);
+  c.sun={x:W*(0.08+r()*0.1),y:H*(0.08+r()*0.06)};c.clouds=clouds(r,3+Math.floor(r()*2),0.07,0.27);
+  c.lake={x:W*(0.2+r()*0.18),y:c.hz+26,rx:115+r()*35,ry:15+r()*6};c.house={x:W*(0.66+r()*0.06),y:c.hz+20,w:64,h:42};c.fig={x:W*(0.44+r()*0.12),y:H*0.86,h:74};
+  c.trees=[];for(let i=0;i<4;i++){let x=W*(0.06+(i/4)*0.9+r()*0.06);if(Math.abs(x-c.fig.x)<60)x+=70;if(x>c.house.x-30&&x<c.house.x+100)x=c.house.x-40-r()*20;c.trees.push({x,y:c.hz+48+r()*60,s:22+r()*14})}
+  c.trees.sort((a,b)=>a.y-b.y);return c},
+ hill:(c,x)=>c.hz-22-14*Math.sin(x*0.012+c.ph)-7*Math.sin(x*0.029+c.ph*2),
+ near:(c,x)=>c.hz-6-5*Math.sin(x*0.021+c.ph*3),
+ build(c,err){const L=[],an=err==='anatomy',sw=err==='shadow',sc=SCENES.pejzaz;
+  L.push(Sr('niebo',0,0,W,c.hz+4,lin(0,0,0,c.hz,[[0,'#58799d'],[.7,'#a7bacb'],[1,'#e2d5b6']])));
+  L.push(Sd(x=>{x.fillStyle=rad(c.sun.x,c.sun.y,4,170,[[0,'rgba(255,245,212,.95)'],[1,'rgba(255,245,212,0)']])(x);x.fillRect(0,0,W,c.hz)}));
+  for(const e of c.clouds)L.push(Se(null,e.x+3,e.y+5,e.rx,e.ry,'rgba(140,146,162,.35)',{noHit:true}));
+  for(const e of c.clouds)L.push(Se('chmury',e.x,e.y,e.rx,e.ry,'rgba(245,241,231,.92)'));
+  L.push(Sp('góry',[[0,c.hz+3],...range(0,W,8).map(i=>[i,sc.hill(c,i)]),[W,c.hz+3]],'#84939c',{outline:true}));
+  L.push(Sp('góry',[[0,c.hz+3],...range(0,W,8).map(i=>[i,sc.near(c,i)]),[W,c.hz+3]],'#71805a'));
+  L.push(Sr('grunt',0,c.hz,W,H-c.hz,lin(0,c.hz,0,H,[[0,'#86904f'],[.5,'#6b6a34'],[1,'#4c4224']])));
+  L.push(Sd((x,r)=>{for(let i=0;i<320;i++){const yy=c.hz+Math.pow(r(),1.4)*(H-c.hz),k=(yy-c.hz)/(H-c.hz);x.fillStyle=`hsla(${50+r()*40},${30+r()*20}%,${25+r()*18}%,.35)`;x.beginPath();x.ellipse(r()*W,yy,6+k*40*r(),1+k*4,0,0,7);x.fill()}}));
+  const lk=c.lake;L.push(Se('woda',lk.x,lk.y,lk.rx,lk.ry,lin(0,lk.y-lk.ry,0,lk.y+lk.ry,[[0,'#9ab8c6'],[1,'#56798f']]),{outline:true}));
+  L.push(Sd((x,r)=>{x.strokeStyle='rgba(235,238,228,.55)';x.lineWidth=1;for(let i=0;i<22;i++){const yy=lk.y+(r()-.5)*lk.ry*1.3,xx=lk.x+(r()-.5)*lk.rx*1.4;x.beginPath();x.moveTo(xx,yy);x.lineTo(xx+8+r()*14,yy);x.stroke()}}));
+  const hs=c.house,f=c.fig,pth=[];
+  for(let i=0;i<=12;i++)pth.push(quad(i/12,[W*0.4,H],[f.x-14,f.y-34],[hs.x+hs.w*0.44,hs.y+1]));
+  for(let i=0;i<=12;i++)pth.push(quad(i/12,[hs.x+hs.w*0.56,hs.y+1],[f.x+34,f.y-22],[W*0.62,H]));
+  L.push(Sp('droga',pth,'#a8905c'));
+  const x0=hs.x,y0=hs.y,w=hs.w,h=hs.h,d=24,dy=8,rh=30;
+  L.push(Sp(null,[[x0+w,y0],[x0+w+d,y0-dy],[x0+w+d+44,y0+3],[x0+w+12,y0+7]],'rgba(25,28,12,.35)',{noHit:true}));
+  L.push(Sp('dom',[[x0+w,y0],[x0+w+d,y0-dy],[x0+w+d,y0-dy-h],[x0+w,y0-h]],'#9c8c70',{outline:true}));
+  L.push(Sr('dom',x0,y0-h,w,h,'#e4d9c0',{outline:true}));
+  L.push(Sp('dach',[[x0-4,y0-h],[x0+w/2,y0-h-rh],[x0+w+4,y0-h]],'#8a4a30',{outline:true}));
+  L.push(Sp('dach',[[x0+w/2,y0-h-rh],[x0+w/2+d,y0-h-rh-dy],[x0+w+d+4,y0-h-dy],[x0+w+4,y0-h]],'#64331f'));
+  L.push(Sr('dom',x0+w*0.42,y0-h*0.55,w*0.16,h*0.55,'#3d2c20'));
+  L.push(Sr('dom',x0+w*0.12,y0-h*0.66,w*0.18,h*0.26,'#4a5560'));L.push(Sr('dom',x0+w*0.7,y0-h*0.66,w*0.18,h*0.26,'#4a5560'));
+  c.trees.forEach((t,i)=>{const pe=i===0?{dx:26,dy:0}:null;
+   L.push(Se(null,t.x+t.s*1.15,t.y+3,t.s*1.45,t.s*0.28,'rgba(25,30,12,.45)',{noHit:true}));
+   L.push(Sr('pień',t.x-t.s*0.08,t.y-t.s*1.3,t.s*0.16,t.s*1.3,'#3b2a1a',{outline:true,penti:pe}));
+   L.push(Se('listowie',t.x,t.y-t.s*1.7,t.s,t.s*0.85,'',{hidden:true,outline:true,penti:pe}));
+   L.push(Sd((x,r)=>foliage(x,t,r)))});
+  const X=f.x,Y=f.y,fh=f.h,leg=an?0.3:0.45,headR=an?fh*0.12:fh*0.068,hip=Y-fh*leg,sh=Y-fh*(an?0.7:0.76),dir=sw?-1:1;
+  L.push(Sp(null,[[X-4,Y],[X+4,Y],[X+dir*fh*0.78+5,Y+9],[X+dir*fh*0.78-3,Y+11]],'rgba(25,28,12,.5)',{noHit:true}));
+  L.push(Sl([[X-3,Y],[X-2,hip]],'#2b2420',3,{outline:true}));L.push(Sl([[X+3,Y],[X+2,hip]],'#2b2420',3,{outline:true}));
+  L.push(Sp('postać',[[X-10,hip+4],[X+10,hip+4],[X+7,sh],[X-7,sh]],'#a3302a',{outline:true}));
+  L.push(Sp(null,[[X-10,hip+4],[X-2,hip+4],[X-1,sh],[X-7,sh]],'#c84e38',{noHit:true}));
+  L.push(Se('karnacja',X,sh-headR,headR,headR,'#d9b08b',{outline:true}));
+  L.push(Se(null,X-headR*0.3,sh-headR*1.1,headR*0.45,headR*0.45,'#f0cfa8',{noHit:true}));
+  L.push(Se('postać',X,sh-headR*1.65,headR*1.5,headR*0.32,'#2b2420'));
+  L.push(Sr('postać',X-headR*0.75,sh-headR*2.5,headR*1.5,headR*0.9,'#2b2420'));
+  L.push(Sl([[X+6,sh+3],[X+12,sh+fh*0.24]],'#8a261f',3,{outline:true,irPts:[[X+6,sh+3],[X+17,sh-fh*0.2]]}));
+  L.push(Sl([[X+13,sh-6],[X+16,Y+1]],'#4a3420',1.6));
+  return L},
+ styleRect:c=>[c.fig.x-80,c.fig.y-c.fig.h-16,160,c.fig.h+32],
+ errText:{anatomy:'Głowa postaci wyraźnie za duża względem tułowia, nogi skrócone.',shadow:'Cień postaci pada w lewo, a cienie drzew i domu w prawo.'},
+ errWhy:{anatomy:'Błąd anatomiczny – głowa za duża, nogi skrócone.',shadow:'Błąd logiki światła – cień postaci pada w złą stronę.'},
+ okText:'Proporcje postaci i kierunek cieni zgodne z dziełem referencyjnym.',
+ pentiText:'jedno drzewo pierwotnie w innym miejscu, ramię postaci uniesione',
+ compDesc:'Jezioro w lewej części, dom z czerwonym dachem po prawej; na drodze postać w czerwonym płaszczu z laską, w prawidłowych proporcjach. Światło z lewej – wszystkie cienie (drzew, domu, postaci) padają w prawo.',
+ hidden:{desc:'zamalowany zarys wiatraka na niebie',draw(x,c,side){const X=side==='r'?W*0.8:W*0.2,Y=c.hz-64;x.fillStyle='rgba(255,255,255,.3)';x.fillRect(X-9,Y,18,60);x.save();x.translate(X,Y);for(let k=0;k<4;k++){x.rotate(Math.PI/2);x.fillRect(-3,-46,6,44)}x.restore()}}
+};
+
+/* ---------------- PORTRET ---------------- */
+SCENES.portret={W:480,H:600,bg:'tło',
+ REG:{'tło':{pig:['umb','bone','sien'],dir:'diag'},'strój':{pig:['ultr','bone'],dir:'v',an:'phB'},'kołnierz':{pig:['pb'],dir:'v',an:'tiw'},broszka:{pig:['au','cyn'],dir:'dab'},
+  karnacja:{pig:['pb','ochr','cyn'],dir:'dab',an:'tiw'},'włosy':{pig:['umb','bone'],dir:'swirl'},usta:{pig:['cyn','lake'],dir:'dab',an:'quin'},oczy:{pig:['bone','pb'],dir:'dab'}},
+ make(r){return{cx:W*(0.46+r()*0.08),cy:H*(0.33+r()*0.04),fr:54+r()*8,dress:pick(['#23263a','#1d1d22','#24301f'],r)}},
+ build(c,err){const L=[],an=err==='anatomy',sw=err==='shadow',{cx,cy,fr}=c,fry=fr*1.3,sh=cy+fry*1.12;
+  L.push(Sr('tło',0,0,W,H,rad(W*0.32,H*0.28,10,W*1.05,[[0,'#6e5638'],[1,'#1b130c']])));
+  L.push(Se('włosy',cx+2,cy-fry*0.12,fr*1.22,fry*1.08,'#2e2015',{outline:true,penti:{dx:-16,dy:10}}));
+  L.push(Sp('strój',[[cx-W*0.6,H],[cx-W*0.44,sh+80],[cx-fr*1.95,sh+20],[cx-fr*0.55,sh-6],[cx+fr*0.55,sh-6],[cx+fr*1.95,sh+20],[cx+W*0.44,sh+80],[cx+W*0.6,H]],
+   lin(cx-fr*2,0,cx+fr*2,0,[[0,'#3a3f58'],[.5,c.dress],[1,'#0e0e14']]),{outline:true}));
+  L.push(Sp('karnacja',[[cx-fr*0.4,cy+fry*0.55],[cx+fr*0.4,cy+fry*0.55],[cx+fr*0.5,sh+2],[cx-fr*0.5,sh+2]],lin(cx-fr*0.5,0,cx+fr*0.5,0,[[0,'#e2bb95'],[1,'#a67256']])));
+  L.push(Sp('kołnierz',[[cx-fr*0.95,sh-6],[cx-fr*0.55,sh+14],[cx,sh+40],[cx+fr*0.55,sh+14],[cx+fr*0.95,sh-6],[cx+fr*0.5,sh+4],[cx,sh+22],[cx-fr*0.5,sh+4]],'#ece6d7',
+   {outline:true,irPts:[[cx-fr*1.35,sh-8],[cx-fr*0.7,sh+24],[cx,sh+58],[cx+fr*0.7,sh+24],[cx+fr*1.35,sh-8]]}));
+  L.push(Sd((x,r)=>{x.fillStyle='rgba(255,255,255,.7)';for(let i=0;i<26;i++){const t=i/25,px=cx-fr*0.95+t*fr*1.9,py=sh-6+Math.sin(t*Math.PI)*44;x.beginPath();x.arc(px,py,1.6+r(),0,7);x.fill()}}));
+  L.push(Se('broszka',cx,sh+34,8,10,rad(cx-3,sh+30,1,11,[[0,'#ffe9a0'],[.6,'#c8952e'],[1,'#6e4a12']])));
+  L.push(Se('karnacja',cx-fr*0.97,cy+(an?fry*0.4:fry*0.04),fr*0.12,fr*0.22,'#c99476'));
+  L.push(Se('karnacja',cx,cy,fr,fry,rad(cx-fr*0.45,cy-fry*0.3,4,fr*1.7,[[0,'#f3d4b2'],[.55,'#dcac86'],[1,'#9e6a52']]),{outline:true,penti:{dx:-16,dy:10}}));
+  L.push(Sd(x=>{x.save();x.beginPath();x.ellipse(cx,cy,fr,fry,0,0,7);x.clip();x.fillStyle=lin(cx,0,cx+fr,0,[[0,'rgba(80,45,30,0)'],[1,'rgba(80,45,30,.42)']])(x);x.fillRect(cx,cy-fry,fr,fry*2);x.restore()}));
+  const hair=[];for(let i=0;i<=16;i++){const t=Math.PI+i/16*Math.PI;hair.push([cx+Math.cos(t)*fr*1.06,cy-fry*0.08+Math.sin(t)*fry*1.02])}
+  for(let i=16;i>=0;i--){const t=Math.PI+i/16*Math.PI;hair.push([cx+Math.cos(t)*fr*0.9,cy-fry*0.3+Math.sin(t)*fry*0.42])}
+  L.push(Sp('włosy',hair,lin(cx-fr,0,cx+fr,0,[[0,'#4a3424'],[1,'#22170f']])));
+  const ey=cy-fry*0.1;
+  for(const s of[-1,1]){const ex=cx+s*fr*0.4,eyy=ey+(an&&s>0?-11:0),k=(an&&s>0?0.8:1);
+   L.push(Se('oczy',ex,eyy,fr*0.17*k,fr*0.075*k,'#efe8dc'));L.push(Se('oczy',ex+1.5,eyy,fr*0.065*k,fr*0.068*k,'#3a2618'));
+   L.push(Sl([[ex-fr*0.18*k,eyy-2],[ex,eyy-fr*0.1*k],[ex+fr*0.18*k,eyy-2]],'#6b4430',1.4));
+   L.push(Sl([[ex-fr*0.2,eyy-fr*0.22],[ex,eyy-fr*0.28],[ex+fr*0.22,eyy-fr*0.22]],'#3a2618',2.2))}
+  L.push(Sp('karnacja',[[cx-2,ey+3],[cx-fr*0.1,cy+fry*0.3],[cx+fr*0.13,cy+fry*0.32],[cx+fr*0.04,ey+3]],'#cf9d7c'));
+  L.push(Sp(null,sw?[[cx-fr*0.1,cy+fry*0.3],[cx-fr*0.36,cy+fry*0.37],[cx-fr*0.04,cy+fry*0.36]]:[[cx+fr*0.13,cy+fry*0.32],[cx+fr*0.38,cy+fry*0.38],[cx+fr*0.05,cy+fry*0.37]],'rgba(85,45,30,.55)',{noHit:true}));
+  L.push(Se('usta',cx+(an?fr*0.16:0),cy+fry*0.53,fr*0.25,fr*0.07,'#a5463c'));
+  return L},
+ styleRect:c=>[c.cx-c.fr*1.45,c.cy-c.fr*1.56,c.fr*2.9,c.fr*3.0],
+ errText:{anatomy:'Oczy na różnych wysokościach, usta przesunięte względem osi twarzy, ucho osadzone za nisko.',shadow:'Cień nosa pada w lewo, choć cała twarz oświetlona jest z lewej (cienie po prawej stronie).'},
+ errWhy:{anatomy:'Błąd anatomiczny – asymetria oczu, ust i ucha.',shadow:'Błąd logiki światła – cień nosa po złej stronie.'},
+ okText:'Rysy, proporcje twarzy i kierunek światła zgodne z portretem referencyjnym.',
+ pentiText:'głowa pierwotnie niżej i bardziej w lewo, kołnierz szerszy',
+ compDesc:'Półpostać kobiety w ciemnej sukni z białym koronkowym kołnierzem i złotą broszą. Twarz symetryczna, oczy na jednej wysokości, usta w osi twarzy. Światło z lewej – cień nosa i zacieniony policzek po prawej stronie.',
+ hidden:{desc:'zamalowany kapelusz z szerokim rondem',draw(x,c){x.fillStyle='rgba(255,255,255,.27)';x.beginPath();x.ellipse(c.cx,c.cy-c.fr*1.2,c.fr*1.9,c.fr*0.33,0,0,7);x.fill();x.beginPath();x.ellipse(c.cx,c.cy-c.fr*1.55,c.fr*0.95,c.fr*0.5,0,0,7);x.fill()}}
+};
+
+/* ---------------- MARTWA NATURA ---------------- */
+SCENES.martwa={W:640,H:480,bg:'tło',
+ REG:{'tło':{pig:['umb','bone'],dir:'diag'},'stół':{pig:['sien','umb'],dir:'h'},obrus:{pig:['pb'],dir:'v',an:'tiw'},dzban:{pig:['cob','pb'],dir:'v',an:'phB'},misa:{pig:['ochr','pb'],dir:'h'},
+  owoce:{pig:['lake','ochy','pb'],dir:'dab',an:'quin'},winogrona:{pig:['lake','ultr'],dir:'dab',an:'diox'},cytryna:{pig:['naples','pb'],dir:'dab',an:'hansa'}},
+ make(r){const ty=H*(0.6+r()*0.04);return{ty,jx:W*(0.22+r()*0.06),jw:72,jh:150,bx:W*(0.6+r()*0.05),by:ty-34,brx:88,lx:W*(0.38+r()*0.08),ly:ty+62}},
+ build(c,err){const L=[],an=err==='anatomy',sw=err==='shadow',t=an?16:0;
+  L.push(Sr('tło',0,0,W,c.ty+20,lin(0,0,W,0,[[0,'#4c3d29'],[1,'#1d170f']])));
+  L.push(Sp('stół',[[0,c.ty+t],[W,c.ty-t],[W,H],[0,H]],lin(0,c.ty,0,H,[[0,'#7c5232'],[1,'#3b2414']]),{outline:true}));
+  L.push(Sl([[0,c.ty+t],[W,c.ty-t]],'#a8784c',2));
+  L.push(Sp('obrus',[[W*0.04,c.ty+6+t*0.9],[W*0.47,c.ty+4],[W*0.43,H],[W*0.08,H]],lin(W*0.04,0,W*0.47,0,[[0,'#f2ede2'],[1,'#b9b2a2']]),{outline:true}));
+  L.push(Sd((x,r)=>{x.strokeStyle='rgba(120,112,100,.4)';x.lineWidth=2;for(let i=0;i<6;i++){const xx=W*(0.09+i*0.06+r()*0.02);x.beginPath();x.moveTo(xx,c.ty+12);x.quadraticCurveTo(xx+(r()-.5)*20,(c.ty+H)/2,xx-6+r()*8,H);x.stroke()}}));
+  L.push(Se(null,c.jx+(sw?-1:1)*c.jw*0.9,c.ty+4,c.jw*0.9,9,'rgba(20,12,6,.45)',{noHit:true}));
+  L.push(Se(null,c.bx+c.brx*0.5,c.ty+8,c.brx*0.9,10,'rgba(20,12,6,.45)',{noHit:true}));
+  L.push(Se(null,c.lx+26,c.ly+10,26,7,'rgba(20,12,6,.45)',{noHit:true}));
+  L.push(Sl([[c.jx+c.jw*0.35,c.ty-c.jh*0.86],[c.jx+c.jw*0.78,c.ty-c.jh*0.7],[c.jx+c.jw*0.48,c.ty-c.jh*0.34]],'#3e5367',7,{outline:true}));
+  L.push(Sp('dzban',[[c.jx-c.jw*0.2,c.ty-c.jh*0.66],[c.jx+c.jw*0.2,c.ty-c.jh*0.66],[c.jx+c.jw*0.28,c.ty-c.jh],[c.jx-c.jw*0.28,c.ty-c.jh]],lin(c.jx-c.jw*0.3,0,c.jx+c.jw*0.3,0,[[0,'#a9bccd'],[1,'#34485c']]),{outline:true}));
+  L.push(Se('dzban',c.jx,c.ty-c.jh*0.33,c.jw*0.52,c.jh*0.36,lin(c.jx-c.jw*0.5,0,c.jx+c.jw*0.5,0,[[0,'#b6c8d6'],[.45,'#6f88a0'],[1,'#26364a']]),{outline:true}));
+  L.push(Se('dzban',c.jx,c.ty-c.jh,c.jw*0.28,5,'#22303e'));
+  L.push(Se(null,c.jx-c.jw*0.22,c.ty-c.jh*0.42,6,16,'rgba(255,255,255,.55)',{noHit:true}));
+  const ry=an?c.brx*0.52:c.brx*0.2;
+  L.push(Se('misa',c.bx,c.by,c.brx,ry,'#5c3b1f',{outline:true}));
+  const cols=[['#ffb070','#c0301e','#5e120a'],['#fff0a0','#d8a030','#7a4a10'],['#ff9a80','#b02818','#4e0c06']];
+  for(let i=0;i<3;i++){const ax=c.bx-34+i*32,ay=c.by-10-(i===1?10:0),cl=cols[i];L.push(Se('owoce',ax,ay,18,17,rad(ax-6,ay-6,2,22,[[0,cl[0]],[.55,cl[1]],[1,cl[2]]]),{outline:true}))}
+  for(let i=0;i<10;i++){const gx=c.bx+46+(i%3)*9+(i>5?4:0),gy=c.by-6+Math.floor(i/3)*8;L.push(Se('winogrona',gx,gy,5.5,5.5,rad(gx-2,gy-2,1,7,[[0,'#b08ab0'],[1,'#3a1a40']])))}
+  const pts=[];for(let k=0;k<=24;k++){const a=k/24*Math.PI;pts.push([c.bx+Math.cos(a)*c.brx,c.by+Math.sin(a)*46])}for(let k=24;k>=0;k--){const a=k/24*Math.PI;pts.push([c.bx+Math.cos(a)*c.brx,c.by+Math.sin(a)*ry])}
+  L.push(Sp('misa',pts,lin(c.bx-c.brx,0,c.bx+c.brx,0,[[0,'#e2b47a'],[.5,'#b9844c'],[1,'#5e3a1c']]),{outline:true}));
+  L.push(Se('misa',c.bx,c.by+48,c.brx*0.38,6,'#7a5230'));
+  L.push(Se('cytryna',c.lx,c.ly,25,16,rad(c.lx-8,c.ly-6,2,28,[[0,'#fff3a8'],[.6,'#e8c440'],[1,'#9a7a14']]),{outline:true,penti:{dx:70,dy:-6}}));
+  return L},
+ styleRect:c=>[c.jx-c.jw-10,c.ty-c.jh-14,(c.bx+c.brx+20)-(c.jx-c.jw-10),c.jh+80],
+ errText:{anatomy:'Otwór misy pokazany z wysoka, a dno i krawędź stołu z innego punktu widzenia; krawędź stołu przechylona.',shadow:'Cień dzbana pada w lewo, cienie misy i cytryny w prawo.'},
+ errWhy:{anatomy:'Błąd perspektywy – sprzeczne punkty widzenia.',shadow:'Błąd logiki światła – cień dzbana po złej stronie.'},
+ okText:'Perspektywa naczyń i kierunek cieni zgodne z martwą naturą referencyjną.',
+ pentiText:'cytryna pierwotnie dalej w prawo',
+ compDesc:'Na stole z białym obrusem: niebieski dzban po lewej, gliniana misa z jabłkami i winogronami po prawej, cytryna z przodu. Spójna perspektywa – krawędź stołu pozioma. Światło z lewej – wszystkie cienie padają w prawo.',
+ hidden:{desc:'zamalowany wazon z kwiatami w tle',draw(x,c,side){const X=side==='r'?W*0.84:W*0.16,Y=c.ty-80;x.fillStyle='rgba(255,255,255,.28)';x.beginPath();x.ellipse(X,Y,24,44,0,0,7);x.fill();for(let k=0;k<6;k++){x.beginPath();x.arc(X-30+k*12,Y-66-(k%2)*14,12,0,7);x.fill()}}}
+};
+
+/* ---------------- MARINA ---------------- */
+SCENES.marina={W:680,H:440,bg:'morze',
+ REG:{niebo:{pig:['ultr','pb','cadY'],dir:'h',an:'phB'},chmury:{pig:['pb','ochy'],dir:'swirl',an:'tiw'},'słońce':{pig:['naples','pb'],dir:'swirl',an:'hansa'},brzeg:{pig:['ultr','ochy'],dir:'h'},
+  morze:{pig:['prus','vir','pb'],dir:'h',an:'phB'},'skały':{pig:['umb','sien'],dir:'diag'},statek:{pig:['umb','bone'],dir:'h'},'żagle':{pig:['pb','ochy'],dir:'v',an:'tiw'},flaga:{pig:['cyn'],dir:'v',an:'quin'}},
+ make(r){const hz=H*(0.5+r()*0.05);return{hz,sun:{x:W*(0.16+r()*0.12),y:hz-55-r()*40},sx:W*(0.6+r()*0.08),sy:hz+46,clouds:clouds(r,3,0.06,0.3)}},
+ build(c,err){const L=[],an=err==='anatomy',sw=err==='shadow';
+  L.push(Sr('niebo',0,0,W,c.hz+2,lin(0,0,0,c.hz,[[0,'#56698a'],[.55,'#d4b488'],[1,'#f2d9a4']])));
+  L.push(Sd(x=>{x.fillStyle=rad(c.sun.x,c.sun.y,6,220,[[0,'rgba(255,240,200,.95)'],[1,'rgba(255,240,200,0)']])(x);x.fillRect(0,0,W,c.hz)}));
+  for(const e of c.clouds)L.push(Se(null,e.x+3,e.y+5,e.rx,e.ry,'rgba(120,110,120,.35)',{noHit:true}));
+  for(const e of c.clouds)L.push(Se('chmury',e.x,e.y,e.rx,e.ry,'rgba(242,228,206,.9)'));
+  L.push(Se('słońce',c.sun.x,c.sun.y,15,15,'#fff3cc'));
+  L.push(Sp('brzeg',[[W*0.6,c.hz+1],[W*0.68,c.hz-10],[W*0.78,c.hz-6],[W*0.88,c.hz-22],[W,c.hz-16],[W,c.hz+1]],'#6b7387',{outline:true}));
+  L.push(Sr('morze',0,c.hz,W,H-c.hz,lin(0,c.hz,0,H,[[0,'#8197a0'],[.35,'#4e6974'],[1,'#223741']])));
+  const rx=sw?W-c.sun.x:c.sun.x;
+  L.push(Sd((x,r)=>{for(let i=0;i<70;i++){const k=r(),yy=c.hz+3+k*k*(H-c.hz-10),wd=(6+k*40)*(0.5+r());x.fillStyle=`rgba(255,236,190,${0.6-k*0.4})`;x.fillRect(rx-wd/2+(r()-.5)*(10+k*30),yy,wd,1+k*1.5)}}));
+  L.push(Sd((x,r)=>{for(let i=0;i<280;i++){const k=r(),yy=c.hz+4+k*k*(H-c.hz),xx=r()*W,len=4+k*30;x.strokeStyle=`rgba(220,232,232,${.15+k*.25})`;x.lineWidth=0.6+k*1.6;x.beginPath();x.moveTo(xx,yy);x.quadraticCurveTo(xx+len/2,yy-2-k*3,xx+len,yy);x.stroke()}}));
+  L.push(Sp('skały',[[0,H],[0,H*0.7],[W*0.08,H*0.66],[W*0.17,H*0.72],[W*0.24,H*0.82],[W*0.3,H*0.9],[W*0.33,H]],lin(0,H*0.66,W*0.3,H,[[0,'#6a5848'],[1,'#2a2018']]),{outline:true}));
+  L.push(Sd((x,r)=>{x.fillStyle='rgba(240,245,245,.6)';for(let i=0;i<60;i++){const t=r(),px=W*0.33*t+r()*10,py=H*(0.66+0.34*t)-4+(r()-.5)*8;x.beginPath();x.arc(px,py,1+r()*3,0,7);x.fill()}}));
+  const X=c.sx,Y=c.sy,pe={dx:-40,dy:0};
+  L.push(Sd((x,r)=>{x.fillStyle='rgba(20,18,16,.45)';for(let i=0;i<10;i++)x.fillRect(X-50+(r()-.5)*8,Y+10+i*3,100-i*6,1.6)}));
+  L.push(Sp('statek',[[X-60,Y-10],[X+70,Y-10],[X+55,Y+8],[X-48,Y+8]],'#3a2a1e',{outline:true,penti:pe}));
+  const m1=t=>[X-20-(an?16:0)*t,Y-10-102*t],m2=t=>[X+26+(an?18:0)*t,Y-10-86*t];
+  L.push(Sl([m1(0),m1(1)],'#2a1e14',2.2,{outline:true,penti:pe}));L.push(Sl([m2(0),m2(1)],'#2a1e14',2.2,{outline:true,penti:pe}));
+  const add=(p,dx,dy)=>[p[0]+dx,p[1]+dy],sf=lin(X-30,0,X+50,0,[[0,'#f6ecd4'],[1,'#b8ab90']]);
+  L.push(Sp('żagle',[m1(.92),add(m1(.92),30,4),add(m1(.62),36,4),m1(.62)],sf,{outline:true,penti:pe}));
+  L.push(Sp('żagle',[m1(.56),add(m1(.56),40,4),add(m1(.2),46,6),m1(.2)],sf,{outline:true,penti:pe}));
+  L.push(Sp('żagle',[m2(.9),add(m2(.9),26,4),add(m2(.25),34,6),m2(.25)],sf,{outline:true,penti:pe}));
+  L.push(Sp('flaga',[m1(1),add(m1(1),14,3),add(m1(1),0,7)],'#b03028'));
+  return L},
+ styleRect:c=>[0,c.hz-130,W,H-c.hz+130],
+ errText:{anatomy:'Maszty pochylone w przeciwne strony – błąd konstrukcji i perspektywy statku.',shadow:'Pas odbicia słońca na wodzie leży po przeciwnej stronie niż słońce.'},
+ errWhy:{anatomy:'Błąd konstrukcji – maszty rozchodzą się na boki.',shadow:'Błąd logiki światła – odbicie słońca nie pod słońcem.'},
+ okText:'Konstrukcja statku i odbicie słońca zgodne z mariną referencyjną.',
+ pentiText:'statek pierwotnie dalej w lewo',
+ compDesc:'Dwumasztowy żaglowiec (maszty pionowe, równoległe) po prawej od środka; skały w lewym dolnym rogu, brzeg na horyzoncie po prawej. Pas odbicia słońca na wodzie dokładnie pod słońcem, po lewej.',
+ hidden:{desc:'zamalowany drugi, mały żaglowiec na horyzoncie',draw(x,c,side){const X=side==='r'?W*0.84:W*0.16,Y=c.hz;x.fillStyle='rgba(255,255,255,.3)';x.fillRect(X-18,Y-4,36,6);x.beginPath();x.moveTo(X-4,Y-6);x.lineTo(X-4,Y-40);x.lineTo(X+14,Y-8);x.fill()}}
+};
+
+/* =====================================================================
+   STAN GRY
+   ===================================================================== */
+let MODE='paint5',ART=null,SC=null,C=null,P=[],sel=null,tool=null,vw={x:0,y:0,z:1},TB={},TLIST=[],GROUPS=[];
+const cv=document.getElementById('board'),ctx=cv.getContext('2d');
+
+function sigLayout(c){const t=mk(4,4).getContext('2d');t.font=ART.sig.font;const w=t.measureText(ART.sig.text).width*1.05+8;c.sig={x:ART.sig.corner==='br'?W-w-22:24,y:H-20,w}}
+function inSig(x,y){const s=C.sig;return x>s.x-6&&x<s.x+s.w+6&&y>s.y-16&&y<s.y+8}
+function drawSig(x,X,Y,shaky,seed,color,text){const s=ART.sig,r=rng(seed);x.save();x.translate(X,Y);x.transform(1,0,shaky?s.slant+0.34:s.slant,1,0,0);x.font=s.font;x.fillStyle=color;x.strokeStyle=color;
+ let cx=0;for(const ch of(text||s.text)){x.save();x.translate(cx,shaky?(r()-.5)*1.5:0);if(shaky)x.rotate((r()-.5)*0.13);x.fillText(ch,0,0);if(shaky){x.globalAlpha=0.5;x.fillText(ch,0.55,0.35)}x.restore();cx+=x.measureText(ch).width*(shaky?1.08:0.96)}
+ x.lineWidth=1;x.beginPath();x.moveTo(-2,4);if(shaky){for(let i=0;i<=14;i++)x.lineTo(-2+i*cx*0.62/14,4+(r()-.5)*1.4)}else x.bezierCurveTo(cx*0.2,8,cx*0.45,1,cx*0.62,5);x.stroke();x.restore()}
+const sigLater=p=>!!(p.t.sig&&p.m.sig==='later');
+const sigShaky=p=>!!(p.t.sig&&p.m.sig==='graph');
+const crackMode=p=>p.t.crack?p.m.crack:'natural';
+const microMode=p=>p.t.micro?p.m.micro:'brush';
+const pxPerCm=()=>W/ART.wcm;
+
+function regionAtP(p,x,y){if(p.frag)for(const l of p.frag.losses)if(inPoly(x,y,l.pts))return'ubytek';
+ if(inSig(x,y))return'sygnatura';const L=p.shapes;for(let i=L.length-1;i>=0;i--){const s=L[i];if(s.noHit||s.t==='deco'||s.t==='line')continue;if(hitShape(s,x,y))return s.reg}return SC.bg}
+function pigKeys(p,reg){if(reg==='sygnatura')return[ART.sig.pig];if(reg==='ubytek')return[p.ground];
+ const R=SC.REG[reg];if(!R)return['umb'];const k=R.pig.slice();
+ if(MODE==='paint5'&&p.profile==='giclee'&&p.t.pigment)return[R.an||'hansa','hansa'];
+ if(p.t.pigment&&p.m.pigReg===reg)k[0]=p.m.pigKind==='alt'?(ALT[k[0]]||'zn'):R.an;return k}
+function dens(p,reg){p._d=p._d||{};if(p._d[reg]==null){const k=pigKeys(p,reg);p._d[reg]=reg==='ubytek'?(XW[p.ground]||.3)*0.6:Math.max(...k.map(q=>XW[q]||.22))}return p._d[reg]}
+
+/* =====================================================================
+   WIDOKI OBRAZU
+   ===================================================================== */
+function makeCracks(p){const mode=crackMode(p),out=mk(IW,IH);if(mode==='none')return out;
+ const r=rng(p.seed+11),art=mode==='artificial',g=art?40:34,jit=art?0.3:0.95;
+ const gx=Math.ceil(IW/g)+3,gy=Math.ceil(IH/g)+3,pt=new Float32Array(gx*gy*2);
+ for(let j=0;j<gy;j++)for(let i=0;i<gx;i++){const k=(j*gx+i)*2;pt[k]=(i-1+0.5+(r()-.5)*jit+(art&&j%2?0.5:0))*g;pt[k+1]=(j-1+0.5+(r()-.5)*jit)*g}
+ const x=out.getContext('2d'),id=x.createImageData(IW,IH),d=id.data,ph=r()*10;
+ for(let y=0;y<IH;y++)for(let X=0;X<IW;X++){let xx=X,yy=y,n=1;
+  if(!art){xx+=4*Math.sin(y*0.045+ph)+2*Math.sin(y*0.13);yy+=4*Math.sin(X*0.04+ph*1.3)+2*Math.sin(X*0.11);n=0.5+0.5*Math.sin(X*0.006+ph)*Math.cos(y*0.008-ph);if(n<0.14)continue}
+  const ci=Math.floor(xx/g)+1,cj=Math.floor(yy/g)+1;let d1=1e12,d2=1e12;
+  for(let b=cj-1;b<=cj+1;b++){if(b<0||b>=gy)continue;for(let a=ci-1;a<=ci+1;a++){if(a<0||a>=gx)continue;const k=(b*gx+a)*2,dx=pt[k]-xx,dy=pt[k+1]-yy,dd=dx*dx+dy*dy;if(dd<d1){d2=d1;d1=dd}else if(dd<d2)d2=dd}}
+  const e=Math.sqrt(d2)-Math.sqrt(d1),thr=art?1.5:0.5+1.3*n,al=art?215:110+120*n;
+  if(e<thr){const i4=(y*IW+X)*4;d[i4]=28;d[i4+1]=20;d[i4+2]=12;d[i4+3]=al*(1-e/thr*0.5)}}
+ x.putImageData(id,0,0);if(p.frag){x.globalCompositeOperation='destination-out';x.scale(S,S);for(const l of p.frag.losses){x.beginPath();l.pts.forEach((q,i)=>i?x.lineTo(q[0],q[1]):x.moveTo(q[0],q[1]));x.fill()}}return out}
+const lumOf=(d,i)=>d[i]*0.3+d[i+1]*0.59+d[i+2]*0.11;
+function pixMap(src,fn){const out=mk(IW,IH),x=out.getContext('2d'),s=src.getContext('2d').getImageData(0,0,IW,IH).data,id=x.createImageData(IW,IH),d=id.data;
+ for(let i=0;i<d.length;i+=4){const v=fn(lumOf(s,i));d[i]=v[0];d[i+1]=v[1];d[i+2]=v[2];d[i+3]=255}x.putImageData(id,0,0);return out}
+function retouchArea(side){return side==='r'?[W*0.6,H*0.05,W*0.33,H*0.24]:[W*0.07,H*0.05,W*0.33,H*0.24]}
+function blobs(x,r,n,ax,ay,aw,ah,col){for(let k=0;k<n;k++){const cx=ax+r()*aw,cy=ay+r()*ah;x.fillStyle=col;for(let i=0;i<6;i++){x.beginPath();x.arc(cx+(r()-.5)*14,cy+(r()-.5)*10,3+r()*6,0,7);x.fill()}}}
+function uvFresh(p){return MODE==='frag'?!!(p.t.uv&&p.m.uvKind==='fresh'):!!p.t.uv}
+function makeUV(p){const fresh=uvFresh(p),out=pixMap(getView(p,'normal'),l=>fresh?[l*.18+22,l*.08+10,l*.32+48]:[l*.16+38,l*.34+52,l*.24+50]);
+ const x=out.getContext('2d');x.scale(S,S);const r=rng(p.seed+41);
+ if(MODE==='frag'){if(!p.t.uv){const a=retouchArea(p.frag.side);blobs(x,r,4,a[0],a[1],a[2],a[3],'rgba(18,6,30,.88)')}}
+ else if(p.retouch)blobs(x,r,4,40,40,W-80,H-80,'rgba(18,6,30,.85)');
+ if(sigLater(p)&&!fresh)drawSig(x,C.sig.x,C.sig.y,sigShaky(p),p.seed+5,'rgba(8,0,16,.95)');return out}
+function strokeFor(dir,r){switch(dir){case'h':return[(r()-.5)*0.25,18+r()*20,2+r()*2,.13];case'swirl':return[r()*6.28,6+r()*8,3+r()*3,.4];case'dab':return[r()*6.28,3+r()*4,2.5+r()*2,.35];
+ case'v':return[Math.PI/2+(r()-.5)*0.3,5+r()*6,1.8,.3];case'hv':return[r()<.5?0:Math.PI/2,6+r()*6,2,.25];default:return[0.25+(r()-.5)*0.6,10+r()*14,2+r()*2,.15]}}
+function makeRaking(p){const mode=p.t.texture?p.m.texture:'real',r=rng(p.seed+21);
+ const hm=mk(IW,IH),h=hm.getContext('2d');h.fillStyle='#808080';h.fillRect(0,0,IW,IH);h.scale(S,S);h.lineCap='round';
+ if(mode==='flat'){h.fillStyle='#9a9a9a';for(let y=0,j=0;y<H;y+=2.2,j++)for(let X=(j%2)*1.1;X<W;X+=2.2)h.fillRect(X,y,0.8,0.8)}
+ else{const N=15000*W*H/(640*480);for(let i=0;i<N;i++){const X=r()*W,y=r()*H;let a;
+  if(mode==='mismatch')a=[-0.75+(r()-.5)*0.2,10+r()*8,2+r()*1.5,.25];else{const reg=regionAtP(p,X,y);if(reg==='sygnatura'||reg==='ubytek')continue;a=strokeFor((SC.REG[reg]||{}).dir,r)}
+  h.strokeStyle=`rgba(255,255,255,${a[3]})`;h.lineWidth=a[2];h.beginPath();h.moveTo(X,y);h.lineTo(X+Math.cos(a[0])*a[1],y+Math.sin(a[0])*a[1]);h.stroke()}}
+ if(p.frag){h.fillStyle='rgba(0,0,0,.6)';for(const l of p.frag.losses){h.beginPath();l.pts.forEach((q,i)=>i?h.lineTo(q[0],q[1]):h.moveTo(q[0],q[1]));h.fill()}}
+ const hb=mk(IW,IH),hbx=hb.getContext('2d');hbx.filter='blur(1.4px)';hbx.drawImage(hm,0,0);
+ const hd=hbx.getImageData(0,0,IW,IH).data,src=getView(p,'normal').getContext('2d').getImageData(0,0,IW,IH).data;
+ const out=mk(IW,IH),x=out.getContext('2d'),id=x.createImageData(IW,IH),d=id.data;
+ for(let y=1;y<IH-1;y++)for(let X=1;X<IW-1;X++){const i=y*IW+X,i4=i*4,gx=hd[(i-1)*4]-hd[(i+1)*4],gy=hd[(i-IW)*4]-hd[(i+IW)*4],v=lumOf(src,i4)*0.35+92+(gx*1.6+gy*0.8)*1.5;
+  d[i4]=v*1.03;d[i4+1]=v*0.97;d[i4+2]=v*0.86;d[i4+3]=255}
+ x.putImageData(id,0,0);return out}
+function sketch(x,pts,closed,passes,jit,r){for(let k=0;k<passes;k++){x.beginPath();pts.forEach((q,i)=>{const X=q[0]+(r()-.5)*jit,Y=q[1]+(r()-.5)*jit;i?x.lineTo(X,Y):x.moveTo(X,Y)});if(closed)x.closePath();x.stroke()}}
+const irMode=p=>p.t.ir?p.m.ir:'real';
+function makeIR(p){const out=pixMap(getView(p,'normal'),l=>{const v=150+(l-128)*0.3;return[v,v,v]}),x=out.getContext('2d');x.scale(S,S);
+ const mode=irMode(p);if(mode==='none')return out;const r=rng(p.seed+51),real=mode==='real',J=real?2.2:0,N=real?2:1;
+ x.strokeStyle=real?'rgba(25,25,25,.55)':'rgba(25,25,25,.7)';x.lineWidth=real?1.1:0.9;
+ if(!real){x.save();x.strokeStyle='rgba(25,25,25,.45)';x.lineWidth=0.7;for(let i=40;i<W;i+=40){x.beginPath();x.moveTo(i,0);x.lineTo(i,H);x.stroke()}for(let i=40;i<H;i+=40){x.beginPath();x.moveTo(0,i);x.lineTo(W,i);x.stroke()}x.restore()}
+ for(const s of p.shapes){if(!s.outline)continue;let pts=real&&s.irPts?s.irPts:contour(s);if(real&&s.penti)pts=pts.map(q=>[q[0]+s.penti.dx,q[1]+s.penti.dy]);sketch(x,pts,s.t!=='line',N,J,r)}
+ return out}
+function edgeNails(x,staple,r,col){x.fillStyle=col;
+ for(let i=20;i<W-10;i+=30)for(const y of[3,H-7])staple?x.fillRect(i,y,10,2.5):(x.save(),x.translate(i+2,y+2),x.rotate(r()),x.fillRect(-2.5,-2.5,5,5),x.restore());
+ for(let i=20;i<H-10;i+=30)for(const X of[3,W-7])staple?x.fillRect(X,i,2.5,10):(x.save(),x.translate(X+2,i+2),x.rotate(r()),x.fillRect(-2.5,-2.5,5,5),x.restore())}
+function makeXray(p){const out=mk(IW,IH),x=out.getContext('2d'),id=x.createImageData(IW,IH),d=id.data,r=rng(p.seed+31);
+ for(let y=0;y<IH;y+=2)for(let X=0;X<IW;X+=2){const v=28+dens(p,regionAtP(p,X/S,y/S))*190+(r()-.5)*16;
+  for(let b=0;b<2;b++)for(let a=0;a<2;a++){const i4=((y+b)*IW+X+a)*4;d[i4]=d[i4+1]=d[i4+2]=v;d[i4+3]=255}}
+ x.putImageData(id,0,0);x.scale(S,S);
+ if(MODE==='paint5'){x.fillStyle='rgba(255,255,255,.1)';x.fillRect(0,0,W,34);x.fillRect(0,H-34,W,34);x.fillRect(0,0,34,H);x.fillRect(W-34,0,34,H);x.fillRect(W/2-17,0,34,H);
+  if(p.t.xray){x.save();x.translate(W/2,H/2);x.rotate(Math.PI/2);x.strokeStyle='rgba(255,255,255,.28)';x.lineWidth=9;x.beginPath();x.ellipse(0,0,Math.min(W,H)*0.36,Math.min(W,H)*0.29,0,0,7);x.stroke();
+   x.fillStyle='rgba(255,255,255,.24)';x.beginPath();x.ellipse(0,-35,45,58,0,0,7);x.fill();x.beginPath();x.ellipse(0,85,110,50,0,Math.PI,0);x.fill();x.restore()}
+  edgeNails(x,p.t.back,r,'#fff')}
+ if(MODE==='frag'&&!p.t.xray)SC.hidden.draw(x,C,p.frag.side);
+ return out}
+function makeBack(p){const out=mk(IW,IH),x=out.getContext('2d'),r=rng(p.seed+61),fresh=p.t.back;x.scale(S,S);
+ x.fillStyle=fresh?'#d9cfb8':'#b49d74';x.fillRect(0,0,W,H);
+ for(let y=0;y<H;y+=1.6){x.fillStyle=`rgba(${r()<.5?60:230},${r()<.5?45:210},30,${fresh?.03:.05+r()*.06})`;x.fillRect(0,y,W,0.8)}
+ if(!fresh)for(let i=0;i<7;i++){x.fillStyle=`rgba(95,65,30,${.12+r()*.12})`;x.beginPath();x.arc(r()*W,r()*H,20+r()*60,0,7);x.fill()}
+ const wood=fresh?['#dcbd8c','#c9a873']:['#5b3d22','#4a311b'];
+ const bar=(X,Y,w,h,vert)=>{x.fillStyle=wood[0];x.fillRect(X,Y,w,h);x.strokeStyle=wood[1];x.lineWidth=0.8;for(let k=0;k<9;k++){x.beginPath();if(vert){const q=X+r()*w;x.moveTo(q,Y);x.bezierCurveTo(q+3,Y+h*.3,q-3,Y+h*.6,q+2,Y+h)}else{const q=Y+r()*h;x.moveTo(X,q);x.bezierCurveTo(X+w*.3,q+3,X+w*.6,q-3,X+w,q+2)}x.stroke()}};
+ bar(0,0,W,34,false);bar(0,H-34,W,34,false);bar(0,0,34,H,true);bar(W-34,0,34,H,true);bar(W/2-17,34,34,H-68,true);
+ x.fillStyle=fresh?'#b08a55':'#2e1e10';for(const[a,b,s1,s2]of[[34,34,1,1],[W-34,34,-1,1],[34,H-34,1,-1],[W-34,H-34,-1,-1],[W/2-17,34,-1,1],[W/2+17,34,1,1],[W/2-17,H-34,-1,-1],[W/2+17,H-34,1,-1]]){x.beginPath();x.moveTo(a,b);x.lineTo(a+18*s1,b);x.lineTo(a,b+18*s2);x.fill()}
+ x.fillStyle=fresh?'#cfc3a8':'#a8916a';x.fillRect(0,0,W,9);x.fillRect(0,H-9,W,9);x.fillRect(0,0,9,H);x.fillRect(W-9,0,9,H);
+ if(fresh)edgeNails(x,true,r,'#c9ccd0');
+ else{const halo=(X,Y)=>{x.fillStyle=rad(X+2,Y+2,1,7,[[0,'rgba(140,60,20,.6)'],[1,'rgba(140,60,20,0)']])(x);x.fillRect(X-6,Y-6,16,16)};
+  for(let i=20;i<W-10;i+=30)for(const y of[3,H-7])halo(i,y);for(let i=20;i<H-10;i+=30)for(const X of[3,W-7])halo(X,i);edgeNails(x,false,r,'#2a2420')}
+ if(!p.t.prov){x.save();x.translate(W*0.6,H*0.55);x.rotate(-0.04);x.fillStyle='#e6d6aa';x.fillRect(0,0,170,74);x.strokeStyle='#7a6440';x.strokeRect(4,4,162,66);
+  x.fillStyle='#3a2c1a';x.font='bold 10px Georgia,serif';x.fillText('TOW. ZACHĘTY SZTUK PIĘKNYCH',12,20);x.font='10px Georgia,serif';x.fillText('Wystawa, Warszawa '+(ART.year+2),12,36);x.fillText('Nr kat. '+(ART.crn%150+12),12,50);
+  x.font='italic 10px Georgia,serif';x.fillText(ART.name.split(' ').pop()+' – '+ART.title.slice(0,24),12,64);x.restore()}
+ return out}
+function getView(p,v){if(p.note)return noteView(p,v);if(p.views[v])return p.views[v];let c,x;
+ switch(v){
+  case'base':{const flat=mk(IW,IH),fx=flat.getContext('2d');fx.scale(S,S);drawShapes(fx,p.shapes,rng(C.sd));c=mk(IW,IH);x=c.getContext('2d');painterly(x,flat,p);x.scale(S,S);
+   if(p.frag)for(const l of p.frag.losses){x.beginPath();l.pts.forEach((q,i)=>i?x.lineTo(q[0],q[1]):x.moveTo(q[0],q[1]));x.closePath();x.fillStyle=GROUND_COL[p.ground];x.fill();x.strokeStyle='rgba(50,32,15,.55)';x.lineWidth=0.8;x.stroke()}break}
+  case'cracks':c=makeCracks(p);break;
+  case'normal':case'crackview':{c=mk(IW,IH);x=c.getContext('2d');x.drawImage(getView(p,'base'),0,0);
+   const sig=()=>{x.save();x.scale(S,S);drawSig(x,C.sig.x,C.sig.y,sigShaky(p),p.seed+5,ART.sig.color,p.sigText);x.restore()};
+   if(!sigLater(p))sig();
+   if(v==='crackview'){x.fillStyle='rgba(255,250,235,.45)';x.fillRect(0,0,IW,IH);x.drawImage(getView(p,'cracks'),0,0);x.drawImage(getView(p,'cracks'),0,0)}
+   else{x.globalAlpha=.32;x.drawImage(getView(p,'cracks'),0,0);x.globalAlpha=1}
+   if(sigLater(p))sig();break}
+  case'uv':c=makeUV(p);break;case'raking':c=makeRaking(p);break;case'ir':c=makeIR(p);break;case'xray':c=makeXray(p);break;case'back':c=makeBack(p);break}
+ p.views[v]=c;return c}
+/* --- malarskie pociągnięcia pędzla z proceduralnymi nierównościami --- */
+function painterly(x,flat,p){const fd=flat.getContext('2d').getImageData(0,0,IW,IH).data,N=Math.round(12000*W*H/307200),base=(C.sd%100000)*13;
+ x.drawImage(flat,0,0);x.lineCap='round';
+ const col=(X,Y)=>{const i=(Math.min(IH-1,Math.max(0,Y*S|0))*IW+Math.min(IW-1,Math.max(0,X*S|0)))*4;return[fd[i],fd[i+1],fd[i+2]]};
+ for(let i=0;i<N;i++){const q=rng(base+i*7919),X=q()*W,Y=q()*H,reg=regionAtP(p,X,Y);if(reg==='sygnatura'||reg==='ubytek')continue;
+  const a0=strokeFor((SC.REG[reg]||{}).dir,q),a=a0[0];let len=a0[1]*0.6,wd=Math.min(a0[2]*1.5,6.5);const ca=Math.cos(a),sa=Math.sin(a),nx=-sa,ny=ca;
+  const same=(px,py)=>regionAtP(p,px,py)===reg;
+  if(!same(X+ca*len,Y+sa*len)||!same(X+nx*wd/2,Y+ny*wd/2)||!same(X-nx*wd/2,Y-ny*wd/2)){len*=0.3;wd*=0.35}
+  const[Rr,Gc,B]=col(X+ca*len/2,Y+sa*len/2),j0=(q()-.5)*18,nb=3+(q()*3|0),bend=(q()-.5)*len*0.3,dry=q()<0.25;
+  for(let b=0;b<nb;b++){const off=(nb>1?b/(nb-1)-.5:0)*wd,bl=len*(0.6+q()*0.4)*(dry?0.7:1),j=j0+(q()-.5)*14,sx=X+nx*off+ca*q()*1.5,sy=Y+ny*off+sa*q()*1.5;
+   x.strokeStyle=`rgba(${Rr+j|0},${Gc+j|0},${B+j|0},${(dry?0.18:0.3)+q()*0.45})`;x.lineWidth=Math.max(0.6,wd/nb*S*(0.8+q()*1.0));
+   x.beginPath();x.moveTo(sx*S,sy*S);x.quadraticCurveTo((sx+ca*bl/2+nx*bend)*S,(sy+sa*bl/2+ny*bend)*S,(sx+ca*bl)*S,(sy+sa*bl)*S);x.stroke()}}}
+function pix(p,lx,ly){if(!p.pix)p.pix=getView(p,'normal').getContext('2d').getImageData(0,0,IW,IH).data;const X=Math.max(0,Math.min(IW-1,lx*S|0)),Y=Math.max(0,Math.min(IH-1,ly*S|0)),i=(Y*IW+X)*4;return[p.pix[i],p.pix[i+1],p.pix[i+2]]}
+
+/* =====================================================================
+   PROFILE KOPII (obrazy)
+   ===================================================================== */
+const PROFILES={
+ giclee:{name:'Wydruk giclée na płótnie z ręcznie nałożoną fakturą',core:['texture','micro','crack','ir'],opt:['pigment','back','prov'],crack:'none',ir:'none',micro:'print'},
+ modern:{name:'Współczesna kopia malarska na nowych materiałach',core:['pigment','back','uv'],opt:['crack','sig','style','micro','mark'],crack:'none',sig:'graph',micro:'acryl'},
+ oldcanvas:{name:'Fałszerstwo na starym płótnie z epoki',core:['xray','crack','sig'],opt:['uv','prov','cert','mark'],crack:'artificial',sig:'later',prov:'attic'},
+ grid:{name:'Kopia przeniesiona z siatki (kalkowanie)',core:['ir','style','sig'],opt:['cert','pigment','mark'],ir:'grid',sig:'graph',cert:'dims'},
+ papers:{name:'Kopia z podrobioną dokumentacją',core:['prov','cert'],opt:['pigment','texture','style','xray','mark'],prov:'noCR',cert:'issuer'},
+};
+function rollTells(pr,r){const t={};pr.core.forEach(a=>t[a]=true);pr.opt.forEach(a=>{if(r()<0.45)t[a]=true});const rest=pr.opt.filter(a=>!t[a]);while(Object.keys(t).length<3&&rest.length)t[rest.splice(Math.floor(r()*rest.length),1)[0]]=true;return t}
+function chooseArtist(r){const v=document.getElementById('artist').value;return ARTISTS.find(a=>a.id===v)||pick(ARTISTS,r)}
+function setupScene(r){ART=chooseArtist(r);SC=SCENES[ART.scene];W=SC.W;H=SC.H;IW=W*S;IH=H*S;C=SC.make(r);C.sd=(r()*1e9)|0;sigLayout(C)}
+function basePainting(p,r){const q=rng(p.seed),pr=(p.profile&&PROFILES[p.profile])||{};
+ const anRegs=Object.keys(SC.REG).filter(k=>SC.REG[k].an);
+ p.m={pigReg:pick(p.descRegs||anRegs,q),pigKind:'an',texture:pick(['flat','mismatch'],q),crack:pr.crack||pick(['none','artificial'],q),sig:pr.sig||pick(['later','graph'],q),
+  style:pick(['anatomy','shadow'],q),prov:pr.prov||pick(['attic','noCR'],q),cert:pr.cert||pick(['dims','issuer'],q),ir:pr.ir||pick(['none','grid'],q),micro:pr.micro||pick(['print','acryl'],q)};
+ if(p.t.sig&&p.m.sig==='later'&&crackMode(p)==='none')p.m.sig='graph';
+ p.views={};p.samples=[];p.notes={};p.umark='';p.shapes=SC.build(C,p.t.style?p.m.style:null);
+ const e=Math.floor(q()*4),o=8+q()*26,a=40+q()*((e%2?H:W)-80);
+ p.markPos=e===0?{x:a,y:o}:e===1?{x:W-o,y:a}:e===2?{x:a,y:H-o}:{x:o,y:a};p.markTxt=pick(['R.K.','M.W. 87','J.D. fec.','T.S.'],q)}
+function newPaint5(r){setupScene(r);
+ const list=[{orig:true,profile:null,t:{}}];shuffle(Object.keys(PROFILES),r).slice(0,4).forEach(k=>list.push({orig:false,profile:k,t:rollTells(PROFILES[k],r)}));
+ shuffle(list,r);const D=13+Math.floor(r()*5);
+ P=list.map((p,i)=>{p.letter='ABCDE'[i];p.seed=(r()*1e9)|0;basePainting(p,r);const q=rng(p.seed+3);p.retouch=!p.t.uv&&q()<0.45;p.warGap=q()<0.5;
+  p.linen=!p.t.back;p.thread=p.t.back?22+Math.floor(q()*3):D;p.x=i<3?G+i*(W+G):G+(W+G)/2+(i-3)*(W+G);p.y=i<3?G:G*2+H;return p});
+ C.thread=D;BW=3*W+4*G;BH=2*H+3*G}
+
+/* ---------- fragment ---------- */
+function newFrag(r){setupScene(r);const genuine=r()<0.5,t={};
+ if(!genuine)shuffle(['pigment','back','uv','crack','texture','sig','style','ir','xray','micro'],r).slice(0,3+Math.floor(r()*2)).forEach(k=>t[k]=true);
+ const anRegs=shuffle(Object.keys(SC.REG).filter(k=>SC.REG[k].an),r).slice(0,3);
+ const p={letter:'F',orig:genuine,t,seed:(r()*1e9)|0,descRegs:anRegs};basePainting(p,r);const q=rng(p.seed+7);
+ p.m.pigKind=pick(['alt','an'],q);p.m.uvKind=pick(['fresh','none'],q);p.m.backKind=pick(['thread','ground','both'],q);
+ const D=13+Math.floor(r()*5),Dg=pick(['chalk','greyOil','redBole'],r);C.thread=D;C.ground=Dg;
+ p.thread=t.back&&p.m.backKind!=='ground'?D+pick([-5,-4,4,6],q):D;
+ p.ground=t.back&&p.m.backKind!=='thread'?pick(['chalk','greyOil','redBole','gessoA'].filter(g=>g!==Dg),q):Dg;p.linen=true;
+ const side=ART.sig.corner==='br'?'r':'l',left=side==='r',A=[left?W*0.44:W*0.56,0],B=[left?0:W,H*0.52],torn=[A];
+ for(let i=1;i<16;i++){const k=i/16,nx=B[1]-A[1],ny=-(B[0]-A[0]),l=Math.hypot(nx,ny),j=(q()-.5)*30;torn.push([Math.max(0,Math.min(W,A[0]+(B[0]-A[0])*k+nx/l*j)),Math.max(0,Math.min(H,A[1]+(B[1]-A[1])*k+ny/l*j))])}
+ torn.push(B);const missing=[...torn,left?[0,0]:[W,0]];
+ const losses=[];let tries=0;while(losses.length<9&&tries++<200){const cx=20+q()*(W-40),cy=20+q()*(H-40),rr=4+q()*9;
+  if(inPoly(cx,cy,missing)||distPath(cx,cy,torn)<rr+8||(cx>C.sig.x-15&&cx<C.sig.x+C.sig.w+15&&cy>C.sig.y-30))continue;
+  const pts=[];for(let k=0;k<11;k++){const a=k/11*6.283;pts.push([cx+Math.cos(a)*rr*(0.6+q()*0.6),cy+Math.sin(a)*rr*(0.6+q()*0.6)])}losses.push({cx,cy,r:rr,pts})}
+ p.frag={side,torn,missing,losses};p.shapes=SC.build(C,p.t.style?p.m.style:null);
+ p.x=G;p.y=G;P=[p];BW=W+2*G;BH=H+2*G}
+
+/* =====================================================================
+   NARZĘDZIA – DEFINICJE
+   ===================================================================== */
+const AREA={all:'środek widoku na obrazie',sig:'środek widoku na sygnaturze',style:'środek widoku na kluczowym detalu kompozycji',ground:'środek widoku na ubytku farby lub rozdartej krawędzi'};
+const DEF={
+ pigment:{name:'Spektroskopia pigmentów',view:'normal',probe:'pigment',gate:{z:3},hint:'Przy zoomie ≥ ×3 kliknij w różne obszary obrazu, żeby pobrać próbkę z jednego miejsca. Porównaj datę wprowadzenia pigmentu z datą obrazu – nowoczesny pigment demaskuje fałszerstwo.',
+  hintF:'Przy zoomie ≥ ×3 pobieraj próbki i porównuj je z analizą oryginału z 1965 r. (Opis oryginału). Inny pigment niż w opisie – nawet z epoki – oznacza, że to nie ten obraz. Próbka z ubytku pokazuje skład gruntu.'},
+ uv:{name:'Lampa UV',view:'uv',gate:{z:1.2,area:'all'},hint:'Stary werniks świeci w UV zielonkawo-mlecznie. Retusze i wszystko, co nałożono na werniks później, wygląda jak ciemne plamy. Retusz konserwatorski sam w sobie nie oznacza fałszerstwa.',
+  hintF:'Opis wymienia retusze z konserwacji z 1958 r. – czy są dokładnie w opisanym miejscu? Brak fluorescencji starego werniksu oznacza świeży werniks.'},
+ back:{name:'Podłoże i rama (odwrocie)',view:'back',gate:{z:2,area:'all'},hint:'Sprawdź sposób naciągnięcia płótna, gwoździe, drewno blejtramu i nalepki. Przy zoomie ≥ ×8 policz nici płótna na skali 1 cm i porównaj z katalogiem raisonné.',
+  nameF:'Podłoże i grunt (ubytki)',viewF:'normal',gateF:{z:8,area:'ground'},hintF:'Przybliż ubytek farby albo rozdartą krawędź (zoom ≥ ×8). Policz nici na skali 1 cm i porównaj z opisem. Skład gruntu sprawdzisz spektroskopem w ubytku.'},
+ crack:{name:'Krakelura',view:'crackview',gate:{z:4,area:'all'},hint:'Widok wzmacnia kontrast spękań – przybliż do ×4. Naturalna krakelura to nieregularna siatka o polach różnej wielkości. Sztuczna (wypiekana, wcierana) bywa zbyt regularna. Brak spękań przy farbie sprzed 150 lat jest podejrzany.'},
+ texture:{name:'Faktura (światło boczne)',view:'raking',gate:{z:3,area:'all'},hint:'Światło z boku wydobywa relief farby (zoom ≥ ×3). Ślady pędzla i impasty powinny odpowiadać kompozycji. Wydruk jest płaski, a nałożona „faktura” nie zgadza się z formami.'},
+ sig:{name:'Sygnatura',view:'normal',gate:{z:5,area:'sig'},hint:'Przybliż sygnaturę (≥ ×5). Porównaj ją z podpisami referencyjnymi i sprawdź, czy spękania przez nią przechodzą (namalowana na mokro), czy farba podpisu leży na rysach (domalowana później).'},
+ style:{name:'Kunszt i styl',view:'normal',gate:{z:2.5,area:'style'},hint:'Wycentruj widok na kluczowym detalu (≥ ×2,5) i porównaj z dziełem referencyjnym: proporcje, perspektywa, logika światła i cieni.',
+  nameF:'Kompozycja a opis oryginału',hintF:'Wycentruj widok na kluczowym detalu (≥ ×2,5) i porównaj go z opisem kompozycji w dokumentacji oryginału.'},
+ prov:{name:'Proweniencja',view:'normal',hint:'Prześledź historię własności: wystawy, katalog raisonné, transakcje. „Nagle odnalezione” arcydzieło bez historii budzi największe podejrzenia. Pojedyncza luka (np. wojenna) sama nie przesądza.'},
+ cert:{name:'Certyfikat autentyczności',view:'normal',hint:'Certyfikat powinien zawierać artystę, tytuł, wymiary, technikę, datę i wiarygodny podpis uznanego rzeczoznawcy. Porównaj dane z pomiarem obrazu.'},
+ docs:{name:'Opis oryginału',view:'normal',hint:'Oryginał zaginął w 1944 r. – znamy go tylko z opisu w katalogu i z badań z 1965 r. Każdy punkt opisu da się sprawdzić narzędziami.'},
+ xray:{name:'RTG',view:'xray',gate:{z:1.2,area:'all'},hint:'RTG pokazuje warstwy z ciężkimi pierwiastkami (biel ołowiowa), konstrukcję blejtramu i gwoździe – oraz to, co ukryte pod obrazem.',
+  hintF:'Opis wymienia zamalowany motyw widoczny w RTG oryginału – czy jest na fragmencie?'},
+ ir:{name:'Reflektografia IR',view:'ir',gate:{z:2,area:'all'},hint:'Podczerwień (zoom ≥ ×2) odsłania rysunek przygotowawczy. Autorskie zmiany kompozycji (pentimenti) trudno skopiować. Siatka do przenoszenia i idealne kontury bez poprawek sugerują kopiowanie.',
+  hintF:'Porównaj rysunek przygotowawczy i pentimenti z opisem badań IR z 1965 r.'},
+ micro:{name:'Topografia mikrostruktury',view:'normal',probe:'micro',gate:{z:5},hint:'Od zoomu ×5 mikrostruktura jest widoczna bezpośrednio na obrazie; kliknięcie zapisuje pomiar. Pędzel zostawia bruzdy i nieregularne cząstki. Druk to raster punktów, akryl – gładka plastyczna warstwa.'},
+};
+const SET={memory:[],paint5:[['1. Materiały i wiek',['pigment','uv','back','crack','texture']],['2. Sygnatura i styl',['sig','style']],['3. Proweniencja i dokumenty',['prov','cert']],['4. Technologie nieinwazyjne',['xray','ir','micro']]],
+ frag:[['1. Materiały i wiek',['pigment','uv','back','crack','texture']],['2. Sygnatura i kompozycja',['sig','style']],['3. Dokumentacja oryginału',['docs']],['4. Technologie nieinwazyjne',['xray','ir','micro']]]};
+const EXTRA={weave:'Gęstość płótna (zoom ×8)',mark:'Ukryty znak (zoom ×8)'};
+function buildToolDefs(){TB={};TLIST=[];GROUPS=MODE==='sculpt'?SET3:MODE==='notes'?SETN:SET[MODE];const F=MODE==='frag';
+ for(const[g,ids]of GROUPS)for(const id of ids){const d=MODE==='sculpt'?DEF3[id]:MODE==='notes'?DEFN[id]:DEF[id];
+  const t={id,g,name:F&&d.nameF||d.name,view:F&&d.viewF||d.view,gate:F&&d.gateF||d.gate,gate3:d.gate3,probe:d.probe,hint:F&&d.hintF||d.hint};TB[id]=t;TLIST.push(t)}}
+const curView=()=>tool&&TB[tool]?TB[tool].view||'normal':'normal';
+
+/* =====================================================================
+   OBSERWACJE
+   ===================================================================== */
+function provHTML(p){const t=p.t,y=ART.year;let li=[];
+ if(!t.prov){li=[[y,`namalowany (list artysty, archiwum rodzinne)`],[y+2,`wystawa Towarzystwa Zachęty Sztuk Pięknych, Warszawa, kat. nr ${ART.crn%150+12}`],[y+3,'zakup: kolekcja Ludwika Krasnodębskiego, Warszawa'],[1908,'spadek: Zofia Krasnodębska']];
+  if(p.warGap)li.push(['1939–1951','brak dokumentów'],[1951,'wpis do inwentarza kolekcji prywatnej, Kraków']);else li.push(['1939–1945','ukryty w majątku pod Lublinem (relacja rodziny, 1946)']);
+  if(p.retouch)li.push([1961,'konserwacja – uzupełnienie ubytków, retusze (protokół pracowni)']);
+  li.push([1987,'aukcja, Dom Aukcyjny „Nowy Świat”, poz. 38'],[2026,'zgłoszony do ekspertyzy przez spadkobierców']);
+  return`<ul class="tl">${li.map(a=>`<li><b>${a[0]}</b> – ${a[1]}</li>`).join('')}</ul><div class="obs"><b>Katalog raisonné</b> (2004), nr ${ART.crn}: „${ART.title}”, ol./pł., ${fmt(ART.wcm)} × ${fmt(ART.hcm)} cm, płótno lniane ok. ${C.thread} nitek/cm, sygn. ${ART.sig.corner==='br'?'p.d.':'l.d.'} – z fotografią archiwalną.</div>`}
+ li=p.m.prov==='attic'?[[2025,'„odnaleziony na strychu kamienicy w Łodzi” (oświadczenie sprzedającego)'],[2026,'oferowany prywatnie, cena wyraźnie poniżej rynkowej']]:[[1998,'zakup na targu staroci w Berlinie (brak dokumentu)'],[2011,'kolekcja prywatna, Wiedeń'],[2026,'oferowany do sprzedaży']];
+ return`<ul class="tl">${li.map(a=>`<li><b>${a[0]}</b> – ${a[1]}</li>`).join('')}</ul><div class="obs"><b>Katalog raisonné</b> (2004): brak wpisu. Brak wzmianek w katalogach wystaw.</div>`}
+function certHTML(p){const bad=p.t.cert,m=p.m.cert,iss=bad&&m==='issuer',dim=`${fmt(ART.wcm)} × ${fmt(ART.hcm)} cm`;
+ const rows=[['Artysta',`${ART.name} (${ART.life})`],['Tytuł',ART.title],['Technika',iss?'—':'olej na płótnie'],['Wymiary',bad&&m==='dims'?`${fmt(Math.round(ART.wcm*0.93))} × ${fmt(Math.round(ART.hcm*0.93))} cm`:dim],['Data powstania',iss?'—':ART.year],['Sygnatura',`${ART.sig.corner==='br'?'p.d.':'l.d.'} „${ART.sig.text}”`],['Podstawa',iss?'oględziny':'badania technologiczne, oględziny'+(p.t.prov?'':`, kat. rais. nr ${ART.crn}`)]];
+ return`<div class="doc"><h4>CERTYFIKAT AUTENTYCZNOŚCI</h4>${rows.map(r=>`<div class="row"><b>${r[0]}:</b><span>${r[1]}</span></div>`).join('')}<div class="stamp">${iss?'Wystawił: Art-Expert24 s.c. (brak na liście rzeczoznawców)<br>Podpis: nadruk, pieczątka firmowa':'Wystawił: dr hab. Jan Orlicz, rzeczoznawca, Dom Aukcyjny „Nowy Świat”<br>Podpis: odręczny atrament, pieczęć tłoczona'}</div></div><div class="cap">Pomiar obrazu na stole: ${dim}.</div>`}
+function descItems(){const s=ART.sig,side=P[0].frag.side,ra=side==='r'?'w prawej górnej części':'w lewej górnej części';
+ return{back:`Olej na płótnie lnianym, splot płócienny, ok. ${C.thread} nitek/cm; ${PG[C.ground][0].toLowerCase()}.`,
+  pigment:'Analiza pigmentów (1965): '+P[0].descRegs.map(k=>`${k} – ${SC.REG[k].pig.map(q=>PG[q][0].toLowerCase()).join(', ')}`).join('; ')+'.',
+  uv:`Naturalny werniks żywiczny; retusze z konserwacji w 1958 r. ${ra} obrazu.`,
+  crack:'Drobna, nieregularna siatka spękań na całej powierzchni.',
+  texture:'Wyraźne impasty w światłach, pociągnięcia pędzla zgodne z formą.',
+  sig:`Sygnowany ${s.corner==='br'?'p.d.':'l.d.'}: „${s.text}”.`,
+  style:SC.compDesc,
+  ir:`Rysunek przygotowawczy węglem; pentimenti: ${SC.pentiText}.`,
+  xray:`W RTG widoczny ${SC.hidden.desc}.`,
+  micro:'Farba olejna kładziona pędzlem z włosia.'}}
+function descHTML(){const d=descItems(),lab={back:'Podobrazie i grunt',pigment:'Pigmenty',uv:'Werniks i stan',crack:'Krakelura',texture:'Faktura',sig:'Sygnatura',style:'Kompozycja',ir:'Reflektografia IR',xray:'RTG',micro:'Technika'};
+ return`<div class="doc"><h4>${ART.name.toUpperCase()} – „${ART.title}”</h4><div class="cap" style="color:#5a4a30;text-align:center">Katalog raisonné (2004), nr ${ART.crn} · ${fmt(ART.wcm)} × ${fmt(ART.hcm)} cm · ${ART.year}</div><ul>${Object.keys(lab).map(k=>`<li><b>${lab[k]}:</b> ${d[k]}</li>`).join('')}</ul>
+ <div class="stamp">Historia: ${ART.year+2} – wystawa TZSP, Warszawa; 1902–1944 – kolekcja dworska pod Radomiem; 1944 – obraz uszkodzony w pożarze dworu, zaginiony. 2026 – fragment zgłoszony do ekspertyzy.</div></div>`}
+function obs(p,id){if(MODE==='sculpt')return obs3(p,id);if(MODE==='notes')return obsN(p,id);const t=p.t,m=p.m,F=MODE==='frag';
+ switch(id){
+ case'uv':if(F){const ra=p.frag.side==='r'?'w prawej górnej części':'w lewej górnej części';return t.uv?(m.uvKind==='fresh'?'Brak fluorescencji starego werniksu – powierzchnia jednolicie ciemnofioletowa; brak śladów retuszy.':`Zielonkawa fluorescencja werniksu, ale ${ra} żadnych retuszy.`):`Zielonkawa fluorescencja starego werniksu; ciemne plamy retuszy ${ra}.`+(sigLater(p)?' Sygnatura ciemna i ostra na tle świecącego werniksu.':'')}
+  return(t.uv?'Brak fluorescencji starego werniksu – powierzchnia jednolicie ciemnofioletowa.':'Równomierna, zielonkawo-mleczna fluorescencja starego werniksu.')+(p.retouch?' Kilka ciemnych plam (retusze).':'')+(sigLater(p)&&!t.uv?' Sygnatura ciemna i ostra na tle świecącego werniksu.':'');
+ case'back':if(F)return`Grunt widoczny w ubytkach: kolor ${({chalk:'biały',greyOil:'szary',redBole:'czerwony',gessoA:'jaskrawobiały'})[p.ground]} (skład – próbka spektroskopem). Płótno lniane, splot płócienny; gęstość nici policz na skali 1 cm.`;
+  return t.back?'Płótno przymocowane metalowymi zszywkami; drewno blejtramu jasne, świeże, bez patyny.':'Ręcznie kute gwoździe z rdzawymi obwódkami; drewno blejtramu ciemne, utlenione; kliny w narożnikach.'+(!t.prov?' Nalepka wystawy TZSP, Warszawa '+(ART.year+2)+'.':' Brak nalepek i oznaczeń.');
+ case'weave':return p.linen?'Płótno lniane – nici nierównej grubości i nieregularnie rozstawione; policz je na skali 1 cm.':'Płótno bawełniane – nici równe, gęste, maszynowo regularne; policz je na skali 1 cm.';
+ case'mark':return`Przy krawędzi obrazu mikroskopijny napis „${p.markTxt}” wkomponowany w farbę – nie pasuje do sygnatury artysty.`;
+ case'crack':return{natural:'Nieregularna siatka spękań, pola różnej wielkości, gęstość zmienia się na powierzchni.',artificial:'Bardzo regularna siatka spękań o jednakowych polach, rysy równomiernie ciemne.',none:'Farba bez spękań.'}[crackMode(p)];
+ case'texture':return{real:'Impasty w światłach; pociągnięcia pędzla idą za formą (poziomo w niebie i wodzie, krótkie dotknięcia w drobnych formach).',flat:'Powierzchnia płaska, widoczny regularny raster punktów.',mismatch:'Relief obecny, ale wszystkie pociągnięcia biegną ukośnie w jednym kierunku, niezależnie od form.'}[t.texture?m.texture:'real'];
+ case'sig':return(crackMode(p)==='none'?'Brak spękań – relacji podpisu z krakelurą nie da się ocenić.':sigLater(p)?'Spękania urywają się na krawędzi podpisu – farba sygnatury leży na rysach.':'Spękania przechodzą przez sygnaturę tak jak przez resztę farby.')+' '+(sigShaky(p)?'Litery o innym nachyleniu niż w podpisach referencyjnych, linie drżące i poprawiane.':'Kształt liter, nachylenie i płynność zgodne z podpisami referencyjnymi.');
+ case'style':return t.style?SC.errText[m.style]:(F?'Kompozycja, proporcje i kierunek światła zgodne z opisem.':SC.okText);
+ case'prov':return!t.prov?`Ciągła historia od ${ART.year} r., wystawa ${ART.year+2}, wpis w katalogu raisonné nr ${ART.crn}.`+(p.warGap?' Luka w dokumentach 1939–1951.':''):m.prov==='attic'?'Brak historii przed 2025 r. – „odnaleziony na strychu”; brak w katalogu raisonné.':'Historia dopiero od 1998 r.; brak wpisu w katalogu raisonné.';
+ case'cert':return!t.cert?'Certyfikat kompletny, wymiary zgodne z pomiarem, wystawiony przez rzeczoznawcę domu aukcyjnego, podpis odręczny.':m.cert==='dims'?'Wymiary w certyfikacie różnią się od zmierzonych o ok. 7%.':'Wystawca: „Art-Expert24 s.c.”; pola technika i data puste; podpis jest nadrukiem.';
+ case'xray':if(F)return t.xray?'W RTG brak ukrytych motywów pod warstwą malarską.':`W RTG widoczny ${SC.hidden.desc}.`;
+  return(t.xray?'Pod powierzchnią inna kompozycja: owalny portret ułożony w poprzek płótna.':'Jasne pola bieli ołowiowej zgodne z kompozycją; widoczny blejtram.')+(t.back?' Na krawędziach metalowe zszywki.':' Na krawędziach gwoździe.');
+ case'ir':return{real:`Szkic węglem pod farbą; zmiany kompozycji (pentimenti): ${SC.pentiText}.`,grid:'Regularna siatka kwadratów i precyzyjne, jednolite kontury bez poprawek.',none:'Brak rysunku przygotowawczego.'}[irMode(p)];
+ }}
+function whyBad(p,id){if(MODE==='sculpt')return why3(p,id);if(MODE==='notes')return whyN(p,id);const m=p.m,F=MODE==='frag';
+ const f={pigment:()=>{const R=SC.REG[m.pigReg],o=R.pig[0];if(MODE==='paint5'&&p.profile==='giclee')return'Wyłącznie współczesne pigmenty organiczne tuszów drukarskich.';
+   return m.pigKind==='alt'?`${m.pigReg}: ${PG[ALT[o]||'zn'][0]} zamiast ${PG[o][0].toLowerCase()} z analizy oryginału.`:`${m.pigReg}: ${PG[R.an][0]} – pigment wprowadzony ok. ${PG[R.an][1]} r., po dacie obrazu (${ART.year}).`},
+  uv:()=>F?(m.uvKind==='fresh'?'Świeży werniks bez fluorescencji i bez opisanych retuszy z 1958 r.':'Brak retuszy w miejscu wskazanym w opisie.'):'Brak fluorescencji starego werniksu – świeży werniks, niezgodny z wiekiem obrazu.',
+  back:()=>F?[m.backKind!=='ground'?`płótno ma ${p.thread} nitek/cm, a w opisie ${C.thread}`:'',m.backKind!=='thread'?`grunt: ${PG[p.ground][0].toLowerCase()} zamiast „${PG[C.ground][0].toLowerCase()}”`:''].filter(Boolean).join('; ').replace(/^./,c=>c.toUpperCase())+'.'
+   :`Zszywki, świeże drewno i równe bawełniane płótno (${p.thread} nitek/cm zamiast ${C.thread}) – współczesne podobrazie.`,
+  crack:()=>crackMode(p)==='none'?'Brak krakelury – farba zbyt młoda jak na XIX wiek.':'Sztuczna, zbyt regularna krakelura (wypiekana i wcierana pigmentem).',
+  texture:()=>m.texture==='flat'?'Płaska powierzchnia z rastrem – wydruk.':'Faktura nie odpowiada kompozycji – nałożona mechanicznie.',
+  sig:()=>m.sig==='later'?'Podpis domalowany na wyschniętą, spękaną farbę.':'Podpis niezgodny grafologicznie – kopiowany powoli, drżącą ręką.',
+  style:()=>SC.errWhy[m.style],
+  prov:()=>m.prov==='attic'?'„Odnaleziony na strychu” – brak historii i wpisu w katalogu raisonné.':'Historia od 1998 r., brak w katalogu raisonné.',
+  cert:()=>m.cert==='dims'?'Wymiary w certyfikacie nie zgadzają się z obrazem.':'Certyfikat od podmiotu bez uprawnień, niekompletny, podpis drukowany.',
+  xray:()=>F?`Brak motywu widocznego w RTG oryginału (${SC.hidden.desc}).`:'Pod spodem inny obraz – użyto starego płótna z epoki.',
+  ir:()=>irMode(p)==='grid'?'Siatka do przenoszenia i kontury bez poprawek – kopiowanie, nie tworzenie.':'Brak rysunku przygotowawczego i pentimenti.',
+  micro:()=>microMode(p)==='print'?'Raster kolorowych punktów druku atramentowego – to reprodukcja.':'Jednolita, plastyczna warstwa akrylu z przemysłowymi cząstkami – farba współczesna.',
+  mark:()=>`Ukryty monogram „${p.markTxt}” – znak fałszerza, widoczny dopiero przy dużym zoomie.`};return f[id]?f[id]():''}
+const MICRO_OBS={brush:'bruzdy po włosiu pędzla, cząstki pigmentu nieregularne i różnej wielkości.',print:'regularny raster drobnych punktów w kolorach C, M, Y, K – brak bruzd pędzla.',acryl:'gładka, plastyczna warstwa, jednakowe drobne cząstki, brak bruzd po włosiu.'};
+function note(p,id,txt){if(!p||!txt)return false;if(id==='pigment'||id==='micro'||id==='xrf'){(p.notes[id]=p.notes[id]||[]).push(txt);return true}if(p.notes[id])return false;p.notes[id]=txt;return true}
+
+/* =====================================================================
+   PRÓBKI 2D
+   ===================================================================== */
+function sampleAt(p,lx,ly){const reg=regionAtP(p,lx,ly),n=p.samples.length+1,kind=tool,s={x:lx,y:ly,n,reg,kind};
+ if(kind==='pigment'){s.list=pigKeys(p,reg).map(k=>PG[k]);note(p,'pigment',`#${n} ${reg}: `+s.list.map(a=>`${a[0]} (od ${a[1]||'starożytności'})`).join(', '))}
+ else{const c=pix(p,lx,ly);s.col=c.join(',');s.ang={h:0,v:1.57,diag:0.3,hv:0}[(SC.REG[reg]||{}).dir]??0.9;note(p,'micro',`#${n} ${reg}: `+MICRO_OBS[microMode(p)])}
+ p.samples.push(s);p.last=s}
+function drawMicro(c,p,s){const x=c.getContext('2d'),N=c.width,r=rng(p.seed+s.n*97),[R,Gc,B]=s.col.split(',').map(Number),mode=microMode(p);
+ x.fillStyle=`rgb(${s.col})`;x.fillRect(0,0,N,N);const jc=k=>`rgb(${R+(r()-.5)*k|0},${Gc+(r()-.5)*k|0},${B+(r()-.5)*k|0})`;
+ if(mode==='brush'){x.save();x.translate(N/2,N/2);x.rotate(s.ang);
+  for(let i=-N;i<N;i+=3+r()*4){const o=r()*10;for(const[col,dy]of[[`rgba(255,255,255,${.08+r()*.14})`,0],[`rgba(0,0,0,${.12+r()*.16})`,1.6]]){x.strokeStyle=col;x.lineWidth=1+r()*1.4;x.beginPath();x.moveTo(-N,i+dy);for(let k=-N;k<=N;k+=16)x.lineTo(k,i+dy+Math.sin(k*0.05+o)*1.6);x.stroke()}}x.restore();
+  for(let i=0;i<520;i++){const cx=r()*N,cy=r()*N,sz=0.8+Math.pow(r(),2)*7,v=5+Math.floor(r()*3);x.fillStyle=jc(80);x.beginPath();for(let k=0;k<v;k++){const a=k/v*6.283+r()*0.6,rr=sz*(0.5+r()*0.7);k?x.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr):x.moveTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr)}x.fill()}}
+ else if(mode==='print'){x.fillStyle='#f4f1ea';x.fillRect(0,0,N,N);const w=[1-R/255,1-Gc/255,1-B/255],cols=['rgba(0,160,210,.75)','rgba(210,0,120,.75)','rgba(235,210,0,.8)','rgba(20,20,20,.75)'];
+  for(let i=0;i<2600;i++){const k=Math.min(w[0],w[1],w[2]),pr=[w[0]-k,w[1]-k,w[2]-k,k*1.4],sum=pr.reduce((a,b)=>a+b,0)+0.0001;let u=r()*sum*1.25,ci=0;while(ci<4&&u>pr[ci]){u-=pr[ci];ci++}if(ci>3)continue;x.fillStyle=cols[ci];x.beginPath();x.arc(r()*N,r()*N,2.4,0,7);x.fill()}}
+ else{x.fillStyle=lin(0,0,N,N,[[0,'rgba(255,255,255,.18)'],[.5,'rgba(255,255,255,0)'],[1,'rgba(255,255,255,.12)']])(x);x.fillRect(0,0,N,N);for(let i=0;i<1400;i++){x.fillStyle=jc(18);x.fillRect(r()*N,r()*N,1.3,1.3)}}
+ x.fillStyle='rgba(0,0,0,.6)';x.fillRect(N-92,N-24,84,16);x.fillStyle='#fff';x.fillRect(N-86,N-14,60,2);x.font='10px system-ui';x.fillText('100 µm',N-50,N-17)}
+
+/* =====================================================================
+   PANEL
+   ===================================================================== */
+function gateStatus(p){const T=tool&&TB[tool];if(!T)return null;
+ if(MODE==='sculpt')return gate3Status(p,T);
+ const g=T.gate;if(!g)return null;let txt=`Warunek: zoom ≥ ×${fmt(g.z)}`+(g.area?` i ${AREA[g.area]}`:T.probe?' (kliknij obiekt)':'')+(g.tilt==='both'?', przechyl od < 20° do > 60°':g.tilt==='hi'?', nachylenie > 65°':'');
+ if(!p)return{txt,ok:false};const v=viewportWorld(),ok=vw.z>=g.z&&tiltOK(g)&&(!g.area||areaOK(p,g.area,v));return{txt:txt+` · teraz ×${vw.z.toFixed(1).replace('.',',')}`,ok}}
+function updatePanel(){const pn=document.getElementById('panel');
+ const intro={paint5:'Na stole leży 5 obrazów: jeden oryginał i cztery kopie, każda wykonana inną metodą i każda zdradza się w innych badaniach. Badania działają dopiero przy odpowiednim zoomie – przybliżaj szczegóły. Oznaczaj obrazy jako podejrzane lub wykluczone i wskaż oryginał.',
+  notes:'Na stole leży 5 banknotów 100 florenów (waluta fikcyjna). Część jest prawdziwa, część fałszywa – każdy fałszywy powstał inną metodą. Sprawdź zabezpieczenia: pod światło, przechylając suwakiem „Nachylenie”, pod lupą, w UV, IR i detektorem. Oznacz każdy banknot jako prawdziwy lub falsyfikat i zakończ ekspertyzę.',
+  frag:'Na stole leży uszkodzony fragment obrazu. Oryginał zaginął w 1944 r. – znamy go tylko z opisu w katalogu i badań z 1965 r. Sprawdź każdy punkt opisu narzędziami (wiele wymaga dużego zoomu) i zdecyduj, czy fragment pochodzi z oryginału.',
+  memory:'Najedź kursorem na obraz – lupa powiększa ×4. W fazie 2 zaznacz obraz i oznacz go przyciskiem „✕ Falsyfikat”, a na końcu wskaż oryginał.',
+  sculpt:'Na postumentach stoi 5 brązowych popiersi: jeden oryginał i cztery kopie. Obracaj kamerę i podchodź blisko – wiele badań działa tylko z bliska albo z określonej strony. Oznaczaj odlewy i wskaż oryginał.'}[MODE];
+ if(!tool){pn.innerHTML=`<h2>Jak grać</h2><p class="hint">${intro}</p>${sel?'':'<div class="obs">Kliknij obiekt, aby go wybrać.</div>'}`;updateNotes();return}
+ const T=TB[tool],p=sel;let h=`<h2>${T.name}${p?' – '+(MODE==='frag'?'fragment':'obiekt '+p.letter):''}</h2><p class="hint">${T.hint}</p>`;
+ const gs=gateStatus(p);if(gs)h+=`<div class="gate ${gs.ok?'ok':'no'}">${gs.ok?'✓':'✗'} ${gs.txt}</div>`;
+ if(tool==='docs'){pn.innerHTML=h+descHTML();updateNotes();return}
+ if(!p){pn.innerHTML=h+'<div class="obs">Kliknij obiekt, aby go zbadać.</div>';updateNotes();return}
+ if(MODE==='sculpt'){h+=panel3(p);pn.innerHTML=h;after3(p);updateNotes();return}
+ if(tool==='pigment'){const s=p.last&&p.last.kind==='pigment'?p.last:null;
+  h+=s?`<div class="obs">Próbka #${s.n} – obszar: <b>${s.reg}</b><table class="pig"><tr><th>Pigment</th><th>Pierwiastki</th><th>W użyciu od</th></tr>${s.list.map(a=>`<tr><td>${a[0]}</td><td>${a[2]}</td><td>${a[1]||'starożytności'}</td></tr>`).join('')}</table></div>`:''}
+ else if(tool==='micro'){const s=p.last&&p.last.kind==='micro'?p.last:null;if(s)h+=`<div class="cap">Próbka #${s.n} – obszar: ${s.reg}, mapa powierzchni z mikroskopu konfokalnego</div><canvas id="mc" width="320" height="320"></canvas>`}
+ else if(tool==='sig')h+=`<div class="cap">Podpisy referencyjne z dzieł pewnych:</div><canvas id="sg1" width="340" height="64"></canvas><canvas id="sg2" width="340" height="64"></canvas>`;
+ else if(tool==='style'&&MODE==='paint5'){const[x,y,w,hh]=SC.styleRect(C);h+=`<div class="cap">Referencja: ${ART.name}, ${ART.ref} – detal:</div><canvas id="st1" width="${Math.round(w*2)}" height="${Math.round(hh*2)}"></canvas>`}
+ else if(tool==='style'&&MODE==='frag')h+=`<div class="obs"><b>Opis kompozycji oryginału:</b> ${SC.compDesc}</div>`;
+ else if(MODE==='notes'&&tool==='serial')h+=`<div class="obs"><b>Reguła cyfry kontrolnej:</b> (suma pierwszych 7 cyfr + pozycje obu liter w alfabecie, A=1 … Z=26) mod 10 = ostatnia cyfra.</div>`;
+ else if(MODE==='notes'&&tool==='mag'&&p.notes.mag)h+=`<div class="obs"><b>Odczyt:</b> ${p.notes.mag}</div>`;
+ else if(tool==='prov')h+=provHTML(p);else if(tool==='cert')h+=certHTML(p);
+ if(!T.probe&&p.notes[tool])h+=`<div class="obs"><b>Obserwacja:</b> ${p.notes[tool]}</div>`;
+ else if(!T.probe&&T.gate)h+=`<div class="obs" style="color:var(--mut)">Spełnij warunek powyżej – obserwacja zapisze się automatycznie.</div>`;
+ else if(!T.probe&&!T.gate){const o=obs(p,tool);if(o){note(p,tool,o);h+=`<div class="obs"><b>Obserwacja:</b> ${o}</div>`}}
+ pn.innerHTML=h;
+ if(tool==='micro'&&p.last&&p.last.kind==='micro')drawMicro(document.getElementById('mc'),p,p.last);
+ if(tool==='sig')[1,2].forEach(k=>{const x=document.getElementById('sg'+k).getContext('2d');x.fillStyle=k===1?'#b9a983':'#8e8064';x.fillRect(0,0,340,64);x.scale(2,2);drawSig(x,10,20,false,k*777,ART.sig.color==='#e6dcc4'?'#f2ead6':ART.sig.color)});
+ if(tool==='style'&&MODE==='paint5'){const[x0,y0,w,hh]=SC.styleRect(C),rc=refCanvas(),el=document.getElementById('st1');el.getContext('2d').drawImage(rc,x0*S,y0*S,w*S,hh*S,0,0,el.width,el.height)}
+ updateNotes()}
+let REFC=null;function refCanvas(){if(REFC)return REFC;const r=rng(C.sd+999),c2=SC.make(r);Object.assign(c2,{sig:C.sig});const save=C;C=c2;const L=SC.build(c2,null);C=save;
+ REFC=mk(IW,IH);const x=REFC.getContext('2d');x.scale(S,S);drawShapes(x,L,rng(5));return REFC}
+const MEMCHK=[['shift','Przesunięty element'],['scale','Zmieniony rozmiar elementu'],['tint','Zmieniony odcień'],['remove','Brakujący element'],['extra','Dodatkowy element'],['sig','Zmieniona sygnatura']];
+function checkItems(){if(MODE==='memory')return MEMCHK;const a=TLIST.map(t=>[t.id,t.name]);if(MODE==='paint5')a.push(['mark',EXTRA.mark]);return a}
+function checkTruth(p,id){return MODE==='memory'?!!(p.muts&&p.muts.some(m=>m.type===id)):!!p.t[id]}
+function updateCheck(){const el=document.getElementById('check');
+ if(!sel||(MODE==='memory'&&MEM.phase===1)){el.innerHTML='';return}const p=sel;p.check=p.check||{};const items=checkItems(),n=items.filter(([id])=>p.check[id]).length;
+ el.innerHTML=`<h3>Checklista fałszerstwa – ${MODE==='frag'?'fragment':(p.note?'banknot ':MODE==='sculpt'?'rzeźba ':'obraz ')+p.letter}</h3><div class="cap">Zaznacz wszystko, co wskazuje, że ${MODE==='frag'?'fragment nie pochodzi z oryginału':'obiekt jest fałszywy'}.</div>`+
+  items.map(([id,name])=>`<label class="${p.check[id]?'on':''}"><input type="checkbox" data-c="${id}" ${p.check[id]?'checked':''}>${name}</label>`).join('')+`<div class="cnt">Zaznaczone sygnały fałszerstwa: ${n}</div>`;
+ el.querySelectorAll('input').forEach(i=>i.onchange=()=>{p.check[i.dataset.c]=i.checked;updateCheck();if(MODE!=='sculpt')render()})}
+function checkReport(){const items=checkItems(),nm=Object.fromEntries(items);let h='<h3 style="font:600 15px Georgia,serif;color:var(--acc);margin:14px 0 4px">Twoja checklista</h3>';
+ h+=P.map(p=>{const c=p.check||{},hit=items.filter(([id])=>c[id]&&checkTruth(p,id)),miss=items.filter(([id])=>!c[id]&&checkTruth(p,id)),fa=items.filter(([id])=>c[id]&&!checkTruth(p,id));
+  const who=MODE==='frag'?'Fragment':(p.note?'Banknot ':MODE==='sculpt'?'Rzeźba ':'Obraz ')+p.letter;
+  if(!hit.length&&!miss.length&&!fa.length)return`<div class="cp"><b>${who}</b> – brak sygnałów fałszerstwa i nic nie zaznaczono ✓</div>`;
+  return`<div class="cp"><b>${who}</b> – trafne: <span class="v">${hit.length}</span>, pominięte: <span class="x">${miss.length}</span>, fałszywe alarmy: <span class="x">${fa.length}</span>`+
+   (hit.length?`<br><small>✓ trafne: ${hit.map(i=>i[1]).join(', ')}</small>`:'')+(miss.length?`<br><small>○ pominięte: ${miss.map(i=>i[1]).join(', ')}</small>`:'')+(fa.length?`<br><small>✕ fałszywe alarmy: ${fa.map(i=>i[1]).join(', ')}</small>`:'')+'</div>'}).join('');
+ return h}
+function updateNotes(){updateCheck();const n=document.getElementById('notes');
+ if(!sel){n.innerHTML='<h3>Notatnik</h3><div class="cap">Wybierz obiekt, aby zobaczyć notatki.</div>';return}
+ const p=sel,names=Object.assign({},EXTRA,...TLIST.map(t=>({[t.id]:t.name})));const keys=Object.keys(p.notes);const used=TLIST.filter(t=>p.notes[t.id]).length;
+ n.innerHTML=`<h3>Notatnik – ${MODE==='frag'?'fragment':'obiekt '+p.letter} (zbadano ${used}/${TLIST.length})</h3><ul>${keys.map(k=>{const v=p.notes[k];return(Array.isArray(v)?v:[v]).map(s=>`<li><span>${names[k]||k}:</span> ${s}</li>`).join('')}).join('')||'<li>Brak notatek.</li>'}</ul>`}
+function buildTools(){const el=document.getElementById('tools');
+ if(MODE==='memory'){el.innerHTML=memToolsHTML();document.getElementById('memtime').onchange=e=>{MEM.time=+e.target.value;newGame()};document.getElementById('memready').onclick=()=>memPhase2(rng((Math.random()*1e9)|0));memUI();return}
+ el.innerHTML=GROUPS.map(([g,ids])=>`<div class="grp"><h3>${g}</h3>${ids.map(id=>`<button class="tool" data-id="${id}">${TB[id].name}</button>`).join('')}</div>`).join('');
+ el.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{tool=tool===b.dataset.id?null:b.dataset.id;onChange()})}
+function onChange(){if(tool!==TILT.tool){TILT.tool=tool;TILT.lo=TILT.v<20;TILT.hi=TILT.v>60}document.querySelectorAll('.tool').forEach(b=>{b.classList.toggle('on',b.dataset.id===tool);b.classList.toggle('used',P.some(p=>p.notes[b.dataset.id]))});
+ const v=curView();document.getElementById('viewlbl').textContent='Widok: '+(MODE==='sculpt'?{normal:'światło dzienne',uv:'promieniowanie UV',xray:'RTG'}[v]||'światło dzienne':VIEWNAME[v]);
+ cv.classList.toggle('probe',!!(tool&&TB[tool].probe));
+ document.getElementById('sel').textContent=sel?(MODE==='frag'?'Wybrany: fragment':`Wybrany: obiekt ${sel.letter}`):'Nie wybrano obiektu.';
+ document.querySelectorAll('#verdicts button').forEach(b=>b.disabled=MODE!=='notes'&&!sel);
+ if(MODE==='sculpt'){apply3View();mark3Dirty();schedule3Gates()}else{render();scheduleGates()}
+ updatePanel()}
+const VIEWNAME={trans:'światło przechodzące (pod światło)',normal:'światło dzienne',uv:'promieniowanie UV',back:'odwrocie obrazu',crackview:'wzmocniona krakelura',raking:'światło boczne',xray:'RTG',ir:'reflektografia IR'};
+
+/* =====================================================================
+   PLANSZA 2D
+   ===================================================================== */
+function resize(){const dpr=devicePixelRatio||1,r=cv.getBoundingClientRect();cv.width=Math.max(1,r.width*dpr|0);cv.height=Math.max(1,r.height*dpr|0);render()}
+function fit(){const r=cv.getBoundingClientRect();const z=Math.min(r.width/BW,r.height/BH)*0.96;vw={z,x:(r.width-BW*z)/2,y:(r.height-BH*z)/2};render();scheduleGates()}
+function focusRect(x,y,w,h){const r=cv.getBoundingClientRect();const z=Math.min(24,Math.min(r.width/w,r.height/h)*0.92);vw={z,x:r.width/2-(x+w/2)*z,y:r.height/2-(y+h/2)*z};render();scheduleGates()}
+function zoomAt(sx,sy,f){const z=Math.min(24,Math.max(0.12,vw.z*f)),k=z/vw.z;vw.x=sx-(sx-vw.x)*k;vw.y=sy-(sy-vw.y)*k;vw.z=z;render();scheduleGates()}
+function viewportWorld(){const r=cv.getBoundingClientRect();return{x0:-vw.x/vw.z,y0:-vw.y/vw.z,x1:(r.width-vw.x)/vw.z,y1:(r.height-vw.y)/vw.z,cx:(r.width/2-vw.x)/vw.z,cy:(r.height/2-vw.y)/vw.z}}
+function areaOK(p,area,v){if(p.note)return noteArea(p,area,v);const lx=v.cx-p.x,ly=v.cy-p.y,inP=lx>=0&&lx<=W&&ly>=0&&ly<=H&&!(p.frag&&inPoly(lx,ly,p.frag.missing));
+ if(area==='all')return inP;
+ if(area==='sig'){const s=C.sig;return lx>s.x-25&&lx<s.x+s.w+25&&ly>s.y-32&&ly<s.y+18}
+ if(area==='style'){const[x,y,w,h]=SC.styleRect(C);return lx>=x&&lx<=x+w&&ly>=y&&ly<=y+h}
+ if(area==='ground'){if(!p.frag)return false;if(distPath(lx,ly,p.frag.torn)<14)return true;return p.frag.losses.some(l=>Math.hypot(lx-l.cx,ly-l.cy)<l.r+6)}return false}
+function polyPath(x,pts,ox,oy){pts.forEach((q,i)=>i?x.lineTo(ox+q[0],oy+q[1]):x.moveTo(ox+q[0],oy+q[1]));x.closePath()}
+function render(){if(MODE==='sculpt'||!P.length||!ART)return;const dpr=devicePixelRatio||1,v=curView();
+ ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='#0e0c0a';ctx.fillRect(0,0,cv.width,cv.height);
+ ctx.setTransform(dpr*vw.z,0,0,dpr*vw.z,dpr*vw.x,dpr*vw.y);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+ for(const p of P){
+  if(p.note){ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(p.x+6,p.y+8,W,H)}
+  if(v!=='back'&&!p.frag&&!p.note){ctx.fillStyle=lin(p.x-28,p.y-28,p.x+W+28,p.y+H+28,[[0,'#8a6a2a'],[.5,'#d6b058'],[1,'#6e521e']])(ctx);ctx.fillRect(p.x-28,p.y-28,W+56,H+56);ctx.fillStyle='#4a3712';ctx.fillRect(p.x-6,p.y-6,W+12,H+12)}
+  if(p.frag){ctx.fillStyle='#1c1814';ctx.fillRect(p.x-60,p.y-60,W+120,H+120);ctx.save();ctx.beginPath();ctx.rect(p.x,p.y,W,H);polyPath(ctx,p.frag.missing,p.x,p.y);ctx.clip('evenodd')}
+  ctx.drawImage(getView(p,v),p.x,p.y,W,H);
+  if(p.note&&v==='normal')noteLive(p);
+  if(p.frag){ctx.strokeStyle='rgba(35,18,5,.35)';ctx.lineWidth=14;ctx.beginPath();polyPath(ctx,p.frag.torn,p.x,p.y);ctx.stroke();ctx.strokeStyle='rgba(30,14,4,.6)';ctx.lineWidth=5;ctx.stroke();ctx.restore();drawFringe(p)}
+  if(['normal','crackview'].includes(v))for(const s of p.samples){ctx.strokeStyle=s.kind==='pigment'?'#ffe066':'#7fd6ff';ctx.lineWidth=Math.max(0.15,1.2/vw.z);ctx.beginPath();ctx.arc(p.x+s.x,p.y+s.y,Math.max(0.6,4/Math.sqrt(vw.z)),0,7);ctx.stroke()}
+ }
+ drawDetail(v);
+ for(const p of P){
+  if(p.umark==='excl'){ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(p.x,p.y,W,H);ctx.strokeStyle='rgba(224,88,79,.85)';ctx.lineWidth=10;ctx.beginPath();ctx.moveTo(p.x+30,p.y+30);ctx.lineTo(p.x+W-30,p.y+H-30);ctx.moveTo(p.x+W-30,p.y+30);ctx.lineTo(p.x+30,p.y+H-30);ctx.stroke()}
+  const nc=p.check?Object.values(p.check).filter(Boolean).length:0;if(nc&&!(MODE==='memory'&&MEM.phase===1)){ctx.fillStyle='#e0584f';ctx.font='bold 26px system-ui';ctx.fillText('⚑ '+nc,p.x-24,p.y-38)}
+  if(p.umark==='ok'){ctx.fillStyle='#76b86f';ctx.beginPath();ctx.arc(p.x+W+28,p.y-28,30,0,7);ctx.fill();ctx.fillStyle='#1d1916';ctx.font='bold 38px Georgia';ctx.textAlign='center';ctx.fillText('✓',p.x+W+28,p.y-14);ctx.textAlign='left'}
+  if(p.umark==='susp'){ctx.fillStyle='#f0a030';ctx.beginPath();ctx.arc(p.x+W+28,p.y-28,30,0,7);ctx.fill();ctx.fillStyle='#1d1916';ctx.font='bold 40px Georgia';ctx.textAlign='center';ctx.fillText('?',p.x+W+28,p.y-14);ctx.textAlign='left'}
+  if(MODE==='memory'&&MEM.reveal&&p.muts)for(const m of p.muts){const[a,b,c2,d]=m.box;ctx.strokeStyle='#ff3b30';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(p.x+(a+c2)/2,p.y+(b+d)/2,(c2-a)/2+12,(d-b)/2+12,0,0,7);ctx.stroke()}
+  if(sel===p){ctx.strokeStyle='#ffd27a';ctx.lineWidth=Math.max(3,3/vw.z);ctx.strokeRect(p.x-36,p.y-36,W+72,H+72)}
+  if(!p.frag){ctx.fillStyle=sel===p?'#ffd27a':'#cbb894';ctx.font='bold 34px Georgia,serif';ctx.textAlign='center';ctx.fillText((MODE==='memory'&&MEM.phase===1?'Oryginał':(p.note?'Banknot ':'Obraz ')+p.letter)+(p.umark==='excl'?(MODE==='memory'||p.note?' – falsyfikat':' – wykluczony'):p.umark==='susp'?' – podejrzany':p.umark==='ok'?' – prawdziwy':''),p.x+W/2,p.y+H+72);ctx.textAlign='left'}}
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+ if(vw.z>=3){const r=cv.getBoundingClientRect(),L=pxPerCm()*vw.z,x0=12,y0=r.height-46;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(x0-6,y0-20,L+60,32);ctx.fillStyle='#fff';ctx.fillRect(x0,y0,L,3);
+  for(let i=0;i<=10;i++)ctx.fillRect(x0+L*i/10-0.5,y0-(i%5?4:8),1,i%5?4:8);ctx.font='11px system-ui';ctx.fillText('1 cm',x0+L+6,y0+4)}
+ if(MODE==='memory'&&MEM.lens){const{sx,sy}=MEM.lens,wx=(sx-vw.x)/vw.z,wy=(sy-vw.y)/vw.z,p=P.find(q=>wx>=q.x&&wx<=q.x+W&&wy>=q.y&&wy<=q.y+H);
+  if(p){const R=115,src=R/(vw.z*4);ctx.save();ctx.beginPath();ctx.arc(sx,sy,R,0,7);ctx.clip();ctx.fillStyle='#000';ctx.fillRect(sx-R,sy-R,2*R,2*R);
+   ctx.drawImage(getView(p,'normal'),(wx-p.x-src)*S,(wy-p.y-src)*S,2*src*S,2*src*S,sx-R,sy-R,2*R,2*R);ctx.restore();
+   ctx.strokeStyle='#3a2a10';ctx.lineWidth=10;ctx.beginPath();ctx.arc(sx,sy,R+5,0,7);ctx.stroke();ctx.strokeStyle='#d6b058';ctx.lineWidth=3;ctx.stroke()}}
+ document.getElementById('zlv').textContent='×'+(vw.z<1?vw.z.toFixed(2):vw.z.toFixed(1))}
+function drawFringe(p){const sp=pxPerCm()/p.thread,T=p.frag.torn;ctx.strokeStyle='#cbb68c';
+ if(vw.z<2){ctx.lineWidth=2;ctx.beginPath();polyPath(ctx,T,p.x,p.y);ctx.stroke();return}
+ let cx=0,cy=0;p.frag.missing.forEach(q=>{cx+=q[0];cy+=q[1]});cx/=p.frag.missing.length;cy/=p.frag.missing.length;ctx.lineWidth=sp*0.35;
+ for(let i=1;i<T.length;i++){const a=T[i-1],b=T[i],dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy);let nx=-dy/L,ny=dx/L;const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2;if((cx-mx)*nx+(cy-my)*ny<0){nx=-nx;ny=-ny}
+  ctx.beginPath();for(let k=0;k<L;k+=sp){const px=p.x+a[0]+dx*k/L,py=p.y+a[1]+dy*k/L,len=1.5+h1(k+i*97,p.seed%100)*3.5;ctx.moveTo(px,py);ctx.lineTo(px+nx*len,py+ny*len)}ctx.stroke()}}
+function drawWeave(p,x0,y0,x1,y1,col){const sp=pxPerCm()/p.thread,sp2=pxPerCm()/(p.thread+1);ctx.strokeStyle=col;
+ for(let i=Math.floor((x0-p.x)/sp)-1;i*sp<x1-p.x+sp;i++){const j=p.linen?(h1(i,1)-.5)*sp*0.35:0;ctx.lineWidth=sp*(p.linen?0.25+h1(i,2)*0.3:0.4);ctx.beginPath();ctx.moveTo(p.x+i*sp+j,y0);ctx.lineTo(p.x+i*sp+j,y1);ctx.stroke()}
+ for(let i=Math.floor((y0-p.y)/sp2)-1;i*sp2<y1-p.y+sp2;i++){const j=p.linen?(h1(i,3)-.5)*sp2*0.35:0;ctx.lineWidth=sp2*(p.linen?0.25+h1(i,4)*0.3:0.4);ctx.beginPath();ctx.moveTo(x0,p.y+i*sp2+j);ctx.lineTo(x1,p.y+i*sp2+j);ctx.stroke()}}
+function drawDetail(view){const z=vw.z;if(z<5)return;const V=viewportWorld();
+ for(const p of P){if(p.note)continue;const x0=Math.max(V.x0,p.x),y0=Math.max(V.y0,p.y),x1=Math.min(V.x1,p.x+W),y1=Math.min(V.y1,p.y+H);if(x0>=x1||y0>=y1)continue;
+  ctx.save();ctx.beginPath();ctx.rect(p.x,p.y,W,H);if(p.frag)polyPath(ctx,p.frag.missing,p.x,p.y);ctx.clip('evenodd');
+  if(view==='back'&&z>=6)drawWeave(p,x0,y0,x1,y1,'rgba(60,42,25,.45)');
+  else if(view==='normal'||view==='crackview'){microLayer(p,x0,y0,x1,y1);
+   if(p.frag)for(const l of p.frag.losses){if(p.x+l.cx+l.r<x0||p.x+l.cx-l.r>x1||p.y+l.cy+l.r<y0||p.y+l.cy-l.r>y1)continue;ctx.save();ctx.beginPath();polyPath(ctx,l.pts,p.x,p.y);ctx.clip();drawWeave(p,x0,y0,x1,y1,'rgba(110,85,50,.4)');ctx.restore()}
+   if(p.t.mark&&z>=6){ctx.font='italic 2.4px Georgia';ctx.fillStyle='rgba(30,18,8,.65)';ctx.fillText(p.markTxt,p.x+p.markPos.x,p.y+p.markPos.y)}}
+  ctx.restore()}}
+function microLayer(p,x0,y0,x1,y1){const T=5,mode=microMode(p);ctx.globalAlpha=Math.min(1,(vw.z-5)/3+0.35);
+ for(let ty=Math.floor((y0-p.y)/T);ty*T<y1-p.y;ty++)for(let tx=Math.floor((x0-p.x)/T);tx*T<x1-p.x;tx++){
+  const r=rng(p.seed^Math.imul(tx,73856093)^Math.imul(ty,19349663)),bx=tx*T,by=ty*T,[R,Gc,B]=pix(p,bx+T/2,by+T/2),X=p.x+bx,Y=p.y+by;
+  if(mode==='brush'){const dir=(SC.REG[regionAtP(p,bx+T/2,by+T/2)]||{}).dir,base={h:0,v:1.57,diag:0.3,hv:r()<.5?0:1.57}[dir]??r()*6.28;ctx.lineWidth=0.12;
+   for(let k=0;k<3;k++){const a=base+(r()-.5)*0.25,sx=X+r()*T,sy=Y+r()*T,l=2+r()*3;ctx.strokeStyle=`rgba(255,255,255,${.06+r()*.08})`;ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx+Math.cos(a)*l,sy+Math.sin(a)*l);ctx.stroke();
+    ctx.strokeStyle=`rgba(0,0,0,${.08+r()*.1})`;ctx.beginPath();ctx.moveTo(sx,sy+0.18);ctx.lineTo(sx+Math.cos(a)*l,sy+0.25+Math.sin(a)*l);ctx.stroke()}
+   for(let k=0;k<4;k++){const cx=X+r()*T,cy=Y+r()*T,s=0.06+Math.pow(r(),2)*0.35,j=(r()-.5)*70;ctx.fillStyle=`rgb(${R+j+(r()-.5)*14|0},${Gc+j+(r()-.5)*14|0},${B+j+(r()-.5)*14|0})`;ctx.beginPath();for(let q=0;q<5;q++){const a=q/5*6.283+r()*.6,rr=s*(0.5+r()*0.7);q?ctx.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr):ctx.moveTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr)}ctx.fill()}}
+  else if(mode==='print'){ctx.fillStyle='rgba(244,241,234,.55)';ctx.fillRect(X,Y,T,T);const w=[1-R/255,1-Gc/255,1-B/255],k=Math.min(...w),pr=[w[0]-k,w[1]-k,w[2]-k,k*1.4],cols=['rgba(0,160,210,.8)','rgba(210,0,120,.8)','rgba(235,210,0,.85)','rgba(20,20,20,.8)'],sum=pr.reduce((a,b)=>a+b,0)+0.001;
+   for(let i=0;i<34;i++){let u=r()*sum*1.2,ci=0;while(ci<4&&u>pr[ci]){u-=pr[ci];ci++}if(ci>3)continue;ctx.fillStyle=cols[ci];ctx.beginPath();ctx.arc(X+r()*T,Y+r()*T,0.16,0,7);ctx.fill()}}
+  else{ctx.fillStyle='rgba(255,255,255,.07)';ctx.beginPath();ctx.ellipse(X+T/2,Y+T/2,T*0.45,T*0.25,r()*3,0,7);ctx.fill();ctx.fillStyle=`rgb(${R+12},${Gc+12},${B+12})`;for(let i=0;i<10;i++)ctx.fillRect(X+r()*T,Y+r()*T,0.09,0.09)}}
+ ctx.globalAlpha=1}
+let gateT=0;function scheduleGates(){clearTimeout(gateT);gateT=setTimeout(checkGates2D,140)}
+function checkGates2D(){if(MODE==='sculpt')return;const v=viewportWorld(),T=tool&&TB[tool],view=curView();let ch=false;
+ for(const p of P){
+  if(T&&T.gate&&T.gate.area&&vw.z>=T.gate.z&&tiltOK(T.gate)&&areaOK(p,T.gate.area,v)&&!p.notes[tool]){if(note(p,tool,obs(p,tool))){ch=true;toast(`Zapisano: ${MODE==='frag'?'fragment':(p.note?'banknot ':'obraz ')+p.letter} – ${T.name}`)}}
+  if(MODE==='paint5'&&view==='back'&&vw.z>=8&&areaOK(p,'all',v)&&!p.notes.weave){note(p,'weave',obs(p,'weave'));ch=true;toast(`Zapisano: obraz ${p.letter} – gęstość płótna`)}
+  if(p.t.mark&&vw.z>=8&&(view==='normal'||view==='crackview')&&!p.notes.mark){const mx=p.x+p.markPos.x,my=p.y+p.markPos.y;if(mx>v.x0&&mx<v.x1&&my>v.y0&&my<v.y1){note(p,'mark',obs(p,'mark'));ch=true;toast(`Odkrycie przy dużym zoomie: obraz ${p.letter} – ukryty napis!`)}}}
+ if(ch)onChange();else if(tool)updatePanel()}
+const pts=new Map();let drag=null,pinch=null;
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.offsetX,y:e.offsetY});
+ if(pts.size===1)drag={sx:e.offsetX,sy:e.offsetY,vx:vw.x,vy:vw.y,moved:false};
+ if(pts.size===2){const[a,b]=[...pts.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y)};drag=null}});
+cv.addEventListener('pointerleave',()=>{if(MODE==='memory'){MEM.lens=null;render()}});
+cv.addEventListener('pointermove',e=>{if(MODE==='memory'){MEM.lens={sx:e.offsetX,sy:e.offsetY};render()}if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.offsetX,y:e.offsetY});
+ if(pinch&&pts.size===2&&MODE!=='memory'){const[a,b]=[...pts.values()],d=Math.hypot(a.x-b.x,a.y-b.y);zoomAt((a.x+b.x)/2,(a.y+b.y)/2,d/pinch.d);pinch.d=d;return}
+ if(drag){const dx=e.offsetX-drag.sx,dy=e.offsetY-drag.sy;if(Math.abs(dx)+Math.abs(dy)>4){drag.moved=true;cv.classList.add('drag')}if(drag.moved&&MODE!=='memory'){vw.x=drag.vx+dx;vw.y=drag.vy+dy;render();scheduleGates()}}});
+const up=e=>{if(!pts.has(e.pointerId))return;pts.delete(e.pointerId);cv.classList.remove('drag');if(drag&&!drag.moved&&pts.size===0)clickAt(e.offsetX,e.offsetY);if(pts.size<2)pinch=null;if(pts.size===0)drag=null};
+cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+cv.addEventListener('wheel',e=>{e.preventDefault();if(MODE==='memory')return;zoomAt(e.offsetX,e.offsetY,Math.exp(-e.deltaY*0.0016))},{passive:false});
+function clickAt(sx,sy){const wx=(sx-vw.x)/vw.z,wy=(sy-vw.y)/vw.z,p=P.find(q=>wx>=q.x-30&&wx<=q.x+W+30&&wy>=q.y-30&&wy<=q.y+H+80);if(!p)return;sel=p;
+ const lx=wx-p.x,ly=wy-p.y,T=tool&&TB[tool];
+ if(T&&T.probe==='mag'&&p.note){const inMag=(lx>596&&ly>22&&ly<50)||(lx>194&&lx<214&&ly>236&&ly<336)||(lx>290&&lx<440&&ly>85&&ly<330);
+  if(!inMag)toast('Brak sygnału w tym miejscu – przyłóż czujnik do numeru seryjnego lub motywu głównego.');else if(note(p,'mag',obsN(p,'mag')))toast(`Banknot ${p.letter}: ${obsN(p,'mag')}`)}
+ else if(T&&T.probe&&lx>=0&&lx<W&&ly>=0&&ly<H&&!(p.frag&&inPoly(lx,ly,p.frag.missing))){if(vw.z<T.gate.z)toast(`Przybliż do ×${fmt(T.gate.z)}, aby ${T.probe==='pigment'?'próbka objęła jeden obszar':'zobaczyć mikrostrukturę'}.`);else sampleAt(p,lx,ly)}
+ onChange()}
+
+/* =====================================================================
+   RZEŹBY 3D
+   ===================================================================== */
+const SCU={name:'Stanisław Rudnicki',life:'1840–1905',title:'Popiersie Heleny',year:1888,hcm:52.0,kg:8.4};
+const SPROF={
+ surm:{name:'Surmoulage – odlew z formy zdjętej z oryginału',core:['dims','tool','mark'],opt:['prov','cert','seam'],mark:'blur',tool:'soft',hcm:51.2},
+ cold:{name:'Odlew z żywicy z pyłem brązu (cold cast)',core:['weight','xray','xrf','uv'],opt:['tool','patina','prov'],xrf:'resin',xray:'resin',tool:'smooth'},
+ modern:{name:'Współczesny odlew w brązie krzemowym',core:['xrf','patina','seam'],opt:['mark','xray','style'],xrf:'si',xray:'lost',mark:'none'},
+ oldcopy:{name:'Nieautoryzowany odlew z epoki z innej odlewni',core:['mark','dims'],opt:['style','prov','cert'],mark:'other',hcm:52.9},
+ papers:{name:'Odlew z podrobioną dokumentacją',core:['prov','cert'],opt:['mark','patina','xrf'],xrf:'brass',mark:'none',prov:'noCR',cert:'issuer'},
+};
+const DEF3={
+ xrf:{name:'Analiza stopu (XRF)',probe:'xrf',gate3:{d:0.75,click:true},hint:'Podejdź blisko (≤ 75 cm) i kliknij powierzchnię rzeźby. Katalog podaje brąz cynowy. Brąz krzemowy pojawił się dopiero ok. 1927 r.; żywica z pyłem metalu to nie brąz.'},
+ uv:{name:'Lampa UV',view:'uv',gate3:{d:2.5},hint:'Stary wosk konserwujący świeci słabo i równomiernie. Żywice syntetyczne fluoryzują silnie.'},
+ patina:{name:'Patyna (z bliska)',gate3:{d:0.6},hint:'Naturalna patyna gromadzi zielone produkty korozji na powierzchniach poziomych i w zagłębieniach, a wypukłości (nos, broda) są wytarte do jaśniejszego metalu. Patyna chemiczna jest jednolita.'},
+ weight:{name:'Waga',hint:'Porównaj masę z katalogiem (8,4 kg). Odlew z żywicy z pyłem metalu jest wielokrotnie lżejszy.'},
+ dims:{name:'Pomiar (suwmiarka)',gate3:{d:1.6},hint:'Podejdź na ≤ 1,6 m – obok wybranej rzeźby pojawi się miara. Katalog: 52,0 cm. Odlew z formy zdjętej z gotowej rzeźby (surmoulage) jest mniejszy o 1–2% przez skurcz metalu.'},
+ style:{name:'Porównanie z fotografią katalogową',gate3:{d:1.1,az:'front'},hint:'Stań na wprost rzeźby (≤ 1,1 m). Porównaj proporcje i ułożenie głowy z fotografią z katalogu raisonné. Kopie modelowane „z oka” mają błędy proporcji.'},
+ mark:{name:'Znak odlewni i sygnatura',gate3:{d:0.5,az:'back'},hint:'Znak odlewni i sygnatura są z tyłu cokołu – obejdź rzeźbę i podejdź na ≤ 50 cm. Odlew wtórny ma rozmyty znak; inna odlewnia – inny znak; brak znaku i świeżo wyryty podpis są podejrzane.'},
+ prov:{name:'Proweniencja',hint:'Prześledź historię odlewu: księgi odlewni, wystawy, katalog raisonné.'},
+ cert:{name:'Certyfikat autentyczności',hint:'Sprawdź kompletność danych i wystawcę. Porównaj wysokość i masę z pomiarami.'},
+ tool:{name:'Ślady obróbki (cyzelowanie)',gate3:{d:0.42},hint:'Podejdź bardzo blisko (≤ 42 cm). Ręczne cyzelowanie zostawia krótkie, nieregularne ślady narzędzi i porowatość odlewu. Surmoulage ma detal zmiękczony, żywica – gładką powierzchnię z pęcherzykami.'},
+ seam:{name:'Szwy odlewnicze',gate3:{d:0.5,az:'side'},hint:'Obejrzyj rzeźbę z boku z bliska (≤ 50 cm). W starannym odlewie szwy formy są zacyzelowane; ciągły szew z boku głowy i tułowia zdradza odlew seryjny.'},
+ xray:{name:'RTG',view:'xray',gate3:{d:2.5},hint:'Tradycyjny odlew piaskowy ma nierówne ścianki, resztki rdzenia i kute trzpienie. Wosk tracony ze skorupą ceramiczną daje cienkie, równe ścianki. Żywica jest jednolita i słabo pochłania promieniowanie.'},
+};
+const SET3=[['1. Materiał i wiek',['xrf','uv','patina','weight']],['2. Forma i sygnatura',['dims','style','mark']],['3. Proweniencja i dokumenty',['prov','cert']],['4. Obróbka i wnętrze',['tool','seam','xray']]];
+const XRF={bronze:'Cu 87%, Sn 8%, Zn 3%, Pb 2% – brąz cynowy',si:'Cu 94%, Si 3,5%, Mn 1,2%, Zn 1% – brąz krzemowy',resin:'Cu 21%, Sn 2%; dominują C i O – żywica z wypełniaczem z pyłu brązu',brass:'Cu 63%, Zn 35%, Pb 2% – mosiądz'};
+function obs3(q,id){const t=q.t;switch(id){
+ case'uv':return q.uv==='resin'?'Silna, zielonkawa fluorescencja całej powierzchni.':'Słaba, równomierna fluorescencja warstwy wosku.';
+ case'patina':return t.patina?'Jednolita brązowa patyna chemiczna – brak produktów korozji w zagłębieniach, wypukłości nie są wytarte.':'Zielone produkty korozji na powierzchniach poziomych i w zagłębieniach (pod brodą, na cokole); nos i broda wytarte do jaśniejszego metalu.';
+ case'weight':return`Masa: ${fmt(q.kg.toFixed(1))} kg.`;case'dims':return`Wysokość: ${fmt(q.hcm.toFixed(1))} cm.`;
+ case'style':return t.style?'Nos wyraźnie dłuższy, głowa przechylona w bok – inaczej niż na fotografii katalogowej.':'Proporcje twarzy i ułożenie głowy zgodne z fotografią katalogową.';
+ case'mark':return{ok:'Ostry znak odlewni „J. BRACŁAWSKI · WARSZAWA” i sygnatura „S. Rudnicki 1888” odlane razem z cokołem.',blur:'Znak odlewni i sygnatura rozmyte, płytkie i nieco mniejsze niż na fotografii katalogowej.',other:'Znak innej odlewni: „ODLEWNIA K. SZPAKOWSKI”.',none:'Brak znaku odlewni; sygnatura cienko wyryta w gotowym odlewie – ostre, jasne krawędzie rytu.'}[q.mark];
+ case'tool':return{chase:'Krótkie, nieregularne ślady cyzelowania i drobna porowatość odlewu.',soft:'Detal zmiękczony i rozmyty, ślady cyzelowania niewyraźne – jakby odbite z innej powierzchni.',smooth:'Powierzchnia gładka, bez śladów narzędzi; drobne kuliste pęcherzyki powietrza.'}[q.tool];
+ case'seam':return t.seam?'Ciągły, wyraźny szew formy po obu bokach głowy, szyi i tułowia.':'Szwy formy usunięte i zacyzelowane – brak widocznych linii podziału.';
+ case'xray':return{sand:'Ścianki nierównej grubości, resztki rdzenia odlewniczego, kute żelazne trzpienie.',lost:'Cienkie, równe ścianki; brak rdzenia i trzpieni.',resin:'Materiał jednolity, słabo pochłaniający promieniowanie; brak metalowej skorupy i rdzenia.'}[q.xray];
+ case'prov':return!t.prov?'Ciągła historia od 1888 r.: księga zamówień odlewni, wystawa 1890, katalog raisonné nr 76.':q.m.prov==='attic'?'Brak historii przed 2025 r. – „znaleziony na strychu”; brak w katalogu raisonné.':'Historia dopiero od 1998 r.; brak w katalogu raisonné i w księgach odlewni.';
+ case'cert':return!t.cert?'Certyfikat kompletny, dane zgodne z katalogiem, podpis rzeczoznawcy.':q.m.cert==='dims'?'Wysokość w certyfikacie: 49,5 cm – niezgodna z pomiarem.':'Wystawca bez uprawnień, brak materiału i daty, podpis drukowany.'}}
+function why3(q,id){return({xrf:()=>({si:'Brąz krzemowy – stop wprowadzony ok. 1927 r., po dacie rzeźby.',resin:'Żywica z pyłem metalu – to nie jest odlew w brązie.',brass:'Mosiądz zamiast brązu cynowego podanego w katalogu.'})[q.xrf],
+ uv:()=>'Silna fluorescencja żywicy syntetycznej.',patina:()=>'Sztuczna, chemiczna patyna – brak naturalnego starzenia.',weight:()=>'Masa kilkakrotnie mniejsza niż w katalogu – to nie jest pełny odlew z brązu.',
+ dims:()=>q.hcm<52?'Wysokość mniejsza o ok. 1,5% – skurcz odlewu wtórnego (surmoulage).':'Wysokość niezgodna z katalogiem – inny model odlewniczy.',
+ style:()=>'Błąd proporcji – kopia modelowana bez dostępu do oryginału.',mark:()=>({blur:'Rozmyty, mniejszy znak – odbity z oryginału razem z formą.',other:'Znak innej odlewni – nieautoryzowany odlew.',none:'Brak znaku odlewni, sygnatura dodana po odlaniu.'})[q.mark],
+ tool:()=>q.tool==='soft'?'Zmiękczony detal – typowy dla odlewu z formy zdjętej z gotowej rzeźby.':'Gładka powierzchnia z pęcherzykami – odlew żywiczny.',seam:()=>'Niezacyzelowany szew – seryjny odlew współczesny.',
+ xray:()=>q.xray==='lost'?'Cienkie, równe ścianki – współczesny wosk tracony ze skorupą ceramiczną.':'Brak metalu wewnątrz – odlew żywiczny.',
+ prov:()=>q.m.prov==='attic'?'„Znaleziony na strychu” – brak historii.':'Historia od 1998 r., brak w katalogu i księgach odlewni.',cert:()=>q.m.cert==='dims'?'Wysokość w certyfikacie niezgodna z rzeźbą.':'Certyfikat od podmiotu bez uprawnień.'}[id]||(()=>''))()}
+let T3=null,THREE_P=null;
+function loadThree(){if(window.THREE)return Promise.resolve();if(THREE_P)return THREE_P;THREE_P=new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s)});return THREE_P}
+function newSculpt(r){const list=[{orig:true,profile:null,t:{}}];shuffle(Object.keys(SPROF),r).slice(0,4).forEach(k=>list.push({orig:false,profile:k,t:rollTells(SPROF[k],r)}));shuffle(list,r);
+ P=list.map((q,i)=>{const pr=q.profile?SPROF[q.profile]:{},t=q.t,qr=rng((r()*1e9)|0);q.letter='ABCDE'[i];q.seed=(qr()*1e9)|0;q.notes={};q.samples=[];q.umark='';
+  q.hcm=t.dims?pr.hcm:52.0;q.kg=t.weight?3.1:8.4+(qr()-.5)*0.12;q.xrf=t.xrf?pr.xrf:'bronze';q.patina=t.patina?'chem':'natural';q.uv=t.uv?'resin':'wax';q.tool=t.tool?pr.tool:'chase';
+  q.xray=t.xray?(pr.xray||'lost'):'sand';q.mark=t.mark?(pr.mark||'none'):'ok';q.m={prov:pr.prov||pick(['attic','noCR'],qr),cert:pr.cert||pick(['dims','issuer'],qr)};q.cold=q.profile==='cold';return q})}
+function texCanvas(fn,w=1024,h=1024){const c=mk(w,h);fn(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t}
+function bumpTex(mode,seed){const r=rng(seed);return texCanvas((x,w,h)=>{x.fillStyle='#808080';x.fillRect(0,0,w,h);
+ if(mode!=='smooth'){x.lineCap='round';for(let i=0;i<5200;i++){const X=r()*w,Y=r()*h,a=r()*6.28,l=4+r()*9;x.strokeStyle=r()<.5?`rgba(0,0,0,${.18+r()*.2})`:`rgba(255,255,255,${.15+r()*.2})`;x.lineWidth=1+r()*1.6;x.beginPath();x.moveTo(X,Y);x.lineTo(X+Math.cos(a)*l,Y+Math.sin(a)*l);x.stroke()}
+  for(let i=0;i<1600;i++){x.fillStyle='rgba(0,0,0,.55)';x.beginPath();x.arc(r()*w,r()*h,0.6+r()*1.2,0,7);x.fill()}}
+ else for(let i=0;i<520;i++){const X=r()*w,Y=r()*h,s=1+r()*2.4;x.fillStyle='rgba(0,0,0,.6)';x.beginPath();x.arc(X,Y,s,0,7);x.fill();x.strokeStyle='rgba(255,255,255,.5)';x.lineWidth=0.8;x.stroke()}
+ if(mode==='soft'){const c2=mk(w,h),y=c2.getContext('2d');y.filter='blur(3.5px)';y.drawImage(x.canvas,0,0);x.clearRect(0,0,w,h);x.drawImage(c2,0,0)}})}
+function patTex(seed){const r=rng(seed);return texCanvas((x,w,h)=>{x.fillStyle='#d8d8d8';x.fillRect(0,0,w,h);for(let i=0;i<900;i++){const v=170+r()*85|0;x.fillStyle=`rgba(${v},${v},${v},.25)`;x.beginPath();x.arc(r()*w,r()*h,4+r()*30,0,7);x.fill()}},512,512)}
+const mix=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];
+function colorize(g,mode,seed){const pos=g.attributes.position,nor=g.attributes.normal,n=pos.count,col=new Float32Array(n*3);
+ for(let i=0;i<n;i++){const x=pos.getX(i),y=pos.getY(i),z=pos.getZ(i),ny=nor.getY(i),nz=0.5+0.5*Math.sin(x*1.7+seed)*Math.cos(y*1.3+z*0.9);let c;
+  if(mode==='natural'){c=[.33,.22,.13];let gg=Math.max(0,(ny-0.5)*1.8)*(.4+nz*.6);if(y>29&&y<38&&ny<-0.25)gg=Math.max(gg,.75);c=mix(c,[.22,.44,.34],Math.min(1,gg));if(z>6.3&&y>35&&y<47)c=mix(c,[.68,.5,.26],.65)}
+  else c=[.42,.26,.15].map(v=>v*(0.94+nz*0.12));col.set(c,i*3)}g.setAttribute('color',new THREE.BufferAttribute(col,3))}
+const TORSO=[[8,13],[8.5,13],[12,17],[17,18.5],[22,17.5],[26,14],[29,8],[30.5,5]];
+function torsoR(y){for(let i=1;i<TORSO.length;i++)if(y<=TORSO[i][0]){const a=TORSO[i-1],b=TORSO[i],t=(y-a[0])/(b[0]-a[0]);return a[1]+(b[1]-a[1])*t}return 5}
+function bustGeoms(q){const V2=(p)=>p.map(a=>new THREE.Vector2(a[0],a[1])),gs=[];
+ gs.push(new THREE.LatheGeometry(V2([[0.01,0],[11,0],[11,1.5],[10,2.2],[9.2,3],[9.2,6],[10,7],[10,8],[0.01,8]]),56));
+ const torso=new THREE.LatheGeometry(V2([[0.01,8],...TORSO.map(a=>[a[1],a[0]]),[0.01,30.6]]),64);torso.scale(1.18,1,0.55);gs.push(torso);
+ const neck=new THREE.CylinderGeometry(4.3,4.9,8,32);neck.translate(0,33.5,0);gs.push(neck);
+ const hp=[],nl=q.t.style?1.45:1;
+ const head=new THREE.SphereGeometry(8.6,64,48);head.scale(0.86,1.08,0.98);hp.push(head);
+ const nose=new THREE.ConeGeometry(1.25,3.2*nl,16);nose.rotateX(Math.PI/2);nose.translate(0,-0.6,8.0+1.6*(nl-1));hp.push(nose);
+ for(const s of[-1,1]){const e=new THREE.SphereGeometry(1.15,20,14);e.scale(1,0.55,0.45);e.translate(s*2.9,1.2,7.35);hp.push(e);
+  const ear=new THREE.SphereGeometry(1.7,20,14);ear.scale(0.45,1.25,0.85);ear.translate(s*7.35,0,-0.3);hp.push(ear)}
+ const lips=new THREE.SphereGeometry(1.6,20,14);lips.scale(1.2,0.45,0.5);lips.translate(0,-4,7.5);hp.push(lips);
+ const chin=new THREE.SphereGeometry(2.6,24,18);chin.translate(0,-6,5.5);hp.push(chin);
+ const cap=new THREE.SphereGeometry(8.95,56,28,0,Math.PI*2,0,Math.PI*0.52);cap.scale(0.88,1.1,1.0);cap.rotateX(-0.45);cap.translate(0,0.6,-0.6);hp.push(cap);
+ const bun=new THREE.SphereGeometry(4.6,36,26);bun.translate(0,4.2,-8.2);hp.push(bun);
+ for(let i=0;i<9;i++){const a=-1.25+i*0.31,c=new THREE.SphereGeometry(1.5,16,12);c.translate(Math.sin(a)*7.2,5.6-Math.abs(a)*1.2,Math.cos(a)*5.0);hp.push(c)}
+ const m=new THREE.Matrix4().makeTranslation(0,42.5,0).multiply(new THREE.Matrix4().makeRotationZ(q.t.style?0.14:0));hp.forEach(g=>g.applyMatrix4(m));gs.push(...hp);return gs}
+function seamGeo(sign){const v=[];for(let y=9;y<=29;y+=2)v.push(new THREE.Vector3(sign*(torsoR(y)+0.05),y,0));for(let y=30.5;y<=37.5;y+=1.5)v.push(new THREE.Vector3(sign*4.75,y,0));
+ for(let a=-60;a<=85;a+=8){const t=a*Math.PI/180;v.push(new THREE.Vector3(sign*7.45*Math.cos(t),42.5+9.35*Math.sin(t),0))}return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(v),160,0.14,6,false)}
+function markTex(mode){return texCanvas((x,w,h)=>{x.clearRect(0,0,w,h);const draw=(t,y,f)=>{x.font=f;x.textAlign='center';x.fillStyle='rgba(255,226,170,.35)';x.fillText(t,w/2+2,y+3);x.fillStyle='rgba(22,13,6,.95)';x.fillText(t,w/2,y)};
+ if(mode==='ok'||mode==='blur'){if(mode==='blur'){x.filter='blur(5px)';x.translate(w/2,h/2);x.scale(0.9,0.9);x.translate(-w/2,-h/2)}draw('J. BRACŁAWSKI · WARSZAWA',110,'bold 72px Georgia');draw('S. Rudnicki 1888',220,'italic 70px Georgia')}
+ if(mode==='other'){draw('ODLEWNIA K. SZPAKOWSKI',110,'bold 70px Georgia');draw('S. Rudnicki 1888',220,'italic 70px Georgia')}
+ if(mode==='none'){x.font='italic 62px Georgia';x.textAlign='center';x.strokeStyle='rgba(235,220,190,.95)';x.lineWidth=2.2;x.strokeText('S. Rudnicki 1888',w/2,180)}},1024,280)}
+function spriteText(lines,w,h,bg){const c=mk(w,h),x=c.getContext('2d');if(bg){x.fillStyle=bg;x.beginPath();x.roundRect?x.roundRect(4,4,w-8,h-8,18):x.rect(4,4,w-8,h-8);x.fill()}
+ x.textAlign='center';lines.forEach(([t,f,col,y])=>{x.font=f;x.fillStyle=col;x.fillText(t,w/2,y)});const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false,transparent:true}));return s}
+function buildBust(q,i,forPhoto){const grp=new THREE.Group(),gs=bustGeoms(q),mode=q.patina,seed=q.seed%1000;gs.forEach(g=>colorize(g,mode,seed));
+ const bt=bumpTex(q.tool,q.seed),pt=patTex(q.seed+1);bt.repeat.set(7,7);pt.repeat.set(2,2);
+ const mat=new THREE.MeshStandardMaterial({vertexColors:true,map:pt,bumpMap:bt,bumpScale:0.012,metalness:q.cold?0.45:0.82,roughness:q.cold?0.6:0.46});
+ const uvMat=new THREE.MeshStandardMaterial({color:0x0c0812,emissive:q.uv==='resin'?0x4f9a3c:0x23301f,roughness:.9,metalness:0});
+ const xMat=new THREE.MeshBasicMaterial({color:q.xray==='resin'?0x6a8a70:0xa8c4dc,transparent:true,opacity:q.xray==='resin'?0.05:0.08,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide});
+ const outer=[];gs.forEach(g=>{const m=new THREE.Mesh(g,mat);m.userData.q=q;outer.push(m);grp.add(m)});
+ if(q.t.seam)for(const s of[-1,1]){const m=new THREE.Mesh(seamGeo(s),mat);m.userData.q=q;outer.push(m);grp.add(m)}
+ const decal=new THREE.Mesh(new THREE.PlaneGeometry(9.5,2.6),new THREE.MeshStandardMaterial({map:markTex(q.mark),transparent:true,metalness:.5,roughness:.6,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2}));
+ decal.position.set(0,4.6,-9.32);decal.rotation.y=Math.PI;grp.add(decal);
+ const inner=new THREE.Group();inner.visible=false;
+ if(q.xray!=='resin'){const im=new THREE.MeshBasicMaterial({color:0x9fb4c8,transparent:true,opacity:.07,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide});
+  bustGeoms(q).forEach(g=>{const m=new THREE.Mesh(g,im);if(q.xray==='sand'){m.scale.set(0.84,0.96,0.84);m.position.set(0.5,0.7,0.4)}else m.scale.set(0.94,0.985,0.94);inner.add(m)});
+  if(q.xray==='sand'){const pm=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.6,blending:THREE.AdditiveBlending,depthWrite:false});
+   [[42,'x'],[42,'z'],[18,'x'],[33,'z']].forEach(([y,ax])=>{const c=new THREE.Mesh(new THREE.CylinderGeometry(0.28,0.28,ax==='x'?15:12,8),pm);c.position.y=y;c.rotation[ax==='x'?'z':'x']=Math.PI/2;inner.add(c)});
+   const cm=new THREE.MeshBasicMaterial({color:0x8a9a90,transparent:true,opacity:.18,blending:THREE.AdditiveBlending,depthWrite:false});[[1,43,1,3],[-2,40,-1,2.4],[0,22,0,4]].forEach(([x,y,z,r])=>{const s=new THREE.Mesh(new THREE.SphereGeometry(r,16,12),cm);s.position.set(x,y,z);inner.add(s)})}}
+ grp.add(inner);const k=q.hcm/52*0.01;grp.scale.setScalar(k);
+ const root=new THREE.Group();root.add(grp);if(forPhoto)return root;
+ const X=(i-2)*0.95;root.position.set(X,1.0,0);
+ const plinth=new THREE.Mesh(new THREE.BoxGeometry(0.36,1.0,0.36),new THREE.MeshStandardMaterial({color:0x3a332c,roughness:.85}));plinth.position.set(X,0.5,0);plinth.userData.q=q;
+ const line=new THREE.Group();const lm=new THREE.LineBasicMaterial({color:0xffd27a});const top=q.hcm/100;
+ line.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0.17,0,0),new THREE.Vector3(0.17,top,0)]),lm));
+ [0,top].forEach(y=>line.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0.12,y,0),new THREE.Vector3(0.2,y,0)]),lm)));
+ const ls=spriteText([[`${fmt(q.hcm.toFixed(1))} cm`,'bold 46px system-ui','#ffd27a',72]],256,100,'rgba(0,0,0,.6)');ls.scale.set(0.06,0.024,1);ls.position.set(0.21,top/2,0);line.add(ls);line.visible=false;root.add(line);
+ return{q,root,grp,outer,mat,uvMat,xMat,inner,plinth,decal,line,center:new THREE.Vector3(X,1.0+0.26,0),label:null,markers:new THREE.Group()}}
+function init3D(){if(T3)return;const el=document.getElementById('three');const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:false});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputEncoding=THREE.sRGBEncoding;el.appendChild(renderer.domElement);
+ const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(40,1,0.01,60);
+ const hemi=new THREE.HemisphereLight(0xe8dcc8,0x1a1612,0.75),dir=new THREE.DirectionalLight(0xfff0dc,1.15),fill=new THREE.DirectionalLight(0x9fb4d8,0.4);dir.position.set(2.5,4,3);fill.position.set(-3,2,-1);scene.add(hemi,dir,fill);
+ const floor=new THREE.Mesh(new THREE.PlaneGeometry(30,30),new THREE.MeshStandardMaterial({color:0x15110d,roughness:.95}));floor.rotation.x=-Math.PI/2;scene.add(floor);
+ const wall=new THREE.Mesh(new THREE.PlaneGeometry(30,8),new THREE.MeshStandardMaterial({color:0x110e0b,roughness:1}));wall.position.set(0,4,-3.5);scene.add(wall);
+ T3={renderer,scene,camera,hemi,dir,fill,floor,wall,el,cam:{t:new THREE.Vector3(0,1.15,0),dist:5.6,az:0,el:0.16},busts:[],dirty:true,anim:null,ray:new THREE.Raycaster(),photo:null};
+ const dom=renderer.domElement,pp=new Map();let dr=null,pc=null;
+ dom.addEventListener('contextmenu',e=>e.preventDefault());
+ dom.addEventListener('pointerdown',e=>{dom.setPointerCapture(e.pointerId);pp.set(e.pointerId,{x:e.offsetX,y:e.offsetY});if(pp.size===1)dr={x:e.offsetX,y:e.offsetY,moved:false,pan:e.button===2||e.shiftKey};if(pp.size===2){const[a,b]=[...pp.values()];pc=Math.hypot(a.x-b.x,a.y-b.y);dr=null}});
+ dom.addEventListener('pointermove',e=>{if(!pp.has(e.pointerId))return;const o=pp.get(e.pointerId);pp.set(e.pointerId,{x:e.offsetX,y:e.offsetY});
+  if(pc&&pp.size===2){const[a,b]=[...pp.values()],d=Math.hypot(a.x-b.x,a.y-b.y);zoom3(pc/d);pc=d;return}
+  if(!dr)return;const dx=e.offsetX-o.x,dy=e.offsetY-o.y;if(Math.abs(e.offsetX-dr.x)+Math.abs(e.offsetY-dr.y)>4)dr.moved=true;if(!dr.moved)return;const c=T3.cam;
+  if(dr.pan){const k=c.dist*0.0016,right=new THREE.Vector3(Math.cos(c.az),0,-Math.sin(c.az));c.t.addScaledVector(right,-dx*k);c.t.y+=dy*k}else{c.az-=dx*0.008;c.el=Math.max(-0.35,Math.min(1.35,c.el+dy*0.006))}mark3Dirty();schedule3Gates()});
+ const up=e=>{if(!pp.has(e.pointerId))return;pp.delete(e.pointerId);if(dr&&!dr.moved&&pp.size===0)click3(e.offsetX,e.offsetY);if(pp.size<2)pc=null;if(pp.size===0)dr=null};
+ dom.addEventListener('pointerup',up);dom.addEventListener('pointercancel',up);
+ dom.addEventListener('wheel',e=>{e.preventDefault();zoom3(Math.exp(e.deltaY*0.0012))},{passive:false});
+ new ResizeObserver(()=>{const r=el.getBoundingClientRect();renderer.setSize(r.width,r.height,false);camera.aspect=r.width/Math.max(1,r.height);camera.updateProjectionMatrix();mark3Dirty()}).observe(el);
+ (function loop(t){requestAnimationFrame(loop);if(MODE!=='sculpt')return;const c=T3.cam;
+  if(T3.anim){const a=T3.anim,k=Math.min(1,(t-a.t0)/450),e=k*(2-k);c.t.lerpVectors(a.from,a.to,e);if(a.dist)c.dist=a.d0+(a.dist-a.d0)*e;if(a.az!=null)c.az=a.az0+(a.az-a.az0)*e;if(a.el!=null)c.el=a.el0+(a.el-a.el0)*e;T3.dirty=true;if(k>=1){T3.anim=null;schedule3Gates()}}
+  if(!T3.dirty)return;T3.dirty=false;camera.position.set(c.t.x+c.dist*Math.sin(c.az)*Math.cos(c.el),c.t.y+c.dist*Math.sin(c.el),c.t.z+c.dist*Math.cos(c.az)*Math.cos(c.el));camera.lookAt(c.t);
+  T3.busts.forEach(b=>{b.line.visible=tool==='dims'&&sel===b.q&&camera.position.distanceTo(b.center)<1.6});
+  renderer.render(scene,camera);const d=sel?camera.position.distanceTo(T3.busts.find(b=>b.q===sel).center):c.dist;document.getElementById('zlv').textContent=(d<1?Math.round(d*100)+' cm':fmt(d.toFixed(2))+' m')})(0)}
+const mark3Dirty=()=>{if(T3)T3.dirty=true};
+function zoom3(f){const c=T3.cam;c.dist=Math.max(0.2,Math.min(9,c.dist*f));mark3Dirty();schedule3Gates()}
+function anim3(to,dist,az,el){const c=T3.cam;T3.anim={from:c.t.clone(),to,t0:performance.now(),d0:c.dist,dist,az0:c.az,az,el0:c.el,el}}
+function click3(x,y){const r=T3.renderer.domElement.getBoundingClientRect(),v=new THREE.Vector2(x/r.width*2-1,-(y/r.height)*2+1);T3.ray.setFromCamera(v,T3.camera);
+ const objs=[];T3.busts.forEach(b=>objs.push(...b.outer,b.plinth));const hit=T3.ray.intersectObjects(objs,false)[0];if(!hit)return;const q=hit.object.userData.q,b=T3.busts.find(b=>b.q===q);
+ const changed=sel!==q;sel=q;
+ if(tool==='xrf'&&b.outer.includes(hit.object)){if(hit.distance>0.75)toast('Podejdź bliżej (≤ 75 cm), aby przyłożyć głowicę XRF.');else{const n=q.samples.length+1;q.samples.push(n);note(q,'xrf',`#${n}: ${XRF[q.xrf]}`);
+  const s=new THREE.Mesh(new THREE.SphereGeometry(0.004,10,8),new THREE.MeshBasicMaterial({color:0xffa030}));s.position.copy(hit.point);T3.scene.add(s);b.markers.add(s);toast(`XRF #${n}: ${XRF[q.xrf]}`)}}
+ if(changed){const c=T3.cam;anim3(b.center.clone(),Math.min(c.dist,1.4))}onChange()}
+let g3T=0;function schedule3Gates(){clearTimeout(g3T);g3T=setTimeout(check3Gates,160)}
+function camRel(b){const p=T3.camera.position,c=b.center;return{d:p.distanceTo(c),az:Math.atan2(p.x-c.x,p.z-c.z)*180/Math.PI}}
+function azOK(k,az){const a=Math.abs(az);return!k||(k==='front'?a<35:k==='back'?a>140:a>50&&a<130)}
+const AZTXT={front:'na wprost rzeźby',back:'z tyłu rzeźby',side:'z boku rzeźby'};
+function gate3Status(q,T){const g=T.gate3;if(!g)return null;const txt=`Warunek: odległość ≤ ${Math.round(g.d*100)} cm`+(g.az?`, ${AZTXT[g.az]}`:'')+(g.click?' (kliknij powierzchnię)':'');if(!q)return{txt,ok:false};
+ const b=T3.busts.find(b=>b.q===q),r=camRel(b);return{txt:txt+` · teraz ${Math.round(r.d*100)} cm`,ok:r.d<=g.d&&azOK(g.az,r.az)}}
+function check3Gates(){if(MODE!=='sculpt'||!T3)return;const T=tool&&TB[tool];let ch=false;
+ if(T&&T.gate3&&!T.gate3.click)for(const b of T3.busts){const r=camRel(b);if(r.d<=T.gate3.d&&azOK(T.gate3.az,r.az)&&!b.q.notes[tool]){note(b.q,tool,obs3(b.q,tool));ch=true;toast(`Zapisano: rzeźba ${b.q.letter} – ${T.name}`)}}
+ if(ch)onChange();else if(tool)updatePanel()}
+function apply3View(){if(!T3)return;const v=curView();T3.busts.forEach(b=>{b.outer.forEach(m=>m.material=v==='uv'?b.uvMat:v==='xray'?b.xMat:b.mat);b.inner.visible=v==='xray';b.decal.visible=v==='normal';b.plinth.visible=v!=='xray'});
+ T3.scene.background=new THREE.Color(v==='uv'?0x05030a:v==='xray'?0x000000:0x15110e);T3.hemi.intensity=v==='normal'?0.75:0.05;T3.dir.intensity=v==='normal'?1.15:0.05;T3.fill.intensity=v==='normal'?0.4:0;T3.floor.visible=T3.wall.visible=v!=='xray';
+ T3.busts.forEach(b=>updateLabel(b));mark3Dirty()}
+function updateLabel(b){if(b.label){T3.scene.remove(b.label)}const q=b.q,col=q.umark==='excl'?'#e0584f':q.umark==='susp'?'#f0a030':'#cbb894';
+ const s=spriteText([[q.letter,'bold 64px Georgia',sel===q?'#ffd27a':col,72],[q.umark==='excl'?'wykluczona':q.umark==='susp'?'podejrzana':'','24px system-ui',col,108]],160,124,'rgba(0,0,0,.55)');s.scale.set(0.16,0.124,1);s.position.set(b.center.x,1.72,0);T3.scene.add(s);b.label=s;mark3Dirty()}
+function build3Scene(){T3.busts.forEach(b=>{T3.scene.remove(b.root,b.plinth,b.markers);if(b.label)T3.scene.remove(b.label)});T3.busts=P.map((q,i)=>{const b=buildBust(q,i);T3.scene.add(b.root,b.plinth,b.markers);return b});
+ const ref={t:{},seed:P[0].seed+7,hcm:52,patina:'natural',tool:'chase',mark:'ok',xray:'sand',uv:'wax'},s=new THREE.Scene(),cam=new THREE.PerspectiveCamera(30,1,0.01,10);
+ s.add(new THREE.HemisphereLight(0xffffff,0x222222,0.9));const dl=new THREE.DirectionalLight(0xffffff,1.1);dl.position.set(1,1.5,2);s.add(dl);s.background=new THREE.Color(0xdcd4c4);
+ const r=buildBust(ref,0,true);s.add(r);cam.position.set(0,0.3,1.25);cam.lookAt(0,0.27,0);const R=T3.renderer,sz=R.getSize(new THREE.Vector2());R.setSize(400,460,false);cam.aspect=400/460;cam.updateProjectionMatrix();R.render(s,cam);T3.photo=R.domElement.toDataURL('image/jpeg',0.85);R.setSize(sz.x,sz.y,false);
+ T3.cam={t:new THREE.Vector3(0,1.15,0),dist:5.6,az:0,el:0.16};apply3View()}
+function panel3(q){let h='';if(tool==='xrf'){const v=q.notes.xrf;h+=v?`<div class="obs">${v.map(s=>`<div>${s}</div>`).join('')}</div>`:''}
+ else if(tool==='weight')h+=`<button class="btn" id="weigh">Połóż na wadze</button>`;
+ else if(tool==='style')h+=`<div class="cap">Fotografia z katalogu raisonné (Rudnicki, 2011, nr 76):</div><img src="${T3.photo}" style="filter:sepia(.75) contrast(1.05)">`;
+ else if(tool==='prov'){h+=!q.t.prov?`<ul class="tl"><li><b>1888</b> – odlew w odlewni J. Bracławskiego (księga zamówień, poz. 412)</li><li><b>1890</b> – wystawa TZSP, Warszawa, kat. nr 58</li><li><b>1891</b> – zakup: kolekcja Ludwika Krasnodębskiego</li><li><b>1937</b> – spadek: rodzina Orliczów</li><li><b>1975</b> – aukcja, Dom Aukcyjny „Nowy Świat”</li><li><b>2026</b> – zgłoszona do ekspertyzy</li></ul><div class="obs"><b>Katalog raisonné</b> (2011), nr 76: brąz, wys. 52,0 cm, 8,4 kg; znak odlewni i sygnatura z tyłu cokołu; fotografia.</div>`
+  :q.m.prov==='attic'?`<ul class="tl"><li><b>2025</b> – „znaleziona na strychu” (oświadczenie sprzedającego)</li><li><b>2026</b> – oferowana prywatnie</li></ul><div class="obs">Katalog raisonné: brak wpisu.</div>`:`<ul class="tl"><li><b>1998</b> – zakup na targu staroci w Pradze</li><li><b>2014</b> – kolekcja prywatna</li><li><b>2026</b> – oferowana do sprzedaży</li></ul><div class="obs">Katalog raisonné i księgi odlewni: brak wpisu.</div>`}
+ else if(tool==='cert'){const bad=q.t.cert,iss=bad&&q.m.cert==='issuer';const rows=[['Artysta','Stanisław Rudnicki (1840–1905)'],['Tytuł','Popiersie Heleny'],['Materiał',iss?'—':'brąz patynowany'],['Wysokość',bad&&q.m.cert==='dims'?'49,5 cm':'52,0 cm'],['Masa','8,4 kg'],['Odlewnia','J. Bracławski, Warszawa'],['Data',iss?'—':'1888']];
+  h+=`<div class="doc"><h4>CERTYFIKAT AUTENTYCZNOŚCI</h4>${rows.map(r=>`<div class="row"><b>${r[0]}:</b><span>${r[1]}</span></div>`).join('')}<div class="stamp">${iss?'Wystawił: Art-Expert24 s.c. (brak na liście rzeczoznawców)<br>Podpis: nadruk':'Wystawił: dr hab. Jan Orlicz, rzeczoznawca<br>Podpis: odręczny atrament, pieczęć tłoczona'}</div></div>`}
+ const T=TB[tool];if(tool!=='xrf'&&q.notes[tool])h+=`<div class="obs"><b>Obserwacja:</b> ${q.notes[tool]}</div>`;
+ else if(T.gate3&&!T.gate3.click)h+=`<div class="obs" style="color:var(--mut)">Spełnij warunek powyżej – obserwacja zapisze się automatycznie.</div>`;
+ else if(['prov','cert'].includes(tool)){note(q,tool,obs3(q,tool));h+=`<div class="obs"><b>Obserwacja:</b> ${q.notes[tool]}</div>`}return h}
+function after3(q){const b=document.getElementById('weigh');if(b)b.onclick=()=>{note(q,'weight',obs3(q,'weight'));toast(`Rzeźba ${q.letter}: ${fmt(q.kg.toFixed(1))} kg`);onChange()}}
+
+/* =====================================================================
+   BANKNOTY (fikcyjna waluta: 100 florenów Banku Narodowego Arkadii)
+   ===================================================================== */
+const THX=455,HOLO=[560,0,40,360],OVI=[540,295,140,50],LAT=[468,316,68,22],REGC=[140,58];
+const TILT={v:0,lo:true,hi:false,tool:null};
+const NOTE_PROF={
+ inkjet:{name:'Wydruk z drukarki atramentowej na zwykłym papierze',core:['paper','print','uv','watermark','thread','holo','ovi','intaglio','mag'],opt:['ir','latent','micro'],modes:{paper:'thin',print:'inkjet',uv:'glow',watermark:'printed',thread:'printed',holo:'paint',ovi:'static',intaglio:'flat',mag:'none',ir:'all',latent:'none',micro:'blur'}},
+ laser:{name:'Kolorowa kopia z drukarki laserowej',core:['print','uv','holo','ovi','intaglio','micro'],opt:['watermark','thread','ir','paper','mag'],modes:{print:'laser',uv:'glow',holo:'paint',ovi:'static',intaglio:'flat',micro:'blur',watermark:'none',thread:'printed',ir:'all',paper:'thin',mag:'none'}},
+ offset:{name:'Fałszerstwo offsetowe z naklejonym hologramem',core:['holo','ovi','mag','serial'],opt:['watermark','uv','latent','register','ir'],modes:{holo:'sticker',ovi:'static',mag:'none',serial:'check',watermark:'printed',uv:'fake',latent:'none',register:'shift',ir:'none'}},
+ bleach:{name:'Wybielony banknot 10 FL z nadrukiem nominału 100',core:['watermark','thread','print'],opt:['holo','ir','serial'],modes:{watermark:'wrong',thread:'wrong',print:'inkjet',holo:'missing',ir:'all',serial:'mismatch'}},
+ hq:{name:'Wysokiej jakości fałszerstwo z drukiem wklęsłym',core:['micro','serial'],opt:['ir','register','latent','mag'],modes:{micro:'typo',serial:'check',ir:'none',register:'shift',latent:'none',mag:'none'}},
+};
+const DEFN={
+ paper:{name:'Papier i wymiary',hint:'Prawdziwy banknot: 140 × 72 mm, grubość ok. 0,1 mm, papier bawełniany – sztywny i szeleszczący. Zwykły papier jest miękki i gładki.'},
+ intaglio:{name:'Druk wklęsły (wypukłość)',view:'raking',gate:{z:3,area:'motif'},hint:'Druk wklęsły tworzy wyczuwalny relief: motyw, tytuł, nominał i znaki dla niewidomych. Światło boczne przy zoomie ≥ ×3 pokazuje wypukłość.'},
+ watermark:{name:'Znak wodny',view:'trans',gate:{z:1.5,area:'wm'},hint:'Pod światło: znak wodny uformowany w papierze ma płynne przejścia od jasnych do ciemnych partii i nie jest widoczny w świetle odbitym. Sprawdź też, czy pokazuje właściwy nominał.'},
+ thread:{name:'Nitka zabezpieczająca',view:'trans',gate:{z:4,area:'thread'},hint:'Pod światło nitka jest ciągłą ciemną linią z mikrotekstem (zoom ≥ ×4). W świetle odbitym widać ją tylko w „okienkach”.'},
+ register:{name:'Recto-verso (pod światło)',view:'trans',gate:{z:3,area:'reg'},hint:'Symbol w lewym górnym rogu jest wydrukowany częściowo na awersie, częściowo na rewersie. Pod światło połówki muszą idealnie złożyć się w romb (zoom ≥ ×3).'},
+ holo:{name:'Hologram (przechylanie)',view:'normal',gate:{z:2,area:'holo',tilt:'both'},hint:'Przechylaj banknot suwakiem „Nachylenie” (od poniżej 20° do powyżej 60°), patrząc z bliska (≥ ×2) na pasek hologramu. Prawdziwy zmienia kolory i motyw.'},
+ ovi:{name:'Farba zmienna optycznie',view:'normal',gate:{z:2,area:'ovi',tilt:'both'},hint:'Duży nominał w prawym dolnym rogu jest drukowany farbą zmienną optycznie: przy nachylaniu zmienia kolor ze złotego na zielony.'},
+ latent:{name:'Obraz utajony',view:'normal',gate:{z:3,area:'latent',tilt:'hi'},hint:'W pasie poziomych linii pod podpisem ukryto nominał – pojawia się tylko pod ostrym kątem (nachylenie > 65°, zoom ≥ ×3).'},
+ micro:{name:'Mikrodruk',view:'normal',gate:{z:8,area:'micro'},hint:'Linia górnej i dolnej ramki to w rzeczywistości mikrodruk. Przy zoomie ≥ ×8 musi być ostry i bezbłędny.'},
+ print:{name:'Struktura druku (mikroskop)',view:'normal',gate:{z:6,area:'note'},hint:'Pod mikroskopem (zoom ≥ ×6) druk banknotowy to ciągłe, ostre linie. Drukarka atramentowa daje raster kolorowych kropek, laserowa – rozsypane grudki tonera.'},
+ serial:{name:'Numer seryjny',view:'normal',gate:{z:4,area:'serial'},hint:'Przybliż poziomy numer (≥ ×4). Numer poziomy i pionowy muszą być identyczne, a ostatnia cyfra to cyfra kontrolna.'},
+ uv:{name:'Lampa UV',view:'uv',gate:{z:1.2,area:'note'},hint:'W UV papier banknotowy pozostaje matowy, a świecą wtopione włókna i nadruki fluorescencyjne. Zwykły papier z wybielaczami optycznymi świeci cały.'},
+ ir:{name:'Podczerwień (IR)',view:'ir',gate:{z:1.2,area:'note'},hint:'W podczerwieni prawdziwy banknot pokazuje tylko wybrane elementy (prawą część i numery). Zwykłe farby są widoczne w całości.'},
+ mag:{name:'Detektor magnetyczny',view:'normal',probe:'mag',gate:{z:1},hint:'Przyłóż czujnik (kliknij) do numeru seryjnego lub motywu głównego. Prawdziwy banknot ma tam farbę magnetyczną.'},
+};
+const SETN=[['1. Dotyk i papier',['paper','intaglio']],['2. Pod światło',['watermark','thread','register']],['3. Przechylanie',['holo','ovi','latent']],['4. Lupa i mikroskop',['micro','print','serial']],['5. Urządzenia',['uv','ir','mag']]];
+Object.assign(AREA,{motif:'środek widoku na motywie głównym lub znakach dla niewidomych',wm:'środek widoku na znaku wodnym (lewe pole)',thread:'środek widoku na nitce',reg:'środek widoku na symbolu recto-verso (lewy górny róg)',holo:'środek widoku na pasku hologramu',ovi:'środek widoku na dużym nominale (prawy dolny róg)',latent:'środek widoku na pasie linii pod podpisem',micro:'środek widoku na linii ramki (mikrodruk)',note:'środek widoku na banknocie',serial:'środek widoku na poziomym numerze seryjnym'});
+const ALPH='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+function checkDigit(s){let v=ALPH.indexOf(s[0])+1+ALPH.indexOf(s[1])+1;for(let i=2;i<9;i++)v+=+s[i];return v%10}
+function serialFor(r){const a=pick(ALPH.split(''),r),b=pick(ALPH.split(''),r);let s=a+b;for(let i=0;i<7;i++)s+=Math.floor(r()*10);return s+checkDigit(s)}
+function rosette(x,cx,cy,R,n,k,col){x.strokeStyle=col;x.lineWidth=0.45;for(let j=0;j<n;j++){x.beginPath();for(let i=0;i<=320;i++){const t=i/320*6.2832,rr=R*(0.62+0.22*Math.sin(k*t+j*0.33)+0.08*Math.sin((k+3)*t-j*0.5));const X=cx+Math.cos(t)*rr,Y=cy+Math.sin(t)*rr;i?x.lineTo(X,Y):x.moveTo(X,Y)}x.stroke()}}
+function drawMotif(x,col){x.fillStyle=col;x.strokeStyle=col;
+ x.beginPath();x.moveTo(300,300);x.lineTo(318,282);x.lineTo(338,288);x.lineTo(352,280);x.lineTo(392,284);x.lineTo(410,296);x.lineTo(428,300);x.closePath();x.fill();
+ x.lineWidth=0.7;for(let Y=134;Y<284;Y+=2.2){const hw=10+(Y-130)/160*12;x.beginPath();x.moveTo(360-hw,Y);x.lineTo(360+hw,Y);x.stroke()}
+ x.lineWidth=0.5;for(let X=362;X<380;X+=1.6){x.beginPath();x.moveTo(X,140);x.lineTo(X+(X-360)*0.5,282);x.stroke()}
+ x.fillRect(344,124,32,5);x.lineWidth=1;x.strokeRect(348,104,24,20);x.beginPath();x.moveTo(346,104);x.lineTo(360,90);x.lineTo(374,104);x.fill();
+ x.lineWidth=0.5;for(let i=0;i<9;i++){const a=Math.PI+(-0.35+i*0.04);x.beginPath();x.moveTo(350,114);x.lineTo(350+Math.cos(a)*110,114+Math.sin(a)*66);x.stroke()}
+ x.lineWidth=0.6;for(let j=0;j<6;j++){x.beginPath();for(let X=262;X<=458;X+=3){const Y=302+j*4+Math.sin(X*0.08+j)*2;X===262?x.moveTo(X,Y):x.lineTo(X,Y)}x.stroke()}}
+function drawTitle(x,col){x.fillStyle=col;x.textAlign='center';x.font='bold 18px Georgia,serif';x.fillText('BANK NARODOWY ARKADII',420,58);x.font='12px Georgia,serif';x.fillText('STO FLORENÓW',420,76);x.textAlign='left'}
+function drawSmall100(x,col){x.fillStyle=col;x.font='bold 30px Georgia,serif';x.fillText('100',28,66)}
+function drawTactile(x,col){x.fillStyle=col;[300,308,316].forEach(y=>x.fillRect(30,y,20,4))}
+function regPieces(x,which,dx,dy,col){const[cx,cy]=REGC,s=13;x.fillStyle=col;x.save();x.translate(dx,dy);x.beginPath();
+ if(which==='front'){x.moveTo(cx-s,cy);x.lineTo(cx,cy-s);x.lineTo(cx,cy+s);x.closePath();x.fill();x.beginPath();x.arc(cx+6,cy,4,Math.PI,0);x.fill()}
+ else{x.moveTo(cx,cy-s);x.lineTo(cx+s,cy);x.lineTo(cx,cy+s);x.closePath();x.fill();x.fillStyle='#efe8d8';x.beginPath();x.arc(cx+6,cy,4,Math.PI,0);x.fill();x.fillStyle=col;x.beginPath();x.arc(cx-6,cy,4,0,Math.PI);x.fill()}x.restore()}
+function microprint(x,p,y){const m=p.t.micro?p.m.micro:'ok';x.fillStyle='#3e5a4c';
+ if(m==='blur'){const r=rng(p.seed+13);for(let X=24;X<676;X+=0.7)x.fillRect(X,y-0.7+r()*0.4,0.35+r()*0.4,0.5+r()*0.5);return}
+ const u=m==='typo'?'ARKADA·100·':'ARKADIA·100·';x.font='1.15px Georgia,serif';const w=x.measureText(u).width||8;for(let X=24;X<676-w;X+=w)x.fillText(u,X,y+0.4)}
+function wmShape(x,wrong,style){const ink=style==='flat'?'rgba(110,100,90,1)':null;
+ const body=()=>{x.beginPath();if(!wrong){x.moveTo(85,250);x.lineTo(105,250);x.lineTo(101,140);x.lineTo(89,140);x.closePath();x.rect(87,124,16,14);x.moveTo(85,124);x.lineTo(95,112);x.lineTo(105,124);x.closePath()}
+  else{x.arc(95,142,8,0,7);x.moveTo(93,150);x.rect(93,150,4,90);x.rect(80,160,30,4);x.moveTo(75,232);x.quadraticCurveTo(95,258,115,232);x.lineTo(112,230);x.quadraticCurveTo(95,250,78,230);x.closePath()}};
+ if(ink){x.fillStyle=ink;body();x.fill();x.font='bold 30px Georgia';x.fillText(wrong?'10':'100',wrong?80:70,300);return}
+ x.fillStyle=rad(95,190,10,110,[[0,'rgba(255,250,232,.55)'],[1,'rgba(255,250,232,0)']])(x);x.fillRect(0,60,190,280);
+ x.fillStyle=lin(80,0,110,0,[[0,'rgba(255,250,228,.95)'],[.55,'rgba(230,210,170,.8)'],[1,'rgba(110,85,45,.6)']])(x);body();x.fill();
+ x.font='bold 30px Georgia';x.fillStyle='rgba(255,248,225,.92)';x.fillText(wrong?'10':'100',wrong?80:70,300);x.fillStyle='rgba(120,95,55,.45)';x.fillText(wrong?'10':'100',(wrong?80:70)+1.5,301.5)}
+function fibers(x,p,glow){const r=rng(p.seed+3),n=glow?70:40;x.lineWidth=glow?0.9:0.6;
+ for(let i=0;i<n;i++){const X=24+r()*(W-48),Y=24+r()*(H-48),a=r()*6.28,l=5+r()*6;x.strokeStyle=glow?pick(['#ff4060','#40a8ff','#50ff90'],r):'rgba(205,180,60,.6)';if(glow){x.shadowColor=x.strokeStyle;x.shadowBlur=4}
+  x.beginPath();x.moveTo(X,Y);x.quadraticCurveTo(X+Math.cos(a+0.6)*l/2,Y+Math.sin(a+0.6)*l/2,X+Math.cos(a)*l,Y+Math.sin(a)*l);x.stroke()}x.shadowBlur=0}
+function compass(x,cx,cy,R){x.beginPath();x.arc(cx,cy,R,0,7);x.stroke();for(let i=0;i<8;i++){const a=i*Math.PI/4,l=i%2?R*0.6:R*1.1;x.beginPath();x.moveTo(cx,cy);x.lineTo(cx+Math.cos(a)*l,cy+Math.sin(a)*l);x.stroke()}}
+function drawNoteFront(x,p){x.fillStyle='#efe8d8';x.fillRect(0,0,W,H);
+ x.fillStyle=lin(150,0,W,0,[[0,'rgba(160,195,175,0)'],[.18,'rgba(160,195,175,.5)'],[1,'rgba(215,192,150,.5)']])(x);x.fillRect(0,0,W,H);
+ x.fillStyle=rad(95,190,10,120,[[0,'rgba(252,249,242,.95)'],[1,'rgba(252,249,242,0)']])(x);x.fillRect(0,40,190,300);
+ rosette(x,300,200,92,18,7,'rgba(60,105,85,.45)');rosette(x,640,285,38,12,9,'rgba(140,100,40,.45)');
+ x.strokeStyle='rgba(90,130,110,.55)';x.lineWidth=0.45;for(let j=0;j<12;j++){x.beginPath();for(let X=180;X<=555;X+=3){const Y=30+j*2.6+Math.sin(X*0.05+j*0.4)*3;X===180?x.moveTo(X,Y):x.lineTo(X,Y)}x.stroke()}
+ x.strokeStyle='#3e5a4c';x.lineWidth=1;x.strokeRect(12,12,W-24,H-24);x.strokeRect(19,19,W-38,H-38);microprint(x,p,15.5);microprint(x,p,H-15.5);
+ drawMotif(x,'#2f4b3e');drawTitle(x,'#2f4b3e');drawSmall100(x,'#2f4b3e');drawTactile(x,'#2f4b3e');
+ x.strokeStyle='rgba(60,90,75,.55)';x.lineWidth=0.7;for(let Y=LAT[1];Y<LAT[1]+LAT[3];Y+=2){x.beginPath();x.moveTo(LAT[0],Y);x.lineTo(LAT[0]+LAT[2],Y);x.stroke()}
+ regPieces(x,'front',0,0,'#2f4b3e');
+ if(p.t.thread&&p.m.thread==='printed'){x.fillStyle='rgba(120,120,115,.7)';x.fillRect(THX-1,0,2,H)}
+ else for(let Y=22;Y<H-20;Y+=34){x.fillStyle=lin(THX-2,0,THX+2,0,[[0,'#9aa0a2'],[.5,'#eef2f2'],[1,'#8a9092']])(x);x.fillRect(THX-2,Y,4,14)}
+ x.font='bold 12px "Courier New",monospace';x.fillStyle='#a32020';x.fillText(p.serialH,604,40);
+ x.save();x.translate(207,330);x.rotate(-Math.PI/2);x.fillStyle='#1d1d1d';x.fillText(p.serialV,0,0);x.restore();
+ x.strokeStyle='#2f4b3e';x.lineWidth=0.8;x.beginPath();x.moveTo(470,300);x.bezierCurveTo(485,285,490,315,505,298);x.bezierCurveTo(515,290,522,306,535,296);x.stroke();x.font='6px Georgia';x.fillStyle='#2f4b3e';x.fillText('PREZES BANKU',475,311);
+ if(p.t.watermark&&p.m.watermark==='printed'){x.globalAlpha=.22;wmShape(x,false,'flat');x.globalAlpha=1}
+ if(p.t.uv&&p.m.uv==='fake')fibers(x,p,false);
+ x.fillStyle='#efe8d8';x.fillRect(HOLO[0],0,HOLO[2],H)}
+function embossFrom(hm,src){const hb=mk(IW,IH),hbx=hb.getContext('2d');hbx.filter='blur(1.2px)';hbx.drawImage(hm,0,0);
+ const hd=hbx.getImageData(0,0,IW,IH).data,sd=src.getContext('2d').getImageData(0,0,IW,IH).data,out=mk(IW,IH),x=out.getContext('2d'),id=x.createImageData(IW,IH),d=id.data;
+ for(let y=1;y<IH-1;y++)for(let X=1;X<IW-1;X++){const i=y*IW+X,i4=i*4,gx=hd[(i-1)*4]-hd[(i+1)*4],gy=hd[(i-IW)*4]-hd[(i+IW)*4],v=lumOf(sd,i4)*0.35+100+(gx*1.6+gy*0.8)*1.6;d[i4]=v*1.03;d[i4+1]=v*0.98;d[i4+2]=v*0.9;d[i4+3]=255}
+ x.putImageData(id,0,0);return out}
+function noteView(p,v){if(p.views[v])return p.views[v];let c=mk(IW,IH),x=c.getContext('2d');
+ if(v==='normal'){x.scale(S,S);drawNoteFront(x,p)}
+ else if(v==='trans'){x.scale(S,S);x.fillStyle='#d8c493';x.fillRect(0,0,W,H);x.globalAlpha=.32;x.drawImage(noteView(p,'normal'),0,0,W,H);
+  x.save();x.translate(W,0);x.scale(-1,1);x.globalAlpha=.16;rosette(x,250,170,80,14,5,'rgba(60,40,20,1)');x.font='bold 40px Georgia';x.fillStyle='rgba(60,40,20,1)';x.fillText('100',60,300);x.restore();x.globalAlpha=1;
+  const wm=p.t.watermark?p.m.watermark:'ok';if(wm==='ok'||wm==='wrong')wmShape(x,wm==='wrong','multi');else if(wm==='printed'){x.globalAlpha=.35;wmShape(x,false,'flat');x.globalAlpha=1}
+  const th=p.t.thread?p.m.thread:'ok';
+  if(th!=='printed'){x.fillStyle='rgba(38,32,26,.88)';x.fillRect(THX-1.8,0,3.6,H);x.fillStyle='rgba(240,230,200,.95)';x.font='bold 2.2px Arial';for(let Y=10;Y<H;Y+=24){x.save();x.translate(THX-0.8,Y);x.rotate(Math.PI/2);x.fillText(th==='wrong'?'10 FL':'100 FL',0,0);x.restore()}}
+  else{x.fillStyle='rgba(120,120,115,.3)';x.fillRect(THX-1,0,2,H)}
+  const hm=p.t.holo?p.m.holo:'ok';if(hm!=='missing'){x.fillStyle=hm==='paint'?'rgba(80,75,65,.25)':'rgba(55,50,40,.5)';x.fillRect(HOLO[0],hm==='sticker'?20:0,HOLO[2],hm==='sticker'?H-40:H)}
+  regPieces(x,'front',0,0,'rgba(30,45,38,.9)');regPieces(x,'back',p.t.register?4:0,p.t.register?3:0,'rgba(30,45,38,.9)')}
+ else if(v==='uv'){x.scale(S,S);const m=p.t.uv?p.m.uv:'ok';x.fillStyle=m==='glow'?'#7f93f0':'#170c26';x.fillRect(0,0,W,H);x.globalAlpha=m==='glow'?0.45:0.16;x.drawImage(noteView(p,'normal'),0,0,W,H);x.globalAlpha=1;
+  if(m==='glow'){x.fillStyle='rgba(205,220,255,.3)';x.fillRect(0,0,W,H)}
+  if(m==='ok'){fibers(x,p,true);x.shadowColor='#c8ff70';x.shadowBlur=6;x.strokeStyle='rgba(205,255,120,.9)';x.lineWidth=1.2;compass(x,360,190,46);x.font='bold 12px "Courier New"';x.fillStyle='rgba(205,255,120,.95)';x.fillText(p.serialH,604,40);x.shadowBlur=0}
+  if(m==='fake')fibers(x,p,false)}
+ else if(v==='ir'){const g=pixMap(noteView(p,'normal'),l=>{const q=Math.min(255,l*1.05);return[q,q,q]}),m=p.t.ir?p.m.ir:'ok';x.fillStyle='#ebebe7';x.fillRect(0,0,IW,IH);
+  if(m==='all')x.drawImage(g,0,0);else if(m==='ok'){x.save();x.beginPath();x.rect(440*S,0,IW,IH);x.rect(196*S,240*S,16*S,100*S);x.clip();x.drawImage(g,0,0);x.restore()}}
+ else if(v==='raking'){const hm=mk(IW,IH),h=hm.getContext('2d');h.fillStyle='#808080';h.fillRect(0,0,IW,IH);h.scale(S,S);
+  if(!p.t.intaglio){h.globalAlpha=.85;drawMotif(h,'#ffffff');drawTitle(h,'#fff');drawSmall100(h,'#fff');drawTactile(h,'#fff');h.globalAlpha=1}
+  const r=rng(p.seed+9);h.fillStyle='rgba(255,255,255,.07)';for(let i=0;i<5000;i++)h.fillRect(r()*W,r()*H,1.2,1.2);c=embossFrom(hm,noteView(p,'normal'))}
+ p.views[v]=c;return c}
+function drawNoteOverlay(x,p){const th=TILT.v,hm=p.t.holo?p.m.holo:'ok',[hx,hy,hw,hh]=HOLO;x.save();x.translate(p.x,p.y);
+ if(hm==='ok'){const g=x.createLinearGradient(0,0,0,hh);for(let k=0;k<=6;k++)g.addColorStop(k/6,`hsla(${(th*6+k*55)%360},75%,${62+10*Math.sin(th*0.1+k)}%,.92)`);x.fillStyle=g;x.fillRect(hx,hy,hw,hh);
+  x.fillStyle='rgba(255,255,255,.6)';x.font='bold 13px Georgia';x.textAlign='center';for(let Y=40;Y<hh;Y+=70){if(th<45)x.fillText('100',hx+hw/2,Y);else{x.fillRect(hx+hw/2-3,Y-18,6,18);x.beginPath();x.moveTo(hx+hw/2-6,Y-18);x.lineTo(hx+hw/2,Y-26);x.lineTo(hx+hw/2+6,Y-18);x.fill()}}x.textAlign='left';
+  const sy=(th/90)*hh;x.fillStyle=lin(0,sy-30,0,sy+30,[[0,'rgba(255,255,255,0)'],[.5,'rgba(255,255,255,.6)'],[1,'rgba(255,255,255,0)']])(x);x.fillRect(hx,sy-30,hw,60)}
+ else if(hm==='sticker'){x.fillStyle=lin(hx,0,hx+hw,0,[[0,'#a9adb0'],[.5,'#e4e6e8'],[1,'#9a9ea2']])(x);x.fillRect(hx+3,hy+20,hw-6,hh-40);x.strokeStyle='rgba(60,60,60,.7)';x.lineWidth=0.6;x.strokeRect(hx+3,hy+20,hw-6,hh-40);x.fillStyle='rgba(255,255,255,.5)';for(let Y=40;Y<hh-30;Y+=22){x.beginPath();x.arc(hx+hw/2,Y,4,0,7);x.fill()}}
+ else if(hm==='paint'){x.fillStyle='#b8b8b4';x.fillRect(hx,hy,hw,hh)}
+ else{x.fillStyle='rgba(205,195,160,.45)';x.fillRect(hx+2,hy,hw-4,hh)}
+ const t=p.t.ovi?0:Math.max(0,Math.min(1,(th-20)/45)),c1=[184,144,42],c2=[40,125,78],cc=c1.map((v,i)=>v+(c2[i]-v)*t|0);
+ x.font='bold 46px Georgia';x.fillStyle=`rgb(${cc})`;x.fillText('100',OVI[0]+34,OVI[1]+42);
+ if(!p.t.latent&&th>65){x.save();x.beginPath();x.rect(LAT[0],LAT[1],LAT[2],LAT[3]);x.clip();x.globalAlpha=Math.min(1,(th-65)/20);x.font='bold 21px Georgia';x.fillStyle='rgba(40,70,58,.9)';x.fillText('100',LAT[0]+12,LAT[1]+19);x.restore()}
+ x.restore()}
+function noteDots(p,x0,y0,x1,y1){const T=4,laser=p.m.print==='laser';
+ for(let ty=Math.floor((y0-p.y)/T);ty*T<y1-p.y;ty++)for(let tx=Math.floor((x0-p.x)/T);tx*T<x1-p.x;tx++){const r=rng(p.seed^Math.imul(tx,73856093)^Math.imul(ty,19349663)),bx=tx*T,by=ty*T,[R,Gc,B]=pix(p,bx+T/2,by+T/2),X=p.x+bx,Y=p.y+by;
+  if(laser){for(let i=0;i<10;i++){const s=0.1+r()*0.4;ctx.fillStyle=`rgba(${R*0.55|0},${Gc*0.55|0},${B*0.55|0},.75)`;ctx.beginPath();ctx.ellipse(X+r()*T,Y+r()*T,s,s*(0.5+r()*0.6),r()*3,0,7);ctx.fill()}}
+  else{ctx.fillStyle='rgba(244,240,230,.5)';ctx.fillRect(X,Y,T,T);const w=[1-R/255,1-Gc/255,1-B/255],k=Math.min(...w),pr=[w[0]-k,w[1]-k,w[2]-k,k*1.4],cols=['rgba(0,160,210,.8)','rgba(210,0,120,.8)','rgba(235,210,0,.85)','rgba(20,20,20,.8)'],sum=pr.reduce((a,b)=>a+b,0)+0.001;
+   for(let i=0;i<30;i++){let u=r()*sum*1.2,ci=0;while(ci<4&&u>pr[ci]){u-=pr[ci];ci++}if(ci>3)continue;ctx.fillStyle=cols[ci];ctx.beginPath();ctx.arc(X+r()*T,Y+r()*T,0.16,0,7);ctx.fill()}}}}
+function noteLive(p){if(vw.z>=5){const V=viewportWorld();if(!(p.x+W<V.x0||p.x>V.x1||p.y+H<V.y0||p.y>V.y1)){ctx.save();ctx.beginPath();ctx.rect(p.x,p.y,W,H);ctx.clip();
+ if(!p.t.print){ctx.translate(p.x,p.y);drawNoteFront(ctx,p)}else noteDots(p,Math.max(V.x0,p.x),Math.max(V.y0,p.y),Math.min(V.x1,p.x+W),Math.min(V.y1,p.y+H));ctx.restore()}}drawNoteOverlay(ctx,p)}
+function noteArea(p,area,v){const lx=v.cx-p.x,ly=v.cy-p.y,inN=lx>=0&&lx<=W&&ly>=0&&ly<=H;if(!inN)return false;
+ switch(area){case'note':return true;case'motif':return(lx>290&&lx<440&&ly>85&&ly<330)||(lx>20&&lx<60&&ly>290&&ly<330);case'wm':return lx<190&&ly>90&&ly<320;case'thread':return Math.abs(lx-THX)<14;
+  case'reg':return Math.hypot(lx-REGC[0],ly-REGC[1])<26;case'holo':return lx>=HOLO[0]-6&&lx<=HOLO[0]+HOLO[2]+6;case'ovi':return lx>OVI[0]&&ly>OVI[1]-10;
+  case'latent':return lx>LAT[0]-8&&lx<LAT[0]+LAT[2]+8&&ly>LAT[1]-8&&ly<LAT[1]+LAT[3]+8;case'micro':return(Math.abs(ly-15.5)<6||Math.abs(ly-(H-15.5))<6)&&lx>24&&lx<676;case'serial':return lx>596&&lx<700&&ly>22&&ly<50}return false}
+const tiltOK=g=>!g||!g.tilt||(g.tilt==='both'?TILT.lo&&TILT.hi:TILT.v>65);
+function newNotes(r){ART={wcm:14,hcm:7.2,name:'Bank Narodowy Arkadii'};SC=null;C=null;W=700;H=360;IW=W*S;IH=H*S;
+ const nG=1+Math.floor(r()*3),list=[];for(let i=0;i<nG;i++)list.push({orig:true,profile:null,t:{}});
+ shuffle(Object.keys(NOTE_PROF),r).slice(0,5-nG).forEach(k=>list.push({orig:false,profile:k,t:rollTells(NOTE_PROF[k],r)}));shuffle(list,r);
+ P=list.map((p,i)=>{p.note=true;p.letter='ABCDE'[i];p.seed=(r()*1e9)|0;p.m=Object.assign({},p.profile?NOTE_PROF[p.profile].modes:{});p.views={};p.samples=[];p.notes={};p.umark='';
+  const sr=serialFor(r);p.serialH=p.serialV=sr;p.goodCheck=checkDigit(sr);
+  if(p.t.serial){if(p.m.serial==='mismatch')p.serialV=sr.slice(0,5)+((+sr[5]+1)%10)+sr.slice(6);else p.serialH=p.serialV=sr.slice(0,9)+((+sr[9]+3)%10)}
+  p.x=i<3?G+i*(W+G):G+(W+G)/2+(i-3)*(W+G);p.y=i<3?G:G*2+H;return p});BW=3*W+4*G;BH=2*H+3*G;TILT.v=0;TILT.lo=true;TILT.hi=false;const ti=document.getElementById('tilt');if(ti){ti.value=0;document.getElementById('tiltv').textContent='0°'}}
+function obsN(p,id){const t=p.t,m=p.m;switch(id){
+ case'paper':return t.paper?`Wymiary ${p.profile==='laser'?'139 × 71':'140 × 72'} mm, grubość 0,085 mm. Papier celulozowy – miękki, gładki, nie szeleści.`:'Wymiary 140 × 72 mm, grubość 0,105 mm. Papier bawełniany – sztywny, charakterystycznie szeleszczący.';
+ case'intaglio':return t.intaglio?'Powierzchnia całkowicie płaska – brak wypukłego druku, znaki dla niewidomych niewyczuwalne.':'Wyraźny relief: motyw główny, tytuł, nominał i znaki dla niewidomych są wypukłe i wyczuwalne pod palcem.';
+ case'watermark':return{ok:'Pod światło widać latarnię morską i nominał 100 z płynnymi przejściami od jasnych do ciemnych partii; w świetle odbitym znak jest niewidoczny.',printed:'Szary, płaski wizerunek bez jasnych partii – widoczny także w świetle odbitym.',none:'Brak znaku wodnego.',wrong:'Znak wodny wielotonowy, ale przedstawia kotwicę i nominał 10.'}[t.watermark?m.watermark:'ok'];
+ case'thread':return{ok:'Pod światło ciągła ciemna nitka z jasnym mikrotekstem „100 FL”; w świetle odbitym widoczna w okienkach.',printed:'W świetle odbitym szara linia, a pod światło brak ciągłej nitki – to nadruk.',wrong:'Ciągła nitka z mikrotekstem „10 FL”.'}[t.thread?m.thread:'ok'];
+ case'register':return t.register?'Połówki symbolu przesunięte względem siebie – nie składają się w romb.':'Pod światło połówki z awersu i rewersu idealnie składają się w romb.';
+ case'holo':return{ok:'Przy zmianie nachylenia hologram zmienia kolory, a motyw przechodzi z nominału 100 w latarnię.',sticker:'Srebrny pasek, ale obraz się nie zmienia; widoczna krawędź naklejki.',paint:'Szara farba imitująca folię – brak efektu optycznego.',missing:'Brak paska foliowego – ślady kleju po usuniętej folii.'}[t.holo?m.holo:'ok'];
+ case'ovi':return t.ovi?'Nominał 100 pozostaje złoty przy każdym kącie.':'Nominał 100 zmienia kolor ze złotego na zielony przy nachylaniu.';
+ case'latent':return t.latent?'Pod żadnym kątem nie pojawia się ukryty obraz.':'Pod ostrym kątem w pasie linii pojawia się ukryty nominał 100.';
+ case'micro':return{ok:'Mikrodruk „ARKADIA·100·” ostry i czytelny.',blur:'Zamiast liter – rozmyta linia kropek, tekstu nie da się odczytać.',typo:'Mikrodruk ostry, ale z błędem: „ARKADA·100·”.'}[t.micro?m.micro:'ok'];
+ case'print':return{ok:'Linie giloszy ciągłe i ostre, kolory nadrukowane pełnymi liniami.',inkjet:'Obraz złożony z drobnych kolorowych kropek (C, M, Y, K) – raster drukarki atramentowej.',laser:'Nieregularne grudki tonera rozsypane wokół linii.'}[t.print?m.print:'ok'];
+ case'serial':return`Numer poziomy: ${p.serialH}; numer pionowy: ${p.serialV}.`;
+ case'uv':return{ok:'Papier matowy; świecą wtopione włókna (czerwone, niebieskie, zielone), żółtozielona róża wiatrów i numer seryjny.',glow:'Cały papier świeci jasnoniebiesko, brak świecących włókien i nadruków.',fake:'Papier matowy, ale „włókna” są nadrukiem jednego koloru, widocznym też w świetle dziennym; brak róży wiatrów.'}[t.uv?m.uv:'ok'];
+ case'ir':return{ok:'W podczerwieni widoczna tylko prawa część banknotu i numery – reszta zanika.',all:'W podczerwieni widoczny cały wzór banknotu.',none:'W podczerwieni banknot jest pusty – znikają także numery.'}[t.ir?m.ir:'ok'];
+ case'mag':return t.mag?'Brak sygnału magnetycznego w numerze seryjnym i motywie głównym.':'Czujnik wykrywa farbę magnetyczną w numerze seryjnym i motywie głównym.'}}
+function whyN(p,id){const m=p.m;return({paper:()=>'Papier celulozowy, cieńszy (0,085 mm)'+(p.profile==='laser'?' i pomniejszony format':'')+' – nie papier banknotowy.',intaglio:()=>'Brak druku wklęsłego – płaski nadruk.',
+ watermark:()=>({printed:'Znak wodny wydrukowany, a nie uformowany w papierze.',none:'Brak znaku wodnego.',wrong:'Znak wodny niższego nominału – papier z wybielonego banknotu 10 FL.'})[m.watermark],
+ thread:()=>m.thread==='printed'?'Nitka nadrukowana, nie wtopiona w papier.':'Nitka z banknotu 10 FL – wybielony banknot niższego nominału.',register:()=>'Recto-verso nie pasuje – awers i rewers drukowane osobno.',
+ holo:()=>({sticker:'Naklejka bez zmiany obrazu przy przechylaniu.',paint:'Farba imitująca hologram.',missing:'Usunięty hologram – ślady po wybielaniu banknotu.'})[m.holo],ovi:()=>'Farba bez zmiany koloru – imitacja OVI.',latent:()=>'Brak obrazu utajonego.',
+ micro:()=>m.micro==='blur'?'Mikrodruk nieczytelny – druk zbyt mało precyzyjny.':'Błąd w mikrodruku („ARKADA”).',print:()=>m.print==='laser'?'Grudki tonera – kopia laserowa.':'Raster drukarki atramentowej.',
+ serial:()=>m.serial==='mismatch'?'Numer poziomy różni się od pionowego.':`Zła cyfra kontrolna – zgodnie z regułą powinna być ${checkDigit(p.serialH)}.`,
+ uv:()=>m.uv==='glow'?'Papier z wybielaczami optycznymi – świeci w UV.':'Nadrukowane imitacje włókien, brak nadruków fluorescencyjnych.',ir:()=>m.ir==='all'?'Cały wzór widoczny w IR – zwykłe farby drukarskie.':'Brak farb aktywnych w IR – numery niewidoczne.',mag:()=>'Brak farby magnetycznej.'}[id]||(()=>''))()}
+
+/* =====================================================================
+   PAMIĘĆ EKSPERTA
+   ===================================================================== */
+const MEM={phase:0,left:0,iv:0,lens:null,reveal:false,base:null,seed:0};
+function bboxOf(s){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;contour(s).forEach(q=>{x0=Math.min(x0,q[0]);y0=Math.min(y0,q[1]);x1=Math.max(x1,q[0]);y1=Math.max(y1,q[1])});return[x0,y0,x1,y1]}
+function cloneShape(s){const o={...s};if(s.pts)o.pts=s.pts.map(q=>q.slice());return o}
+function xform(s,fn){if(s.t==='rect'){const a=fn([s.x,s.y]),b=fn([s.x+s.w,s.y+s.h]);s.x=Math.min(a[0],b[0]);s.y=Math.min(a[1],b[1]);s.w=Math.abs(b[0]-a[0]);s.h=Math.abs(b[1]-a[1])}
+ else if(s.t==='ell'){const c=fn([s.cx,s.cy]),e=fn([s.cx+s.rx,s.cy+s.ry]);s.cx=c[0];s.cy=c[1];s.rx=Math.abs(e[0]-c[0]);s.ry=Math.abs(e[1]-c[1])}else s.pts=s.pts.map(fn)}
+function genMut(r,L,used){const cands=L.map((s,i)=>({s,i})).filter(({s,i})=>['rect','ell','poly'].includes(s.t)&&!s.hidden&&!s.noHit&&s.reg&&!used.has(i)).filter(({s})=>{const b=bboxOf(s),a=(b[2]-b[0])*(b[3]-b[1]);return a>15&&a<12000&&b[0]>-1&&b[2]<W+1&&b[1]>-1&&b[3]<H+1});
+ const type=pick(['shift','shift','scale','remove','tint','extra','sig'],r),cm=pxPerCm();
+ if(type==='sig'){const txt=ART.sig.text.replace(/(\d)(?!.*\d)/,d=>String((+d+1)%10));return{type,txt,box:[C.sig.x,C.sig.y-16,C.sig.x+C.sig.w,C.sig.y+6],desc:`inna ostatnia cyfra w sygnaturze („${txt}”)`}}
+ if(type==='extra'){const sky=!!SC.REG.niebo,bx=40+r()*(W-80),by=sky?18+r()*H*0.22:40+r()*(H-80);return{type,sky,bx,by,box:[bx-7,by-5,bx+7,by+5],desc:sky?'dodatkowy, maleńki ptak na niebie':'dodatkowa drobna plamka farby'}}
+ const c=pick(cands,r);used.add(c.i);const b0=bboxOf(c.s);
+ if(type==='shift'){const dx=(r()<.5?-1:1)*(4+r()*5),dy=r()<.5?0:(r()<.5?-1:1)*(2+r()*3);return{type,i:c.i,dx,dy,box:[b0[0]+Math.min(0,dx),b0[1]+Math.min(0,dy),b0[2]+Math.max(0,dx),b0[3]+Math.max(0,dy)],desc:`przesunięty element (${c.s.reg}) o ok. ${fmt((Math.hypot(dx,dy)/cm).toFixed(1))} cm`}}
+ if(type==='scale'){const k=r()<.5?0.82:1.2,cx=(b0[0]+b0[2])/2,cy=(b0[1]+b0[3])/2,e=Math.max(1,k);return{type,i:c.i,k,cx,cy,box:[cx-(cx-b0[0])*e,cy-(cy-b0[1])*e,cx+(b0[2]-cx)*e,cy+(b0[3]-cy)*e],desc:`element (${c.s.reg}) ${k>1?'powiększony':'pomniejszony'} o ok. ${Math.round(Math.abs(k-1)*100)}%`}}
+ if(type==='remove')return{type,i:c.i,box:b0,desc:`brak elementu (${c.s.reg})`};
+ const col=pick(['rgba(190,40,30,.38)','rgba(40,80,190,.38)','rgba(230,200,40,.4)','rgba(40,140,60,.38)'],r);return{type:'tint',i:c.i,col,box:b0,desc:`zmieniony odcień elementu (${c.s.reg})`}}
+function applyMuts(L0,muts,p){const L=L0.map(cloneShape),add=[];
+ for(const m of muts){const s=L[m.i];if(m.type==='shift')xform(s,q=>[q[0]+m.dx,q[1]+m.dy]);else if(m.type==='scale')xform(s,q=>[m.cx+(q[0]-m.cx)*m.k,m.cy+(q[1]-m.cy)*m.k]);
+  else if(m.type==='remove'){s.hidden=true;s.noHit=true}else if(m.type==='tint')add.push({...cloneShape(s),fill:m.col,noHit:true});
+  else if(m.type==='extra')add.push(m.sky?Sl([[m.bx-5,m.by-2],[m.bx,m.by+1],[m.bx+5,m.by-2]],'#3a3530',1.2):Se(null,m.bx,m.by,2.4,2,'rgba(40,30,20,.85)',{noHit:true}));
+  else if(m.type==='sig')p.sigText=m.txt}return L.concat(add)}
+function newMemory(r){setupScene(r);MEM.seed=(r()*1e9)|0;MEM.reveal=false;MEM.phase=1;MEM.lens=null;
+ const o={orig:true,profile:null,t:{},seed:MEM.seed,letter:'O'};basePainting(o,r);o.muts=[];o.x=G;o.y=G;P=[o];BW=W+2*G;BH=H+2*G;
+ MEM.left=MEM.time||60;clearInterval(MEM.iv);MEM.iv=setInterval(()=>{MEM.left--;memUI();if(MEM.left<=0)memPhase2(r)},1000);memUI()}
+function memPhase2(r){clearInterval(MEM.iv);if(MEM.phase!==1)return;MEM.phase=2;const o=P[0],base=o.shapes,list=[o];
+ for(let k=0;k<4;k++){const p={orig:false,profile:null,t:{},seed:MEM.seed,letter:''};basePainting(p,r);p.seed=MEM.seed;const used=new Set(),n=r()<0.4?2:1;p.muts=[];for(let j=0;j<n;j++)p.muts.push(genMut(r,base,used));
+  if(p.muts.filter(m=>m.type==='sig').length>1)p.muts.pop();p.shapes=applyMuts(base,p.muts,p);list.push(p)}
+ shuffle(list,r);P=list.map((p,i)=>{p.letter='ABCDE'[i];p.umark='';p.x=i<3?G+i*(W+G):G+(W+G)/2+(i-3)*(W+G);p.y=i<3?G:G*2+H;return p});BW=3*W+4*G;BH=2*H+3*G;sel=null;
+ fit();memUI();setVerdicts();onChange();toast('Oryginał zniknął. Oznacz falsyfikaty i wskaż oryginał.')}
+function memUI(){const t=document.getElementById('memtimer'),b=document.getElementById('memready');if(!t)return;
+ t.textContent=MEM.phase===1?`${MEM.left} s`:'Faza 2';b.style.display=MEM.phase===1?'':'none'}
+function memToolsHTML(){return`<div class="grp"><h3>Pamięć eksperta</h3><p class="hint">Faza 1: oglądaj oryginał przez lupę (najedź kursorem) i zapamiętuj szczegóły. Faza 2: oryginał znika, pojawia się 5 prawie identycznych obrazów – 4 falsyfikaty mają po 1–2 minimalne różnice (przesunięcie, rozmiar, odcień, brakujący lub dodatkowy element, cyfra w sygnaturze).</p>
+ <label class="cap">Czas oglądania: <select id="memtime">${[30,60,90,120].map(v=>`<option${v===+(MEM.time||60)?' selected':''}>${v}</option>`).join('')}</select> s</label>
+ <div id="memtimer" style="font:600 34px Georgia,serif;color:var(--acc);margin:10px 0"></div><button class="btn primary" id="memready">Jestem gotów</button></div>`}
+
+/* =====================================================================
+   OZNACZENIA, WERDYKT, START
+   ===================================================================== */
+document.querySelectorAll('#markbtns button').forEach(b=>b.onclick=()=>{if(!sel)return;sel.umark=b.dataset.mark;if(MODE==='sculpt'){const bb=T3.busts.find(x=>x.q===sel);updateLabel(bb)}else render()});
+function setVerdicts(){const v=document.getElementById('verdicts');
+ v.innerHTML=MODE==='notes'?'<button class="btn primary" data-v="end">Zakończ ekspertyzę</button>':MODE==='frag'?'<button class="btn primary" data-v="yes" disabled>Pochodzi z oryginału</button> <button class="btn primary" data-v="no" disabled>To nie oryginał</button>':'<button class="btn primary" data-v="pick" disabled>To jest oryginał</button>';
+ v.querySelectorAll('button').forEach(b=>b.onclick=()=>verdict(b.dataset.v));document.getElementById('markbtns').style.display=MODE==='frag'||(MODE==='memory'&&MEM.phase===1)?'none':'';
+ document.querySelector('#markbtns [data-mark=excl]').textContent=MODE==='memory'||MODE==='notes'?'✕ Falsyfikat':'✕ Wykluczony';document.getElementById('markok').style.display=MODE==='notes'?'':'none';if(MODE==='memory'&&MEM.phase===1)v.innerHTML=''}
+function verdict(v){if(!sel&&MODE!=='notes')return;const m=document.getElementById('modal');let h='';
+ if(MODE==='notes'){const good=P.filter(p=>(p.orig&&p.umark==='ok')||(!p.orig&&p.umark==='excl')).length;
+  h=`<h2 style="color:${good===5?'var(--ok)':'var(--bad)'}">Poprawnie sklasyfikowano ${good} z 5 banknotów.</h2>`;
+  h+=`<table class="mx"><tr><th>Zabezpieczenie</th>${P.map(p=>`<th>${p.letter}<br><small>${p.orig?'prawdziwy':'fałszywy'} · ${p.umark==='ok'?'oznaczono ✓':p.umark==='excl'?'oznaczono ✕':'bez oznaczenia'}</small></th>`).join('')}</tr>`+
+   TLIST.map(t=>`<tr><td>${t.name}</td>${P.map(p=>`<td>${p.t[t.id]?'<span class="x">✖</span>':'<span class="v">✓</span>'}${p.notes[t.id]?'':' <small class="nb">(nie badano)</small>'}</td>`).join('')}</tr>`).join('')+'</table>';
+  h+=P.filter(p=>!p.orig).map(p=>`<div class="cp"><b>Banknot ${p.letter} – ${NOTE_PROF[p.profile].name}</b><ul>${TLIST.filter(t=>p.t[t.id]).map(t=>`<li>${t.name}: ${whyN(p,t.id)}</li>`).join('')}</ul></div>`).join('')}
+ else 
+ if(MODE==='memory'){const orig=P.find(p=>p.orig),ok=sel===orig,good=P.filter(p=>!p.orig&&p.umark==='excl').length,bad=orig.umark==='excl';
+  h=`<h2 style="color:${ok?'var(--ok)':'var(--bad)'}">${ok?`Trafnie! Oryginałem jest obraz ${orig.letter}.`:`Pudło – wskazano obraz ${sel.letter}, a oryginałem jest obraz ${orig.letter}.`}</h2><div class="cp">Poprawnie oznaczone falsyfikaty: <b>${good}/4</b>${bad?' · oryginał błędnie oznaczony jako falsyfikat':''}.</div>`+
+   P.map(p=>`<div class="cp"><b>Obraz ${p.letter} – ${p.orig?'oryginał':'falsyfikat'}</b>${p.umark==='excl'?' <small class="nb">(oznaczony jako falsyfikat)</small>':''}${p.orig?'':`<ul>${p.muts.map(q=>`<li>${q.desc}</li>`).join('')}</ul>`}</div>`).join('')+'<div class="cp">Po zamknięciu różnice zostaną zaznaczone na planszy czerwonymi okręgami.</div>';MEM.reveal=true;render()}
+ else if(MODE==='frag'){const p=P[0],ok=(v==='yes')===p.orig,d=descItems();h=`<h2 style="color:${ok?'var(--ok)':'var(--bad)'}">${ok?'Trafnie!':'Pudło.'} Fragment ${p.orig?'POCHODZI':'NIE pochodzi'} z oryginału.</h2>`;
+  h+=`<table class="mx"><tr><th>Badanie</th><th>Opis oryginału</th><th>Fragment</th><th></th></tr>`+TLIST.filter(t=>d[t.id]).map(t=>{const bad=p.t[t.id];return`<tr><td>${t.name}${p.notes[t.id]?'':' <small class="nb">(nie badano)</small>'}</td><td style="text-align:left">${d[t.id]}</td><td style="text-align:left">${bad?whyBad(p,t.id):t.id==='back'?`zgodne (${p.thread} nitek/cm)`:'zgodne z opisem'}</td><td>${bad?'<span class="x">✖</span>':'<span class="v">✓</span>'}</td></tr>`}).join('')+'</table>'}
+ else{const orig=P.find(p=>p.orig),ok=sel===orig,noun=MODE==='sculpt'?'rzeźba':'obraz';
+  h=`<h2 style="color:${ok?'var(--ok)':'var(--bad)'}">${ok?`Trafnie! Oryginałem jest ${noun} ${orig.letter}.`:`Pudło – wskazano ${noun} ${sel.letter}, a oryginałem jest ${noun} ${orig.letter}.`}</h2>`;
+  const rows=TLIST.map(t=>t.id);if(MODE==='paint5'&&P.some(p=>p.t.mark))rows.push('mark');const nm=Object.assign({},EXTRA,...TLIST.map(t=>({[t.id]:t.name})));
+  h+=`<table class="mx"><tr><th>Badanie</th>${P.map(p=>`<th>${p.letter}<br><small>${p.orig?'oryginał':'kopia'}${p.umark?` · ${p.umark==='excl'?'wykluczono':'podejrzewano'}`:''}</small></th>`).join('')}</tr>`+
+   rows.map(id=>`<tr><td>${nm[id]}</td>${P.map(p=>`<td>${p.t[id]?'<span class="x">✖</span>':'<span class="v">✓</span>'}${p.notes[id]?'':' <small class="nb">(nie badano)</small>'}</td>`).join('')}</tr>`).join('')+'</table>';
+  const PR=MODE==='sculpt'?SPROF:PROFILES;h+=P.filter(p=>!p.orig).map(p=>`<div class="cp"><b>${MODE==='sculpt'?'Rzeźba':'Obraz'} ${p.letter} – ${PR[p.profile].name}</b><ul>${rows.filter(id=>p.t[id]).map(id=>`<li>${nm[id]}: ${whyBad(p,id)}</li>`).join('')}</ul></div>`).join('');
+  if(MODE==='paint5'){const herr=[];if(orig.retouch)herr.push('ciemne plamy w UV to udokumentowane retusze z konserwacji w 1961 r.');if(orig.warGap)herr.push('luka w proweniencji 1939–1951 dotyczy wojny i sama nie przesądza o fałszerstwie');if(herr.length)h+=`<div class="cp"><b>Obraz ${orig.letter} – oryginał.</b> Pułapki: ${herr.join('; ')}.</div>`;
+   h+=`<div class="cp">Gęstość płótna: katalog ${C.thread} nitek/cm; ${P.map(p=>`${p.letter}: ${p.thread}`).join(', ')}.</div>`}}
+ h+=checkReport();h+=`<div style="display:flex;gap:8px;margin-top:12px"><button class="btn primary" id="mnew">Nowa partia</button><button class="btn" id="mclose">Wróć do stołu</button></div>`;
+ document.getElementById('mbox').innerHTML=h;m.classList.add('show');document.getElementById('mnew').onclick=()=>{m.classList.remove('show');newGame()};document.getElementById('mclose').onclick=()=>m.classList.remove('show')}
+function setCase(){const e=document.getElementById('case');
+ if(MODE==='notes')e.textContent='Weryfikacja banknotów: 100 florenów Banku Narodowego Arkadii (waluta fikcyjna). Na stole 5 banknotów – część prawdziwa, część fałszywa. Sprawdź wszystkie zabezpieczenia i oznacz każdy banknot.';else
+ if(MODE==='memory')e.textContent=`Pamięć eksperta: „${ART.title}” – ${ART.name} (${ART.life}). Zapamiętaj oryginał, a potem wskaż go wśród prawie identycznych falsyfikatów. (Artyści i dzieła są fikcyjne.)`;else
+ if(MODE==='sculpt')e.textContent='Sprawa: „Popiersie Heleny”, Stanisław Rudnicki (1840–1905), 1888, brąz, wys. 52 cm. Na postumentach 5 odlewów – jeden jest oryginałem. (Artyści i dzieła są fikcyjne.)';
+ else if(MODE==='frag')e.textContent=`Sprawa: fragment obrazu, który może pochodzić z zaginionego dzieła „${ART.title}” – ${ART.name} (${ART.life}), ${ART.year}. Oryginał znany tylko z opisu. (Artyści i dzieła są fikcyjne.)`;
+ else e.textContent=`Sprawa: „${ART.title}”, przypisywany: ${ART.name} (${ART.life}), ${ART.year}, olej na płótnie, ${fmt(ART.wcm)} × ${fmt(ART.hcm)} cm. Na stole 5 obrazów – jeden jest oryginałem. (Artyści i dzieła są fikcyjne.)`}
+async function newGame(){MODE=document.getElementById('mode').value;const r=rng((Math.random()*1e9)|0);sel=null;tool=null;REFC=null;
+ document.getElementById('artist').style.display=MODE==='sculpt'||MODE==='notes'?'none':'';document.getElementById('tiltw').style.display=MODE==='notes'?'':'none';const is3=MODE==='sculpt';cv.style.display=is3?'none':'block';document.getElementById('three').style.display=is3?'block':'none';
+ document.getElementById('help').textContent=is3?'Przeciągnij – obracaj · prawy przycisk / Shift – przesuń · kółko / szczypanie – przybliż · kliknij rzeźbę – wybierz':'Kółko myszy / szczypanie – zoom (do ×24) · przeciągnij – przesuń · kliknij obiekt – wybierz';
+ document.getElementById('zsig').textContent=is3?'Tył cokołu':MODE==='notes'?'Numer':'Sygnatura';
+ document.querySelector('.zoom').style.display=MODE==='memory'?'none':'';if(MODE!=='memory'){clearInterval(MEM.iv);MEM.phase=0}else MEM.phase=1;
+ if(MODE==='memory')document.getElementById('help').textContent='Najedź kursorem – lupa ×4 · kliknij obraz – wybierz';
+ buildToolDefs();setVerdicts();
+ if(is3){document.getElementById('panel').innerHTML='<div class="obs">Ładowanie sceny 3D…</div>';try{await loadThree()}catch(e){document.getElementById('panel').innerHTML='<div class="obs">Nie udało się wczytać biblioteki 3D (three.js). Sprawdź połączenie z internetem.</div>';return}
+  init3D();newSculpt(r);build3Scene()}
+ else{if(MODE==='frag')newFrag(r);else if(MODE==='memory')newMemory(r);else if(MODE==='notes')newNotes(r);else newPaint5(r);fit()}
+ setCase();buildTools();onChange()}
+document.getElementById('zin').onclick=()=>{if(MODE==='sculpt')return zoom3(1/1.4);const r=cv.getBoundingClientRect();zoomAt(r.width/2,r.height/2,1.6)};
+document.getElementById('zout').onclick=()=>{if(MODE==='sculpt')return zoom3(1.4);const r=cv.getBoundingClientRect();zoomAt(r.width/2,r.height/2,1/1.6)};
+document.getElementById('zfit').onclick=()=>{if(MODE==='sculpt'){anim3(new THREE.Vector3(0,1.15,0),5.6,0,0.16);return}fit()};
+document.getElementById('zsel').onclick=()=>{if(!sel)return;if(MODE==='sculpt'){const b=T3.busts.find(b=>b.q===sel);anim3(b.center.clone(),0.9,0,0.1);return}focusRect(sel.x-40,sel.y-40,W+80,H+80)};
+document.getElementById('zsig').onclick=()=>{if(!sel)return;if(MODE==='sculpt'){const b=T3.busts.find(b=>b.q===sel);anim3(new THREE.Vector3(b.center.x,1.05,0),0.4,Math.PI,0.15);return}if(sel.note)return focusRect(sel.x+598,sel.y+26,100,22);focusRect(sel.x+C.sig.x-14,sel.y+C.sig.y-26,C.sig.w+28,40)};
+document.getElementById('tilt').oninput=e=>{TILT.v=+e.target.value;if(TILT.v<20)TILT.lo=true;if(TILT.v>60)TILT.hi=true;document.getElementById('tiltv').textContent=TILT.v+'°';render();scheduleGates()};
+document.getElementById('artist').innerHTML='<option value="">Losowy artysta</option>'+ARTISTS.map(a=>`<option value="${a.id}">${a.name} – ${({pejzaz:'pejzaż',portret:'portret',martwa:'martwa natura',marina:'marina'})[a.scene]}</option>`).join('');
+document.getElementById('newgame').onclick=newGame;document.getElementById('mode').onchange=newGame;document.getElementById('artist').onchange=newGame;
+new ResizeObserver(resize).observe(cv);
+newGame();
+</script>
+</body>
+</html>
