@@ -28,14 +28,14 @@ function verdict(v){if(!sel&&!KIND)return;const m=document.getElementById('modal
   if(MODE==='paint5'){const herr=[];if(orig.retouch)herr.push('ciemne plamy w UV to udokumentowane retusze z konserwacji w 1961 r.');if(orig.warGap)herr.push('luka w proweniencji 1939–1951 dotyczy wojny i sama nie przesądza o fałszerstwie');if(herr.length)h+=`<div class="cp"><b>Obraz ${orig.letter} – oryginał.</b> Pułapki: ${herr.join('; ')}.</div>`;
    h+=`<div class="cp">Gęstość płótna: katalog ${C.thread} nitek/cm; ${P.map(p=>`${p.letter}: ${p.thread}`).join(', ')}.</div>`}}
  h+=checkReport();h+=`<div style="display:flex;gap:8px;margin-top:12px"><button class="btn primary" id="mnew">Nowa partia</button><button class="btn" id="mclose">Wróć do stołu</button></div>`;
- document.getElementById('mbox').innerHTML=h;m.classList.add('show');document.getElementById('mnew').onclick=()=>{m.classList.remove('show');newGame()};document.getElementById('mclose').onclick=()=>m.classList.remove('show')}
+ document.getElementById('mbox').innerHTML=h;m.classList.add('show');recordDone(/Trafnie|5 z 5/.test(h.slice(0,300)));document.getElementById('mnew').onclick=()=>{m.classList.remove('show');newGame()};document.getElementById('mclose').onclick=()=>m.classList.remove('show')}
 function setCase(){const e=document.getElementById('case');
  if(KIND)e.textContent=KIND.caseText();else
  if(MODE==='memory')e.textContent=`Pamięć eksperta: „${ART.title}” – ${ART.name} (${ART.life}). Zapamiętaj oryginał, a potem wskaż go wśród prawie identycznych falsyfikatów. (Artyści i dzieła są fikcyjne.)`;else
  if(MODE==='sculpt')e.textContent=SV.caseText();
  else if(MODE==='frag')e.textContent=`Sprawa: fragment obrazu, który może pochodzić z zaginionego dzieła „${ART.title}” – ${ART.name} (${ART.life}), ${ART.year}. Oryginał znany tylko z opisu. (Artyści i dzieła są fikcyjne.)`;
  else e.textContent=`Sprawa: „${ART.title}”, przypisywany: ${ART.name} (${ART.life}), ${ART.year}, olej na płótnie, ${fmt(ART.wcm)} × ${fmt(ART.hcm)} cm. Na stole 5 obrazów – jeden jest oryginałem. (Artyści i dzieła są fikcyjne.)`}
-async function newGame(){MODE=document.getElementById('mode').value;KIND=KINDS[MODE]||null;SV=SCULPT_VARIANTS[MODE]||null;if(SV)MODE='sculpt';const r=rng((Math.random()*1e9)|0);sel=null;tool=null;REFC=null;
+async function newGame(){CUR=document.getElementById('mode').value;MODE=CUR;KIND=KINDS[MODE]||null;SV=SCULPT_VARIANTS[MODE]||null;if(SV)MODE='sculpt';const r=rng((Math.random()*1e9)|0);sel=null;tool=null;REFC=null;
  document.getElementById('artist').style.display=MODE==='sculpt'||KIND?'none':'';document.getElementById('tiltw').style.display=KIND&&KIND.tilt?'':'none';const is3=MODE==='sculpt';cv.style.display=is3?'none':'block';document.getElementById('three').style.display=is3?'block':'none';
  document.getElementById('help').textContent=is3?'Przeciągnij – obracaj · prawy przycisk / Shift – przesuń · kółko / szczypanie – przybliż · kliknij rzeźbę – wybierz':'Kółko myszy / szczypanie – zoom (do ×24) · przeciągnij – przesuń · kliknij obiekt – wybierz';
  document.getElementById('zsig').textContent=is3?'Tył cokołu':KIND?KIND.focusLabel:'Sygnatura';
