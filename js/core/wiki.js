@@ -130,6 +130,7 @@ function wikiIllus(img){const key=JSON.stringify(img);if(WIMG[key])return WIMG[k
  else if(img.type==='icon'){out=wIcon(img.icon);cap='Schemat.'}
  return WIMG[key]={c:out,cap}}
 
+const wslug=t=>t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,70);
 let WIKI=null,WCAT='Słowniczek',WSEL=0,WTOK=0;
 function showWiki(cat){WIKI=WIKI||wikiData();if(cat)WCAT=cat;document.getElementById('wiki').classList.remove('hidden');renderWiki()}
 function wikiOpen(title){const a=WIKI.find(x=>x.title===title);if(!a)return;WCAT=a.cat;document.getElementById('wq').value='';WSEL=WIKI.filter(x=>x.cat===WCAT).indexOf(a);renderWiki()}
@@ -142,7 +143,7 @@ function renderWiki(){const q=(document.getElementById('wq').value||'').toLowerC
  document.querySelectorAll('.wli').forEach(el=>el.onclick=()=>{WSEL=+el.dataset.i;renderWiki()});
  const on=document.querySelector('.wli.on');if(on)on.scrollIntoView({block:'nearest'});
  const a=list[WSEL],wa=document.getElementById('wart');wa.scrollTop=0;
- wa.innerHTML=a?`<div class="sub">${a.cat}${a.tags?' · '+a.tags:''}</div><h2>${a.title}</h2>${a.img?'<figure class="wfig" id="wfig"><div class="wload"><i></i>Generowanie ilustracji…</div></figure>':''}${a.body}`:'';
+ wa.innerHTML=a?`<div class="sub">${a.cat}${a.tags?' · '+a.tags:''}</div><h2>${a.title}</h2>${a.img?(typeof WIMGS!=='undefined'&&WIMGS[wslug(a.title)]?(m=>`<figure class="wfig"><img src="img/wiki/${wslug(a.title)}.jpg" width="${m.w}" height="${m.h}" alt="${a.title}" loading="lazy"><figcaption>${m.cap}</figcaption></figure>`)(WIMGS[wslug(a.title)]):'<figure class="wfig" id="wfig"><div class="wload"><i></i>Generowanie ilustracji…</div></figure>'):''}${a.body}`:'';
  wa.querySelectorAll('.wgo').forEach(l=>l.onclick=()=>wikiOpen(l.dataset.t));
- if(a&&a.img){const tok=++WTOK;setTimeout(()=>{if(tok!==WTOK)return;let r=null;try{r=wikiIllus(a.img)}catch(e){console.warn(e)}const fg=document.getElementById('wfig');if(!fg||tok!==WTOK)return;
+ if(a&&a.img&&document.getElementById('wfig')){const tok=++WTOK;setTimeout(()=>{if(tok!==WTOK)return;let r=null;try{r=wikiIllus(a.img)}catch(e){console.warn(e)}const fg=document.getElementById('wfig');if(!fg||tok!==WTOK)return;
   if(!r||!r.c){fg.remove();return}const im=document.createElement('img');im.src=r.c.toDataURL('image/jpeg',.9);im.alt=a.title;fg.innerHTML='';fg.appendChild(im);const fc=document.createElement('figcaption');fc.textContent=r.cap;fg.appendChild(fc)},30)}}

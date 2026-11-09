@@ -2,6 +2,11 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.11.1] – 2026-11-09
+### Poprawione
+- Zawieszanie przeglądarki po wejściu do wiki: widok „odwrocie” rękopisu rozmywał każdą kreskę osobno (ok. 60 s pracy przeglądarki). Warstwa korozji jest teraz rysowana raz i rozmywana jednym przebiegiem – dotyczyło to też tego badania w samej grze.
+- Ilustracje wiki są teraz gotowymi plikami JPG (`img/wiki/`, generowane skryptem `tools/build-wiki-img.py`), więc wiki otwiera się od razu i nie obciąża przeglądarki.
+
 ## [1.11.0] – 2026-11-09
 ### Dodane
 - Wiki: rozbudowane artykuły (`js/data/wikitexts.js`) – wstęp oraz sekcje „Na czym polega”, „Co ujawnia”, „Na co uważać”, „Ciekawostka” dla technik; „Jak powstaje”, „Po czym poznać” dla metod fałszerskich; dłuższe hasła słowniczka i opisy obiektów.
