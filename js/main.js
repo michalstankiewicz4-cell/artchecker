@@ -16,3 +16,8 @@ for(const id of['hwiki','gwiki'])document.getElementById(id).onclick=()=>showWik
 document.getElementById('wclose').onclick=()=>document.getElementById('wiki').classList.add('hidden');
 document.getElementById('wq').oninput=()=>{WSEL=0;renderWiki()};
 setTimeout(()=>{showHome();setTimeout(hideLoader,120)},30);
+
+const showAbout=()=>{document.getElementById('aboutver').textContent='v'+VERSION;document.getElementById('about').classList.add('show')};
+for(const id of['habout','gabout'])document.getElementById(id).onclick=showAbout;
+document.getElementById('aboutclose').onclick=()=>document.getElementById('about').classList.remove('show');
+document.getElementById('about').onclick=e=>{if(e.target.id==='about')e.target.classList.remove('show')};

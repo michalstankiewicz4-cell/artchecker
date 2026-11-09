@@ -21,6 +21,8 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 
 Artyści, dzieła i waluta są fikcyjne.
 
+**Autor:** Michał Stankiewicz i Claude – zrobione przy pomocy vibecodingu i laboratorium sztuki (GameLaboratory).
+
 ## Co jest w grze
 - **Ekran główny** z kategoriami, podglądem trybu i postępem (zapis w przeglądarce).
 - **Stanowisko eksperta**: okno narzędzi z licznikiem zbadań, zwijane zlecenie, stół badawczy z przybliżeniem do ×24, dok obiektów (stan oznaczeń, flagi checklisty, postęp), prawe okno z zakładkami *Wynik badania / Checklista / Notatnik*.

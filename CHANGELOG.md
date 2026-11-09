@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.18.1] – 2026-11-09
+### Dodane
+- Okno **O programie** (przycisk na ekranie głównym i w górnym pasku gry): opis gry, autorzy – Michał Stankiewicz i Claude, zrobione przy pomocy vibecodingu i laboratorium sztuki (GameLaboratory), źródła zasobów i link do kodu.
+
 ## [1.18.0] – 2026-11-09
 ### Zmienione – dopracowane sceny obrazów (`js/paint/scenes.js`)
 - **Portret:** światło za głową, pasma i przedziałek we włosach, tęczówki z cieniem powieki i odblaskiem, rumieńce, światło na grzbiecie nosa i nozdrza, linia ust i odblask dolnej wargi, cień brody na szyi, miękkie fałdy sukni, odblask broszki.

@@ -32,6 +32,12 @@
 <div id="loader"><div class="ring"></div><b>Pracownia ekspertyz</b><span id="ltxt">Uruchamianie laboratorium…</span></div>
 <noscript><p style="padding:20px;color:#fff">Gra wymaga włączonej obsługi JavaScript.</p></noscript>
 <section class="sr-only"><h2>O grze</h2><p>Pracownia ekspertyz to darmowa, edukacyjna gra przeglądarkowa, w której wcielasz się w eksperta od autentyczności. Badasz obrazy, rzeźby z brązu i marmuru w 3D, banknoty, monety, znaczki pocztowe i rękopisy. Używasz lampy UV, reflektografii w podczerwieni, RTG, spektroskopii pigmentów, analizy XRF, mikroskopu, światła bocznego i dokumentów (proweniencja, certyfikat, katalog raisonné), aby odróżnić oryginał od kopii i falsyfikatu. Tryby: znajdź oryginał, zniszczony fragment, pamięć eksperta, weryfikacja banknotów, monet, znaczków i rękopisów.</p></section>
+<div id="about" class="modal" style="z-index:40"><div class="box" style="max-width:560px">
+  <h2>Pracownia ekspertyz <small id="aboutver" style="font-size:13px;color:#8fbfe8"></small></h2>
+  <p>Przeglądarkowa gra o rozpoznawaniu oryginałów i falsyfikatów: obrazy, rysunki, akwarele, rzeźby 3D, banknoty, monety, znaczki i rękopisy.</p>
+  <p><b>Autor:</b> Michał Stankiewicz i Claude – zrobione przy pomocy vibecodingu i laboratorium sztuki (GameLaboratory).</p>
+  <p style="font-size:13px;color:#8fbfe8">Artyści, dzieła i waluta są fikcyjne. Głowa popiersi 3D: „Lowpoly face model” – void (sketchfab.com/void22), CC BY 4.0, zmienione.<br>Kod: <a href="https://github.com/michalstankiewicz4-cell/artchecker" target="_blank" rel="noopener" style="color:#7fd6ff">github.com/michalstankiewicz4-cell/artchecker</a></p>
+  <button class="btn primary" id="aboutclose">Zamknij</button></div></div>
 <div id="wiki" class="hidden"><div id="wtop" class="hp"><h1>📖 Wiki eksperta</h1><input id="wq" type="search" placeholder="Szukaj: krakelura, XRF, ząbkowanie…"><button class="hbtn ghost" id="wclose">✕ Zamknij</button></div>
  <div id="wcats" class="hp"></div><div id="wlist" class="hp"></div><div id="wart" class="hp"></div></div>
 <header id="topbar">
@@ -41,12 +47,13 @@
   <div class="tsel"><span>Artysta</span><select id="artist"></select></div>
   <button class="btn primary" id="newgame">↻ Nowa partia</button>
   <button class="btn" id="gwiki">📖 Wiki</button>
+  <button class="btn" id="gabout">ℹ O programie</button>
 </header>
 <div id="home" class="hidden">
   <canvas id="homebg"></canvas>
   <canvas id="hfx"></canvas>
   <div id="htitle" class="hp"><div class="ico"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#8fd3ff" stroke-width="2.4"><path d="M4 15 20 5l16 10H4z"/><path d="M8 17v14M15 17v14M25 17v14M32 17v14M4 34h32"/></svg></div>
-   <div style="flex:1"><h1>Pracownia ekspertyz</h1><div class="sub">Laboratorium badań i autentyczności <span id="hver"></span></div></div><button class="hbtn ghost" id="hwiki">📖 Wiki</button></div>
+   <div style="flex:1"><h1>Pracownia ekspertyz</h1><div class="sub">Laboratorium badań i autentyczności <span id="hver"></span></div></div><button class="hbtn ghost" id="hwiki">📖 Wiki</button><button class="hbtn ghost" id="habout">ℹ O programie</button></div>
   <div id="hstats"><div class="hp chip"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="#8fd3ff" stroke-width="2.2"><circle cx="17" cy="12" r="6"/><path d="M5 31c1-7 6-11 12-11s11 4 12 11"/></svg><div id="hstat"></div></div></div>
   <div id="hcats"></div>
   <div id="hstage" class="hp"><canvas id="hcanvas"></canvas><div class="cap" id="hcap"></div></div>
