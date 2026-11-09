@@ -34,13 +34,13 @@
 <section class="sr-only"><h2>O grze</h2><p>Pracownia ekspertyz to darmowa, edukacyjna gra przeglądarkowa, w której wcielasz się w eksperta od autentyczności. Badasz obrazy, rzeźby z brązu i marmuru w 3D, banknoty, monety, znaczki pocztowe i rękopisy. Używasz lampy UV, reflektografii w podczerwieni, RTG, spektroskopii pigmentów, analizy XRF, mikroskopu, światła bocznego i dokumentów (proweniencja, certyfikat, katalog raisonné), aby odróżnić oryginał od kopii i falsyfikatu. Tryby: znajdź oryginał, zniszczony fragment, pamięć eksperta, weryfikacja banknotów, monet, znaczków i rękopisów.</p></section>
 <div id="wiki" class="hidden"><div id="wtop" class="hp"><h1>📖 Wiki eksperta</h1><input id="wq" type="search" placeholder="Szukaj: krakelura, XRF, ząbkowanie…"><button class="hbtn ghost" id="wclose">✕ Zamknij</button></div>
  <div id="wcats" class="hp"></div><div id="wlist" class="hp"></div><div id="wart" class="hp"></div></div>
-<header>
-  <button class="btn" id="homebtn">☰ Menu</button><button class="btn" id="gwiki">📖 Wiki</button>
-  <h1>Pracownia ekspertyz <small id="appver" style="font:12px system-ui;color:var(--mut)"></small></h1>
-  <select id="mode"></select>
-  <select id="artist"></select>
-  <button class="btn" id="newgame">Nowa partia</button>
-  <div class="case" id="case"></div>
+<header id="topbar">
+  <button class="btn" id="homebtn" title="Ekran główny">☰ Menu</button>
+  <div class="brand"><svg width="26" height="26" viewBox="0 0 40 40" fill="none" stroke="#8fd3ff" stroke-width="2.6"><path d="M4 15 20 5l16 10H4z"/><path d="M8 17v14M15 17v14M25 17v14M32 17v14M4 34h32"/></svg><h1>Pracownia ekspertyz <small id="appver"></small></h1></div>
+  <div class="tsel"><span>Tryb</span><select id="mode"></select></div>
+  <div class="tsel"><span>Artysta</span><select id="artist"></select></div>
+  <button class="btn primary" id="newgame">↻ Nowa partia</button>
+  <button class="btn" id="gwiki">📖 Wiki</button>
 </header>
 <div id="home" class="hidden">
   <canvas id="homebg"></canvas>
@@ -54,31 +54,44 @@
   <div id="hcards"></div>
 </div>
 <main>
-  <div class="col" id="tools"></div>
+  <section class="col win" id="toolwin">
+    <div class="whead"><span>Narzędzia</span><small id="toolcnt"></small></div>
+    <div class="wbody" id="tools"></div>
+  </section>
   <div id="center">
-    <div id="boardwrap">
-      <canvas id="board"></canvas>
-      <div id="three"></div>
-      <div class="viewlbl" id="viewlbl"></div>
-      <div class="zoom">
-        <button id="zout" title="Oddal">−</button><span id="zlv">×1</span><button id="zin" title="Przybliż">+</button>
-        <label id="tiltw" style="display:none;background:rgba(0,0,0,.65);padding:4px 8px;border-radius:6px;font-size:12px">Nachylenie <input type="range" id="tilt" min="0" max="90" value="0" style="vertical-align:middle;width:110px"> <span id="tiltv">0°</span></label><button id="zfit">Całość</button><button id="zsel">Wybrany</button><button id="zsig">Sygnatura</button>
+    <div id="brief" class="win"><b>Zlecenie</b><div class="case" id="case"></div><button id="briefx" title="Zwiń / rozwiń">▾</button></div>
+    <section id="boardwin" class="win">
+      <div class="whead"><span>Stół badawczy</span><small class="viewlbl" id="viewlbl"></small></div>
+      <div id="boardwrap">
+        <canvas id="board"></canvas>
+        <div id="three"></div>
+        <div class="brk"></div>
+        <div class="zoom">
+          <button id="zout" title="Oddal">−</button><span id="zlv">×1</span><button id="zin" title="Przybliż">+</button>
+          <label id="tiltw" style="display:none">Nachylenie <input type="range" id="tilt" min="0" max="90" value="0"> <span id="tiltv">0°</span></label><button id="zfit">Całość</button><button id="zsel">Wybrany</button><button id="zsig">Sygnatura</button>
+        </div>
+        <div class="help" id="help"></div>
+        <div id="toast"></div>
       </div>
-      <div class="help" id="help"></div>
-      <div id="toast"></div>
-    </div>
-    <div id="bar">
-      <span id="sel">Nie wybrano obiektu.</span>
-      <span id="markbtns">
-        <button class="btn m-susp" data-mark="susp">? Podejrzany</button>
-        <button class="btn m-excl" data-mark="excl">✕ Wykluczony</button>
-        <button class="btn" data-mark="ok" id="markok" style="border-color:var(--ok);display:none">✓ Prawdziwy</button>
-        <button class="btn" data-mark="">Bez oznaczenia</button>
-      </span>
-      <span id="verdicts"></span>
-    </div>
+    </section>
+    <section id="bar" class="win">
+      <div id="strip"></div>
+      <div class="dockr">
+        <span id="sel">Nie wybrano obiektu.</span>
+        <span id="markbtns">
+          <button class="btn m-susp" data-mark="susp">? Podejrzany</button>
+          <button class="btn m-excl" data-mark="excl">✕ Wykluczony</button>
+          <button class="btn m-ok" data-mark="ok" id="markok" style="display:none">✓ Prawdziwy</button>
+          <button class="btn" data-mark="">Bez oznaczenia</button>
+        </span>
+        <span id="verdicts"></span>
+      </div>
+    </section>
   </div>
-  <div class="col" id="right"><div id="panel"></div><div id="check"></div><div id="notes"></div></div>
+  <section class="col win" id="right">
+    <div class="tabs"><button data-tab="panel" class="on">Wynik badania</button><button data-tab="check">Checklista <i id="bcheck"></i></button><button data-tab="notes">Notatnik <i id="bnotes"></i></button></div>
+    <div class="wbody"><div id="panel" class="pane on"></div><div id="check" class="pane"></div><div id="notes" class="pane"></div></div>
+  </section>
 </main>
 <div class="modal" id="modal"><div class="box" id="mbox"></div></div>
 
@@ -105,6 +118,7 @@
 <script src="js/kinds/stamp.js"></script>
 <script src="js/kinds/manuscript.js"></script>
 <script src="js/modes/memory.js"></script>
+<script src="js/core/layout.js"></script>
 <script src="js/core/game.js"></script>
 <script src="js/core/home.js"></script>
 <script src="js/core/homefx.js"></script>

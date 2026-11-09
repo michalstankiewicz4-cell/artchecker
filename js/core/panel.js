@@ -42,7 +42,7 @@ function updateCheck(){const el=document.getElementById('check');
  if(!sel||(MODE==='memory'&&MEM.phase===1)){el.innerHTML='';return}const p=sel;p.check=p.check||{};const items=checkItems(),n=items.filter(([id])=>p.check[id]).length;
  el.innerHTML=`<h3>Checklista fałszerstwa – ${MODE==='frag'?'fragment':(p.kind?p.kind.noun.toLowerCase()+' ':MODE==='sculpt'?'rzeźba ':'obraz ')+p.letter}</h3><div class="cap">Zaznacz wszystko, co wskazuje, że ${MODE==='frag'?'fragment nie pochodzi z oryginału':'obiekt jest fałszywy'}.</div>`+
   items.map(([id,name])=>`<label class="${p.check[id]?'on':''}"><input type="checkbox" data-c="${id}" ${p.check[id]?'checked':''}>${name}</label>`).join('')+`<div class="cnt">Zaznaczone sygnały fałszerstwa: ${n}</div>`;
- el.querySelectorAll('input').forEach(i=>i.onchange=()=>{p.check[i.dataset.c]=i.checked;updateCheck();if(MODE!=='sculpt')render()})}
+ el.querySelectorAll('input').forEach(i=>i.onchange=()=>{p.check[i.dataset.c]=i.checked;updateCheck();updateDock();if(MODE!=='sculpt')render()})}
 function checkReport(){const items=checkItems(),nm=Object.fromEntries(items);let h='<h3 style="font:600 15px Georgia,serif;color:var(--acc);margin:14px 0 4px">Twoja checklista</h3>';
  h+=P.map(p=>{const c=p.check||{},hit=items.filter(([id])=>c[id]&&checkTruth(p,id)),miss=items.filter(([id])=>!c[id]&&checkTruth(p,id)),fa=items.filter(([id])=>c[id]&&!checkTruth(p,id));
   const who=MODE==='frag'?'Fragment':(p.kind?p.kind.noun+' ':MODE==='sculpt'?'Rzeźba ':'Obraz ')+p.letter;
@@ -50,14 +50,15 @@ function checkReport(){const items=checkItems(),nm=Object.fromEntries(items);let
   return`<div class="cp"><b>${who}</b> – trafne: <span class="v">${hit.length}</span>, pominięte: <span class="x">${miss.length}</span>, fałszywe alarmy: <span class="x">${fa.length}</span>`+
    (hit.length?`<br><small>✓ trafne: ${hit.map(i=>i[1]).join(', ')}</small>`:'')+(miss.length?`<br><small>○ pominięte: ${miss.map(i=>i[1]).join(', ')}</small>`:'')+(fa.length?`<br><small>✕ fałszywe alarmy: ${fa.map(i=>i[1]).join(', ')}</small>`:'')+'</div>'}).join('');
  return h}
-function updateNotes(){updateCheck();const n=document.getElementById('notes');
+function updateNotes(){updateNotes0();updateDock()}
+function updateNotes0(){updateCheck();const n=document.getElementById('notes');
  if(!sel){n.innerHTML='<h3>Notatnik</h3><div class="cap">Wybierz obiekt, aby zobaczyć notatki.</div>';return}
  const p=sel,names=Object.assign({},EXTRA,...TLIST.map(t=>({[t.id]:t.name})));const keys=Object.keys(p.notes);const used=TLIST.filter(t=>p.notes[t.id]).length;
  n.innerHTML=`<h3>Notatnik – ${MODE==='frag'?'fragment':'obiekt '+p.letter} (zbadano ${used}/${TLIST.length})</h3><ul>${keys.map(k=>{const v=p.notes[k];return(Array.isArray(v)?v:[v]).map(s=>`<li><span>${names[k]||k}:</span> ${s}</li>`).join('')}).join('')||'<li>Brak notatek.</li>'}</ul>`}
 function buildTools(){const el=document.getElementById('tools');
  if(MODE==='memory'){el.innerHTML=memToolsHTML();document.getElementById('memtime').onchange=e=>{MEM.time=+e.target.value;runNewGame()};document.getElementById('memready').onclick=()=>memPhase2(rng((Math.random()*1e9)|0));memUI();return}
  el.innerHTML=GROUPS.map(([g,ids])=>`<div class="grp"><h3>${g}</h3>${ids.map(id=>`<button class="tool" data-id="${id}">${TB[id].name}</button>`).join('')}</div>`).join('');
- el.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{tool=tool===b.dataset.id?null:b.dataset.id;onChange()})}
+ el.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{tool=tool===b.dataset.id?null:b.dataset.id;showTab('panel');onChange()})}
 function onChange(){if(tool!==TILT.tool){TILT.tool=tool;TILT.lo=TILT.v<20;TILT.hi=TILT.v>60}document.querySelectorAll('.tool').forEach(b=>{b.classList.toggle('on',b.dataset.id===tool);b.classList.toggle('used',P.some(p=>p.notes[b.dataset.id]))});
  const v=curView();document.getElementById('viewlbl').textContent='Widok: '+(MODE==='sculpt'?{normal:'światło dzienne',uv:'promieniowanie UV',xray:'RTG'}[v]||'światło dzienne':VIEWNAME[v]);
  cv.classList.toggle('probe',!!(tool&&TB[tool].probe));

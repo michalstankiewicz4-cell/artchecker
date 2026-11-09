@@ -2,7 +2,7 @@
 /* =====================================================================
    OZNACZENIA, WERDYKT, START
    ===================================================================== */
-document.querySelectorAll('#markbtns button').forEach(b=>b.onclick=()=>{if(!sel)return;sel.umark=b.dataset.mark;if(MODE==='sculpt'){const bb=T3.busts.find(x=>x.q===sel);updateLabel(bb)}else render()});
+document.querySelectorAll('#markbtns button').forEach(b=>b.onclick=()=>{if(!sel)return;sel.umark=b.dataset.mark;updateDock();if(MODE==='sculpt'){const bb=T3.busts.find(x=>x.q===sel);updateLabel(bb)}else render()});
 function setVerdicts(){const v=document.getElementById('verdicts');
  v.innerHTML=KIND?'<button class="btn primary" data-v="end">Zakończ ekspertyzę</button>':MODE==='frag'?'<button class="btn primary" data-v="yes" disabled>Pochodzi z oryginału</button> <button class="btn primary" data-v="no" disabled>To nie oryginał</button>':'<button class="btn primary" data-v="pick" disabled>To jest oryginał</button>';
  v.querySelectorAll('button').forEach(b=>b.onclick=()=>verdict(b.dataset.v));document.getElementById('markbtns').style.display=MODE==='frag'||(MODE==='memory'&&MEM.phase===1)?'none':'';
@@ -35,7 +35,7 @@ function setCase(){const e=document.getElementById('case');
  if(MODE==='sculpt')e.textContent=SV.caseText();
  else if(MODE==='frag')e.textContent=`Sprawa: fragment obrazu, który może pochodzić z zaginionego dzieła „${ART.title}” – ${ART.name} (${ART.life}), ${ART.year}. Oryginał znany tylko z opisu. (Artyści i dzieła są fikcyjne.)`;
  else e.textContent=`Sprawa: „${ART.title}”, przypisywany: ${ART.name} (${ART.life}), ${ART.year}, olej na płótnie, ${fmt(ART.wcm)} × ${fmt(ART.hcm)} cm. Na stole 5 obrazów – jeden jest oryginałem. (Artyści i dzieła są fikcyjne.)`}
-async function newGame(){CUR=document.getElementById('mode').value;MODE=CUR;KIND=KINDS[MODE]||null;SV=SCULPT_VARIANTS[MODE]||null;if(SV)MODE='sculpt';const r=rng((Math.random()*1e9)|0);sel=null;tool=null;REFC=null;
+async function newGame(){showTab('panel');CUR=document.getElementById('mode').value;MODE=CUR;KIND=KINDS[MODE]||null;SV=SCULPT_VARIANTS[MODE]||null;if(SV)MODE='sculpt';const r=rng((Math.random()*1e9)|0);sel=null;tool=null;REFC=null;
  document.getElementById('artist').style.display=MODE==='sculpt'||KIND?'none':'';document.getElementById('tiltw').style.display=KIND&&KIND.tilt?'':'none';const is3=MODE==='sculpt';cv.style.display=is3?'none':'block';document.getElementById('three').style.display=is3?'block':'none';
  document.getElementById('help').textContent=is3?'Przeciągnij – obracaj · prawy przycisk / Shift – przesuń · kółko / szczypanie – przybliż · kliknij rzeźbę – wybierz':'Kółko myszy / szczypanie – zoom (do ×24) · przeciągnij – przesuń · kliknij obiekt – wybierz';
  document.getElementById('zsig').textContent=is3?'Tył cokołu':KIND?KIND.focusLabel:'Sygnatura';

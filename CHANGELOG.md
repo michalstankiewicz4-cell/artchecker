@@ -2,6 +2,14 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.10.0] – 2026-11-09
+### Zmienione
+- Cała gra w stylu ekranu głównego (niebieski HUD): górny pasek, okna ze ściętymi rogami, przyciski, plansza i sala 3D w granatach, niebieskie paski przewijania wszędzie.
+- Nowy układ stanowiska: okno „Narzędzia” (z licznikiem zbadań wybranego obiektu), pasek „Zlecenie” (zwijany), okno „Stół badawczy” z narożnikami celownika i nazwą widoku w nagłówku.
+- Prawe okno z zakładkami: Wynik badania / Checklista / Notatnik (z licznikami); wybór narzędzia przełącza na „Wynik badania”.
+### Dodane
+- Dok obiektów pod stołem: kafelki A–E ze stanem oznaczenia, liczbą zbadań, flagami checklisty i paskiem postępu; kliknięcie wybiera obiekt i przybliża do niego (`js/core/layout.js`).
+
 ## [1.9.1] – 2026-11-09
 ### Usunięte
 - Linie skanowania na ekranie głównym (winieta zostaje).
