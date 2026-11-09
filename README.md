@@ -19,6 +19,8 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 
 Artyści, dzieła i waluta są fikcyjne.
 
+W grze jest ekran główny z postępem oraz **Wiki eksperta** – opisy technik badawczych, metod fałszerskich, obiektów i słowniczek pojęć.
+
 ## Uruchomienie lokalne
 Otwórz `index.html` w przeglądarce (skrypty są klasyczne, działają też z `file://`).
 Tryb 3D pobiera Three.js z CDN (cdnjs), więc wymaga internetu.
@@ -28,6 +30,9 @@ Tryb 3D pobiera Three.js z CDN (cdnjs), więc wymaga internetu.
 - [docs/ROADMAPA.md](docs/ROADMAPA.md) – plan rozwoju
 - [docs/POMYSLY.md](docs/POMYSLY.md) – bank pomysłów
 - [CHANGELOG.md](CHANGELOG.md) – historia wersji
+
+## SEO i udostępnianie
+Meta tagi, Open Graph / Twitter Card (miniatura `og-image.jpg` – zrzut ekranu startowego), JSON-LD, `robots.txt`, `sitemap.xml`. Po większej zmianie wyglądu ekranu głównego warto wygenerować nową miniaturę.
 
 ## Wersjonowanie
 [SemVer](https://semver.org/lang/pl/): numer w `js/version.js` (widoczny w nagłówku gry) + wpis w `CHANGELOG.md` przy każdej zmianie.

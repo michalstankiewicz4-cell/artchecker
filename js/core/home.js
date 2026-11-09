@@ -70,6 +70,10 @@ function renderHome(){const cats=homeCats(),cat=cats[HCAT],done=(store().done)||
    <div style="margin-top:8px"><button class="hbtn ghost${pct===100?' ok':''}" data-i="${i}"${act.length?'':' disabled'}>${pct===100?'✔ Zakończono':'▶ Rozpocznij'}</button></div></div>`}).join('');
  document.querySelectorAll('#hcards .hbtn').forEach(b=>b.onclick=()=>{HCAT=+b.dataset.i;HMODE=null;renderHome();window.scrollTo(0,0)});
  setTimeout(()=>{fitDraw(document.getElementById('hthumb'),preview(HMODE),false);fitDraw(document.getElementById('hcanvas'),preview(HMODE),true);document.getElementById('hcap').textContent=label||''},0)}
-function startMode(id){if(SOON.some(s=>s[0]===id))return;document.getElementById('mode').value=id;document.getElementById('home').classList.add('hidden');newGame()}
+function showLoader(t){document.getElementById('ltxt').textContent=t||'Przygotowywanie…';document.getElementById('loader').classList.remove('hidden')}
+function hideLoader(){document.getElementById('loader').classList.add('hidden')}
+function withLoader(fn,t){showLoader(t);setTimeout(async()=>{try{await fn()}finally{hideLoader()}},40)}
+const runNewGame=()=>withLoader(newGame,SCULPT_VARIANTS[document.getElementById('mode').value]?'Wczytywanie sceny 3D…':'Przygotowywanie stołu ekspertyz…');
+function startMode(id){if(SOON.some(s=>s[0]===id))return;document.getElementById('mode').value=id;document.getElementById('home').classList.add('hidden');runNewGame()}
 function showHome(){document.getElementById('home').classList.remove('hidden');homeBg();renderHome()}
 addEventListener('resize',()=>{if(!document.getElementById('home').classList.contains('hidden')){homeBg();renderHome()}});

@@ -128,3 +128,25 @@ small.nb{color:var(--mut)}
 .hbar>div{position:absolute;inset:0;width:0;background:linear-gradient(90deg,#2fd17a,#9cf0b8);box-shadow:0 0 10px #2fd17a}
 .hbar+small{font-size:12px;color:#9fc3e6}
 @media(max-width:1100px){#home{grid-template-columns:1fr;grid-template-rows:auto}#htitle,#hstats,#hcards{grid-column:auto}#hcards{grid-template-columns:1fr 1fr}#hstage{min-height:300px}}
+
+/* ===================== WIKI ===================== */
+#wiki{position:fixed;inset:0;z-index:30;background:rgba(3,10,22,.86);display:grid;grid-template-columns:300px 340px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:14px;padding:18px;color:#dbeafe;font-family:"Segoe UI",system-ui,sans-serif}
+#wiki.hidden{display:none}
+#wtop{grid-column:1/4;display:flex;gap:12px;align-items:center}
+#wtop h1{margin:0;font:600 24px "Segoe UI",system-ui;color:#eaf4ff;flex:1}
+#wq{background:rgba(10,30,60,.8);border:1px solid rgba(95,184,255,.5);color:#eaf4ff;padding:9px 12px;font-size:14px;width:320px}
+#wcats{display:flex;flex-direction:column;gap:8px;overflow:auto}
+#wcats .hbtn{justify-content:flex-start;text-align:left}#wcats .hbtn.on{border-color:#5fd0ff;box-shadow:0 0 14px rgba(60,180,255,.5)}
+#wlist{overflow:auto}
+.wli{padding:8px 10px;border-bottom:1px solid rgba(95,184,255,.15);cursor:pointer;font-size:14px}
+.wli small{display:block;color:#8fbfe8;font-size:11.5px}.wli:hover{background:rgba(60,140,230,.15)}.wli.on{background:rgba(60,140,230,.3);border-left:3px solid #5fd0ff}
+#wart{overflow:auto;font-size:15px;line-height:1.6}#wart h2{font-size:24px}#wart p{color:#cfe3f8}
+@media(max-width:1000px){#wiki{grid-template-columns:1fr;grid-template-rows:auto auto auto 1fr;overflow:auto}#wtop{grid-column:auto;flex-wrap:wrap}#wcats{flex-direction:row;flex-wrap:wrap}}
+
+/* ===================== LOADER ===================== */
+#loader{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 45%,#0e2a52,#030a16 70%);color:#cfe3f8;font:15px "Segoe UI",system-ui;transition:opacity .25s}
+#loader.hidden{opacity:0;pointer-events:none}
+#loader .ring{width:74px;height:74px;border-radius:50%;border:4px solid rgba(95,184,255,.18);border-top-color:#5fd0ff;box-shadow:0 0 24px rgba(60,180,255,.45);animation:spin 1s linear infinite}
+#loader b{font:600 22px "Segoe UI",system-ui;color:#eaf4ff;letter-spacing:.02em}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}

@@ -55,7 +55,7 @@ function updateNotes(){updateCheck();const n=document.getElementById('notes');
  const p=sel,names=Object.assign({},EXTRA,...TLIST.map(t=>({[t.id]:t.name})));const keys=Object.keys(p.notes);const used=TLIST.filter(t=>p.notes[t.id]).length;
  n.innerHTML=`<h3>Notatnik – ${MODE==='frag'?'fragment':'obiekt '+p.letter} (zbadano ${used}/${TLIST.length})</h3><ul>${keys.map(k=>{const v=p.notes[k];return(Array.isArray(v)?v:[v]).map(s=>`<li><span>${names[k]||k}:</span> ${s}</li>`).join('')}).join('')||'<li>Brak notatek.</li>'}</ul>`}
 function buildTools(){const el=document.getElementById('tools');
- if(MODE==='memory'){el.innerHTML=memToolsHTML();document.getElementById('memtime').onchange=e=>{MEM.time=+e.target.value;newGame()};document.getElementById('memready').onclick=()=>memPhase2(rng((Math.random()*1e9)|0));memUI();return}
+ if(MODE==='memory'){el.innerHTML=memToolsHTML();document.getElementById('memtime').onchange=e=>{MEM.time=+e.target.value;runNewGame()};document.getElementById('memready').onclick=()=>memPhase2(rng((Math.random()*1e9)|0));memUI();return}
  el.innerHTML=GROUPS.map(([g,ids])=>`<div class="grp"><h3>${g}</h3>${ids.map(id=>`<button class="tool" data-id="${id}">${TB[id].name}</button>`).join('')}</div>`).join('');
  el.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{tool=tool===b.dataset.id?null:b.dataset.id;onChange()})}
 function onChange(){if(tool!==TILT.tool){TILT.tool=tool;TILT.lo=TILT.v<20;TILT.hi=TILT.v>60}document.querySelectorAll('.tool').forEach(b=>{b.classList.toggle('on',b.dataset.id===tool);b.classList.toggle('used',P.some(p=>p.notes[b.dataset.id]))});

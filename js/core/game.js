@@ -28,7 +28,7 @@ function verdict(v){if(!sel&&!KIND)return;const m=document.getElementById('modal
   if(MODE==='paint5'){const herr=[];if(orig.retouch)herr.push('ciemne plamy w UV to udokumentowane retusze z konserwacji w 1961 r.');if(orig.warGap)herr.push('luka w proweniencji 1939–1951 dotyczy wojny i sama nie przesądza o fałszerstwie');if(herr.length)h+=`<div class="cp"><b>Obraz ${orig.letter} – oryginał.</b> Pułapki: ${herr.join('; ')}.</div>`;
    h+=`<div class="cp">Gęstość płótna: katalog ${C.thread} nitek/cm; ${P.map(p=>`${p.letter}: ${p.thread}`).join(', ')}.</div>`}}
  h+=checkReport();h+=`<div style="display:flex;gap:8px;margin-top:12px"><button class="btn primary" id="mnew">Nowa partia</button><button class="btn" id="mclose">Wróć do stołu</button></div>`;
- document.getElementById('mbox').innerHTML=h;m.classList.add('show');recordDone(/Trafnie|5 z 5/.test(h.slice(0,300)));document.getElementById('mnew').onclick=()=>{m.classList.remove('show');newGame()};document.getElementById('mclose').onclick=()=>m.classList.remove('show')}
+ document.getElementById('mbox').innerHTML=h;m.classList.add('show');recordDone(/Trafnie|5 z 5/.test(h.slice(0,300)));document.getElementById('mnew').onclick=()=>{m.classList.remove('show');runNewGame()};document.getElementById('mclose').onclick=()=>m.classList.remove('show')}
 function setCase(){const e=document.getElementById('case');
  if(KIND)e.textContent=KIND.caseText();else
  if(MODE==='memory')e.textContent=`Pamięć eksperta: „${ART.title}” – ${ART.name} (${ART.life}). Zapamiętaj oryginał, a potem wskaż go wśród prawie identycznych falsyfikatów. (Artyści i dzieła są fikcyjne.)`;else
@@ -53,5 +53,5 @@ document.getElementById('zsel').onclick=()=>{if(!sel)return;if(MODE==='sculpt'){
 document.getElementById('zsig').onclick=()=>{if(!sel)return;if(MODE==='sculpt'){const b=T3.busts.find(b=>b.q===sel);anim3(new THREE.Vector3(b.center.x,1.05,0),0.4,Math.PI,0.15);return}if(sel.kind)return focusRect(...sel.kind.focus(sel));focusRect(sel.x+C.sig.x-14,sel.y+C.sig.y-26,C.sig.w+28,40)};
 document.getElementById('tilt').oninput=e=>{TILT.v=+e.target.value;if(TILT.v<20)TILT.lo=true;if(TILT.v>60)TILT.hi=true;document.getElementById('tiltv').textContent=TILT.v+'°';render();scheduleGates()};
 document.getElementById('artist').innerHTML='<option value="">Losowy artysta</option>'+ARTISTS.map(a=>`<option value="${a.id}">${a.name} – ${({pejzaz:'pejzaż',portret:'portret',martwa:'martwa natura',marina:'marina'})[a.scene]}</option>`).join('');
-document.getElementById('newgame').onclick=newGame;document.getElementById('mode').onchange=newGame;document.getElementById('artist').onchange=newGame;
+document.getElementById('newgame').onclick=()=>runNewGame();document.getElementById('mode').onchange=()=>runNewGame();document.getElementById('artist').onchange=()=>runNewGame();
 new ResizeObserver(resize).observe(cv);

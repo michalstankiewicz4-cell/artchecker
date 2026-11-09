@@ -12,6 +12,7 @@
 - **Konserwator** – oddzielanie oryginału od późniejszych przemalowań i retuszy na tym samym obrazie.
 
 ## Do przemyślenia
+- **Meble** – nowy rodzaj obiektu: gatunek drewna, techniki stolarskie (czopy, jaskółczy ogon, gwoździe kute kontra maszynowe), ślady narzędzi (piła ręczna kontra tarczowa), patyna i zużycie w miejscach dotyku, chodniki kornika (prawdziwe kontra wiercone), okucia i zamki, fornir.
 - **Datowanie archeologiczne** – pomysły do wyboru: radiowęglowe (C14, krzywa kalibracyjna i przedział ufności), dendrochronologia (dopasowanie sekwencji słojów do wzorca), termoluminescencja (ceramika), stratygrafia (kolejność warstw na wykopie).
 - **Badania obrazu w głąb:** badanie warstw malarskich (przekrój próbki – stratygrafia), rozpoznawanie pigmentów, odkrywanie przemalowań, ustalanie techniki wykonania – może jako rozwinięcie trybu Konserwator.
 

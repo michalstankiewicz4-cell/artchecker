@@ -53,6 +53,7 @@ Ten sam system dla obrazów, rzeźb, monet, banknotów, ceramiki, biżuterii i z
 Stan: 🟡 – rejestr obiektów 2D (`js/core/kinds.js`) już obsługuje banknoty, monety, znaczki i rękopisy; ceramika i biżuteria do dodania.
 
 ## 7. Inne
+- Meble – nowy rodzaj obiektu (do roadmapy).
 - Datowanie archeologiczne (C14, dendrochronologia, termoluminescencja, stratygrafia) – do przemyślenia.
 - Badanie warstw malarskich, rozpoznawanie pigmentów, odkrywanie przemalowań, ustalanie techniki – do przemyślenia (pasuje do trybu Konserwator i przekroju 3D).
 - Tryb z prawdziwymi dziełami z domeny publicznej (CC0), w zmniejszonym rozmiarze.
