@@ -49,7 +49,7 @@ function homeBg(){const cv=document.getElementById('homebg'),d=devicePixelRatio|
  for(let i=0;i<14;i++){const X=r()*w;x.fillStyle=lin(X,0,X+40,0,[[0,'rgba(80,160,255,0)'],[.5,'rgba(80,160,255,.06)'],[1,'rgba(80,160,255,0)']])(x);x.fillRect(X,0,40+r()*40,h*0.62)}
  x.strokeStyle='rgba(90,170,255,.16)';x.lineWidth=1;const hz=h*0.62;for(let i=-20;i<=20;i++){x.beginPath();x.moveTo(w/2+i*30,hz);x.lineTo(w/2+i*170,h);x.stroke()}for(let k=0;k<12;k++){const y=hz+(h-hz)*Math.pow(k/12,1.8);x.beginPath();x.moveTo(0,y);x.lineTo(w,y);x.stroke()}
  for(let i=0;i<60;i++){x.fillStyle=`rgba(${120+r()*80|0},${180+r()*60|0},255,${.04+r()*.1})`;x.beginPath();x.arc(r()*w,r()*h*0.7,4+r()*26,0,7);x.fill()}
- x.strokeStyle='rgba(200,230,255,.35)';x.lineWidth=6;x.shadowColor='#bfe4ff';x.shadowBlur=30;x.beginPath();x.ellipse(w/2,24,170,26,0,0,7);x.stroke();x.shadowBlur=0}
+ x.strokeStyle='rgba(200,230,255,.35)';x.lineWidth=6;x.shadowColor='#bfe4ff';x.shadowBlur=30;x.beginPath();x.ellipse(w/2,24,170,26,0,0,7);x.stroke();x.shadowBlur=0;jpegize(cv)}
 function toolNames(id){let sets,defs;if(KINDS[id]){sets=KINDS[id].sets;defs=KINDS[id].defs}else if(SCULPT_VARIANTS[id]){sets=SCULPT_VARIANTS[id].sets;defs=SCULPT_VARIANTS[id].defs}
  else if(SET[id]&&SET[id].length){sets=SET[id];defs=DEF}else return id==='memory'?['Lupa ×4','Zapamiętywanie','Minimalne różnice','Checklista różnic']:['W przygotowaniu'];
  return sets.flatMap(([,ids])=>ids.map(t=>(id==='frag'&&defs[t].nameF)||defs[t].name))}
@@ -69,11 +69,11 @@ function renderHome(){const cats=homeCats(),cat=cats[HCAT],done=(store().done)||
    <div class="hbar"><div style="width:${pct}%"></div></div><small>${act.length?pct+'%':'wkrótce'}</small>
    <div style="margin-top:8px"><button class="hbtn ghost${pct===100?' ok':''}" data-i="${i}"${act.length?'':' disabled'}>${pct===100?'✔ Zakończono':'▶ Rozpocznij'}</button></div></div>`}).join('');
  document.querySelectorAll('#hcards .hbtn').forEach(b=>b.onclick=()=>{HCAT=+b.dataset.i;HMODE=null;renderHome();window.scrollTo(0,0)});
- setTimeout(()=>{fitDraw(document.getElementById('hthumb'),preview(HMODE),false);fitDraw(document.getElementById('hcanvas'),preview(HMODE),true);document.getElementById('hcap').textContent=label||''},0)}
+ setTimeout(()=>{fitDraw(document.getElementById('hthumb'),preview(HMODE),false);FX.drawId++;fitDraw(document.getElementById('hcanvas'),preview(HMODE),true);document.getElementById('hcap').textContent=label||''},0)}
 function showLoader(t){document.getElementById('ltxt').textContent=t||'Przygotowywanie…';document.getElementById('loader').classList.remove('hidden')}
 function hideLoader(){document.getElementById('loader').classList.add('hidden')}
 function withLoader(fn,t){showLoader(t);setTimeout(async()=>{try{await fn()}finally{hideLoader()}},40)}
 const runNewGame=()=>withLoader(newGame,SCULPT_VARIANTS[document.getElementById('mode').value]?'Wczytywanie sceny 3D…':'Przygotowywanie stołu ekspertyz…');
-function startMode(id){if(SOON.some(s=>s[0]===id))return;document.getElementById('mode').value=id;document.getElementById('home').classList.add('hidden');runNewGame()}
-function showHome(){document.getElementById('home').classList.remove('hidden');homeBg();renderHome()}
+function startMode(id){if(SOON.some(s=>s[0]===id))return;stopFX();document.getElementById('mode').value=id;document.getElementById('home').classList.add('hidden');runNewGame()}
+function showHome(){document.getElementById('home').classList.remove('hidden');homeBg();renderHome();startFX()}
 addEventListener('resize',()=>{if(!document.getElementById('home').classList.contains('hidden')){homeBg();renderHome()}});
