@@ -72,7 +72,7 @@ function drawWeave(p,x0,y0,x1,y1,col){const sp=pxPerCm()/p.thread,sp2=pxPerCm()/
 function drawDetail(view){const z=vw.z;if(z<5)return;const V=viewportWorld();
  for(const p of P){if(p.kind)continue;const x0=Math.max(V.x0,p.x),y0=Math.max(V.y0,p.y),x1=Math.min(V.x1,p.x+W),y1=Math.min(V.y1,p.y+H);if(x0>=x1||y0>=y1)continue;
   ctx.save();ctx.beginPath();ctx.rect(p.x,p.y,W,H);if(p.frag)polyPath(ctx,p.frag.missing,p.x,p.y);ctx.clip('evenodd');
-  if(view==='back'&&z>=6)drawWeave(p,x0,y0,x1,y1,'rgba(60,42,25,.45)');
+  if(view==='back'&&z>=6&&supOf()==='canvas')drawWeave(p,x0,y0,x1,y1,'rgba(60,42,25,.45)');
   else if(view==='normal'||view==='crackview'){microLayer(p,x0,y0,x1,y1);
    if(p.frag)for(const l of p.frag.losses){if(p.x+l.cx+l.r<x0||p.x+l.cx-l.r>x1||p.y+l.cy+l.r<y0||p.y+l.cy-l.r>y1)continue;ctx.save();ctx.beginPath();polyPath(ctx,l.pts,p.x,p.y);ctx.clip();drawWeave(p,x0,y0,x1,y1,'rgba(110,85,50,.4)');ctx.restore()}
    if(p.t.mark&&z>=6){ctx.font='italic 2.4px Georgia';ctx.fillStyle='rgba(30,18,8,.65)';ctx.fillText(p.markTxt,p.x+p.markPos.x,p.y+p.markPos.y)}}
@@ -92,7 +92,7 @@ let gateT=0;function scheduleGates(){clearTimeout(gateT);gateT=setTimeout(checkG
 function checkGates2D(){if(MODE==='sculpt')return;const v=viewportWorld(),T=tool&&TB[tool],view=curView();let ch=false;
  for(const p of P){
   if(T&&T.gate&&T.gate.area&&vw.z>=T.gate.z&&tiltOK(T.gate)&&areaOK(p,T.gate.area,v)&&!p.notes[tool]){if(note(p,tool,obs(p,tool))){ch=true;toast(`Zapisano: ${MODE==='frag'?'fragment':(p.kind?p.kind.noun.toLowerCase()+' ':'obraz ')+p.letter} – ${T.name}`)}}
-  if(MODE==='paint5'&&view==='back'&&vw.z>=8&&areaOK(p,'all',v)&&!p.notes.weave){note(p,'weave',obs(p,'weave'));ch=true;toast(`Zapisano: obraz ${p.letter} – gęstość płótna`)}
+  if(MODE==='paint5'&&supOf()==='canvas'&&view==='back'&&vw.z>=8&&areaOK(p,'all',v)&&!p.notes.weave){note(p,'weave',obs(p,'weave'));ch=true;toast(`Zapisano: obraz ${p.letter} – gęstość płótna`)}
   if(p.t.mark&&vw.z>=8&&(view==='normal'||view==='crackview')&&!p.notes.mark){const mx=p.x+p.markPos.x,my=p.y+p.markPos.y;if(mx>v.x0&&mx<v.x1&&my>v.y0&&my<v.y1){note(p,'mark',obs(p,'mark'));ch=true;toast(`Odkrycie przy dużym zoomie: obraz ${p.letter} – ukryty napis!`)}}}
  if(ch)onChange();else if(tool)updatePanel()}
 const pts=new Map();let drag=null,pinch=null;

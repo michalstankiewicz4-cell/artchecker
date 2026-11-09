@@ -11,4 +11,11 @@ const ARTISTS=[
   sig:{text:'F. MORACZEWSKI 1864',corner:'br',color:'#2a1d14',pig:'bone',font:'12px Georgia,serif',slant:-0.08}},
  {id:'lind',name:'Józef Lindorf',life:'1846–1912',scene:'marina',title:'Żaglowiec u skalistego brzegu',year:1881,wcm:68,hcm:44,crn:305,ref:'„Przed burzą”, 1879 (kat. rais. nr 288)',
   sig:{text:'J. Lindorf 1881',corner:'br',color:'#e6dcc4',pig:'pb',font:'italic 15px Palatino,Georgia,serif',slant:-0.5}},
+ {id:'kor',name:'Jan Korwin-Ostrowski',life:'1809–1878',scene:'portret',title:'Portret damy w ciemnej sukni',year:1846,wcm:42,hcm:54,crn:58,sup:'wood',ref:'„Portret matki artysty”, 1844 (kat. rais. nr 49)',
+  sig:{text:'J.K.O. 1846',corner:'bl',color:'#2a1d14',pig:'bone',font:'italic 600 13px Georgia,serif',slant:-0.3}},
+ {id:'wal',name:'Teodor Walewicz',life:'1818–1884',scene:'pejzaz',title:'Jezioro o zmierzchu',year:1853,wcm:30,hcm:22.5,crn:41,sup:'copper',ref:'„Staw w Wilanowie”, 1851 (kat. rais. nr 36)',
+  sig:{text:'T. Walewicz 1853',corner:'br',color:'#2a1d14',pig:'bone',font:'italic 13px Palatino,Georgia,serif',slant:-0.35}},
 ];
+/* Podobrazia (z laboratorium sztuki: płótno, deska, blacha). */
+const SUP={canvas:{tech:'olej na płótnie',abbr:'ol./pł.',name:'płótno'},wood:{tech:'olej na desce dębowej',abbr:'ol./desce',name:'deska'},copper:{tech:'olej na blasze miedzianej',abbr:'ol./miedzi',name:'blacha miedziana'}};
+const supOf=()=>(ART&&ART.sup)||'canvas';

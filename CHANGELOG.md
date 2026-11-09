@@ -2,6 +2,15 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.15.0] – 2026-11-09
+### Dodane
+- Podobrazia z laboratorium sztuki w trybie „Obrazy – znajdź oryginał”: obok płótna także **deska dębowa** i **blacha miedziana**. Dwaj nowi (fikcyjni) artyści: Jan Korwin-Ostrowski – „Portret damy w ciemnej sukni”, 1846, olej na desce; Teodor Walewicz – „Jezioro o zmierzchu”, 1853, olej na miedzi.
+- Odwrocie deski: trzy dębowe deski ze słojami (faktura ArtKit), spoiny, fazowane krawędzie, parkietaż, chodniki kołatka; falsyfikat – płyta pilśniowa. Odwrocie blachy: kuta miedź z patyną, śladami młotka i puncą płatnerza; falsyfikat – walcowana blacha cynkowa.
+- RTG: deska pokazuje słoje, spoiny i parkietaż (płyta – jednolite tło); blacha miedziana pochłania promieniowanie, więc obraz jest prawie jednolicie jasny.
+### Zmienione
+- Teksty zlecenia, katalogu raisonné, certyfikatu, obserwacji i raportu zależą od podobrazia; nazwy metod „stare płótno” i „giclée” dla deski mówią o desce. Na miedzi nie ma kopii na starym podobraziu ani wydruku giclée (na stole 4 obrazy), a RTG nie jest tam zdradą.
+- Tryby „Zniszczony fragment” i „Pamięć eksperta” losują tylko obrazy na płótnie.
+
 ## [1.14.1] – 2026-11-09
 ### Poprawione (doktor modeli z GameLaboratory)
 - Rzeźby 3D sprawdzone doktorem modeli z GameLaboratory (`tools/doctor-3d.py`). Wyniki przed poprawkami: dziura między szyją głowy a szyją torsu (`seethrough`, błąd), jednostronna warstwa włosów widoczna od spodu (`seethrough`, błąd), trójkąty-igły na osi cokołu i torsu (`sliver`, info).

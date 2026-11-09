@@ -55,13 +55,45 @@ function makeXray(p){const out=mk(IW,IH),x=out.getContext('2d'),id=x.createImage
  for(let y=0;y<IH;y+=2)for(let X=0;X<IW;X+=2){const v=28+dens(p,regionAtP(p,X/S,y/S))*190+(r()-.5)*16;
   for(let b=0;b<2;b++)for(let a=0;a<2;a++){const i4=((y+b)*IW+X+a)*4;d[i4]=d[i4+1]=d[i4+2]=v;d[i4+3]=255}}
  x.putImageData(id,0,0);x.scale(S,S);
- if(MODE==='paint5'){x.fillStyle='rgba(255,255,255,.1)';x.fillRect(0,0,W,34);x.fillRect(0,H-34,W,34);x.fillRect(0,0,34,H);x.fillRect(W-34,0,34,H);x.fillRect(W/2-17,0,34,H);
+ if(MODE==='paint5'){if(supOf()==='canvas'){x.fillStyle='rgba(255,255,255,.1)';x.fillRect(0,0,W,34);x.fillRect(0,H-34,W,34);x.fillRect(0,0,34,H);x.fillRect(W-34,0,34,H);x.fillRect(W/2-17,0,34,H)}
   if(p.t.xray){x.save();x.translate(W/2,H/2);x.rotate(Math.PI/2);x.strokeStyle='rgba(255,255,255,.28)';x.lineWidth=9;x.beginPath();x.ellipse(0,0,Math.min(W,H)*0.36,Math.min(W,H)*0.29,0,0,7);x.stroke();
    x.fillStyle='rgba(255,255,255,.24)';x.beginPath();x.ellipse(0,-35,45,58,0,0,7);x.fill();x.beginPath();x.ellipse(0,85,110,50,0,Math.PI,0);x.fill();x.restore()}
-  edgeNails(x,p.t.back,r,'#fff')}
+  if(supOf()==='canvas')edgeNails(x,p.t.back,r,'#fff')}
+ if(MODE==='paint5')xraySupport(x,p,r);
  if(MODE==='frag'&&!p.t.xray)SC.hidden.draw(x,C,p.frag.side);
  return out}
-function makeBack(p){const out=mk(IW,IH),x=out.getContext('2d'),r=rng(p.seed+61),fresh=p.t.back;x.scale(S,S);
+/* Podobrazia deska i blacha – faktura z ArtKit (laboratorium sztuki: powierzchnie wood, metal, paper). */
+function supTex(kind,tint,seed,age){const im=mk(16,16),ix=im.getContext('2d');ix.fillStyle=tint;ix.fillRect(0,0,16,16);
+ if(!window.ArtKit){const c=mk(IW,IH),x=c.getContext('2d');x.fillStyle=tint;x.fillRect(0,0,IW,IH);return c}
+ return ArtKit.render({size:Math.max(IW,IH),aspect:IW/IH,seed,subject:'image',technique:'none',surface:kind,relief:0.9,light:135,varnish:0,cracks:0,age:age||0},{image:im}).canvas}
+function backLabel(x,p){if(p.t.prov)return;x.save();x.translate(W*0.58,H*0.55);x.rotate(-0.04);x.fillStyle='#e6d6aa';x.fillRect(0,0,170,74);x.strokeStyle='#7a6440';x.strokeRect(4,4,162,66);
+ x.fillStyle='#3a2c1a';x.font='bold 10px Georgia,serif';x.fillText('TOW. ZACHĘTY SZTUK PIĘKNYCH',12,20);x.font='10px Georgia,serif';x.fillText('Wystawa, Warszawa '+(ART.year+2),12,36);x.fillText('Nr kat. '+(ART.crn%150+12),12,50);
+ x.font='italic 10px Georgia,serif';x.fillText(ART.name.split(' ').pop()+' – '+ART.title.slice(0,24),12,64);x.restore()}
+function makeBackWood(p){const out=mk(IW,IH),x=out.getContext('2d'),r=rng(p.seed+61),fresh=p.t.back;
+ if(fresh){x.drawImage(supTex('paper','#6e4f33',p.seed%997+5,0),0,0);x.scale(S,S);x.strokeStyle='rgba(30,18,8,.5)';x.lineWidth=1.2;x.strokeRect(0.6,0.6,W-1.2,H-1.2);
+  x.fillStyle='rgba(20,12,5,.55)';x.font='bold 9px system-ui';x.fillText('HDF 3 mm · E1',W*0.12,H*0.9);backLabel(x,p);return out}
+ const g=supTex('wood','#5a3a20',p.seed%997+3,0.6);x.save();x.translate(IW,0);x.rotate(Math.PI/2);x.drawImage(g,0,0,IH,IW);x.restore();x.scale(S,S);
+ x.fillStyle='rgba(20,10,4,.35)';x.fillRect(0,0,W,H);
+ x.strokeStyle='rgba(15,8,3,.85)';x.lineWidth=1.4;for(const k of[1,2]){const X=W*k/3+(r()-.5)*8;x.beginPath();x.moveTo(X,0);x.lineTo(X+(r()-.5)*3,H);x.stroke()}
+ const bev=(X,Y,w,h)=>{x.fillStyle='rgba(0,0,0,.28)';x.fillRect(X,Y,w,h)};bev(0,0,W,14);bev(0,H-14,W,14);bev(0,0,14,H);bev(W-14,0,14,H);
+ for(const Y of[H*0.3,H*0.7]){x.fillStyle='#4a2f18';x.fillRect(10,Y-12,W-20,24);x.strokeStyle='rgba(20,10,4,.6)';x.lineWidth=0.7;for(let k=0;k<6;k++){const q=Y-10+r()*20;x.beginPath();x.moveTo(10,q);x.bezierCurveTo(W*.3,q+2,W*.6,q-2,W-10,q+1);x.stroke()}}
+ for(let i=0;i<40;i++){x.fillStyle='rgba(8,4,2,.85)';x.beginPath();x.arc(r()*W,r()*H,0.6+r()*0.9,0,7);x.fill()}
+ backLabel(x,p);return out}
+function makeBackCopper(p){const out=mk(IW,IH),x=out.getContext('2d'),r=rng(p.seed+61),fresh=p.t.back;
+ x.drawImage(supTex('metal',fresh?'#c4c7cb':'#9a5a2c',p.seed%997+7,fresh?0:0.5),0,0);x.scale(S,S);
+ if(fresh){x.strokeStyle='rgba(255,255,255,.12)';x.lineWidth=0.5;for(let y=2;y<H;y+=3){x.beginPath();x.moveTo(0,y);x.lineTo(W,y);x.stroke()}backLabel(x,p);return out}
+ x.fillStyle='rgba(30,15,6,.35)';x.fillRect(0,0,W,H);
+ for(let i=0;i<14;i++){x.fillStyle=`rgba(70,130,100,${.12+r()*.18})`;x.beginPath();x.ellipse(r()*W,r()*H,10+r()*40,6+r()*26,r()*3,0,7);x.fill()}
+ for(let i=0;i<220;i++){const X=r()*W,Y=r()*H;x.strokeStyle=`rgba(255,200,150,${.05+r()*.08})`;x.lineWidth=0.6;x.beginPath();x.ellipse(X,Y,3+r()*4,2+r()*3,r()*3,0,7);x.stroke()}
+ x.save();x.translate(W*0.14,H*0.82);x.fillStyle='rgba(20,8,2,.55)';x.beginPath();x.moveTo(0,0);x.lineTo(30,0);x.lineTo(30,20);x.quadraticCurveTo(15,34,0,20);x.closePath();x.fill();
+ x.fillStyle='rgba(230,170,120,.55)';x.font='bold 10px Georgia,serif';x.fillText('P·H',4,16);x.restore();backLabel(x,p);return out}
+function xraySupport(x,p,r){const u=supOf();if(u==='canvas')return;
+ if(u==='copper'){x.fillStyle='rgba(236,236,236,.88)';x.fillRect(0,0,W,H);for(let i=0;i<60;i++){x.fillStyle=`rgba(255,255,255,${r()*.08})`;x.fillRect(r()*W,r()*H,8+r()*30,2)}return}
+ if(p.t.back){x.fillStyle='rgba(255,255,255,.06)';x.fillRect(0,0,W,H);return}
+ x.strokeStyle='rgba(255,255,255,.09)';for(let k=0;k<90;k++){const X=r()*W;x.lineWidth=0.6+r()*1.6;x.beginPath();x.moveTo(X,0);x.bezierCurveTo(X+(r()-.5)*14,H*.3,X+(r()-.5)*14,H*.7,X+(r()-.5)*10,H);x.stroke()}
+ x.strokeStyle='rgba(0,0,0,.35)';x.lineWidth=1.2;for(const k of[1,2]){x.beginPath();x.moveTo(W*k/3,0);x.lineTo(W*k/3,H);x.stroke()}
+ x.fillStyle='rgba(255,255,255,.12)';for(const Y of[H*0.3,H*0.7])x.fillRect(10,Y-12,W-20,24)}
+function makeBack(p){if(MODE==='paint5'&&supOf()==='wood')return makeBackWood(p);if(MODE==='paint5'&&supOf()==='copper')return makeBackCopper(p);const out=mk(IW,IH),x=out.getContext('2d'),r=rng(p.seed+61),fresh=p.t.back;x.scale(S,S);
  x.fillStyle=fresh?'#d9cfb8':'#b49d74';x.fillRect(0,0,W,H);
  for(let y=0;y<H;y+=1.6){x.fillStyle=`rgba(${r()<.5?60:230},${r()<.5?45:210},30,${fresh?.03:.05+r()*.06})`;x.fillRect(0,y,W,0.8)}
  if(!fresh)for(let i=0;i<7;i++){x.fillStyle=`rgba(95,65,30,${.12+r()*.12})`;x.beginPath();x.arc(r()*W,r()*H,20+r()*60,0,7);x.fill()}
