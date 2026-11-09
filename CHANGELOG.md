@@ -2,6 +2,14 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.18.0] – 2026-11-09
+### Zmienione – dopracowane sceny obrazów (`js/paint/scenes.js`)
+- **Portret:** światło za głową, pasma i przedziałek we włosach, tęczówki z cieniem powieki i odblaskiem, rumieńce, światło na grzbiecie nosa i nozdrza, linia ust i odblask dolnej wargi, cień brody na szyi, miękkie fałdy sukni, odblask broszki.
+- **Pejzaż:** mgiełka nad horyzontem (perspektywa powietrzna), światło na grzbietach gór, odbicie nieba i ciemny brzeg jeziora, koleiny na drodze, komin z dymem i dachówki, ptaki, trawa i kwiaty na pierwszym planie.
+- **Martwa natura:** światło z lewej na ścianie, słoje stołu, odblaski okna na dzbanie i pas szkliwa, odblaski i ogonki owoców, listek, połysk winogron, krawędź i stopka misy, skórka cytryny.
+- **Marina:** cienie i rozświetlenia chmur, deski i iluminatory kadłuba, olinowanie, fala dziobowa i kilwater, odbicie statku, szczeliny w skałach, mewy.
+- Szczegóły nie zmieniają obszarów (pigmenty, zdrady, IR, pamięć) – są samą warstwą malarską. Ilustracje wiki wygenerowane ponownie.
+
 ## [1.17.0] – 2026-11-09
 ### Dodane
 - Tryb **Rysunki i grafiki** (`js/kinds/artworks.js`): ołówek, tusz, węgiel, miedzioryt – obraz pracy rysuje ArtKit. Badania: papier pod światło (linie sita, znak wodny), papier w UV, odwrocie (stemple kolekcji), struktura kreski (mikroskop), odcisk i relief (lampa boczna, odcisk płyty, rowki po kalce), płynność kreski, materiał (XRF). Metody: faksymile cyfrowe, przerys przez kalkę, kopia na karcie z epoki, reprodukcja fotomechaniczna. Jeden oryginał (przy miedziorycie czasem dwie odbitki).
