@@ -9,7 +9,7 @@ Pomysły zebrane podczas rozwoju gry. ✅ – już jest w grze, 🟡 – częśc
 | 6 | Obrazowanie w podczerwieni – szkice, kontury, zmiany kompozycji | ✅ | Reflektografia IR, pentimenti |
 | 7 | Prześwietlanie rentgenowskie – wcześniejsze kompozycje, konstrukcja | ✅ | RTG: ukryty portret, blejtram, gwoździe |
 | 8 | Analiza spękań (krakelury) – porównanie z wzorcami starzenia | 🟡 | Jest krakelura naturalna/sztuczna/brak; brak atlasu wzorców do porównania |
-| 9 | Badanie podobrazia – płótno, deska, splot, rama, naprawy | 🟡 | Płótno, gęstość nici, blejtram; brak deski i śladów napraw |
+| 9 | Badanie podobrazia – płótno, deska, splot, rama, naprawy | 🟡 | Płótno (gęstość nici, blejtram), deska dębowa (słoje, parkietaż), blacha miedziana (punca, ślady kucia); brak śladów napraw |
 | 10 | Mikroskopowa analiza powierzchni – ziarna pigmentu, warstwy | 🟡 | Mikrostruktura przy zoomie ≥ ×5; brak przekroju warstw |
 
 ## 2. Ustalanie wieku i autentyczności
@@ -52,7 +52,17 @@ Obraz wyceniony na 8 mln euro, muzeum podejrzewa falsyfikat. Narzędzia: mikrosk
 Ten sam system dla obrazów, rzeźb, monet, banknotów, ceramiki, biżuterii i zabytkowych przedmiotów.
 Stan: 🟡 – rejestr obiektów 2D (`js/core/kinds.js`) już obsługuje banknoty, monety, znaczki i rękopisy; ceramika i biżuteria do dodania.
 
-## 7. Inne
+## 7. Z laboratorium sztuki (GameLaboratory)
+| Mechanika | Stan |
+|---|---|
+| Lampa ruchoma (UV, światło boczne, pod światło) | ✅ |
+| Lampa ruchoma – podczerwień, rozmiar kręgu | ⬜ (w realizacji) |
+| Rysunki i grafiki: ołówek, tusz, węgiel, rytownictwo | ⬜ (w realizacji) |
+| Akwarele i pastele | ⬜ (w realizacji) |
+| Pozostałe techniki ArtKit: tusz patyczkiem, długopis, flamaster, puentylizm | ⬜ |
+| Obraz jako płaszczyzna 3D (mapa normalnych, ruchome światło, rama 3D) | ⬜ (pomysł z laboratorium) |
+
+## 8. Inne
 - Meble – nowy rodzaj obiektu (do roadmapy).
 - Datowanie archeologiczne (C14, dendrochronologia, termoluminescencja, stratygrafia) – do przemyślenia.
 - Badanie warstw malarskich, rozpoznawanie pigmentów, odkrywanie przemalowań, ustalanie techniki – do przemyślenia (pasuje do trybu Konserwator i przekroju 3D).

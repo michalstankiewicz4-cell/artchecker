@@ -19,7 +19,10 @@ js/core/              rdzeń niezależny od trybu
   home.js             ekran główny: kategorie, podgląd trybu, postęp (localStorage), loader
   homefx.js           efekty menu: ziarno, pasmowanie tła (JPG), paralaksa
   wiki.js             wiki eksperta: artykuły z danych trybów + słowniczek (GLOSS), ilustracje generowane w piaskownicy
-js/data/              dane (pigmenty, artyści, wikitexts.js – rozszerzone teksty wiki)
+js/data/              dane: pigmenty, artyści i podobrazia (SUP), wikitexts.js – teksty wiki, wikiimg.js – manifest ilustracji
+js/lab/               kod z GameLaboratory: artkit.js (ArtKit), bust-head.js (głowa popiersia)
+img/wiki/             gotowe ilustracje wiki (JPG)
+tools/                build-wiki-img.py, doctor-3d.py
 js/paint/             silnik obrazów: sceny, widoki (UV, IR, RTG…), obserwacje, próbki
 js/core/kinds.js      rejestr obiektów 2D + wspólne nachylenie i tworzenie partii
 js/kinds/             rodzaje obiektów 2D (banknot, moneta, znaczek, rękopis…)
@@ -60,6 +63,16 @@ registerKind({
 });
 ```
 Potem dopisz `<script src="js/kinds/…">` w `index.html` (przed `js/core/game.js`).
+
+## Lampa ruchoma (`js/core/board2d.js`)
+Widoki z `LAMPV` (`uv`, `raking`, `trans`) rysują się tylko w kręgu za kursorem (`LAMP.R` px na ekranie); reszta obiektu to widok dzienny przyciemniony kolorem `LAMPV[v].dim`. Przełącznik `LAMP.on` (przycisk „Lampa ruchoma / Cały obiekt”).
+Światło boczne liczone jest na żywo z mapy wysokości: `makeRaking` (obrazy) i `embossFrom` (obiekty 2D) zapisują w obiekcie `p._rel` (`relPack`: wysokość i jasność jako `Uint8Array`), a `lampRaking` oświetla piksele kręgu z kierunku lampy. Obiekt bez `p._rel` pokazuje w kręgu gotowy widok.
+
+## Podobrazia obrazów
+`SUP` w `js/data/artists.js` (`canvas`, `wood`, `copper`), artysta ma pole `sup` (domyślnie płótno), `supOf()` zwraca podobrazie bieżącej partii. Zależą od niego: odwrocie (`makeBackWood`, `makeBackCopper` z fakturą ArtKit przez `supTex`), RTG (`xraySupport`), teksty obserwacji, katalogu, certyfikatu i zlecenia, nazwy metod (`profName`) i dobór profili (na miedzi bez giclée i starego podobrazia). Fragment i pamięć losują tylko obrazy na płótnie.
+
+## Loader
+`withLoader(fn, tekst)` (`js/core/home.js`) – nowa partia (`runNewGame`) i pierwsze przygotowanie widoku badania (`js/core/panel.js`, gdy któryś obiekt nie ma jeszcze widoku w `p.views`).
 
 ## Planowane tryby (wkrótce)
 Aukcja, Śledztwo i Konserwator są w menu jako nieaktywne. Każdy będzie osobnym plikiem w `js/modes/` – opis w `docs/ROADMAPA.md`.

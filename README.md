@@ -7,7 +7,7 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 ## Tryby
 | Tryb | Opis |
 |---|---|
-| Znajdź oryginał – obrazy | 1 oryginał i 4 kopie, każda wykonana inną metodą fałszerską |
+| Znajdź oryginał – obrazy | 1 oryginał i 4 kopie, każda wykonana inną metodą fałszerską; podobrazia: płótno, deska dębowa, blacha miedziana |
 | Zniszczony fragment | czy fragment pochodzi z zaginionego dzieła znanego tylko z opisu |
 | Znajdź oryginał – rzeźby z brązu (3D) | brązowe popiersia (Three.js) |
 | Znajdź oryginał – rzeźby z marmuru (3D) | dłuto kontra CNC, patyna, kwas – [opis](docs/tryby/marmur.md) |
@@ -19,7 +19,12 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 
 Artyści, dzieła i waluta są fikcyjne.
 
-W grze jest ekran główny z postępem oraz **Wiki eksperta** – opisy technik badawczych, metod fałszerskich, obiektów i słowniczek pojęć.
+## Co jest w grze
+- **Ekran główny** z kategoriami, podglądem trybu i postępem (zapis w przeglądarce).
+- **Stanowisko eksperta**: okno narzędzi z licznikiem zbadań, zwijane zlecenie, stół badawczy z przybliżeniem do ×24, dok obiektów (stan oznaczeń, flagi checklisty, postęp), prawe okno z zakładkami *Wynik badania / Checklista / Notatnik*.
+- **Lampa ruchoma**: UV, światło boczne i światło przechodzące świecą w kręgu za kursorem; lampa boczna oświetla relief z kierunku lampy.
+- **Wiki eksperta** z ilustracjami: techniki badawcze, metody fałszerskie, obiekty i artyści, słowniczek oraz techniki malarskie i podłoża (ArtKit).
+- **Loader** przy przygotowywaniu partii i nowych widoków badań.
 
 ## Uruchomienie lokalne
 Otwórz `index.html` w przeglądarce (skrypty są klasyczne, działają też z `file://`).
@@ -30,6 +35,11 @@ Tryb 3D pobiera Three.js z CDN (cdnjs), więc wymaga internetu.
 - [docs/ROADMAPA.md](docs/ROADMAPA.md) – plan rozwoju
 - [docs/POMYSLY.md](docs/POMYSLY.md) – bank pomysłów
 - [CHANGELOG.md](CHANGELOG.md) – historia wersji
+- opisy trybów: [moneta](docs/tryby/moneta.md), [znaczek](docs/tryby/znaczek.md), [rękopis](docs/tryby/rekopis.md), [marmur](docs/tryby/marmur.md), [obrazy](docs/tryby/obrazy.md)
+
+## Narzędzia (Python + Playwright)
+- `python3 tools/build-wiki-img.py` – generuje ilustracje wiki (`img/wiki/`, manifest `js/data/wikiimg.js`).
+- `python3 tools/doctor-3d.py /ścieżka/do/GameLaboratory` – sprawdza rzeźby 3D doktorem modeli z GameLaboratory.
 
 ## SEO i udostępnianie
 Meta tagi, Open Graph / Twitter Card (miniatura `og-image.jpg` – zrzut ekranu startowego), JSON-LD, `robots.txt`, `sitemap.xml`. Po większej zmianie wyglądu ekranu głównego warto wygenerować nową miniaturę.

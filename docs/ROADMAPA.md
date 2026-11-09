@@ -6,6 +6,12 @@
 - ~~Moneta~~ (gotowe w 1.3.0): waga, średnica, skład stopu, rant, ślady odlewu kontra bicia, zużycie wypukłości, magnetyzm.
 - ~~Znaczek pocztowy~~ (gotowe w 1.4.0): ząbkowanie (miarka), znak wodny w kąpieli, druk, guma na odwrocie, przedruki.
 
+- **Rysunki i grafiki** (w realizacji): ołówek, tusz, węgiel, rytownictwo na papierze – techniki z ArtKit.
+- **Akwarele i pastele** (w realizacji): akwarela i pastel suchy na papierze – techniki z ArtKit.
+- **Lampa ruchoma – podczerwień i rozmiar** (w realizacji): IR w kręgu lampy, rozmiar kręgu kółkiem z Shiftem.
+- ~~Lampa ruchoma: UV, światło boczne, pod światło~~ (gotowe w 1.14.0).
+- ~~Podobrazia: deska i blacha miedziana~~ (gotowe w 1.15.0).
+
 ## Wkrótce
 - **Aukcja** – budżet, kupujesz tylko to, co uznasz za autentyczne; każde badanie kosztuje czas lub pieniądze; wynik to zysk lub strata.
 - **Śledztwo** – kilka falsyfikatów jednego fałszerza ma wspólne ślady (monogram, pigment, tkanina); trzeba je powiązać i znaleźć kolejne.
