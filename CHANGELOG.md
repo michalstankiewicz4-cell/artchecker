@@ -2,6 +2,13 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.18.2] – 2026-11-09
+### Dodane
+- **O programie → Licencje i źródła:** lista 8 prawdziwych dzieł z domeny publicznej (autor, tytuł, data, muzeum, licencja, link do Wikimedia Commons), podstawa prawna (domena publiczna, art. 14 dyrektywy UE 2019/790, CC0 The Met), informacja, że kopie i wyniki badań są symulowane, licencja głowy popiersi (CC BY 4.0) i pochodzenie ArtKit.
+- Dane dzieł prawdziwych: `js/data/realart.js`; obrazy jako skrypty `js/real/*.js` (`tools/build-real.py`), żeby działały także z `file://`.
+### Zmienione
+- Okno „O programie”: przewijana treść z paskiem przewijania i stałym przyciskiem „Zamknij”.
+
 ## [1.18.1] – 2026-11-09
 ### Dodane
 - Okno **O programie** (przycisk na ekranie głównym i w górnym pasku gry): opis gry, autorzy – Michał Stankiewicz i Claude, zrobione przy pomocy vibecodingu i laboratorium sztuki (GameLaboratory), źródła zasobów i link do kodu.

@@ -31,9 +31,11 @@ jobs:
           echo ']' >> img/real/manifest.json
           jq . img/real/manifest.json > /tmp/m.json && mv /tmp/m.json img/real/manifest.json
           ls -la img/real
+      - name: Skrypty z obrazami (js/real)
+        run: python3 tools/build-real.py
       - name: Zapisz w repozytorium
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add img/real
+          git add img/real js/real
           git diff --cached --quiet || (git commit -m "Prawdziwe dzieła z domeny publicznej (Wikimedia Commons)" && git push)

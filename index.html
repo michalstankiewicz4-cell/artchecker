@@ -32,12 +32,21 @@
 <div id="loader"><div class="ring"></div><b>Pracownia ekspertyz</b><span id="ltxt">Uruchamianie laboratorium…</span></div>
 <noscript><p style="padding:20px;color:#fff">Gra wymaga włączonej obsługi JavaScript.</p></noscript>
 <section class="sr-only"><h2>O grze</h2><p>Pracownia ekspertyz to darmowa, edukacyjna gra przeglądarkowa, w której wcielasz się w eksperta od autentyczności. Badasz obrazy, rzeźby z brązu i marmuru w 3D, banknoty, monety, znaczki pocztowe i rękopisy. Używasz lampy UV, reflektografii w podczerwieni, RTG, spektroskopii pigmentów, analizy XRF, mikroskopu, światła bocznego i dokumentów (proweniencja, certyfikat, katalog raisonné), aby odróżnić oryginał od kopii i falsyfikatu. Tryby: znajdź oryginał, zniszczony fragment, pamięć eksperta, weryfikacja banknotów, monet, znaczków i rękopisów.</p></section>
-<div id="about" class="modal" style="z-index:40"><div class="box" style="max-width:560px">
+<div id="about" class="modal" style="z-index:40"><div class="box abox"><div class="abscroll">
   <h2>Pracownia ekspertyz <small id="aboutver" style="font-size:13px;color:#8fbfe8"></small></h2>
   <p>Przeglądarkowa gra o rozpoznawaniu oryginałów i falsyfikatów: obrazy, rysunki, akwarele, rzeźby 3D, banknoty, monety, znaczki i rękopisy.</p>
   <p><b>Autor:</b> Michał Stankiewicz i Claude – zrobione przy pomocy vibecodingu i laboratorium sztuki (GameLaboratory).</p>
-  <p style="font-size:13px;color:#8fbfe8">Artyści, dzieła i waluta są fikcyjne. Głowa popiersi 3D: „Lowpoly face model” – void (sketchfab.com/void22), CC BY 4.0, zmienione.<br>Kod: <a href="https://github.com/michalstankiewicz4-cell/artchecker" target="_blank" rel="noopener" style="color:#7fd6ff">github.com/michalstankiewicz4-cell/artchecker</a></p>
-  <button class="btn primary" id="aboutclose">Zamknij</button></div></div>
+  <h3 class="abh">Licencje i źródła</h3>
+  <div class="abl">
+   <p><b>Dzieła prawdziwe (domena publiczna).</b> Reprodukcje pochodzą z Wikimedia Commons. Autorzy zmarli ponad 70 lat temu, więc dzieła są w domenie publicznej; wierne reprodukcje dzieł plastycznych z domeny publicznej nie są chronione (art. 14 dyrektywy UE 2019/790). „Melancholia I” – The Metropolitan Museum of Art, Open Access (CC0). Pliki zostały zmniejszone do 1000 px.</p>
+   <ul id="aboutreal"></ul>
+   <p>Prawdziwe są: autor, tytuł, data, technika i miejsce przechowywania. <b>Kopie na stole wygenerowała gra, a wyniki badań (UV, IR, RTG, pigmenty, proweniencja, certyfikaty, stemple kolekcji) są symulowane</b> – nie opisują rzeczywistego stanu tych dzieł.</p>
+   <p><b>Głowa popiersi 3D:</b> „Lowpoly face model” – void (sketchfab.com/void22), licencja CC BY 4.0, zmieniona.</p>
+   <p><b>ArtKit</b> (laboratorium sztuki) i przygotowanie modelu głowy – z repozytorium GameLaboratory (Michał Stankiewicz).</p>
+   <p><b>Postacie i obiekty fikcyjne:</b> artyści i dzieła w trybach z fikcyjnymi pracami, banknoty, monety, znaczki i rękopisy są wymyślone na potrzeby gry.</p>
+  </div>
+  <p style="font-size:13px;color:#8fbfe8">Kod: <a href="https://github.com/michalstankiewicz4-cell/artchecker" target="_blank" rel="noopener" style="color:#7fd6ff">github.com/michalstankiewicz4-cell/artchecker</a></p>
+  </div><div class="abfoot"><button class="btn primary" id="aboutclose">Zamknij</button></div></div></div>
 <div id="wiki" class="hidden"><div id="wtop" class="hp"><h1>📖 Wiki eksperta</h1><input id="wq" type="search" placeholder="Szukaj: krakelura, XRF, ząbkowanie…"><button class="hbtn ghost" id="wclose">✕ Zamknij</button></div>
  <div id="wcats" class="hp"></div><div id="wlist" class="hp"></div><div id="wart" class="hp"></div></div>
 <header id="topbar">
@@ -132,6 +141,7 @@
 <script src="js/core/home.js"></script>
 <script src="js/core/homefx.js"></script>
 <script src="js/lab/artkit.js"></script>
+<script src="js/data/realart.js"></script>
 <script src="js/data/wikitexts.js"></script>
 <script src="js/data/wikiimg.js"></script>
 <script src="js/core/wiki.js"></script>

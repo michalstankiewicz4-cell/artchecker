@@ -290,3 +290,12 @@ main{flex:1;height:auto;min-height:0;grid-template-columns:240px minmax(0,1fr) 3
 .wfig figcaption{padding:6px 10px;font-size:12px;color:#8fbfe8;border-top:1px solid rgba(95,184,255,.25)}
 .wload{height:220px;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;color:#8fbfe8;font-size:13px}
 .wload i{width:34px;height:34px;border-radius:50%;border:3px solid rgba(95,184,255,.2);border-top-color:#5fd0ff;animation:spin 1s linear infinite}
+
+#about .abh{margin:14px 0 6px;font:600 12px "Segoe UI",system-ui;letter-spacing:.14em;text-transform:uppercase;color:#7fd6ff;border-bottom:1px solid rgba(95,184,255,.3);padding-bottom:4px}
+#about .abl{font-size:13px;line-height:1.5;color:#cfe3f8}#about .abl ul{margin:4px 0 8px 18px;padding:0}#about .abl li{margin:2px 0}#about a{color:#7fd6ff}
+#about .abox{max-width:680px;width:100%;max-height:86vh;display:flex;flex-direction:column;padding:0}
+#about .abscroll{flex:1;min-height:0;overflow-y:scroll;padding:18px 16px 8px 22px;scrollbar-gutter:stable}
+#about .abscroll::-webkit-scrollbar{width:12px}#about .abscroll::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#6fd8ff,#1e6fc8);border:2px solid rgba(6,18,40,.95)}
+#about .abfoot{flex:none;padding:10px 22px 16px;border-top:1px solid rgba(95,184,255,.25);display:flex;justify-content:flex-end}
+#about .abscroll{scrollbar-width:auto;scrollbar-color:#5fd0ff rgba(6,18,40,.85);-webkit-mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 36px),rgba(0,0,0,.25) 100%);mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 36px),rgba(0,0,0,.25) 100%)}
+#about .abscroll.end{-webkit-mask-image:none;mask-image:none}

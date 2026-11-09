@@ -17,7 +17,8 @@ document.getElementById('wclose').onclick=()=>document.getElementById('wiki').cl
 document.getElementById('wq').oninput=()=>{WSEL=0;renderWiki()};
 setTimeout(()=>{showHome();setTimeout(hideLoader,120)},30);
 
-const showAbout=()=>{document.getElementById('aboutver').textContent='v'+VERSION;document.getElementById('about').classList.add('show')};
+const showAbout=()=>{document.getElementById('aboutver').textContent='v'+VERSION;document.getElementById('aboutreal').innerHTML=REAL.map(e=>`<li>${e.artist}, „${e.title}”, ${e.year} – ${e.museum}; licencja: ${e.license}; źródło: <a href="${realSrc(e)}" target="_blank" rel="noopener">Wikimedia Commons</a></li>`).join('');document.getElementById('about').classList.add('show')};
 for(const id of['habout','gabout'])document.getElementById(id).onclick=showAbout;
 document.getElementById('aboutclose').onclick=()=>document.getElementById('about').classList.remove('show');
 document.getElementById('about').onclick=e=>{if(e.target.id==='about')e.target.classList.remove('show')};
+{const sc=document.querySelector('#about .abscroll'),upd=()=>sc.classList.toggle('end',sc.scrollTop+sc.clientHeight>=sc.scrollHeight-4);sc.addEventListener('scroll',upd);new ResizeObserver(upd).observe(sc)}
