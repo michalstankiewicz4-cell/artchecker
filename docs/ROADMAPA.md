@@ -8,7 +8,7 @@
 
 - **Rysunki i grafiki** (w realizacji): ołówek, tusz, węgiel, rytownictwo na papierze – techniki z ArtKit.
 - **Akwarele i pastele** (w realizacji): akwarela i pastel suchy na papierze – techniki z ArtKit.
-- **Lampa ruchoma – podczerwień i rozmiar** (w realizacji): IR w kręgu lampy, rozmiar kręgu kółkiem z Shiftem.
+- ~~Lampa ruchoma – podczerwień i rozmiar~~ (gotowe w 1.16.0): IR w kręgu lampy, rozmiar kręgu Shift + kółko.
 - ~~Lampa ruchoma: UV, światło boczne, pod światło~~ (gotowe w 1.14.0).
 - ~~Podobrazia: deska i blacha miedziana~~ (gotowe w 1.15.0).
 

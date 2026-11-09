@@ -2,6 +2,11 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.16.0] – 2026-11-09
+### Dodane
+- Lampa ruchoma obejmuje też podczerwień (reflektografia IR).
+- Wielkość kręgu lampy: Shift + kółko myszy (50–420 px), zapamiętywana w przeglądarce.
+
 ## [1.15.1] – 2026-11-09
 ### Poprawione
 - Loader przy pierwszym wyborze badania, którego widok trzeba dopiero przygotować (odwrocie, RTG, światło boczne, UV, IR itd. – do ok. 2 s przy pięciu obiektach). Wcześniej strona przez ten czas nie reagowała.

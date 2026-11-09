@@ -65,7 +65,7 @@ registerKind({
 Potem dopisz `<script src="js/kinds/…">` w `index.html` (przed `js/core/game.js`).
 
 ## Lampa ruchoma (`js/core/board2d.js`)
-Widoki z `LAMPV` (`uv`, `raking`, `trans`) rysują się tylko w kręgu za kursorem (`LAMP.R` px na ekranie); reszta obiektu to widok dzienny przyciemniony kolorem `LAMPV[v].dim`. Przełącznik `LAMP.on` (przycisk „Lampa ruchoma / Cały obiekt”).
+Widoki z `LAMPV` (`uv`, `raking`, `trans`, `ir`) rysują się tylko w kręgu za kursorem (`LAMP.R` px na ekranie, Shift + kółko zmienia, zapis `artchecker.lampR` w localStorage); reszta obiektu to widok dzienny przyciemniony kolorem `LAMPV[v].dim`. Przełącznik `LAMP.on` (przycisk „Lampa ruchoma / Cały obiekt”).
 Światło boczne liczone jest na żywo z mapy wysokości: `makeRaking` (obrazy) i `embossFrom` (obiekty 2D) zapisują w obiekcie `p._rel` (`relPack`: wysokość i jasność jako `Uint8Array`), a `lampRaking` oświetla piksele kręgu z kierunku lampy. Obiekt bez `p._rel` pokazuje w kręgu gotowy widok.
 
 ## Podobrazia obrazów

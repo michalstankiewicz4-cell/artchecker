@@ -56,7 +56,7 @@ Stan: 🟡 – rejestr obiektów 2D (`js/core/kinds.js`) już obsługuje banknot
 | Mechanika | Stan |
 |---|---|
 | Lampa ruchoma (UV, światło boczne, pod światło) | ✅ |
-| Lampa ruchoma – podczerwień, rozmiar kręgu | ⬜ (w realizacji) |
+| Lampa ruchoma – podczerwień, rozmiar kręgu | ✅ |
 | Rysunki i grafiki: ołówek, tusz, węgiel, rytownictwo | ⬜ (w realizacji) |
 | Akwarele i pastele | ⬜ (w realizacji) |
 | Pozostałe techniki ArtKit: tusz patyczkiem, długopis, flamaster, puentylizm | ⬜ |

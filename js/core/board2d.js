@@ -43,8 +43,8 @@ function render(){if(MODE==='sculpt'||!P.length||!ART)return;const dpr=devicePix
    ctx.strokeStyle='#3a2a10';ctx.lineWidth=10;ctx.beginPath();ctx.arc(sx,sy,R+5,0,7);ctx.stroke();ctx.strokeStyle='#d6b058';ctx.lineWidth=3;ctx.stroke()}}
  document.getElementById('zlv').textContent='×'+(vw.z<1?vw.z.toFixed(2):vw.z.toFixed(1))}
 /* ---------- lampa ruchoma: UV, światło boczne, światło przechodzące ---------- */
-const LAMPV={uv:{dim:'rgba(6,0,18,.86)',glow:'rgba(150,90,255,.55)'},raking:{dim:'rgba(0,0,0,.62)',glow:'rgba(255,230,170,.45)'},trans:{dim:'rgba(0,0,0,.42)',glow:'rgba(255,250,225,.5)'}};
-const LAMP={on:true,sx:null,sy:null,R:150,raf:0};
+const LAMPV={uv:{dim:'rgba(6,0,18,.86)',glow:'rgba(150,90,255,.55)'},raking:{dim:'rgba(0,0,0,.62)',glow:'rgba(255,230,170,.45)'},trans:{dim:'rgba(0,0,0,.42)',glow:'rgba(255,250,225,.5)'},ir:{dim:'rgba(0,0,0,.6)',glow:'rgba(255,120,90,.5)'}};
+const LAMP={on:true,sx:null,sy:null,R:(()=>{try{return +localStorage.getItem('artchecker.lampR')||150}catch(_){return 150}})(),raf:0};
 const lampOn=v=>LAMP.on&&LAMPV[v]&&MODE!=='memory';
 function lampPos(){const r=cv.getBoundingClientRect(),sx=LAMP.sx??r.width/2,sy=LAMP.sy??r.height/2;return{wx:(sx-vw.x)/vw.z,wy:(sy-vw.y)/vw.z,Rw:LAMP.R/vw.z}}
 function lampSpot(p,v){const{wx,wy,Rw}=lampPos();if(wx+Rw<p.x||wx-Rw>p.x+W||wy+Rw<p.y||wy-Rw>p.y+H)return;
@@ -105,7 +105,7 @@ cv.addEventListener('pointermove',e=>{lampMove(e.offsetX,e.offsetY);if(MODE==='m
  if(drag){const dx=e.offsetX-drag.sx,dy=e.offsetY-drag.sy;if(Math.abs(dx)+Math.abs(dy)>4){drag.moved=true;cv.classList.add('drag')}if(drag.moved&&MODE!=='memory'){vw.x=drag.vx+dx;vw.y=drag.vy+dy;render();scheduleGates()}}});
 const up=e=>{if(!pts.has(e.pointerId))return;pts.delete(e.pointerId);cv.classList.remove('drag');if(drag&&!drag.moved&&pts.size===0)clickAt(e.offsetX,e.offsetY);if(pts.size<2)pinch=null;if(pts.size===0)drag=null};
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
-cv.addEventListener('wheel',e=>{e.preventDefault();if(MODE==='memory')return;zoomAt(e.offsetX,e.offsetY,Math.exp(-e.deltaY*0.0016))},{passive:false});
+cv.addEventListener('wheel',e=>{e.preventDefault();if(MODE==='memory')return;if(e.shiftKey&&lampOn(curView())){const d=e.deltaY||e.deltaX;LAMP.R=Math.max(50,Math.min(420,LAMP.R*Math.exp(-d*0.0016)));try{localStorage.setItem('artchecker.lampR',LAMP.R|0)}catch(_){}render();return}zoomAt(e.offsetX,e.offsetY,Math.exp(-e.deltaY*0.0016))},{passive:false});
 function clickAt(sx,sy){const wx=(sx-vw.x)/vw.z,wy=(sy-vw.y)/vw.z,p=P.find(q=>wx>=q.x-30&&wx<=q.x+W+30&&wy>=q.y-30&&wy<=q.y+H+80);if(!p)return;sel=p;
  const lx=wx-p.x,ly=wy-p.y,T=tool&&TB[tool];
  if(T&&T.probe&&p.kind){if(p.kind.probe)p.kind.probe(p,lx,ly,tool)}
