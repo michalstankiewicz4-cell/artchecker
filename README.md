@@ -44,6 +44,7 @@ Tryb 3D pobiera Three.js z CDN (cdnjs), więc wymaga internetu.
 ## Narzędzia (Python + Playwright)
 - `python3 tools/build-wiki-img.py` – generuje ilustracje wiki (`img/wiki/`, manifest `js/data/wikiimg.js`).
 - `python3 tools/doctor-3d.py /ścieżka/do/GameLaboratory` – sprawdza rzeźby 3D doktorem modeli z GameLaboratory.
+- Akcja GitHub „Pobierz prawdziwe dzieła” – pobiera dzieła z domeny publicznej z listy `tools/real-art.txt` do `img/real/`.
 
 ## SEO i udostępnianie
 Meta tagi, Open Graph / Twitter Card (miniatura `og-image.jpg` – zrzut ekranu startowego), JSON-LD, `robots.txt`, `sitemap.xml`. Po większej zmianie wyglądu ekranu głównego warto wygenerować nową miniaturę.

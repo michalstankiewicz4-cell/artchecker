@@ -86,3 +86,6 @@ Ilustracje artykułów wiki są gotowymi plikami w `img/wiki/` z manifestem `js/
 
 ## Doktor modeli 3D
 `python3 tools/doctor-3d.py /ścieżka/do/GameLaboratory` – sprawdza popiersia 3D doktorem modeli z laboratorium (`tools/doctor/modeldoctor.js`, Three.js r186 z laboratorium). Kończy się kodem 1, gdy są błędy. Po każdej zmianie geometrii rzeźb uruchom go ponownie.
+
+## Prawdziwe dzieła (domena publiczna)
+Lista: `tools/real-art.txt` (`slug|nazwa pliku w Wikimedia Commons`). Akcja GitHub `.github/workflows/fetch-art.yml` (uruchamiana ręcznie: Actions → „Pobierz prawdziwe dzieła” → Run workflow) pobiera pliki z Commons, zmniejsza je do 1000 px (JPEG) i zapisuje w `img/real/` z `manifest.json` (autor, data, licencja, źródło). Pobieranie idzie przez GitHub, bo środowisko, w którym powstaje kod, nie ma dostępu do serwerów z obrazami.
