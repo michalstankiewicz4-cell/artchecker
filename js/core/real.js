@@ -5,13 +5,14 @@
    Włączane po kolei: REAL_READY.
    ===================================================================== */
 const REAL_READY=['stanczyk'];
+const REAL_DEF={paint5:'stanczyk'};/* dzieło wybrane domyślnie po wejściu w tryb */
 const REALIM={};let REAL_CUR=null;
 function loadReal(slug){if(REALIM[slug])return Promise.resolve(REALIM[slug]);
  return new Promise((res,rej)=>{const go=()=>{const im=new Image();im.onload=()=>{REALIM[slug]=im;res(im)};im.onerror=rej;im.src=REALIMG[slug]};
   if(window.REALIMG&&REALIMG[slug])return go();const s=document.createElement('script');s.src='js/real/'+slug+'.js';s.onload=go;s.onerror=rej;document.head.appendChild(s)})}
 const realFor=mode=>REAL.filter(e=>e.mode===mode&&REAL_READY.includes(e.slug));
 /* lista „Artysta”: fikcyjni artyści + dzieła prawdziwe gotowe dla trybu */
-function fillArtist(mode){const el=document.getElementById('artist'),v=el.value,L=realFor(mode);let h='';
+function fillArtist(mode){const el=document.getElementById('artist'),L=realFor(mode),v=el.dataset.mode===mode?el.value:(REAL_DEF[mode]&&REAL_READY.includes(REAL_DEF[mode])?'real:'+REAL_DEF[mode]:'');el.dataset.mode=mode;let h='';
  if(mode==='paint5'||mode==='frag'||mode==='memory')h='<option value="">Losowy artysta (fikcyjny)</option>'+ARTISTS.filter(a=>mode==='paint5'||!a.sup||a.sup==='canvas').map(a=>`<option value="${a.id}">${a.name} – ${({pejzaz:'pejzaż',portret:'portret',martwa:'martwa natura',marina:'marina'})[a.scene]}</option>`).join('');
  else h='<option value="">Losowa praca (fikcyjna)</option>';
  if(L.length&&(mode==='paint5'||KINDS[mode]))h+=`<optgroup label="Dzieła prawdziwe (domena publiczna)">${L.length>1?'<option value="real:*">Losowe dzieło prawdziwe</option>':''}${L.map(e=>`<option value="real:${e.slug}">${e.artist} – „${e.title}”</option>`).join('')}</optgroup>`;

@@ -15,7 +15,7 @@ document.getElementById('homebtn').onclick=showHome;
 for(const id of['hwiki','gwiki'])document.getElementById(id).onclick=()=>showWiki();
 document.getElementById('wclose').onclick=()=>document.getElementById('wiki').classList.add('hidden');
 document.getElementById('wq').oninput=()=>{WSEL=0;renderWiki()};
-setTimeout(()=>{showHome();setTimeout(hideLoader,120)},30);
+setTimeout(async()=>{if(REAL_DEF.paint5)try{await loadReal(REAL_DEF.paint5)}catch(e){}showHome();setTimeout(hideLoader,120)},30);
 
 const showAbout=()=>{document.getElementById('aboutver').textContent='v'+VERSION;document.getElementById('aboutreal').innerHTML=REAL.map(e=>`<li>${e.artist}, „${e.title}”, ${e.year} – ${e.museum}; licencja: ${e.license}; źródło: <a href="${realSrc(e)}" target="_blank" rel="noopener">Wikimedia Commons</a></li>`).join('');document.getElementById('about').classList.add('show')};
 for(const id of['habout','gabout'])document.getElementById(id).onclick=showAbout;

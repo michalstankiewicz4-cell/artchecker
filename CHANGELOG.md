@@ -2,6 +2,11 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.19.1] – 2026-11-09
+### Zmienione
+- Ekran startowy: podgląd „Badania obrazów” / „Znajdź oryginał – obrazy” pokazuje „Stańczyka” Matejki (z podpisem), obraz wczytuje się razem z loaderem startowym.
+- Po wejściu w tryb „Znajdź oryginał – obrazy” na liście „Artysta” domyślnie wybrany jest „Stańczyk” (`REAL_DEF` w `js/core/real.js`); wybór innego artysty zostaje zapamiętany do zmiany trybu.
+
 ## [1.19.0] – 2026-11-09
 ### Dodane
 - **Pierwsze dzieło prawdziwe: Jan Matejko, „Stańczyk” (1862)** w trybie „Znajdź oryginał – obrazy”. Wybór na liście „Artysta” (grupa „Dzieła prawdziwe (domena publiczna)”). Oryginał to reprodukcja z Wikimedia Commons, kopie robi gra (te same metody fałszerskie co dla obrazów fikcyjnych), a zdrady stylu (anatomia, cień) przesuwają lub odbijają fragment postaci.
