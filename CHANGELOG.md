@@ -2,6 +2,11 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.9.1] – 2026-11-09
+### Usunięte
+- Linie skanowania na ekranie głównym (winieta zostaje).
+- Krótkie zakłócenia obrazu w podglądzie trybu.
+
 ## [1.9.0] – 2026-11-09
 ### Dodane
 - Efekty ekranu głównego (`js/core/homefx.js`): ziarno, artefakty kompresji JPG (bloki 8×8, przesunięcia barw, pasmowanie tła), pasy przesunięcia kolorów, aberracja chromatyczna napisów, migotanie i pulsowanie obramowań paneli, krótkie zakłócenia podglądu, linie skanowania i winieta, paralaksa podglądu. Wyłączane przy „ogranicz ruch” w systemie.
