@@ -60,7 +60,7 @@ function buildTools(){const el=document.getElementById('tools');
  el.innerHTML=GROUPS.map(([g,ids])=>`<div class="grp"><h3>${g}</h3>${ids.map(id=>`<button class="tool" data-id="${id}">${TB[id].name}</button>`).join('')}</div>`).join('');
  el.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{tool=tool===b.dataset.id?null:b.dataset.id;showTab('panel');onChange()})}
 function onChange(){if(tool!==TILT.tool){TILT.tool=tool;TILT.lo=TILT.v<20;TILT.hi=TILT.v>60}document.querySelectorAll('.tool').forEach(b=>{b.classList.toggle('on',b.dataset.id===tool);b.classList.toggle('used',P.some(p=>p.notes[b.dataset.id]))});
- const v=curView();document.getElementById('viewlbl').textContent='Widok: '+(MODE==='sculpt'?{normal:'światło dzienne',uv:'promieniowanie UV',xray:'RTG'}[v]||'światło dzienne':VIEWNAME[v]);
+ const v=curView();{const lb=document.getElementById('zlamp');lb.style.display=MODE!=='sculpt'&&MODE!=='memory'&&LAMPV[v]?'':'none';lb.textContent=LAMP.on?'🔦 Lampa ruchoma':'💡 Cały obiekt'}document.getElementById('viewlbl').textContent='Widok: '+(MODE==='sculpt'?{normal:'światło dzienne',uv:'promieniowanie UV',xray:'RTG'}[v]||'światło dzienne':VIEWNAME[v]);
  cv.classList.toggle('probe',!!(tool&&TB[tool].probe));
  document.getElementById('sel').textContent=sel?(MODE==='frag'?'Wybrany: fragment':`Wybrany: obiekt ${sel.letter}`):'Nie wybrano obiektu.';
  document.querySelectorAll('#verdicts button').forEach(b=>b.disabled=!KIND&&!sel);

@@ -16,3 +16,5 @@ function updateDock(){const el=document.getElementById('strip'),nt=TLIST.length;
  el.innerHTML=P.map((p,i)=>{const m=p.umark,ic=m==='excl'?'✕':m==='susp'?'?':m==='ok'?'✓':'',nc=p.check?Object.values(p.check).filter(Boolean).length:0,u=nt?TLIST.filter(t=>p.notes[t.id]).length:0;
   return`<button class="chip${sel===p?' on':''}${m?' m-'+m:''}" data-i="${i}" title="${objName(p)}"><b>${MODE==='frag'?'F':p.letter}</b><span>${ic?`<i>${ic}</i>`:''}${nt?`<small>${u}/${nt}</small>`:''}${nc?`<small class="fl">⚑${nc}</small>`:''}</span>${nt?`<em style="width:${Math.round(u/nt*100)}%"></em>`:''}</button>`}).join('');
  el.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{sel=P[+b.dataset.i];document.getElementById('zsel').click();onChange()})}
+document.getElementById('zlamp').onclick=()=>{LAMP.on=!LAMP.on;updatePanel();render()};
+document.getElementById('board').addEventListener('pointerleave',()=>{LAMP.sx=LAMP.sy=null});

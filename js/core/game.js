@@ -37,7 +37,7 @@ function setCase(){const e=document.getElementById('case');
  else e.textContent=`Sprawa: „${ART.title}”, przypisywany: ${ART.name} (${ART.life}), ${ART.year}, olej na płótnie, ${fmt(ART.wcm)} × ${fmt(ART.hcm)} cm. Na stole 5 obrazów – jeden jest oryginałem. (Artyści i dzieła są fikcyjne.)`}
 async function newGame(){showTab('panel');CUR=document.getElementById('mode').value;MODE=CUR;KIND=KINDS[MODE]||null;SV=SCULPT_VARIANTS[MODE]||null;if(SV)MODE='sculpt';const r=rng((Math.random()*1e9)|0);sel=null;tool=null;REFC=null;
  document.getElementById('artist').style.display=MODE==='sculpt'||KIND?'none':'';document.getElementById('tiltw').style.display=KIND&&KIND.tilt?'':'none';const is3=MODE==='sculpt';cv.style.display=is3?'none':'block';document.getElementById('three').style.display=is3?'block':'none';
- document.getElementById('help').textContent=is3?'Przeciągnij – obracaj · prawy przycisk / Shift – przesuń · kółko / szczypanie – przybliż · kliknij rzeźbę – wybierz':'Kółko myszy / szczypanie – zoom (do ×24) · przeciągnij – przesuń · kliknij obiekt – wybierz';
+ document.getElementById('help').textContent=is3?'Przeciągnij – obracaj · prawy przycisk / Shift – przesuń · kółko / szczypanie – przybliż · kliknij rzeźbę – wybierz':'Kółko myszy / szczypanie – zoom (do ×24) · przeciągnij – przesuń · kliknij obiekt – wybierz · lampy UV, boczna i pod światło świecą tam, gdzie kursor';
  document.getElementById('zsig').textContent=is3?'Tył cokołu':KIND?KIND.focusLabel:'Sygnatura';
  document.querySelector('.zoom').style.display=MODE==='memory'?'none':'';if(MODE!=='memory'){clearInterval(MEM.iv);MEM.phase=0}else MEM.phase=1;
  if(MODE==='memory')document.getElementById('help').textContent='Najedź kursorem – lupa ×4 · kliknij obraz – wybierz';

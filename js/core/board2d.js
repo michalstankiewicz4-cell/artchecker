@@ -20,12 +20,12 @@ function render(){if(MODE==='sculpt'||!P.length||!ART)return;const dpr=devicePix
   if(p.kind){ctx.fillStyle='rgba(0,0,0,.5)';if(p.kind.shadow)p.kind.shadow(p);else ctx.fillRect(p.x+6,p.y+8,W,H)}
   if(v!=='back'&&!p.frag&&!p.kind){ctx.fillStyle=lin(p.x-28,p.y-28,p.x+W+28,p.y+H+28,[[0,'#8a6a2a'],[.5,'#d6b058'],[1,'#6e521e']])(ctx);ctx.fillRect(p.x-28,p.y-28,W+56,H+56);ctx.fillStyle='#4a3712';ctx.fillRect(p.x-6,p.y-6,W+12,H+12)}
   if(p.frag){ctx.fillStyle='#1c1814';ctx.fillRect(p.x-60,p.y-60,W+120,H+120);ctx.save();ctx.beginPath();ctx.rect(p.x,p.y,W,H);polyPath(ctx,p.frag.missing,p.x,p.y);ctx.clip('evenodd')}
-  ctx.drawImage(getView(p,v),p.x,p.y,W,H);
+  if(lampOn(v)){ctx.drawImage(getView(p,'normal'),p.x,p.y,W,H);ctx.fillStyle=LAMPV[v].dim;ctx.fillRect(p.x,p.y,W,H);lampSpot(p,v)}else ctx.drawImage(getView(p,v),p.x,p.y,W,H);
   if(p.kind&&p.kind.live&&v==='normal')p.kind.live(p);
   if(p.frag){ctx.strokeStyle='rgba(35,18,5,.35)';ctx.lineWidth=14;ctx.beginPath();polyPath(ctx,p.frag.torn,p.x,p.y);ctx.stroke();ctx.strokeStyle='rgba(30,14,4,.6)';ctx.lineWidth=5;ctx.stroke();ctx.restore();drawFringe(p)}
   if(['normal','crackview'].includes(v))for(const s of p.samples){ctx.strokeStyle=s.kind==='pigment'?'#ffe066':'#7fd6ff';ctx.lineWidth=Math.max(0.15,1.2/vw.z);ctx.beginPath();ctx.arc(p.x+s.x,p.y+s.y,Math.max(0.6,4/Math.sqrt(vw.z)),0,7);ctx.stroke()}
  }
- drawDetail(v);
+ drawDetail(v);lampOverlay();
  for(const p of P){
   if(p.umark==='excl'){ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(p.x,p.y,W,H);ctx.strokeStyle='rgba(224,88,79,.85)';ctx.lineWidth=10;ctx.beginPath();ctx.moveTo(p.x+30,p.y+30);ctx.lineTo(p.x+W-30,p.y+H-30);ctx.moveTo(p.x+W-30,p.y+30);ctx.lineTo(p.x+30,p.y+H-30);ctx.stroke()}
   const nc=p.check?Object.values(p.check).filter(Boolean).length:0;if(nc&&!(MODE==='memory'&&MEM.phase===1)){ctx.fillStyle='#e0584f';ctx.font='bold 26px system-ui';ctx.fillText('⚑ '+nc,p.x-24,p.y-38)}
@@ -42,6 +42,25 @@ function render(){if(MODE==='sculpt'||!P.length||!ART)return;const dpr=devicePix
    ctx.drawImage(getView(p,'normal'),(wx-p.x-src)*S,(wy-p.y-src)*S,2*src*S,2*src*S,sx-R,sy-R,2*R,2*R);ctx.restore();
    ctx.strokeStyle='#3a2a10';ctx.lineWidth=10;ctx.beginPath();ctx.arc(sx,sy,R+5,0,7);ctx.stroke();ctx.strokeStyle='#d6b058';ctx.lineWidth=3;ctx.stroke()}}
  document.getElementById('zlv').textContent='×'+(vw.z<1?vw.z.toFixed(2):vw.z.toFixed(1))}
+/* ---------- lampa ruchoma: UV, światło boczne, światło przechodzące ---------- */
+const LAMPV={uv:{dim:'rgba(6,0,18,.86)',glow:'rgba(150,90,255,.55)'},raking:{dim:'rgba(0,0,0,.62)',glow:'rgba(255,230,170,.45)'},trans:{dim:'rgba(0,0,0,.42)',glow:'rgba(255,250,225,.5)'}};
+const LAMP={on:true,sx:null,sy:null,R:150,raf:0};
+const lampOn=v=>LAMP.on&&LAMPV[v]&&MODE!=='memory';
+function lampPos(){const r=cv.getBoundingClientRect(),sx=LAMP.sx??r.width/2,sy=LAMP.sy??r.height/2;return{wx:(sx-vw.x)/vw.z,wy:(sy-vw.y)/vw.z,Rw:LAMP.R/vw.z}}
+function lampSpot(p,v){const{wx,wy,Rw}=lampPos();if(wx+Rw<p.x||wx-Rw>p.x+W||wy+Rw<p.y||wy-Rw>p.y+H)return;
+ ctx.save();ctx.beginPath();ctx.arc(wx,wy,Rw,0,7);ctx.clip();
+ if(v==='raking'){getView(p,'raking');if(p._rel)lampRaking(p,wx,wy,Rw);else ctx.drawImage(getView(p,v),p.x,p.y,W,H)}else ctx.drawImage(getView(p,v),p.x,p.y,W,H);
+ const g=ctx.createRadialGradient(wx,wy,Rw*0.55,wx,wy,Rw);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,LAMPV[v].dim);ctx.fillStyle=g;ctx.fillRect(wx-Rw,wy-Rw,2*Rw,2*Rw);ctx.restore()}
+function lampRaking(p,wx,wy,Rw){const R=p._rel,dpr=devicePixelRatio||1,x0=Math.max(p.x,wx-Rw),y0=Math.max(p.y,wy-Rw),x1=Math.min(p.x+W,wx+Rw),y1=Math.min(p.y+H,wy+Rw);if(x1<=x0||y1<=y0)return;
+ const k=Math.min(1,LAMP.R*2*dpr/(2*Rw)/1),pxw=Math.min(560,Math.max(8,Math.round((x1-x0)/(2*Rw)*LAMP.R*2*dpr))),pxh=Math.min(560,Math.max(8,Math.round((y1-y0)/(2*Rw)*LAMP.R*2*dpr)));
+ const c=lampRaking.c||(lampRaking.c=mk(560,560)),x=c.getContext('2d'),id=x.createImageData(pxw,pxh),d=id.data,w=R.w,hh=R.h,ll=R.l,K=R.k*1.8,col=R.col;
+ for(let j=0;j<pxh;j++){const wyy=y0+(j+0.5)*(y1-y0)/pxh,Y=Math.min(IH-2,Math.max(1,((wyy-p.y)*S)|0));
+  for(let i=0;i<pxw;i++){const wxx=x0+(i+0.5)*(x1-x0)/pxw,X=Math.min(IW-2,Math.max(1,((wxx-p.x)*S)|0)),q=Y*w+X,dx=wx-wxx,dy=wy-wyy,dist=Math.hypot(dx,dy)||1;
+   const gx=hh[q-1]-hh[q+1],gy=hh[q-w]-hh[q+w],f=Math.max(0,1-dist/Rw),v=(ll[q]*0.35+R.base+(gx*dx+gy*dy)/dist*K)*(0.45+0.55*f),o=(j*pxw+i)*4;
+   d[o]=v*col[0];d[o+1]=v*col[1];d[o+2]=v*col[2];d[o+3]=255}}
+ x.putImageData(id,0,0);ctx.drawImage(c,0,0,pxw,pxh,x0,y0,x1-x0,y1-y0)}
+function lampOverlay(){const v=curView();if(!lampOn(v)||MODE==='sculpt')return;const{wx,wy,Rw}=lampPos();ctx.strokeStyle=LAMPV[v].glow;ctx.lineWidth=2/vw.z;ctx.beginPath();ctx.arc(wx,wy,Rw,0,7);ctx.stroke()}
+function lampMove(sx,sy){LAMP.sx=sx;LAMP.sy=sy;if(!lampOn(curView())||LAMP.raf)return;LAMP.raf=requestAnimationFrame(()=>{LAMP.raf=0;render()})}
 function drawFringe(p){const sp=pxPerCm()/p.thread,T=p.frag.torn;ctx.strokeStyle='#cbb68c';
  if(vw.z<2){ctx.lineWidth=2;ctx.beginPath();polyPath(ctx,T,p.x,p.y);ctx.stroke();return}
  let cx=0,cy=0;p.frag.missing.forEach(q=>{cx+=q[0];cy+=q[1]});cx/=p.frag.missing.length;cy/=p.frag.missing.length;ctx.lineWidth=sp*0.35;
@@ -81,7 +100,7 @@ cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(
  if(pts.size===1)drag={sx:e.offsetX,sy:e.offsetY,vx:vw.x,vy:vw.y,moved:false};
  if(pts.size===2){const[a,b]=[...pts.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y)};drag=null}});
 cv.addEventListener('pointerleave',()=>{if(MODE==='memory'){MEM.lens=null;render()}});
-cv.addEventListener('pointermove',e=>{if(MODE==='memory'){MEM.lens={sx:e.offsetX,sy:e.offsetY};render()}if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.offsetX,y:e.offsetY});
+cv.addEventListener('pointermove',e=>{lampMove(e.offsetX,e.offsetY);if(MODE==='memory'){MEM.lens={sx:e.offsetX,sy:e.offsetY};render()}if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.offsetX,y:e.offsetY});
  if(pinch&&pts.size===2&&MODE!=='memory'){const[a,b]=[...pts.values()],d=Math.hypot(a.x-b.x,a.y-b.y);zoomAt((a.x+b.x)/2,(a.y+b.y)/2,d/pinch.d);pinch.d=d;return}
  if(drag){const dx=e.offsetX-drag.sx,dy=e.offsetY-drag.sy;if(Math.abs(dx)+Math.abs(dy)>4){drag.moved=true;cv.classList.add('drag')}if(drag.moved&&MODE!=='memory'){vw.x=drag.vx+dx;vw.y=drag.vy+dy;render();scheduleGates()}}});
 const up=e=>{if(!pts.has(e.pointerId))return;pts.delete(e.pointerId);cv.classList.remove('drag');if(drag&&!drag.moved&&pts.size===0)clickAt(e.offsetX,e.offsetY);if(pts.size<2)pinch=null;if(pts.size===0)drag=null};

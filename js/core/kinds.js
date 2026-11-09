@@ -19,9 +19,11 @@ function kindBatch(k,r,init){ART={wcm:k.wcm,hcm:k.hcm,name:k.label};SC=null;C=nu
   p.x=i<3?g+i*(W+g):g+(W+g)/2+(i-3)*(W+g);p.y=i<3?g:g*2+H;if(init)init(p,r);return p});
  BW=3*W+4*g;BH=2*H+3*g;resetTilt()}
 /* Pomocnik: buforowany widok obiektu */
-function kView(p,v,fn){if(p.views[v])return p.views[v];const c=mk(IW,IH),x=c.getContext('2d');x.scale(S,S);fn(x,c);return p.views[v]=c}
+function kView(p,v,fn){if(p.views[v])return p.views[v];const c=mk(IW,IH),x=c.getContext('2d');x.scale(S,S);EMB_LAST=null;fn(x,c);if(v==='raking'&&EMB_LAST)p._rel=EMB_LAST;EMB_LAST=null;return p.views[v]=c}
 /* Relief w świetle bocznym: mapa wysokości hm + kolor bazowy src → canvas */
+let EMB_LAST=null;
+function relPack(hd,sd,base,k,col){const n=IW*IH,h=new Uint8Array(n),l=new Uint8Array(n);for(let i=0;i<n;i++){h[i]=hd[i*4];l[i]=lumOf(sd,i*4)}return{h,l,w:IW,base,k,col}}
 function embossFrom(hm,src){const hb=mk(IW,IH),hbx=hb.getContext('2d');hbx.filter='blur(1.2px)';hbx.drawImage(hm,0,0);
  const hd=hbx.getImageData(0,0,IW,IH).data,sd=src.getContext('2d').getImageData(0,0,IW,IH).data,out=mk(IW,IH),x=out.getContext('2d'),id=x.createImageData(IW,IH),d=id.data;
  for(let y=1;y<IH-1;y++)for(let X=1;X<IW-1;X++){const i=y*IW+X,i4=i*4,gx=hd[(i-1)*4]-hd[(i+1)*4],gy=hd[(i-IW)*4]-hd[(i+IW)*4],v=lumOf(sd,i4)*0.35+100+(gx*1.6+gy*0.8)*1.6;d[i4]=v*1.03;d[i4+1]=v*0.98;d[i4+2]=v*0.9;d[i4+3]=255}
- x.putImageData(id,0,0);return out}
+ x.putImageData(id,0,0);EMB_LAST=relPack(hd,sd,100,1.6,[1.03,.98,.9]);return out}

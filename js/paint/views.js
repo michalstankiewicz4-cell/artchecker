@@ -39,7 +39,7 @@ function makeRaking(p){const mode=p.t.texture?p.m.texture:'real',r=rng(p.seed+21
  const out=mk(IW,IH),x=out.getContext('2d'),id=x.createImageData(IW,IH),d=id.data;
  for(let y=1;y<IH-1;y++)for(let X=1;X<IW-1;X++){const i=y*IW+X,i4=i*4,gx=hd[(i-1)*4]-hd[(i+1)*4],gy=hd[(i-IW)*4]-hd[(i+IW)*4],v=lumOf(src,i4)*0.35+92+(gx*1.6+gy*0.8)*1.5;
   d[i4]=v*1.03;d[i4+1]=v*0.97;d[i4+2]=v*0.86;d[i4+3]=255}
- x.putImageData(id,0,0);return out}
+ x.putImageData(id,0,0);p._rel=relPack(hd,src,92,1.5,[1.03,.97,.86]);return out}
 function sketch(x,pts,closed,passes,jit,r){for(let k=0;k<passes;k++){x.beginPath();pts.forEach((q,i)=>{const X=q[0]+(r()-.5)*jit,Y=q[1]+(r()-.5)*jit;i?x.lineTo(X,Y):x.moveTo(X,Y)});if(closed)x.closePath();x.stroke()}}
 const irMode=p=>p.t.ir?p.m.ir:'real';
 function makeIR(p){const out=pixMap(getView(p,'normal'),l=>{const v=150+(l-128)*0.3;return[v,v,v]}),x=out.getContext('2d');x.scale(S,S);

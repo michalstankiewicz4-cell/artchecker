@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.14.0] – 2026-11-09
+### Dodane
+- Lampa ruchoma: w widokach UV, światła bocznego i światła przechodzącego (pod światło) reszta stołu jest przyciemniona, a widok badawczy pokazuje się tylko w kręgu światła za kursorem. Lampa boczna oświetla relief z kierunku lampy – przesuwanie zmienia cienie. Przycisk „🔦 Lampa ruchoma / 💡 Cały obiekt” przełącza na dawny widok całości.
+
 ## [1.13.0] – 2026-11-09
 ### Zmienione
 - Rzeźby 3D (brąz i marmur): głowa i szyja z modelu popiersia z GameLaboratory (`js/lab/bust-head.js`, „Lowpoly face model” – void, CC BY 4.0, zmienione) zamiast głowy złożonej z kul. Siatka jest zagęszczana i wygładzana w grze; włosy to warstwa odsunięta od czaszki, kok z tyłu. Zdrada „styl” (dłuższy nos, przechylona głowa) działa na nowej głowie, szew odlewniczy biegnie wzdłuż jej sylwetki.
