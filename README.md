@@ -36,3 +36,7 @@ Meta tagi, Open Graph / Twitter Card (miniatura `og-image.jpg` – zrzut ekranu 
 
 ## Wersjonowanie
 [SemVer](https://semver.org/lang/pl/): numer w `js/version.js` (widoczny w nagłówku gry) + wpis w `CHANGELOG.md` przy każdej zmianie.
+
+## Zasoby zewnętrzne
+- Głowa popiersi 3D: „Lowpoly face model” – void (https://sketchfab.com/void22), licencja CC BY 4.0, zmienione (przez GameLaboratory i w grze).
+- ArtKit i model głowy skopiowane z repozytorium GameLaboratory (`js/lab/`).

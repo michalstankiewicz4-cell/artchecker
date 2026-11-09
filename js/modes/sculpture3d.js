@@ -68,20 +68,32 @@ function torsoR(y){for(let i=1;i<TORSO.length;i++)if(y<=TORSO[i][0]){const a=TOR
 function bustGeoms(q){const V2=(p)=>p.map(a=>new THREE.Vector2(a[0],a[1])),gs=[];
  gs.push(new THREE.LatheGeometry(V2([[0.01,0],[11,0],[11,1.5],[10,2.2],[9.2,3],[9.2,6],[10,7],[10,8],[0.01,8]]),56));
  const torso=new THREE.LatheGeometry(V2([[0.01,8],...TORSO.map(a=>[a[1],a[0]]),[0.01,30.6]]),64);torso.scale(1.18,1,0.55);gs.push(torso);
- const neck=new THREE.CylinderGeometry(4.3,4.9,8,32);neck.translate(0,33.5,0);gs.push(neck);
- const hp=[],nl=q.t.style?1.45:1;
- const head=new THREE.SphereGeometry(8.6,64,48);head.scale(0.86,1.08,0.98);hp.push(head);
- const nose=new THREE.ConeGeometry(1.25,3.2*nl,16);nose.rotateX(Math.PI/2);nose.translate(0,-0.6,8.0+1.6*(nl-1));hp.push(nose);
- for(const s of[-1,1]){const e=new THREE.SphereGeometry(1.15,20,14);e.scale(1,0.55,0.45);e.translate(s*2.9,1.2,7.35);hp.push(e);
-  const ear=new THREE.SphereGeometry(1.7,20,14);ear.scale(0.45,1.25,0.85);ear.translate(s*7.35,0,-0.3);hp.push(ear)}
- const lips=new THREE.SphereGeometry(1.6,20,14);lips.scale(1.2,0.45,0.5);lips.translate(0,-4,7.5);hp.push(lips);
- const chin=new THREE.SphereGeometry(2.6,24,18);chin.translate(0,-6,5.5);hp.push(chin);
- const cap=new THREE.SphereGeometry(8.95,56,28,0,Math.PI*2,0,Math.PI*0.52);cap.scale(0.88,1.1,1.0);cap.rotateX(-0.45);cap.translate(0,0.6,-0.6);hp.push(cap);
- const bun=new THREE.SphereGeometry(4.6,36,26);bun.translate(0,4.2,-8.2);hp.push(bun);
- for(let i=0;i<9;i++){const a=-1.25+i*0.31,c=new THREE.SphereGeometry(1.5,16,12);c.translate(Math.sin(a)*7.2,5.6-Math.abs(a)*1.2,Math.cos(a)*5.0);hp.push(c)}
- const m=new THREE.Matrix4().makeTranslation(0,42.5,0).multiply(new THREE.Matrix4().makeRotationZ(q.t.style?0.14:0));hp.forEach(g=>g.applyMatrix4(m));gs.push(...hp);return gs}
-function seamGeo(sign){const v=[];for(let y=9;y<=29;y+=2)v.push(new THREE.Vector3(sign*(torsoR(y)+0.05),y,0));for(let y=30.5;y<=37.5;y+=1.5)v.push(new THREE.Vector3(sign*4.75,y,0));
- for(let a=-60;a<=85;a+=8){const t=a*Math.PI/180;v.push(new THREE.Vector3(sign*7.45*Math.cos(t),42.5+9.35*Math.sin(t),0))}return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(v),160,0.14,6,false)}
+ const neck=new THREE.CylinderGeometry(4.4,5,4.6,32);neck.translate(0,31.2,-0.8);gs.push(neck);
+ const {head,hair}=headGeoms(q),bun=new THREE.SphereGeometry(3.4,36,26);bun.scale(1,0.9,0.85);bun.translate(0,47,-10.2);
+ if(q.t.style){const m=new THREE.Matrix4().makeTranslation(0,32,0).multiply(new THREE.Matrix4().makeRotationZ(0.14)).multiply(new THREE.Matrix4().makeTranslation(0,-32,0));[head,hair,bun].forEach(g=>g.applyMatrix4(m))}
+ gs.push(head,hair,bun);return gs}
+/* Głowa popiersia z GameLaboratory (js/lab/bust-head.js, CC BY 4.0): low-poly siatka zagęszczona i wygładzona. */
+const BH_S=19,BH_Y=43.5;let BH_CACHE={};
+function bhSubdiv(P,T){const E=new Map(),nt=[];const mid=(a,b)=>{const k=a<b?a+'_'+b:b+'_'+a;let m=E.get(k);if(m==null){m=P.length;P.push([(P[a][0]+P[b][0])/2,(P[a][1]+P[b][1])/2,(P[a][2]+P[b][2])/2]);E.set(k,m)}return m};
+ for(let i=0;i<T.length;i+=3){const a=T[i],b=T[i+1],c=T[i+2],ab=mid(a,b),bc=mid(b,c),ca=mid(c,a);nt.push(a,ab,ca,ab,b,bc,ca,bc,c,ab,bc,ca)}return nt}
+function bhSmooth(P,T,it){const N=P.map(()=>new Set()),ec=new Map();for(let i=0;i<T.length;i+=3)for(const[a,b]of[[T[i],T[i+1]],[T[i+1],T[i+2]],[T[i+2],T[i]]]){N[a].add(b);N[b].add(a);const k=a<b?a+'_'+b:b+'_'+a;ec.set(k,(ec.get(k)||0)+1)}
+ const fix=new Set();ec.forEach((n,k)=>{if(n===1)k.split('_').forEach(x=>fix.add(+x))});
+ const step=l=>{const Q=P.map((p,i)=>{if(fix.has(i)||!N[i].size)return p;let sx=0,sy=0,sz=0;N[i].forEach(j=>{sx+=P[j][0];sy+=P[j][1];sz+=P[j][2]});const n=N[i].size;return[p[0]+l*(sx/n-p[0]),p[1]+l*(sy/n-p[1]),p[2]+l*(sz/n-p[2])]});for(let i=0;i<P.length;i++)P[i]=Q[i]};
+ for(let k=0;k<it;k++){step(0.5);step(-0.53)}}
+function bhGeo(P,T){const g=new THREE.BufferGeometry(),pos=new Float32Array(P.length*3),uv=new Float32Array(P.length*2);
+ P.forEach((p,i)=>{pos.set([p[0]*BH_S,p[1]*BH_S+BH_Y,p[2]*BH_S],i*3);uv.set([Math.atan2(p[0],p[2])/(Math.PI*2)+0.5,p[1]*0.9+0.5],i*2)});
+ g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('uv',new THREE.BufferAttribute(uv,2));g.setIndex(T);g.computeVertexNormals();return g}
+function headGeoms(q){const key=q.t.style?'s':'n';if(!BH_CACHE[key]){const P=BUST_HEAD.v.map(p=>p.slice());let T=[];
+  T=BUST_HEAD.t.slice();P.forEach(p=>{if(p[1]<-0.5){const dx=p[0],dz=p[2]+0.05,d=Math.hypot(dx,dz)||1,R=Math.min(d,0.29);p[0]=dx/d*R;p[2]=dz/d*R-0.05;p[1]=Math.max(p[1],-0.66)}});
+  if(q.t.style)P.forEach(p=>{if(p[2]>0.3&&Math.abs(p[0])<0.14&&p[1]>-0.33&&p[1]<0.06){const f=1-Math.abs(p[1]+0.14)/0.2;p[2]+=0.09*Math.max(0,f)}});
+  T=bhSubdiv(P,T);bhSmooth(P,T,3);T=bhSubdiv(P,T);bhSmooth(P,T,2);
+  const H=[],HT=[],map=new Map(),nrm=bhGeo(P,T).attributes.normal;
+  for(let i=0;i<T.length;i+=3){const tri=[T[i],T[i+1],T[i+2]];if(!tri.every(k=>{const p=P[k];return p[1]>0.24||(p[1]>0.05&&p[2]<-0.25)}))continue;
+   HT.push(...tri.map(k=>{if(!map.has(k)){const o=0.03;map.set(k,H.length);H.push([P[k][0]+nrm.getX(k)/BH_S*o*BH_S,P[k][1]+nrm.getY(k)/BH_S*o*BH_S,P[k][2]+nrm.getZ(k)/BH_S*o*BH_S])}return map.get(k)}))}
+  BH_CACHE[key]={P,T,H,HT}}
+ const c=BH_CACHE[key];return{head:bhGeo(c.P,c.T),hair:bhGeo(c.H,c.HT)}}
+function seamGeo(sign){const v=[];for(let y=9;y<=29;y+=2)v.push(new THREE.Vector3(sign*(torsoR(y)+0.05),y,0));for(let y=30.5;y<=32.5;y+=1)v.push(new THREE.Vector3(sign*4.9,y,0));
+ const c=BH_CACHE.n||BH_CACHE.s;if(c)for(let y=-0.55;y<=0.6;y+=0.05){let m=0;for(const p of c.P)if(Math.abs(p[1]-y)<0.03&&Math.abs(p[2])<0.08)m=Math.max(m,Math.abs(p[0]));if(m>0)v.push(new THREE.Vector3(sign*(m*BH_S+0.08),y*BH_S+BH_Y,0))}return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(v),160,0.14,6,false)}
 function markTex(mode){return texCanvas((x,w,h)=>{x.clearRect(0,0,w,h);const draw=(t,y,f)=>{x.font=f;x.textAlign='center';x.fillStyle='rgba(255,226,170,.35)';x.fillText(t,w/2+2,y+3);x.fillStyle='rgba(22,13,6,.95)';x.fillText(t,w/2,y)};
  if(mode==='ok'||mode==='blur'){if(mode==='blur'){x.filter='blur(5px)';x.translate(w/2,h/2);x.scale(0.9,0.9);x.translate(-w/2,-h/2)}draw('J. BRACŁAWSKI · WARSZAWA',110,'bold 72px Georgia');draw('S. Rudnicki 1888',220,'italic 70px Georgia')}
  if(mode==='other'){draw('ODLEWNIA K. SZPAKOWSKI',110,'bold 70px Georgia');draw('S. Rudnicki 1888',220,'italic 70px Georgia')}

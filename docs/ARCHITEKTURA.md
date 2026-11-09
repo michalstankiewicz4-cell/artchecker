@@ -68,4 +68,4 @@ Aukcja, Śledztwo i Konserwator są w menu jako nieaktywne. Każdy będzie osobn
 Ilustracje artykułów wiki są gotowymi plikami w `img/wiki/` z manifestem `js/data/wikiimg.js`. Po zmianie wyglądu obiektów lub dodaniu artykułów uruchom `python3 tools/build-wiki-img.py` (playwright + Chrome) – skrypt wygeneruje je silnikiem gry. Artykuł bez pliku generuje ilustrację w przeglądarce w locie.
 
 ## Kod z GameLaboratory
-`js/lab/` – kod skopiowany z repozytorium GameLaboratory (laboratorium sztuki i modeli). `artkit.js` to ArtKit (obrazy 2D: techniki, podłoża, formaty, widoki), zamieniony z modułu ES na zwykły skrypt (`window.ArtKit`). Logikę zmienia się w laboratorium i kopiuje tutaj ponownie.
+`js/lab/` – kod skopiowany z repozytorium GameLaboratory (laboratorium sztuki i modeli). `artkit.js` to ArtKit (obrazy 2D: techniki, podłoża, formaty, widoki), zamieniony z modułu ES na zwykły skrypt (`window.ArtKit`). `bust-head.js` – siatka głowy i szyi popiersia (CC BY 4.0, autor: void), używana w `js/modes/sculpture3d.js`. Logikę zmienia się w laboratorium i kopiuje tutaj ponownie.
