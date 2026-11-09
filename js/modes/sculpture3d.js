@@ -65,10 +65,19 @@ function colorize(g,mode,seed){const pos=g.attributes.position,nor=g.attributes.
   else c=[.42,.26,.15].map(v=>v*(0.94+nz*0.12));col.set(c,i*3)}g.setAttribute('color',new THREE.BufferAttribute(col,3))}
 const TORSO=[[8,13],[8.5,13],[12,17],[17,18.5],[22,17.5],[26,14],[29,8],[30.5,5]];
 function torsoR(y){for(let i=1;i<TORSO.length;i++)if(y<=TORSO[i][0]){const a=TORSO[i-1],b=TORSO[i],t=(y-a[0])/(b[0]-a[0]);return a[1]+(b[1]-a[1])*t}return 5}
+/* Bryła obrotowa z dnem i wierzchem bez trójkątów-igieł: pierścienie z coraz mniejszą liczbą boków ku środkowi. */
+function lathed(prof,seg){const pos=[],idx=[],add=(x,y,z)=>(pos.push(x,y,z),pos.length/3-1),ring=(r,y,n)=>{const a=[];for(let i=0;i<n;i++){const t=i/n*Math.PI*2;a.push(add(Math.sin(t)*r,y,Math.cos(t)*r))}return a};
+ const R=prof.map(([r,y])=>ring(r,y,seg));for(let k=0;k<R.length-1;k++)for(let i=0;i<seg;i++){const a=R[k][i],b=R[k][(i+1)%seg],c=R[k+1][i],d=R[k+1][(i+1)%seg];idx.push(a,b,d,a,d,c)}
+ const cap=(outer,r,y,up)=>{let cur=outer,n=seg,rr=r;while(n>8){const m=n/2|0;rr*=0.55;const nx=ring(rr,y,m);for(let i=0;i<m;i++){const o0=cur[(2*i)%n],o1=cur[(2*i+1)%n],o2=cur[(2*i+2)%n],i0=nx[i],i1=nx[(i+1)%m];
+   if(n%2&&i===m-1){up?idx.push(o0,i0,o1,o1,i0,i1,o1,i1,o2):idx.push(o0,o1,i0,o1,i1,i0,o1,o2,i1);continue}up?idx.push(o0,i0,o1,o1,i0,i1,o1,i1,o2):idx.push(o0,o1,i0,o1,i1,i0,o1,o2,i1)}cur=nx;n=m}
+  const c=add(0,y,0);for(let i=0;i<n;i++)up?idx.push(cur[i],c,cur[(i+1)%n]):idx.push(cur[i],cur[(i+1)%n],c)};
+ cap(R[0],prof[0][0],prof[0][1],true);cap(R[R.length-1],prof[prof.length-1][0],prof[prof.length-1][1],false);
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));const uv=[];for(let i=0;i<pos.length;i+=3)uv.push(Math.atan2(pos[i],pos[i+2])/(Math.PI*2)+0.5,pos[i+1]/40);
+ g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();return g}
 function bustGeoms(q){const V2=(p)=>p.map(a=>new THREE.Vector2(a[0],a[1])),gs=[];
- gs.push(new THREE.LatheGeometry(V2([[0.01,0],[11,0],[11,1.5],[10,2.2],[9.2,3],[9.2,6],[10,7],[10,8],[0.01,8]]),56));
- const torso=new THREE.LatheGeometry(V2([[0.01,8],...TORSO.map(a=>[a[1],a[0]]),[0.01,30.6]]),64);torso.scale(1.18,1,0.55);gs.push(torso);
- const neck=new THREE.CylinderGeometry(4.4,5,4.6,32);neck.translate(0,31.2,-0.8);gs.push(neck);
+ gs.push(lathed([[11,0],[11,1.5],[10,2.2],[9.2,3],[9.2,6],[10,7],[10,8]],56));
+ const torso=lathed([[13,8],...TORSO.map(a=>[a[1],a[0]])],64);torso.scale(1.18,1,0.55);gs.push(torso);
+ const neck=new THREE.CylinderGeometry(5.1,5.4,3.6,40);neck.scale(1,1,0.82);neck.translate(0,30.3,-0.95);gs.push(neck);
  const {head,hair}=headGeoms(q),bun=new THREE.SphereGeometry(3.4,36,26);bun.scale(1,0.9,0.85);bun.translate(0,47,-10.2);
  if(q.t.style){const m=new THREE.Matrix4().makeTranslation(0,32,0).multiply(new THREE.Matrix4().makeRotationZ(0.14)).multiply(new THREE.Matrix4().makeTranslation(0,-32,0));[head,hair,bun].forEach(g=>g.applyMatrix4(m))}
  gs.push(head,hair,bun);return gs}
@@ -84,12 +93,16 @@ function bhGeo(P,T){const g=new THREE.BufferGeometry(),pos=new Float32Array(P.le
  P.forEach((p,i)=>{pos.set([p[0]*BH_S,p[1]*BH_S+BH_Y,p[2]*BH_S],i*3);uv.set([Math.atan2(p[0],p[2])/(Math.PI*2)+0.5,p[1]*0.9+0.5],i*2)});
  g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('uv',new THREE.BufferAttribute(uv,2));g.setIndex(T);g.computeVertexNormals();return g}
 function headGeoms(q){const key=q.t.style?'s':'n';if(!BH_CACHE[key]){const P=BUST_HEAD.v.map(p=>p.slice());let T=[];
-  T=BUST_HEAD.t.slice();P.forEach(p=>{if(p[1]<-0.5){const dx=p[0],dz=p[2]+0.05,d=Math.hypot(dx,dz)||1,R=Math.min(d,0.29);p[0]=dx/d*R;p[2]=dz/d*R-0.05;p[1]=Math.max(p[1],-0.66)}});
+  T=BUST_HEAD.t.slice();P.forEach(p=>{if(p[1]<-0.5){const dx=p[0]/0.26,dz=(p[2]+0.05)/0.2,d=Math.hypot(dx,dz)||1,f=Math.min(1,1/d);p[0]*=f;p[2]=(p[2]+0.05)*f-0.05;p[1]=Math.max(p[1],-0.66)}});
   if(q.t.style)P.forEach(p=>{if(p[2]>0.3&&Math.abs(p[0])<0.14&&p[1]>-0.33&&p[1]<0.06){const f=1-Math.abs(p[1]+0.14)/0.2;p[2]+=0.09*Math.max(0,f)}});
   T=bhSubdiv(P,T);bhSmooth(P,T,3);T=bhSubdiv(P,T);bhSmooth(P,T,2);
   const H=[],HT=[],map=new Map(),nrm=bhGeo(P,T).attributes.normal;
   for(let i=0;i<T.length;i+=3){const tri=[T[i],T[i+1],T[i+2]];if(!tri.every(k=>{const p=P[k];return p[1]>0.24||(p[1]>0.05&&p[2]<-0.25)}))continue;
    HT.push(...tri.map(k=>{if(!map.has(k)){const o=0.03;map.set(k,H.length);H.push([P[k][0]+nrm.getX(k)/BH_S*o*BH_S,P[k][1]+nrm.getY(k)/BH_S*o*BH_S,P[k][2]+nrm.getZ(k)/BH_S*o*BH_S])}return map.get(k)}))}
+  {const n=H.length,m=HT.length,orig=new Array(n);map.forEach((v,k)=>orig[v]=k);
+   for(let i=0;i<n;i++){const k=orig[i];H.push([P[k][0]-nrm.getX(k)*0.015,P[k][1]-nrm.getY(k)*0.015,P[k][2]-nrm.getZ(k)*0.015])}
+   const ec=new Map();for(let i=0;i<m;i+=3)for(const[a,b]of[[HT[i],HT[i+1]],[HT[i+1],HT[i+2]],[HT[i+2],HT[i]]]){const kk=a<b?a+'_'+b:b+'_'+a;ec.set(kk,(ec.get(kk)||0)+1)}
+   for(let i=0;i<m;i+=3){HT.push(HT[i]+n,HT[i+2]+n,HT[i+1]+n);for(const[a,b]of[[HT[i],HT[i+1]],[HT[i+1],HT[i+2]],[HT[i+2],HT[i]]]){const kk=a<b?a+'_'+b:b+'_'+a;if(ec.get(kk)===1)HT.push(b,a,a+n,b,a+n,b+n)}}}
   BH_CACHE[key]={P,T,H,HT}}
  const c=BH_CACHE[key];return{head:bhGeo(c.P,c.T),hair:bhGeo(c.H,c.HT)}}
 function seamGeo(sign){const v=[];for(let y=9;y<=29;y+=2)v.push(new THREE.Vector3(sign*(torsoR(y)+0.05),y,0));for(let y=30.5;y<=32.5;y+=1)v.push(new THREE.Vector3(sign*4.9,y,0));

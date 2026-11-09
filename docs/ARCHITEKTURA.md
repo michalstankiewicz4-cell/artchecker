@@ -69,3 +69,6 @@ Ilustracje artykułów wiki są gotowymi plikami w `img/wiki/` z manifestem `js/
 
 ## Kod z GameLaboratory
 `js/lab/` – kod skopiowany z repozytorium GameLaboratory (laboratorium sztuki i modeli). `artkit.js` to ArtKit (obrazy 2D: techniki, podłoża, formaty, widoki), zamieniony z modułu ES na zwykły skrypt (`window.ArtKit`). `bust-head.js` – siatka głowy i szyi popiersia (CC BY 4.0, autor: void), używana w `js/modes/sculpture3d.js`. Logikę zmienia się w laboratorium i kopiuje tutaj ponownie.
+
+## Doktor modeli 3D
+`python3 tools/doctor-3d.py /ścieżka/do/GameLaboratory` – sprawdza popiersia 3D doktorem modeli z laboratorium (`tools/doctor/modeldoctor.js`, Three.js r186 z laboratorium). Kończy się kodem 1, gdy są błędy. Po każdej zmianie geometrii rzeźb uruchom go ponownie.

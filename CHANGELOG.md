@@ -2,6 +2,11 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.14.1] – 2026-11-09
+### Poprawione (doktor modeli z GameLaboratory)
+- Rzeźby 3D sprawdzone doktorem modeli z GameLaboratory (`tools/doctor-3d.py`). Wyniki przed poprawkami: dziura między szyją głowy a szyją torsu (`seethrough`, błąd), jednostronna warstwa włosów widoczna od spodu (`seethrough`, błąd), trójkąty-igły na osi cokołu i torsu (`sliver`, info).
+- Szyja głowy zwężona do owalu mieszczącego się w szyi torsu; włosy jako zamknięta bryła (warstwa zewnętrzna, wewnętrzna i brzegi); cokół i tors budowane bez wachlarzy trójkątów na osi (dno i wierzch z pierścieni). Teraz: 0 wyników we wszystkich wariantach (oryginał, „styl”, ze szwami).
+
 ## [1.14.0] – 2026-11-09
 ### Dodane
 - Lampa ruchoma: w widokach UV, światła bocznego i światła przechodzącego (pod światło) reszta stołu jest przyciemniona, a widok badawczy pokazuje się tylko w kręgu światła za kursorem. Lampa boczna oświetla relief z kierunku lampy – przesuwanie zmienia cienie. Przycisk „🔦 Lampa ruchoma / 💡 Cały obiekt” przełącza na dawny widok całości.
