@@ -1,0 +1,39 @@
+name: Pobierz prawdziwe dzieła (domena publiczna)
+# Uruchamiane ręcznie: pobiera obrazy z listy tools/real-art.txt z Wikimedia Commons,
+# zmniejsza je (najdłuższy bok 1000 px, JPEG) i zapisuje w img/real/ z manifestem metadanych.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pobierz i zmniejsz
+        run: |
+          set -e
+          sudo apt-get install -y -qq imagemagick jq >/dev/null
+          mkdir -p img/real
+          UA="artchecker-fetch/1.0 (GitHub Actions; https://github.com/${GITHUB_REPOSITORY})"
+          echo '[' > img/real/manifest.json; first=1
+          grep -v '^#' tools/real-art.txt | grep '|' | while IFS='|' read -r slug file; do
+            enc=$(jq -rn --arg s "$file" '$s|@uri')
+            curl -sfL -A "$UA" "https://commons.wikimedia.org/wiki/Special:FilePath/${enc}?width=1400" -o "/tmp/$slug.src"
+            convert "/tmp/$slug.src" -auto-orient -resize '1000x1000>' -strip -quality 84 "img/real/$slug.jpg"
+            meta=$(curl -sf -A "$UA" "https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&iiprop=extmetadata|size&titles=File:${enc}")
+            dims=$(identify -format '%w %h' "img/real/$slug.jpg")
+            echo "$meta" | jq --arg slug "$slug" --arg file "$file" --arg dims "$dims" '.query.pages[]|.imageinfo[0] as $i|{slug:$slug,file:$file,w:($dims|split(" ")[0]|tonumber),h:($dims|split(" ")[1]|tonumber),artist:($i.extmetadata.Artist.value//""|gsub("<[^>]*>";"")|gsub("\\s+";" ")|ltrimstr(" ")),date:($i.extmetadata.DateTimeOriginal.value//""|gsub("<[^>]*>";"")),license:($i.extmetadata.LicenseShortName.value//""),title:($i.extmetadata.ObjectName.value//""|gsub("<[^>]*>";"")),source:("https://commons.wikimedia.org/wiki/File:"+($file|gsub(" ";"_")))}' > "/tmp/$slug.json"
+            if [ $first = 1 ]; then first=0; else echo ',' >> img/real/manifest.json; fi
+            cat "/tmp/$slug.json" >> img/real/manifest.json
+            sleep 1
+          done
+          echo ']' >> img/real/manifest.json
+          jq . img/real/manifest.json > /tmp/m.json && mv /tmp/m.json img/real/manifest.json
+          ls -la img/real
+      - name: Zapisz w repozytorium
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add img/real
+          git diff --cached --quiet || (git commit -m "Prawdziwe dzieła z domeny publicznej (Wikimedia Commons)" && git push)

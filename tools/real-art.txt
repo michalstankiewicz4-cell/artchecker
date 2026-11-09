@@ -1,0 +1,9 @@
+# slug|plik w Wikimedia Commons (domena publiczna) – lista dla .github/workflows/fetch-art.yml
+stanczyk|Jan Matejko, Stańczyk.jpg
+babie-lato|Józef Chełmoński - Indian summer - Google Art Project.jpg
+zydowka-z-pomaranczami|Aleksander Gierymski, Żydówka z pomarańczami.jpg
+dziewczynka-z-chryzantemami|Olga Boznańska - Girl with Chrysanthemums - MNK II-b-1032 - National Museum Kraków.jpg
+melencolia|Melencolia I MET DP820348.jpg
+dlonie|Albrecht Dürer - Praying Hands, 1508 - Google Art Project.jpg
+zajac|Albrecht Dürer - Hare, 1502 - Google Art Project.jpg
+macierzynstwo|Stanisław Wyspiański, Macierzyństwo.jpg
