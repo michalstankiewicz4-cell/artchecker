@@ -2,6 +2,11 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.12.0] – 2026-11-09
+### Dodane
+- ArtKit z laboratorium sztuki GameLaboratory skopiowany do gry (`js/lab/artkit.js`, przerobiony na zwykły skrypt, żeby gra działała też z `file://`).
+- Wiki: nowa kategoria „Techniki malarskie i podłoża” (18 artykułów): olej, akwarela, ołówek, tusz, tusz patyczkiem, długopis, węgiel, pastel, flamaster, puentylizm, rytownictwo; płótno, deska, papier, pergamin, blacha miedziana; złocona rama, passe-partout. Ilustracje z ArtKit: całość, szczegół ×4 i światło boczne ×4.
+
 ## [1.11.1] – 2026-11-09
 ### Poprawione
 - Zawieszanie przeglądarki po wejściu do wiki: widok „odwrocie” rękopisu rozmywał każdą kreskę osobno (ok. 60 s pracy przeglądarki). Warstwa korozji jest teraz rysowana raz i rozmywana jednym przebiegiem – dotyczyło to też tego badania w samej grze.

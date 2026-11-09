@@ -79,6 +79,7 @@ function wikiData(){const A=[];
   else if(t in BUST)img={type:'bust',marble:BUST[t]};else if(GICON[t])img={type:'icon',icon:GICON[t]};else if(t==='Grunt')img={type:'preview',id:'frag'};
   const rel=Object.keys(tech).filter(n=>n!==t&&n.toLowerCase().includes(t.toLowerCase().split(' ')[0]));
   A.push({cat:'Słowniczek',title:t,img,body:`<p class="wlead">${b}</p>${WGLOSS[t]?`<p>${WGLOSS[t]}</p>`:''}${rel.length?`<h3>Zobacz też</h3><p>${rel.map(wgo).join(', ')}</p>`:''}`})});
+ if(typeof WART!=='undefined')WART.forEach(([k,t,spec,txt])=>A.push({cat:'Techniki malarskie i podłoża',title:t,tags:k==='tech'?'technika':k==='sur'?'podłoże':'oprawa',img:{type:'artkit',spec},body:wSecs(txt,WSEC)+'<p><small class="nb">Ilustracja: ArtKit z laboratorium sztuki GameLaboratory.</small></p>'}));
  return A}
 
 /* ---------- ilustracje (generowane z silnika gry, w piaskownicy) ---------- */
@@ -127,6 +128,10 @@ function wikiIllus(img){const key=JSON.stringify(img);if(WIMG[key])return WIMG[k
  else if(img.type==='artist'){const b=wBatch('paint5',5150,img.id);out=wWith(b,()=>{const o=b.P.find(p=>p.orig);return frameIt(getView(o,'normal'),W,H,true)});cap='Oryginał w świetle dziennym (wygenerowany przez grę).'}
  else if(img.type==='preview'){out=preview(img.id);cap='Podgląd z gry.'}
  else if(img.type==='bust'){out=bustIllus(!!img.marble);cap=img.marble?'Rzeźba z marmuru – w grze badana w 3D.':'Rzeźba z brązu – w grze badana w 3D.'}
+ else if(img.type==='artkit'&&window.ArtKit){const sp=Object.assign({size:720,aspect:1.25,seed:11,relief:0.7,varnish:0.15},img.spec),full=ArtKit.render(sp).canvas;
+  const det=ArtKit.render(Object.assign({},sp,{format:'none'})).canvas,d=mk(320,256);d.getContext('2d').drawImage(det,det.width*0.42,det.height*0.38,det.width*0.22,det.height*0.22,0,0,320,256);
+  const rk=ArtKit.render(Object.assign({},sp,{format:'none',view:'raking'})).canvas,rc=mk(320,256);rc.getContext('2d').drawImage(rk,rk.width*0.42,rk.height*0.38,rk.width*0.22,rk.height*0.22,0,0,320,256);
+  out=wPanels([{c:full,label:'Całość'},{c:d,label:'Szczegół ×4'},{c:rc,label:'Światło boczne ×4'}]);cap='Wygenerowane przez ArtKit (laboratorium sztuki GameLaboratory).'}
  else if(img.type==='icon'){out=wIcon(img.icon);cap='Schemat.'}
  return WIMG[key]={c:out,cap}}
 
