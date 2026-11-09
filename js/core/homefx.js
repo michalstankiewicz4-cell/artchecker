@@ -1,10 +1,9 @@
 "use strict";
 /* =====================================================================
-   EFEKTY EKRANU GŁÓWNEGO – ziarno, artefakty kompresji JPG (bloki 8×8,
-   przesunięcia barw, pasmowanie), migotanie paneli,
+   EFEKTY EKRANU GŁÓWNEGO – ziarno, pasmowanie tła jak w JPG,
    paralaksa podglądu. Wyłączane przy prefers-reduced-motion.
    ===================================================================== */
-const FX={on:false,raf:0,last:0,blocks:[],next:0,drawId:0};
+const FX={on:false,raf:0,last:0,drawId:0};
 const fxReduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 /* pasmowanie i blokowość tła jak w mocno skompresowanym JPG */
 function jpegize(cv){const d=devicePixelRatio||1,w=cv.width,h=cv.height,s=Math.max(2,Math.round(4*d)),sw=Math.ceil(w/s),sh=Math.ceil(h/s),t=mk(sw,sh),tx=t.getContext('2d');
@@ -17,17 +16,7 @@ function fxFrame(t){if(!FX.on)return;FX.raf=requestAnimationFrame(fxFrame);if(t-
  const c=document.getElementById('hfx'),x=c.getContext('2d'),w=c.width,h=c.height;x.clearRect(0,0,w,h);
  /* ziarno */
  const n=Math.round(w*h/90);for(let i=0;i<n;i++){const v=Math.random();x.fillStyle=v<.5?`rgba(120,180,255,${v*.12})`:`rgba(255,255,255,${(v-.5)*.08})`;x.fillRect(Math.random()*w,Math.random()*h,1,1)}
- /* artefakty JPG: klastry bloków 8×8 z przesuniętą barwą */
- if(t>FX.next){FX.next=t+900+Math.random()*2600;const k=1+(Math.random()*3|0);for(let j=0;j<k;j++){const bs=4,cx=Math.random()*w,cy=Math.random()*h,cw=(4+Math.random()*14|0),ch=(2+Math.random()*7|0),hue=pick([190,320,140,40],Math.random);
-   FX.blocks.push({cx,cy,cw,ch,bs,hue,until:t+120+Math.random()*380,seed:Math.random()*1e9|0})}
-  if(Math.random()<.45)panelFlick()}
- FX.blocks=FX.blocks.filter(b=>b.until>t);
- for(const b of FX.blocks){const r=rng(b.seed+(t/160|0));for(let yy=0;yy<b.ch;yy++)for(let xx=0;xx<b.cw;xx++){if(r()<.25)continue;const a=.05+r()*.18;
-   x.fillStyle=`hsla(${b.hue+(r()-.5)*40},90%,${45+r()*30}%,${a})`;x.fillRect(b.cx+xx*b.bs,b.cy+yy*b.bs,b.bs,b.bs);if(r()<.15){x.fillStyle=`rgba(255,255,255,${a})`;x.fillRect(b.cx+xx*b.bs,b.cy+yy*b.bs,b.bs,1)}}}
- /* poziome pasy przesunięcia kolorów (chroma bleed) */
- if(Math.random()<.06){const y=Math.random()*h,hh=1+Math.random()*4;x.fillStyle='rgba(255,40,120,.12)';x.fillRect(0,y,w,hh);x.fillStyle='rgba(40,220,255,.12)';x.fillRect(3,y+1,w,hh)}
 }
-function panelFlick(){const ps=document.querySelectorAll('#home .hp');if(!ps.length)return;const p=ps[Math.random()*ps.length|0];p.classList.remove('flick');void p.offsetWidth;p.classList.add('flick');setTimeout(()=>p.classList.remove('flick'),220)}
 function startFX(){if(fxReduced()||FX.on)return;FX.on=true;fxResize();FX.raf=requestAnimationFrame(fxFrame)}
 function stopFX(){FX.on=false;cancelAnimationFrame(FX.raf);const c=document.getElementById('hfx');if(c)c.getContext('2d').clearRect(0,0,c.width,c.height)}
 addEventListener('resize',()=>{if(FX.on)fxResize()});

@@ -163,16 +163,13 @@ small.nb{color:var(--mut)}
 #hfx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;mix-blend-mode:screen}
 #home::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:6;
  background:radial-gradient(ellipse at 50% 45%,transparent 55%,rgba(0,0,0,.55) 100%)}
-#htitle h1,.hp h2,.hcard h3{text-shadow:-1px 0 rgba(255,40,110,.55),1px 0 rgba(40,220,255,.6),0 0 12px rgba(80,170,255,.5);animation:chroma 7s infinite steps(1)}
-@keyframes chroma{0%,93%,100%{transform:none}94%{transform:translateX(2px);text-shadow:-3px 0 rgba(255,40,110,.75),3px 0 rgba(40,220,255,.8)}95%{transform:translateX(-2px)}96%{transform:none;opacity:.85}}
+#htitle h1,.hp h2,.hcard h3{text-shadow:0 0 12px rgba(80,170,255,.5)}
 .hp{animation:edge 5.5s ease-in-out infinite}
 .hp:nth-child(2n){animation-delay:-1.7s}.hp:nth-child(3n){animation-delay:-3.1s}
 @keyframes edge{0%,100%{border-color:rgba(95,184,255,.5)}50%{border-color:rgba(140,215,255,.85);box-shadow:0 0 28px rgba(60,160,255,.35),inset 0 0 24px rgba(40,140,255,.14)}}
-.hp.flick{animation:flick .18s steps(2) 1}
-@keyframes flick{0%{opacity:.55;filter:hue-rotate(40deg) saturate(1.6)}100%{opacity:1;filter:none}}
 #hstage{perspective:900px}
 #hcanvas{transition:transform .25s ease-out;transform-style:preserve-3d}
-@media (prefers-reduced-motion:reduce){#htitle h1,.hp h2,.hcard h3,.hp{animation:none}#hfx{display:none}#hcanvas{transition:none}}
+@media (prefers-reduced-motion:reduce){.hp{animation:none}#hfx{display:none}#hcanvas{transition:none}}
 
 /* ===================== MOTYW GRY (spójny z ekranem głównym) ===================== */
 :root{--bg:#040c1a;--panel:rgba(8,24,50,.82);--line:rgba(95,184,255,.32);--ink:#dbeafe;--mut:#8fbfe8;--acc:#5fd0ff;--bad:#ff5a6e;--ok:#4fe08a;--sus:#ffb347;--hi:#eaf4ff}
@@ -279,3 +276,16 @@ main{flex:1;height:auto;min-height:0;grid-template-columns:240px minmax(0,1fr) 3
 .pane{display:none}.pane.on{display:block}
 #notes,#check{margin:0;border:0;padding:0}
 @media(max-width:1100px){body{height:auto;overflow:auto}main{grid-template-columns:1fr}#toolwin .wbody{max-height:40vh}#right .wbody{max-height:70vh}}
+
+/* ===================== WIKI – artykuły ===================== */
+#wart h2{margin:4px 0 12px}
+#wart h3{margin:18px 0 6px;font:600 13px "Segoe UI",system-ui;letter-spacing:.12em;text-transform:uppercase;color:#7fd6ff;border-bottom:1px solid rgba(95,184,255,.25);padding-bottom:4px}
+#wart .wlead{font-size:16.5px;color:#eaf4ff;line-height:1.55}
+#wart .wmode{border-left:2px solid rgba(95,184,255,.5);padding-left:10px}
+#wart .wmode b{color:#bfe4ff}
+.wgo{color:#7fd6ff;cursor:pointer;border-bottom:1px dotted rgba(127,214,255,.6);text-decoration:none}.wgo:hover{color:#fff;border-bottom-color:#fff}
+.wfig{margin:6px 0 14px;padding:0;border:1px solid rgba(95,184,255,.4);background:#061430;box-shadow:0 0 18px rgba(40,140,255,.2)}
+.wfig img{display:block;width:100%;height:auto;max-height:380px;object-fit:contain}
+.wfig figcaption{padding:6px 10px;font-size:12px;color:#8fbfe8;border-top:1px solid rgba(95,184,255,.25)}
+.wload{height:220px;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;color:#8fbfe8;font-size:13px}
+.wload i{width:34px;height:34px;border-radius:50%;border:3px solid rgba(95,184,255,.2);border-top-color:#5fd0ff;animation:spin 1s linear infinite}

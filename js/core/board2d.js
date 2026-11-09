@@ -2,8 +2,8 @@
 /* =====================================================================
    PLANSZA 2D
    ===================================================================== */
-function resize(){const dpr=devicePixelRatio||1,r=cv.getBoundingClientRect();cv.width=Math.max(1,r.width*dpr|0);cv.height=Math.max(1,r.height*dpr|0);render()}
-function fit(){const r=cv.getBoundingClientRect();const z=Math.min(r.width/BW,r.height/BH)*0.96;vw={z,x:(r.width-BW*z)/2,y:(r.height-BH*z)/2};render();scheduleGates()}
+let FITT=0;function resize(){const dpr=devicePixelRatio||1,r=cv.getBoundingClientRect();cv.width=Math.max(1,r.width*dpr|0);cv.height=Math.max(1,r.height*dpr|0);if(performance.now()-FITT<2500&&MODE!=='sculpt'&&BW)fit();else render()}
+function fit(){FITT=performance.now();const r=cv.getBoundingClientRect();const z=Math.min(r.width/BW,r.height/BH)*0.96;vw={z,x:(r.width-BW*z)/2,y:(r.height-BH*z)/2};render();scheduleGates()}
 function focusRect(x,y,w,h){const r=cv.getBoundingClientRect();const z=Math.min(24,Math.min(r.width/w,r.height/h)*0.92);vw={z,x:r.width/2-(x+w/2)*z,y:r.height/2-(y+h/2)*z};render();scheduleGates()}
 function zoomAt(sx,sy,f){const z=Math.min(24,Math.max(0.12,vw.z*f)),k=z/vw.z;vw.x=sx-(sx-vw.x)*k;vw.y=sy-(sy-vw.y)*k;vw.z=z;render();scheduleGates()}
 function viewportWorld(){const r=cv.getBoundingClientRect();return{x0:-vw.x/vw.z,y0:-vw.y/vw.z,x1:(r.width-vw.x)/vw.z,y1:(r.height-vw.y)/vw.z,cx:(r.width/2-vw.x)/vw.z,cy:(r.height/2-vw.y)/vw.z}}

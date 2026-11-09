@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.11.0] – 2026-11-09
+### Dodane
+- Wiki: rozbudowane artykuły (`js/data/wikitexts.js`) – wstęp oraz sekcje „Na czym polega”, „Co ujawnia”, „Na co uważać”, „Ciekawostka” dla technik; „Jak powstaje”, „Po czym poznać” dla metod fałszerskich; dłuższe hasła słowniczka i opisy obiektów.
+- Wiki: ilustracje do każdego artykułu generowane silnikiem gry – porównanie oryginału z falsyfikatem w danym widoku (UV, IR, RTG, pod światło, światło boczne…), przybliżenia obszarów (sygnatura, ząbkowanie, przedruk itd.), obrazy artystów, rzeźby oraz schematy (widmo XRF, magnes, waga, suwmiarka, dokument, mikroskop).
+- Wiki: techniki występujące w kilku trybach połączone w jeden artykuł z sekcją „W grze”; klikalne odnośniki między artykułami.
+### Usunięte
+- Efekty menu: drgania i aberracja napisów, migotanie paneli, migające bloki JPG i kolorowe paski (zostaje ziarno, pasmowanie tła, pulsowanie ramek i paralaksa).
+### Poprawione
+- Plansza ponownie dopasowuje widok „Całość”, gdy układ zmieni rozmiar zaraz po starcie partii.
+
 ## [1.10.0] – 2026-11-09
 ### Zmienione
 - Cała gra w stylu ekranu głównego (niebieski HUD): górny pasek, okna ze ściętymi rogami, przyciski, plansza i sala 3D w granatach, niebieskie paski przewijania wszędzie.
