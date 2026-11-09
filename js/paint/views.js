@@ -46,6 +46,7 @@ function makeIR(p){const out=pixMap(getView(p,'normal'),l=>{const v=150+(l-128)*
  const mode=irMode(p);if(mode==='none')return out;const r=rng(p.seed+51),real=mode==='real',J=real?2.2:0,N=real?2:1;
  x.strokeStyle=real?'rgba(25,25,25,.55)':'rgba(25,25,25,.7)';x.lineWidth=real?1.1:0.9;
  if(!real){x.save();x.strokeStyle='rgba(25,25,25,.45)';x.lineWidth=0.7;for(let i=40;i<W;i+=40){x.beginPath();x.moveTo(i,0);x.lineTo(i,H);x.stroke()}for(let i=40;i<H;i+=40){x.beginPath();x.moveTo(0,i);x.lineTo(W,i);x.stroke()}x.restore()}
+ if(SC.real){realEdges(p,x,real);return out}
  for(const s of p.shapes){if(!s.outline)continue;let pts=real&&s.irPts?s.irPts:contour(s);if(real&&s.penti)pts=pts.map(q=>[q[0]+s.penti.dx,q[1]+s.penti.dy]);sketch(x,pts,s.t!=='line',N,J,r)}
  return out}
 function edgeNails(x,staple,r,col){x.fillStyle=col;
@@ -123,7 +124,7 @@ function getView(p,v){if(p.kind)return p.kind.view(p,v);if(p.views[v])return p.v
   case'uv':c=makeUV(p);break;case'raking':c=makeRaking(p);break;case'ir':c=makeIR(p);break;case'xray':c=makeXray(p);break;case'back':c=makeBack(p);break}
  p.views[v]=c;return c}
 /* --- malarskie pociągnięcia pędzla z proceduralnymi nierównościami --- */
-function painterly(x,flat,p){const fd=flat.getContext('2d').getImageData(0,0,IW,IH).data,N=Math.round(12000*W*H/307200),base=(C.sd%100000)*13;
+function painterly(x,flat,p){const RK=SC.real?0.35:1,fd=flat.getContext('2d').getImageData(0,0,IW,IH).data,N=Math.round(12000*W*H/307200*RK*RK),base=(C.sd%100000)*13;
  x.drawImage(flat,0,0);x.lineCap='round';
  const col=(X,Y)=>{const i=(Math.min(IH-1,Math.max(0,Y*S|0))*IW+Math.min(IW-1,Math.max(0,X*S|0)))*4;return[fd[i],fd[i+1],fd[i+2]]};
  for(let i=0;i<N;i++){const q=rng(base+i*7919),X=q()*W,Y=q()*H,reg=regionAtP(p,X,Y);if(reg==='sygnatura'||reg==='ubytek')continue;
@@ -132,6 +133,6 @@ function painterly(x,flat,p){const fd=flat.getContext('2d').getImageData(0,0,IW,
   if(!same(X+ca*len,Y+sa*len)||!same(X+nx*wd/2,Y+ny*wd/2)||!same(X-nx*wd/2,Y-ny*wd/2)){len*=0.3;wd*=0.35}
   const[Rr,Gc,B]=col(X+ca*len/2,Y+sa*len/2),j0=(q()-.5)*18,nb=3+(q()*3|0),bend=(q()-.5)*len*0.3,dry=q()<0.25;
   for(let b=0;b<nb;b++){const off=(nb>1?b/(nb-1)-.5:0)*wd,bl=len*(0.6+q()*0.4)*(dry?0.7:1),j=j0+(q()-.5)*14,sx=X+nx*off+ca*q()*1.5,sy=Y+ny*off+sa*q()*1.5;
-   x.strokeStyle=`rgba(${Rr+j|0},${Gc+j|0},${B+j|0},${(dry?0.18:0.3)+q()*0.45})`;x.lineWidth=Math.max(0.6,wd/nb*S*(0.8+q()*1.0));
+   x.strokeStyle=`rgba(${Rr+j|0},${Gc+j|0},${B+j|0},${((dry?0.18:0.3)+q()*0.45)*RK})`;x.lineWidth=Math.max(0.6,wd/nb*S*(0.8+q()*1.0));
    x.beginPath();x.moveTo(sx*S,sy*S);x.quadraticCurveTo((sx+ca*bl/2+nx*bend)*S,(sy+sa*bl/2+ny*bend)*S,(sx+ca*bl)*S,(sy+sa*bl)*S);x.stroke()}}}
 function pix(p,lx,ly){if(!p.pix)p.pix=getView(p,'normal').getContext('2d').getImageData(0,0,IW,IH).data;const X=Math.max(0,Math.min(IW-1,lx*S|0)),Y=Math.max(0,Math.min(IH-1,ly*S|0)),i=(Y*IW+X)*4;return[p.pix[i],p.pix[i+1],p.pix[i+2]]}

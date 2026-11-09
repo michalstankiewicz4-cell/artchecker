@@ -89,3 +89,5 @@ Ilustracje artykułów wiki są gotowymi plikami w `img/wiki/` z manifestem `js/
 
 ## Prawdziwe dzieła (domena publiczna)
 Lista: `tools/real-art.txt` (`slug|nazwa pliku w Wikimedia Commons`). Akcja GitHub `.github/workflows/fetch-art.yml` (uruchamiana ręcznie: Actions → „Pobierz prawdziwe dzieła” → Run workflow) pobiera pliki z Commons, zmniejsza je do 1000 px (JPEG) i zapisuje w `img/real/` z `manifest.json` (autor, data, licencja, źródło). Pobieranie idzie przez GitHub, bo środowisko, w którym powstaje kod, nie ma dostępu do serwerów z obrazami.
+
+Dane dzieł: `js/data/realart.js` (`REAL`). Obsługa w grze: `js/core/real.js` – `REAL_READY` (dzieła już włączone do gry, dodawane po kolei), `fillArtist` (grupa na liście „Artysta”, wartości `real:<slug>`), `resolveReal` (ładuje `js/real/<slug>.js` i obraz, ustawia `REAL_CUR`), `realArtist` i `realScene` (scena z obrazu: oryginał rysuje reprodukcję, zdrady stylu przesuwają lub odbijają fragment `style`, IR rysuje krawędzie jako rysunek przygotowawczy). Wiki tworzy z `REAL_READY` kategorię „Dzieła prawdziwe”.

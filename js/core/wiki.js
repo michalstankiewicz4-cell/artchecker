@@ -80,6 +80,9 @@ function wikiData(){const A=[];
   const rel=Object.keys(tech).filter(n=>n!==t&&n.toLowerCase().includes(t.toLowerCase().split(' ')[0]));
   A.push({cat:'Słowniczek',title:t,img,body:`<p class="wlead">${b}</p>${WGLOSS[t]?`<p>${WGLOSS[t]}</p>`:''}${rel.length?`<h3>Zobacz też</h3><p>${rel.map(wgo).join(', ')}</p>`:''}`})});
  if(typeof WART!=='undefined')WART.forEach(([k,t,spec,txt])=>A.push({cat:'Techniki malarskie i podłoża',title:t,tags:k==='tech'?'technika':k==='sur'?'podłoże':'oprawa',img:{type:'artkit',spec},body:wSecs(txt,WSEC)+'<p><small class="nb">Ilustracja: ArtKit z laboratorium sztuki GameLaboratory.</small></p>'}));
+ if(typeof REAL!=='undefined')REAL.filter(e=>REAL_READY.includes(e.slug)).forEach(e=>{const M={paint5:'Obrazy – znajdź oryginał',drawing:'Rysunki i grafiki',water:'Akwarele i pastele'}[e.mode];
+  A.push({cat:'Dzieła prawdziwe',title:`${e.artist} – „${e.title}”`,tags:e.year,img:{type:'real',slug:e.slug,cap:`${e.artist}, „${e.title}”, ${e.year}. Źródło: Wikimedia Commons (${e.license}).`},
+   body:`<p class="wlead">${e.desc}</p><h3>Dzieło</h3><p>${e.artist} (${e.life}), „${e.title}”, ${e.year} – ${e.tech}${e.wcm?`, ok. ${fmt(e.hcm)} × ${fmt(e.wcm)} cm`:''}. ${e.museum}.</p><h3>Licencja i źródło</h3><p>${e.license[0].toUpperCase()+e.license.slice(1)}. Reprodukcja: <a href="${realSrc(e)}" target="_blank" rel="noopener">Wikimedia Commons – ${e.file}</a>.</p><h3>W grze</h3><p>Dzieło można wybrać na liście „Artysta” w trybie ${wgo(M)}. Reprodukcja jest oryginałem, a kopie na stole robi gra.</p><p><small class="nb">${REAL_NOTE}</small></p>`})});
  return A}
 
 /* ---------- ilustracje (generowane z silnika gry, w piaskownicy) ---------- */
@@ -148,7 +151,7 @@ function renderWiki(){const q=(document.getElementById('wq').value||'').toLowerC
  document.querySelectorAll('.wli').forEach(el=>el.onclick=()=>{WSEL=+el.dataset.i;renderWiki()});
  const on=document.querySelector('.wli.on');if(on)on.scrollIntoView({block:'nearest'});
  const a=list[WSEL],wa=document.getElementById('wart');wa.scrollTop=0;
- wa.innerHTML=a?`<div class="sub">${a.cat}${a.tags?' · '+a.tags:''}</div><h2>${a.title}</h2>${a.img?(typeof WIMGS!=='undefined'&&WIMGS[wslug(a.title)]?(m=>`<figure class="wfig"><img src="img/wiki/${wslug(a.title)}.jpg" width="${m.w}" height="${m.h}" alt="${a.title}" loading="lazy"><figcaption>${m.cap}</figcaption></figure>`)(WIMGS[wslug(a.title)]):'<figure class="wfig" id="wfig"><div class="wload"><i></i>Generowanie ilustracji…</div></figure>'):''}${a.body}`:'';
+ wa.innerHTML=a?`<div class="sub">${a.cat}${a.tags?' · '+a.tags:''}</div><h2>${a.title}</h2>${a.img&&a.img.type==='real'?`<figure class="wfig"><img src="img/real/${a.img.slug}.jpg" alt="${a.title}" loading="lazy"><figcaption>${a.img.cap}</figcaption></figure>`:a.img?(typeof WIMGS!=='undefined'&&WIMGS[wslug(a.title)]?(m=>`<figure class="wfig"><img src="img/wiki/${wslug(a.title)}.jpg" width="${m.w}" height="${m.h}" alt="${a.title}" loading="lazy"><figcaption>${m.cap}</figcaption></figure>`)(WIMGS[wslug(a.title)]):'<figure class="wfig" id="wfig"><div class="wload"><i></i>Generowanie ilustracji…</div></figure>'):''}${a.body}`:'';
  wa.querySelectorAll('.wgo').forEach(l=>l.onclick=()=>wikiOpen(l.dataset.t));
  if(a&&a.img&&document.getElementById('wfig')){const tok=++WTOK;setTimeout(()=>{if(tok!==WTOK)return;let r=null;try{r=wikiIllus(a.img)}catch(e){console.warn(e)}const fg=document.getElementById('wfig');if(!fg||tok!==WTOK)return;
   if(!r||!r.c){fg.remove();return}const im=document.createElement('img');im.src=r.c.toDataURL('image/jpeg',.9);im.alt=a.title;fg.innerHTML='';fg.appendChild(im);const fc=document.createElement('figcaption');fc.textContent=r.cap;fg.appendChild(fc)},30)}}

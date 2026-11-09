@@ -34,9 +34,10 @@ function setCase(){const e=document.getElementById('case');
  if(MODE==='memory')e.textContent=`Pamięć eksperta: „${ART.title}” – ${ART.name} (${ART.life}). Zapamiętaj oryginał, a potem wskaż go wśród prawie identycznych falsyfikatów. (Artyści i dzieła są fikcyjne.)`;else
  if(MODE==='sculpt')e.textContent=SV.caseText();
  else if(MODE==='frag')e.textContent=`Sprawa: fragment obrazu, który może pochodzić z zaginionego dzieła „${ART.title}” – ${ART.name} (${ART.life}), ${ART.year}. Oryginał znany tylko z opisu. (Artyści i dzieła są fikcyjne.)`;
+ else if(ART.real)e.textContent=`Dzieło prawdziwe: „${ART.title}” – ${ART.name} (${ART.life}), ${ART.yearTxt}, ${ART.real.tech}, ok. ${fmt(ART.hcm)} × ${fmt(ART.wcm)} cm, ${ART.museum}. Na stole ${P.length===4?'4 obrazy':'5 obrazów'}: reprodukcja oryginału i kopie zrobione przez grę. Wyniki badań są symulowane.`;
  else e.textContent=`Sprawa: „${ART.title}”, przypisywany: ${ART.name} (${ART.life}), ${ART.year}, ${SUP[supOf()].tech}, ${fmt(ART.wcm)} × ${fmt(ART.hcm)} cm. Na stole ${P.length===4?'4 obrazy':'5 obrazów'} – jeden jest oryginałem. (Artyści i dzieła są fikcyjne.)`}
-async function newGame(){showTab('panel');CUR=document.getElementById('mode').value;MODE=CUR;KIND=KINDS[MODE]||null;SV=SCULPT_VARIANTS[MODE]||null;if(SV)MODE='sculpt';const r=rng((Math.random()*1e9)|0);sel=null;tool=null;REFC=null;
- document.getElementById('artist').style.display=MODE==='sculpt'||KIND?'none':'';document.getElementById('tiltw').style.display=KIND&&KIND.tilt?'':'none';const is3=MODE==='sculpt';cv.style.display=is3?'none':'block';document.getElementById('three').style.display=is3?'block':'none';
+async function newGame(){showTab('panel');CUR=document.getElementById('mode').value;MODE=CUR;KIND=KINDS[MODE]||null;SV=SCULPT_VARIANTS[MODE]||null;if(SV)MODE='sculpt';fillArtist(CUR);await resolveReal(CUR);const r=rng((Math.random()*1e9)|0);sel=null;tool=null;REFC=null;
+ document.getElementById('tiltw').style.display=KIND&&KIND.tilt?'':'none';const is3=MODE==='sculpt';cv.style.display=is3?'none':'block';document.getElementById('three').style.display=is3?'block':'none';
  document.getElementById('help').textContent=is3?'Przeciągnij – obracaj · prawy przycisk / Shift – przesuń · kółko / szczypanie – przybliż · kliknij rzeźbę – wybierz':'Kółko myszy / szczypanie – zoom (do ×24) · przeciągnij – przesuń · kliknij obiekt – wybierz · lampa świeci za kursorem (Shift + kółko – wielkość)';
  document.getElementById('zsig').textContent=is3?'Tył cokołu':KIND?KIND.focusLabel:'Sygnatura';
  document.querySelector('.zoom').style.display=MODE==='memory'?'none':'';if(MODE!=='memory'){clearInterval(MEM.iv);MEM.phase=0}else MEM.phase=1;
@@ -52,6 +53,6 @@ document.getElementById('zfit').onclick=()=>{if(MODE==='sculpt'){anim3(new THREE
 document.getElementById('zsel').onclick=()=>{if(!sel)return;if(MODE==='sculpt'){const b=T3.busts.find(b=>b.q===sel);anim3(b.center.clone(),0.9,0,0.1);return}focusRect(sel.x-40,sel.y-40,W+80,H+80)};
 document.getElementById('zsig').onclick=()=>{if(!sel)return;if(MODE==='sculpt'){const b=T3.busts.find(b=>b.q===sel);anim3(new THREE.Vector3(b.center.x,1.05,0),0.4,Math.PI,0.15);return}if(sel.kind)return focusRect(...sel.kind.focus(sel));focusRect(sel.x+C.sig.x-14,sel.y+C.sig.y-26,C.sig.w+28,40)};
 document.getElementById('tilt').oninput=e=>{TILT.v=+e.target.value;if(TILT.v<20)TILT.lo=true;if(TILT.v>60)TILT.hi=true;document.getElementById('tiltv').textContent=TILT.v+'°';render();scheduleGates()};
-document.getElementById('artist').innerHTML='<option value="">Losowy artysta</option>'+ARTISTS.map(a=>`<option value="${a.id}">${a.name} – ${({pejzaz:'pejzaż',portret:'portret',martwa:'martwa natura',marina:'marina'})[a.scene]}</option>`).join('');
+fillArtist(document.getElementById('mode').value);
 document.getElementById('newgame').onclick=()=>runNewGame();document.getElementById('mode').onchange=()=>runNewGame();document.getElementById('artist').onchange=()=>runNewGame();
 new ResizeObserver(resize).observe(cv);

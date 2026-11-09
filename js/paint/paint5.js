@@ -11,8 +11,8 @@ const PROFILES={
 };
 function profName(k){const n=PROFILES[k].name,u=supOf();if(u==='wood')return k==='oldcanvas'?'Fałszerstwo na starej desce z epoki':k==='giclee'?'Wydruk giclée na płótnie naklejonym na deskę, z ręcznie nałożoną fakturą':n;return n}
 function rollTells(pr,r){const t={};pr.core.forEach(a=>t[a]=true);pr.opt.forEach(a=>{if(r()<0.45)t[a]=true});const rest=pr.opt.filter(a=>!t[a]);while(Object.keys(t).length<3&&rest.length)t[rest.splice(Math.floor(r()*rest.length),1)[0]]=true;return t}
-function chooseArtist(r){const v=document.getElementById('artist').value,L=MODE==='paint5'?ARTISTS:ARTISTS.filter(a=>!a.sup||a.sup==='canvas');return L.find(a=>a.id===v)||pick(L,r)}
-function setupScene(r){ART=chooseArtist(r);SC=SCENES[ART.scene];W=SC.W;H=SC.H;IW=W*S;IH=H*S;C=SC.make(r);C.sd=(r()*1e9)|0;sigLayout(C)}
+function chooseArtist(r){const v=document.getElementById('artist').value.startsWith('real:')?'':document.getElementById('artist').value,L=MODE==='paint5'?ARTISTS:ARTISTS.filter(a=>!a.sup||a.sup==='canvas');return L.find(a=>a.id===v)||pick(L,r)}
+function setupScene(r){if(REAL_CUR&&MODE==='paint5'){ART=realArtist(REAL_CUR);SC=realScene(REAL_CUR);W=SC.W;H=SC.H;IW=W*S;IH=H*S;C=SC.make(r);C.sd=(r()*1e9)|0;sigLayout(C);return}ART=chooseArtist(r);SC=SCENES[ART.scene];W=SC.W;H=SC.H;IW=W*S;IH=H*S;C=SC.make(r);C.sd=(r()*1e9)|0;sigLayout(C)}
 function basePainting(p,r){const q=rng(p.seed),pr=(p.profile&&PROFILES[p.profile])||{};
  const anRegs=Object.keys(SC.REG).filter(k=>SC.REG[k].an);
  p.m={pigReg:pick(p.descRegs||anRegs,q),pigKind:'an',texture:pick(['flat','mismatch'],q),crack:pr.crack||pick(['none','artificial'],q),sig:pr.sig||pick(['later','graph'],q),
@@ -22,7 +22,7 @@ function basePainting(p,r){const q=rng(p.seed),pr=(p.profile&&PROFILES[p.profile
  const e=Math.floor(q()*4),o=8+q()*26,a=40+q()*((e%2?H:W)-80);
  p.markPos=e===0?{x:a,y:o}:e===1?{x:W-o,y:a}:e===2?{x:a,y:H-o}:{x:o,y:a};p.markTxt=pick(['R.K.','M.W. 87','J.D. fec.','T.S.'],q)}
 function newPaint5(r){setupScene(r);
- const list=[{orig:true,profile:null,t:{}}];shuffle(Object.keys(PROFILES).filter(k=>!(supOf()==='copper'&&(k==='giclee'||k==='oldcanvas'))),r).slice(0,4).forEach(k=>{const t=rollTells(PROFILES[k],r);if(supOf()==='copper')delete t.xray;list.push({orig:false,profile:k,t})});
+ const list=[{orig:true,profile:null,t:{}}];shuffle(Object.keys(PROFILES).filter(k=>!(supOf()==='copper'&&(k==='giclee'||k==='oldcanvas'))),r).slice(0,4).forEach(k=>{const t=rollTells(PROFILES[k],r);if(supOf()==='copper')delete t.xray;if(ART.real)delete t.sig;list.push({orig:false,profile:k,t})});
  shuffle(list,r);const D=13+Math.floor(r()*5);
  const N5=list.length;P=list.map((p,i)=>{p.letter='ABCDE'[i];p.seed=(r()*1e9)|0;basePainting(p,r);const q=rng(p.seed+3);p.retouch=!p.t.uv&&q()<0.45;p.warGap=q()<0.5;
   p.linen=!p.t.back;p.thread=p.t.back?22+Math.floor(q()*3):D;p.x=i<3?G+i*(W+G):G+(W+G)/2+(i-3)*(W+G);p.y=i<3?G:G*2+H;return p});

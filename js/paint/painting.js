@@ -2,7 +2,7 @@
 /* Funkcje wspólne dla obrazów (sygnatura, regiony, pigmenty) */
 function sigLayout(c){const t=mk(4,4).getContext('2d');t.font=ART.sig.font;const w=t.measureText(ART.sig.text).width*1.05+8;c.sig={x:ART.sig.corner==='br'?W-w-22:24,y:H-20,w}}
 function inSig(x,y){const s=C.sig;return x>s.x-6&&x<s.x+s.w+6&&y>s.y-16&&y<s.y+8}
-function drawSig(x,X,Y,shaky,seed,color,text){const s=ART.sig,r=rng(seed);x.save();x.translate(X,Y);x.transform(1,0,shaky?s.slant+0.34:s.slant,1,0,0);x.font=s.font;x.fillStyle=color;x.strokeStyle=color;
+function drawSig(x,X,Y,shaky,seed,color,text){const s=ART.sig,r=rng(seed);if(!(text||s.text))return;x.save();x.translate(X,Y);x.transform(1,0,shaky?s.slant+0.34:s.slant,1,0,0);x.font=s.font;x.fillStyle=color;x.strokeStyle=color;
  let cx=0;for(const ch of(text||s.text)){x.save();x.translate(cx,shaky?(r()-.5)*1.5:0);if(shaky)x.rotate((r()-.5)*0.13);x.fillText(ch,0,0);if(shaky){x.globalAlpha=0.5;x.fillText(ch,0.55,0.35)}x.restore();cx+=x.measureText(ch).width*(shaky?1.08:0.96)}
  x.lineWidth=1;x.beginPath();x.moveTo(-2,4);if(shaky){for(let i=0;i<=14;i++)x.lineTo(-2+i*cx*0.62/14,4+(r()-.5)*1.4)}else x.bezierCurveTo(cx*0.2,8,cx*0.45,1,cx*0.62,5);x.stroke();x.restore()}
 const sigLater=p=>!!(p.t.sig&&p.m.sig==='later');

@@ -2,6 +2,15 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.19.0] – 2026-11-09
+### Dodane
+- **Pierwsze dzieło prawdziwe: Jan Matejko, „Stańczyk” (1862)** w trybie „Znajdź oryginał – obrazy”. Wybór na liście „Artysta” (grupa „Dzieła prawdziwe (domena publiczna)”). Oryginał to reprodukcja z Wikimedia Commons, kopie robi gra (te same metody fałszerskie co dla obrazów fikcyjnych), a zdrady stylu (anatomia, cień) przesuwają lub odbijają fragment postaci.
+- Wyniki badań dzieła prawdziwego są oznaczone jako symulowane (zlecenie, proweniencja, certyfikat, pentimenti, RTG); IR pokazuje rysunek przygotowawczy z krawędzi obrazu; sygnatura nie jest badana.
+- Wiki: kategoria „Dzieła prawdziwe” – opis, wymiary, muzeum, licencja i link do źródła.
+- `js/core/real.js`: ładowanie obrazów (z loaderem), lista artystów, scena z prawdziwego obrazu.
+### Zmienione
+- Linki w wiki w kolorze interfejsu.
+
 ## [1.18.2] – 2026-11-09
 ### Dodane
 - **O programie → Licencje i źródła:** lista 8 prawdziwych dzieł z domeny publicznej (autor, tytuł, data, muzeum, licencja, link do Wikimedia Commons), podstawa prawna (domena publiczna, art. 14 dyrektywy UE 2019/790, CC0 The Met), informacja, że kopie i wyniki badań są symulowane, licencja głowy popiersi (CC BY 4.0) i pochodzenie ArtKit.

@@ -299,3 +299,5 @@ main{flex:1;height:auto;min-height:0;grid-template-columns:240px minmax(0,1fr) 3
 #about .abfoot{flex:none;padding:10px 22px 16px;border-top:1px solid rgba(95,184,255,.25);display:flex;justify-content:flex-end}
 #about .abscroll{scrollbar-width:auto;scrollbar-color:#5fd0ff rgba(6,18,40,.85);-webkit-mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 36px),rgba(0,0,0,.25) 100%);mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 36px),rgba(0,0,0,.25) 100%)}
 #about .abscroll.end{-webkit-mask-image:none;mask-image:none}
+#wiki a[href]{color:#6fd0ff;text-decoration:none;border-bottom:1px dotted rgba(111,208,255,.6)}
+#wiki a[href]:hover{color:#bfe0ff;border-bottom-color:#bfe0ff}
