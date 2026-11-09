@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.15.1] – 2026-11-09
+### Poprawione
+- Loader przy pierwszym wyborze badania, którego widok trzeba dopiero przygotować (odwrocie, RTG, światło boczne, UV, IR itd. – do ok. 2 s przy pięciu obiektach). Wcześniej strona przez ten czas nie reagowała.
+
 ## [1.15.0] – 2026-11-09
 ### Dodane
 - Podobrazia z laboratorium sztuki w trybie „Obrazy – znajdź oryginał”: obok płótna także **deska dębowa** i **blacha miedziana**. Dwaj nowi (fikcyjni) artyści: Jan Korwin-Ostrowski – „Portret damy w ciemnej sukni”, 1846, olej na desce; Teodor Walewicz – „Jezioro o zmierzchu”, 1853, olej na miedzi.

@@ -58,7 +58,8 @@ function updateNotes0(){updateCheck();const n=document.getElementById('notes');
 function buildTools(){const el=document.getElementById('tools');
  if(MODE==='memory'){el.innerHTML=memToolsHTML();document.getElementById('memtime').onchange=e=>{MEM.time=+e.target.value;runNewGame()};document.getElementById('memready').onclick=()=>memPhase2(rng((Math.random()*1e9)|0));memUI();return}
  el.innerHTML=GROUPS.map(([g,ids])=>`<div class="grp"><h3>${g}</h3>${ids.map(id=>`<button class="tool" data-id="${id}">${TB[id].name}</button>`).join('')}</div>`).join('');
- el.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{tool=tool===b.dataset.id?null:b.dataset.id;showTab('panel');onChange()})}
+ el.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{const id=tool===b.dataset.id?null:b.dataset.id,go=()=>{tool=id;showTab('panel');onChange()},T=id&&TB[id],v=T&&((MODE==='frag'&&T.viewF)||T.view);
+  if(v&&v!=='normal'&&MODE!=='sculpt'&&P.some(p=>!p.views||!p.views[v]))withLoader(()=>{P.forEach(p=>{try{getView(p,v).getContext('2d').getImageData(0,0,1,1)}catch(e){}});go()},'Przygotowywanie widoku…');else go()})}
 function onChange(){if(tool!==TILT.tool){TILT.tool=tool;TILT.lo=TILT.v<20;TILT.hi=TILT.v>60}document.querySelectorAll('.tool').forEach(b=>{b.classList.toggle('on',b.dataset.id===tool);b.classList.toggle('used',P.some(p=>p.notes[b.dataset.id]))});
  const v=curView();{const lb=document.getElementById('zlamp');lb.style.display=MODE!=='sculpt'&&MODE!=='memory'&&LAMPV[v]?'':'none';lb.textContent=LAMP.on?'🔦 Lampa ruchoma':'💡 Cały obiekt'}document.getElementById('viewlbl').textContent='Widok: '+(MODE==='sculpt'?{normal:'światło dzienne',uv:'promieniowanie UV',xray:'RTG'}[v]||'światło dzienne':VIEWNAME[v]);
  cv.classList.toggle('probe',!!(tool&&TB[tool].probe));
