@@ -25,7 +25,7 @@ img/wiki/             gotowe ilustracje wiki (JPG)
 tools/                build-wiki-img.py, doctor-3d.py
 js/paint/             silnik obrazów: sceny, widoki (UV, IR, RTG…), obserwacje, próbki
 js/core/kinds.js      rejestr obiektów 2D + wspólne nachylenie i tworzenie partii
-js/kinds/             rodzaje obiektów 2D (banknot, moneta, znaczek, rękopis…)
+js/kinds/             rodzaje obiektów 2D (banknot, moneta, znaczek, rękopis, prace na papierze: artworks.js)
 js/modes/             tryby gry o własnej mechanice (fragment, pamięć, rzeźby 3D + warianty materiału: marble.js)
 js/main.js            start – ładowany jako ostatni
 docs/                 dokumentacja
@@ -59,7 +59,8 @@ registerKind({
   area(p,area,v) → czy środek widoku leży w obszarze bramki,
   obs(p,id), why(p,id) → obserwacja i wyjaśnienie zdrady,
   probe(p,lx,ly,id) → (opcj.) kliknięcie sondą, panel(p,id) → (opcj.) HTML w panelu,
-  focus(p) → [x,y,w,h] dla przycisku przybliżenia, intro, caseText()
+  focus(p) → [x,y,w,h] dla przycisku przybliżenia, intro, caseText(),
+  originals(r) → (opcj.) liczba oryginałów w partii, group:'art' → (opcj.) tryb w grupie „Obrazy”
 });
 ```
 Potem dopisz `<script src="js/kinds/…">` w `index.html` (przed `js/core/game.js`).

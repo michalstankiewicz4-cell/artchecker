@@ -6,8 +6,8 @@
 - ~~Moneta~~ (gotowe w 1.3.0): waga, średnica, skład stopu, rant, ślady odlewu kontra bicia, zużycie wypukłości, magnetyzm.
 - ~~Znaczek pocztowy~~ (gotowe w 1.4.0): ząbkowanie (miarka), znak wodny w kąpieli, druk, guma na odwrocie, przedruki.
 
-- **Rysunki i grafiki** (w realizacji): ołówek, tusz, węgiel, rytownictwo na papierze – techniki z ArtKit.
-- **Akwarele i pastele** (w realizacji): akwarela i pastel suchy na papierze – techniki z ArtKit.
+- ~~Rysunki i grafiki~~ (gotowe w 1.17.0): ołówek, tusz, węgiel, miedzioryt – techniki z ArtKit.
+- ~~Akwarele i pastele~~ (gotowe w 1.17.0): akwarela i pastel suchy – techniki z ArtKit.
 - ~~Lampa ruchoma – podczerwień i rozmiar~~ (gotowe w 1.16.0): IR w kręgu lampy, rozmiar kręgu Shift + kółko.
 - ~~Lampa ruchoma: UV, światło boczne, pod światło~~ (gotowe w 1.14.0).
 - ~~Podobrazia: deska i blacha miedziana~~ (gotowe w 1.15.0).

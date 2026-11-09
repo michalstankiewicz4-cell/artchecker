@@ -12,6 +12,8 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 | Znajdź oryginał – rzeźby z brązu (3D) | brązowe popiersia (Three.js) |
 | Znajdź oryginał – rzeźby z marmuru (3D) | dłuto kontra CNC, patyna, kwas – [opis](docs/tryby/marmur.md) |
 | Pamięć eksperta | zapamiętaj oryginał przez lupę, potem znajdź minimalne różnice |
+| Rysunki i grafiki | ołówek, tusz, węgiel, miedzioryt – papier, kreska, odcisk płyty, stemple kolekcji – [opis](docs/tryby/papier.md) |
+| Akwarele i pastele | papier, pigmenty, struktura farby, granica dawnej oprawy – [opis](docs/tryby/papier.md) |
 | Weryfikacja banknotów | fikcyjna waluta, wszystkie typowe zabezpieczenia |
 | Weryfikacja rękopisów | atrament, papier czerpany, ductus, pieczęć, korozja – [opis](docs/tryby/rekopis.md) |
 | Weryfikacja znaczków | ząbkowanie, znak wodny, druk, guma, przedruk – [opis](docs/tryby/znaczek.md) |

@@ -2,6 +2,15 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.17.0] – 2026-11-09
+### Dodane
+- Tryb **Rysunki i grafiki** (`js/kinds/artworks.js`): ołówek, tusz, węgiel, miedzioryt – obraz pracy rysuje ArtKit. Badania: papier pod światło (linie sita, znak wodny), papier w UV, odwrocie (stemple kolekcji), struktura kreski (mikroskop), odcisk i relief (lampa boczna, odcisk płyty, rowki po kalce), płynność kreski, materiał (XRF). Metody: faksymile cyfrowe, przerys przez kalkę, kopia na karcie z epoki, reprodukcja fotomechaniczna. Jeden oryginał (przy miedziorycie czasem dwie odbitki).
+- Tryb **Akwarele i pastele**: akwarela i pastel suchy; zamiast płynności kreski – granica dawnej oprawy (blaknięcie). Metody: giclée, współczesna kopia, kopia na papierze z epoki, kopia z podrobionym znakiem kolekcji.
+- Oba tryby w grupie „Obrazy” (menu i ekran główny), artykuły i ilustracje w wiki.
+- `kindBatch` przyjmuje `originals(r)` – liczbę oryginałów w partii.
+### Poprawione
+- Ekran główny: lista badań trybu nie znika, gdy w kategorii jest więcej trybów.
+
 ## [1.16.0] – 2026-11-09
 ### Dodane
 - Lampa ruchoma obejmuje też podczerwień (reflektografia IR).

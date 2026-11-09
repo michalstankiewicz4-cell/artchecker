@@ -7,11 +7,11 @@ let CUR='paint5',HCAT=0,HMODE=null;const PREV={};
 const SOON=[['auction','Aukcja'],['investigation','Śledztwo'],['conservator','Konserwator']];
 function homeCats(){return[
  {title:'Badania obrazów',sub:'Poznaj dzieło',desc:'Zbadaj obrazy nowoczesnymi metodami: UV, podczerwień, RTG, spektroskopia pigmentów, krakelura i mikroskop. Odkryj kopie, przemalowania i ślady historii dzieła.',
-  modes:[['paint5','Znajdź oryginał – obrazy'],['frag','Zniszczony fragment'],['memory','Pamięć eksperta']]},
+  modes:[['paint5','Znajdź oryginał – obrazy'],['frag','Zniszczony fragment'],['memory','Pamięć eksperta'],...Object.values(KINDS).filter(k=>k.group==='art').map(k=>[k.id,k.label])]},
  {title:'Rzeźby 3D',sub:'Obejdź i przybliż',desc:'Obracaj kamerę i podchodź blisko: skład stopu, patyna, ślady dłuta i frezu, szwy odlewnicze, sygnatury z tyłu cokołu, UV i RTG.',
   modes:Object.values(SCULPT_VARIANTS).map(v=>[v.id,(t=>t[0].toUpperCase()+t.slice(1))(v.label.replace('Znajdź oryginał – ',''))])},
  {title:'Obiekty i dokumenty',sub:'Odkryj prawdę',desc:'Banknoty, monety, znaczki i rękopisy – każdy ma własne zabezpieczenia, materiały i typowe metody fałszerstw. Oznacz każdy egzemplarz jako prawdziwy albo fałszywy.',
-  modes:Object.values(KINDS).map(k=>[k.id,k.label])},
+  modes:Object.values(KINDS).filter(k=>k.group!=='art').map(k=>[k.id,k.label])},
  {title:'Wkrótce',sub:'W przygotowaniu',desc:'Aukcja z budżetem, śledztwo w sprawie fałszerza i praca konserwatora – kolejne tryby są w przygotowaniu.',modes:SOON.map(([id,l])=>[id,l,1])}]}
 function store(){try{return JSON.parse(localStorage.getItem('artchecker.v1')||'{}')}catch(e){return{}}}
 function recordDone(ok){try{const s=store();s.done=s.done||{};s.done[CUR]=(s.done[CUR]||0)+1;s.games=(s.games||0)+1;if(ok)s.ok=(s.ok||0)+1;localStorage.setItem('artchecker.v1',JSON.stringify(s))}catch(e){}}
