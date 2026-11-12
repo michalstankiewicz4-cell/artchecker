@@ -12,7 +12,7 @@ function areaOK(p,area,v){if(p.kind)return p.kind.area(p,area,v);const lx=v.cx-p
  if(area==='sig'){const s=C.sig;return lx>s.x-25&&lx<s.x+s.w+25&&ly>s.y-32&&ly<s.y+18}
  if(area==='style'){const[x,y,w,h]=SC.styleRect(C);return lx>=x&&lx<=x+w&&ly>=y&&ly<=y+h}
  if(area==='ground'){if(!p.frag)return false;if(distPath(lx,ly,p.frag.torn)<14)return true;return p.frag.losses.some(l=>Math.hypot(lx-l.cx,ly-l.cy)<l.r+6)}return false}
-function polyPath(x,pts,ox,oy){pts.forEach((q,i)=>i?x.lineTo(ox+q[0],oy+q[1]):x.moveTo(ox+q[0],oy+q[1]));x.closePath()}
+function polyPath(x,pts,ox,oy,open){pts.forEach((q,i)=>i?x.lineTo(ox+q[0],oy+q[1]):x.moveTo(ox+q[0],oy+q[1]));if(!open)x.closePath()}
 function render(){if(MODE==='sculpt'||!P.length||!ART)return;const dpr=devicePixelRatio||1,v=curView();
  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='#16181c';ctx.fillRect(0,0,cv.width,cv.height);
  ctx.setTransform(dpr*vw.z,0,0,dpr*vw.z,dpr*vw.x,dpr*vw.y);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
@@ -22,7 +22,7 @@ function render(){if(MODE==='sculpt'||!P.length||!ART)return;const dpr=devicePix
   if(p.frag){ctx.fillStyle='#1c1814';ctx.fillRect(p.x-60,p.y-60,W+120,H+120);ctx.save();ctx.beginPath();ctx.rect(p.x,p.y,W,H);polyPath(ctx,p.frag.missing,p.x,p.y);ctx.clip('evenodd')}
   if(lampOn(v)){ctx.drawImage(getView(p,'normal'),p.x,p.y,W,H);ctx.fillStyle=LAMPV[v].dim;ctx.fillRect(p.x,p.y,W,H);lampSpot(p,v)}else ctx.drawImage(getView(p,v),p.x,p.y,W,H);
   if(p.kind&&p.kind.live&&v==='normal')p.kind.live(p);
-  if(p.frag){ctx.strokeStyle='rgba(35,18,5,.35)';ctx.lineWidth=14;ctx.beginPath();polyPath(ctx,p.frag.torn,p.x,p.y);ctx.stroke();ctx.strokeStyle='rgba(30,14,4,.6)';ctx.lineWidth=5;ctx.stroke();ctx.restore();drawFringe(p)}
+  if(p.frag){ctx.strokeStyle='rgba(35,18,5,.35)';ctx.lineWidth=14;ctx.beginPath();polyPath(ctx,p.frag.torn,p.x,p.y,true);ctx.stroke();ctx.strokeStyle='rgba(30,14,4,.6)';ctx.lineWidth=5;ctx.stroke();ctx.restore();drawFringe(p)}
   if(['normal','crackview'].includes(v))for(const s of p.samples){ctx.strokeStyle=s.kind==='pigment'?'#ffe066':'#7fd6ff';ctx.lineWidth=Math.max(0.15,1.2/vw.z);ctx.beginPath();ctx.arc(p.x+s.x,p.y+s.y,Math.max(0.6,4/Math.sqrt(vw.z)),0,7);ctx.stroke()}
  }
  drawDetail(v);lampOverlay();
@@ -62,7 +62,7 @@ function lampRaking(p,wx,wy,Rw){const R=p._rel,dpr=devicePixelRatio||1,x0=Math.m
 function lampOverlay(){const v=curView();if(!lampOn(v)||MODE==='sculpt')return;const{wx,wy,Rw}=lampPos();ctx.strokeStyle=LAMPV[v].glow;ctx.lineWidth=2/vw.z;ctx.beginPath();ctx.arc(wx,wy,Rw,0,7);ctx.stroke()}
 function lampMove(sx,sy){LAMP.sx=sx;LAMP.sy=sy;if(!lampOn(curView())||LAMP.raf)return;LAMP.raf=requestAnimationFrame(()=>{LAMP.raf=0;render()})}
 function drawFringe(p){const sp=pxPerCm()/p.thread,T=p.frag.torn;ctx.strokeStyle='#cbb68c';
- if(vw.z<2){ctx.lineWidth=2;ctx.beginPath();polyPath(ctx,T,p.x,p.y);ctx.stroke();return}
+ if(vw.z<2){ctx.lineWidth=2;ctx.beginPath();polyPath(ctx,T,p.x,p.y,true);ctx.stroke();return}
  let cx=0,cy=0;p.frag.missing.forEach(q=>{cx+=q[0];cy+=q[1]});cx/=p.frag.missing.length;cy/=p.frag.missing.length;ctx.lineWidth=sp*0.35;
  for(let i=1;i<T.length;i++){const a=T[i-1],b=T[i],dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy);let nx=-dy/L,ny=dx/L;const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2;if((cx-mx)*nx+(cy-my)*ny<0){nx=-nx;ny=-ny}
   ctx.beginPath();for(let k=0;k<L;k+=sp){const px=p.x+a[0]+dx*k/L,py=p.y+a[1]+dy*k/L,len=1.5+h1(k+i*97,p.seed%100)*3.5;ctx.moveTo(px,py);ctx.lineTo(px+nx*len,py+ny*len)}ctx.stroke()}}
