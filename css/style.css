@@ -301,3 +301,6 @@ main{flex:1;height:auto;min-height:0;grid-template-columns:240px minmax(0,1fr) 3
 #about .abscroll.end{-webkit-mask-image:none;mask-image:none}
 #wiki a[href]{color:#6fd0ff;text-decoration:none;border-bottom:1px dotted rgba(111,208,255,.6)}
 #wiki a[href]:hover{color:#bfe0ff;border-bottom-color:#bfe0ff}
+
+html[lang=en] [data-l=pl],html[lang=pl] [data-l=en]{display:none}
+.langbtn{min-width:44px;font-weight:700;letter-spacing:.06em}

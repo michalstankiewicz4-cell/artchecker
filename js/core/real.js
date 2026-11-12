@@ -13,7 +13,7 @@ function loadReal(slug){if(REALIM[slug])return Promise.resolve(REALIM[slug]);
 const realFor=mode=>REAL.filter(e=>e.mode===mode&&REAL_READY.includes(e.slug));
 /* lista „Artysta”: fikcyjni artyści + dzieła prawdziwe gotowe dla trybu */
 function fillArtist(mode){const el=document.getElementById('artist'),L=realFor(mode),v=el.dataset.mode===mode?el.value:(REAL_DEF[mode]&&REAL_READY.includes(REAL_DEF[mode])?'real:'+REAL_DEF[mode]:'');el.dataset.mode=mode;let h='';
- if(mode==='paint5'||mode==='frag'||mode==='memory')h='<option value="">Losowy artysta (fikcyjny)</option>'+ARTISTS.filter(a=>mode==='paint5'||!a.sup||a.sup==='canvas').map(a=>`<option value="${a.id}">${a.name} – ${({pejzaz:'pejzaż',portret:'portret',martwa:'martwa natura',marina:'marina'})[a.scene]}</option>`).join('');
+ if(mode==='paint5'||mode==='frag'||mode==='memory')h='<option value="">Losowy artysta (fikcyjny)</option>'+ARTISTS.filter(a=>mode==='paint5'||!a.sup||a.sup==='canvas').map(a=>`<option value="${a.id}">${a.name} – ${tr(({pejzaz:'pejzaż',portret:'portret',martwa:'martwa natura',marina:'marina'})[a.scene])}</option>`).join('');
  else h='<option value="">Losowa praca (fikcyjna)</option>';
  if(L.length&&(mode==='paint5'||KINDS[mode]))h+=`<optgroup label="Dzieła prawdziwe (domena publiczna)">${L.length>1?'<option value="real:*">Losowe dzieło prawdziwe</option>':''}${L.map(e=>`<option value="real:${e.slug}">${e.artist} – „${e.title}”</option>`).join('')}</optgroup>`;
  el.innerHTML=h;el.value=[...el.options].some(o=>o.value===v)?v:'';

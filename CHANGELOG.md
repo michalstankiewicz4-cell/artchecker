@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.23.0] – 2026-11-12
+### Dodane
+- **Język PL / EN – etap 1.** Przycisk PL/EN na ekranie startowym i na pasku gry. Język wykrywa przeglądarka (polski → PL, każdy inny → EN), chyba że gracz przełączy go ręcznie (wybór zapamiętany); `?lang=pl` / `?lang=en` w adresie ma pierwszeństwo.
+- Po angielsku: interfejs (pasek, okna, przyciski, podpowiedzi sterowania), menu trybów, ekran startowy, lista artystów, okno „O programie” z listą licencji. Angielska nazwa gry: *Authentication Lab*.
+- Mechanizm: `js/core/i18n.js` – słownik `EN` (klucz = tekst polski), `tr()` w kodzie i obserwator DOM tłumaczący węzły i atrybuty; dłuższe bloki HTML w dwóch wersjach (`data-l="pl"` / `data-l="en"`).
+### Zmienione
+- **SEO pod angielski, polski jako drugi:** tytuł, opis, słowa kluczowe, Open Graph, Twitter i dane strukturalne po angielsku; `hreflang` en / pl / x-default, `og:locale:alternate` pl_PL, opis gry dla wyszukiwarek po angielsku i po polsku; mapa strony z wersjami językowymi. W wersji PL tytuł i opis strony zmieniają się na polskie.
+### Do zrobienia
+- Etap 2: badania, wskazówki, wyniki, zlecenia i podsumowania po angielsku. Etap 3: wiki.
+
 ## [1.22.2] – 2026-11-12
 ### Zmienione
 - Nazwy trybów: „Znajdź oryginał – …” → „Przeprowadź ekspertyzę – …” (obrazy, rzeźby z brązu, rzeźby z marmuru) w menu, na ekranie startowym, w wiki („Obrazy – przeprowadź ekspertyzę”), README i dokumentacji.

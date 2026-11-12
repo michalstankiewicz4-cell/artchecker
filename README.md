@@ -21,6 +21,8 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 
 Artyści, dzieła i waluta są fikcyjne – poza dziełami prawdziwymi z domeny publicznej (na razie: Jan Matejko, „Stańczyk”; Józef Chełmoński, „Babie lato”; Albrecht Dürer, „Melancholia I”), które można wybrać na liście „Artysta”; ich wyniki badań są symulowane.
 
+**Język:** PL / EN – przycisk na ekranie startowym i pasku gry; domyślnie według języka przeglądarki. Na razie po angielsku jest interfejs, menu, ekran startowy i „O programie” (`js/core/i18n.js`).
+
 **Autor:** Michał Stankiewicz i Claude – zrobione przy pomocy vibecodingu i laboratorium sztuki (GameLaboratory).
 
 ## Co jest w grze

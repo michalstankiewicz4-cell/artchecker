@@ -30,3 +30,8 @@ const REAL=[
 const REAL_BY=Object.fromEntries(REAL.map(e=>[e.slug,e]));
 const realSrc=e=>'https://commons.wikimedia.org/wiki/File:'+encodeURIComponent(e.file.replace(/ /g,'_'));
 const REAL_NOTE='Dzieło prawdziwe z domeny publicznej: prawdziwe są autor, tytuł, data, technika i miejsce przechowywania. Kopie na stole wygenerowała gra, a wyniki badań (UV, IR, RTG, pigmenty, proweniencja, certyfikaty, stemple) są symulowane.';
+/* angielskie nazwy (słownik EN z js/core/i18n.js) */
+Object.assign(EN,{'Stańczyk':'Stańczyk','Babie lato':'Indian Summer','Żydówka z pomarańczami':'Jewish Woman Selling Oranges','Dziewczynka z chryzantemami':'Girl with Chrysanthemums',
+ 'Melancholia I':'Melencolia I','Dłonie modlącego się':'Praying Hands','Zając':'Young Hare','Macierzyństwo':'Motherhood',
+ 'Muzeum Narodowe w Warszawie':'National Museum in Warsaw','Muzeum Narodowe w Krakowie':'National Museum in Kraków','The Metropolitan Museum of Art, Nowy Jork':'The Metropolitan Museum of Art, New York','Albertina, Wiedeń':'Albertina, Vienna',
+ 'domena publiczna':'public domain','CC0 (The Met, Open Access)':'CC0 (The Met, Open Access)'});
