@@ -1,7 +1,7 @@
 "use strict";
 /* =====================================================================
    DZIEŁA PRAWDZIWE – ładowanie obrazów (js/real/<slug>.js), wybór w liście „Artysta”,
-   scena obrazu z prawdziwego dzieła dla trybu „Obrazy – znajdź oryginał”.
+   scena obrazu z prawdziwego dzieła dla trybu „Obrazy – przeprowadź ekspertyzę”.
    Włączane po kolei: REAL_READY.
    ===================================================================== */
 const REAL_READY=['stanczyk','babie-lato','melencolia'];

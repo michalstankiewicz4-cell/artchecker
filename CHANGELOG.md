@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.22.2] – 2026-11-12
+### Zmienione
+- Nazwy trybów: „Znajdź oryginał – …” → „Przeprowadź ekspertyzę – …” (obrazy, rzeźby z brązu, rzeźby z marmuru) w menu, na ekranie startowym, w wiki („Obrazy – przeprowadź ekspertyzę”), README i dokumentacji.
+
 ## [1.22.1] – 2026-11-12
 ### Zmienione
 - **„Znajdź oryginał – obrazy”: zamiast „To jest oryginał” jest „Zakończ ekspertyzę”.** Ocenę daje checklista, tak jak w rzeźbach: obraz bez zaznaczonych sygnałów fałszerstwa liczy się jako wskazany oryginał.

@@ -1,4 +1,4 @@
-# Tryb: Znajdź oryginał – obrazy
+# Tryb: Przeprowadź ekspertyzę – obrazy
 
 Na stole 5 obrazów (na miedzi 4): oryginał i kopie wykonane różnymi metodami fałszerskimi. Każda kopia ma zestaw zdrad – badań, które ją demaskują.
 

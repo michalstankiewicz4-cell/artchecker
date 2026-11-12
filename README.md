@@ -1,4 +1,4 @@
-# Pracownia ekspertyz – znajdź oryginał
+# Pracownia ekspertyz – przeprowadź ekspertyzę
 
 Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu oryginałów i falsyfikatów.
 
@@ -7,10 +7,10 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 ## Tryby
 | Tryb | Opis |
 |---|---|
-| Znajdź oryginał – obrazy | 1 oryginał i 4 kopie, każda wykonana inną metodą fałszerską; podobrazia: płótno, deska dębowa, blacha miedziana |
+| Przeprowadź ekspertyzę – obrazy | 1 oryginał i 4 kopie, każda wykonana inną metodą fałszerską; podobrazia: płótno, deska dębowa, blacha miedziana |
 | Zniszczony fragment | czy fragment pochodzi z zaginionego dzieła znanego tylko z opisu |
-| Znajdź oryginał – rzeźby z brązu (3D) | brązowe popiersia (Three.js); ocena z checklisty |
-| Znajdź oryginał – rzeźby z marmuru (3D) | dłuto kontra CNC, patyna, kwas – [opis](docs/tryby/marmur.md) |
+| Przeprowadź ekspertyzę – rzeźby z brązu (3D) | brązowe popiersia (Three.js); ocena z checklisty |
+| Przeprowadź ekspertyzę – rzeźby z marmuru (3D) | dłuto kontra CNC, patyna, kwas – [opis](docs/tryby/marmur.md) |
 | Pamięć eksperta | zapamiętaj oryginał przez lupę, potem znajdź minimalne różnice |
 | Rysunki i grafiki | ołówek, tusz, węgiel, miedzioryt – papier, kreska, odcisk płyty, stemple kolekcji – [opis](docs/tryby/papier.md) |
 | Akwarele i pastele | papier, pigmenty, struktura farby, granica dawnej oprawy – [opis](docs/tryby/papier.md) |

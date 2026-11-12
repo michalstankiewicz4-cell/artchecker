@@ -205,7 +205,7 @@ function bronzeCert(q){const bad=q.t.cert,iss=bad&&q.m.cert==='issuer';const row
    WARIANTY RZEŹB – każdy materiał rejestruje się w SCULPT_VARIANTS (brąz tutaj, marmur w js/modes/marble.js)
    ===================================================================== */
 const SCULPT_VARIANTS={};let SV=null;
-SCULPT_VARIANTS.sculpt={id:'sculpt',label:'Znajdź oryginał – rzeźby z brązu',noun:'rzeźba',profiles:SPROF,defs:DEF3,sets:SET3,obs:obs3,why:why3,initQ:bronzeInitQ,
+SCULPT_VARIANTS.sculpt={id:'sculpt',label:'Przeprowadź ekspertyzę – rzeźby z brązu',noun:'rzeźba',profiles:SPROF,defs:DEF3,sets:SET3,obs:obs3,why:why3,initQ:bronzeInitQ,
  surface:bronzeSurface,inner:bronzeInner,markTex:q=>markTex(q.mark),refQ:seed=>({t:{},seed,hcm:52,patina:'natural',tool:'chase',mark:'ok',xray:'sand',uv:'wax'}),
  prov:bronzeProv,cert:bronzeCert,photoCaption:'Fotografia z katalogu raisonné (Rudnicki, 2011, nr 76):',
  intro:'Na postumentach stoi 5 brązowych popiersi: jeden oryginał i cztery kopie. Obracaj kamerę i podchodź blisko – wiele badań działa tylko z bliska albo z określonej strony. Sygnały fałszerstwa zaznaczaj na checkliście każdego odlewu i zakończ ekspertyzę – odlew bez zaznaczeń to Twój oryginał.',

@@ -4,7 +4,7 @@
    Nowy rodzaj obiektu 2D pojawia się w menu sam po registerKind().
    ===================================================================== */
 const MENU=[
- ['Obrazy',[['paint5','Znajdź oryginał – obrazy'],['frag','Zniszczony fragment – czy to oryginał?'],['memory','Pamięć eksperta – zapamiętaj oryginał'],...Object.values(KINDS).filter(k=>k.group==='art').map(k=>[k.id,k.label])]],
+ ['Obrazy',[['paint5','Przeprowadź ekspertyzę – obrazy'],['frag','Zniszczony fragment – czy to oryginał?'],['memory','Pamięć eksperta – zapamiętaj oryginał'],...Object.values(KINDS).filter(k=>k.group==='art').map(k=>[k.id,k.label])]],
  ['Rzeźby 3D',Object.values(SCULPT_VARIANTS).map(v=>[v.id,v.label])],
  ['Obiekty',Object.values(KINDS).filter(k=>k.group!=='art').map(k=>[k.id,k.label])],
  ['Wkrótce',[['auction','Aukcja (wkrótce)',1],['investigation','Śledztwo (wkrótce)',1],['conservator','Konserwator (wkrótce)',1]]],

@@ -40,7 +40,7 @@ const WICON={pigment:'spectrum',xrf:'spectrum',ink:'spectrum',magnet:'magnet',ma
 function wSecs(t,secs){if(!t)return'';return(t.lead?`<p class="wlead">${t.lead}</p>`:'')+secs.filter(([k])=>t[k]).map(([k,n])=>`<h3>${n}</h3><p>${t[k]}</p>`).join('')}
 const wgo=t=>`<a class="wgo" data-t="${t.replace(/"/g,'&quot;')}">${t}</a>`;
 function wikiData(){const A=[];
- const modes=[['paint5','Obrazy – znajdź oryginał',SET.paint5,DEF,PROFILES],['frag','Zniszczony fragment',SET.frag,DEF,null]];
+ const modes=[['paint5','Obrazy – przeprowadź ekspertyzę',SET.paint5,DEF,PROFILES],['frag','Zniszczony fragment',SET.frag,DEF,null]];
  Object.values(SCULPT_VARIANTS).forEach(v=>modes.push([v.id,v.label,v.sets,v.defs,v.profiles]));
  Object.values(KINDS).forEach(k=>modes.push([k.id,k.label,k.sets,k.defs,k.profiles]));
  const tech={},forg={},byMode={};
@@ -61,13 +61,13 @@ function wikiData(){const A=[];
    body:wSecs(WT[nm],WSEC_F)+L.map(x=>`<h3>W grze – ${x.label}</h3><p><b>Zawsze zdradzają:</b> ${x.coreN.map(wgo).join(', ')}</p>${x.optN.length?`<p><b>Mogą zdradzać:</b> ${x.optN.map(wgo).join(', ')}</p>`:''}`).join('')})}
  const SCN={pejzaz:'pejzaż',portret:'portret',martwa:'martwa natura',marina:'marina'};
  ARTISTS.forEach(a=>A.push({cat:'Obiekty i artyści',title:`${a.name} (${a.life})`,tags:'obrazy',img:{type:'artist',id:a.id},
-  body:`<p class="wlead">„${a.title}”, ${a.year} – ${SUP[a.sup||'canvas'].tech}, ${fmt(a.wcm)} × ${fmt(a.hcm)} cm.</p><h3>Dzieło</h3><p>${a.ref?`Dzieło referencyjne: ${a.ref}. `:''}${a.scene&&SCN[a.scene]?`Gatunek: ${SCN[a.scene]}. `:''}Sygnatura: „${a.sig.text}”.</p><h3>W grze</h3><p>Obraz tego artysty może pojawić się w trybach ${wgo('Obrazy – znajdź oryginał')}, ${wgo('Zniszczony fragment')} i ${wgo('Pamięć eksperta')}. Do porównania sygnatury i stylu gra pokazuje detale z jego „dzieł pewnych”.</p><p><small class="nb">Artysta i dzieło są fikcyjne.</small></p>`}));
- const objs=[['paint5','Obrazy – znajdź oryginał','Obraz olejny to warstwowa konstrukcja: płótno na blejtramie, grunt, rysunek, kolejne warstwy farby i werniks. Każda warstwa ma swoją chemię i swój wiek – dlatego obraz bada się od odwrocia po mikroskopijną strukturę powierzchni. Na stole leży oryginał i kopie wykonane różnymi metodami.'],
+  body:`<p class="wlead">„${a.title}”, ${a.year} – ${SUP[a.sup||'canvas'].tech}, ${fmt(a.wcm)} × ${fmt(a.hcm)} cm.</p><h3>Dzieło</h3><p>${a.ref?`Dzieło referencyjne: ${a.ref}. `:''}${a.scene&&SCN[a.scene]?`Gatunek: ${SCN[a.scene]}. `:''}Sygnatura: „${a.sig.text}”.</p><h3>W grze</h3><p>Obraz tego artysty może pojawić się w trybach ${wgo('Obrazy – przeprowadź ekspertyzę')}, ${wgo('Zniszczony fragment')} i ${wgo('Pamięć eksperta')}. Do porównania sygnatury i stylu gra pokazuje detale z jego „dzieł pewnych”.</p><p><small class="nb">Artysta i dzieło są fikcyjne.</small></p>`}));
+ const objs=[['paint5','Obrazy – przeprowadź ekspertyzę','Obraz olejny to warstwowa konstrukcja: płótno na blejtramie, grunt, rysunek, kolejne warstwy farby i werniks. Każda warstwa ma swoją chemię i swój wiek – dlatego obraz bada się od odwrocia po mikroskopijną strukturę powierzchni. Na stole leży oryginał i kopie wykonane różnymi metodami.'],
   ['frag','Zniszczony fragment','Oryginał zaginął – zostały po nim opis w katalogu i wyniki dawnych badań. Zadanie polega na sprawdzeniu, czy ocalały fragment zgadza się ze wszystkimi punktami tej dokumentacji.'],
   ['memory','Pamięć eksperta','Trening spostrzegawczości: najpierw ogląda się oryginał przez lupę, potem wskazuje go wśród prawie identycznych falsyfikatów różniących się drobnymi szczegółami.']];
  objs.forEach(([id,t,txt])=>A.push({cat:'Obiekty i artyści',title:t,tags:'obrazy',img:{type:'preview',id},
   body:`<p class="wlead">${txt}</p>`+(byMode[id]?`<h3>Badania w tym trybie</h3><p>${[...new Set(byMode[id].tech)].map(wgo).join(', ')}</p>`+(byMode[id].forg.length?`<h3>Metody fałszerskie</h3><p>${byMode[id].forg.map(wgo).join(', ')}</p>`:''):'')}));
- [...Object.values(SCULPT_VARIANTS),...Object.values(KINDS)].forEach(k=>{const t=k.label.replace('Znajdź oryginał – ','').replace('Weryfikacja ','');
+ [...Object.values(SCULPT_VARIANTS),...Object.values(KINDS)].forEach(k=>{const t=k.label.replace('Przeprowadź ekspertyzę – ','').replace('Weryfikacja ','');
   A.push({cat:'Obiekty i artyści',title:t,tags:SCULPT_VARIANTS[k.id]?'rzeźby':'obiekty',img:SCULPT_VARIANTS[k.id]?{type:'bust',marble:k.id==='marble'}:{type:'preview',id:k.id},
    body:(WOBJ[t]?`<p class="wlead">${WOBJ[t]}</p>`:'')+`<h3>Zlecenie</h3><p>${k.caseText()}</p>${k.intro?`<p>${k.intro}</p>`:''}<h3>Badania</h3><p>${[...new Set(byMode[k.id].tech)].map(wgo).join(', ')}</p><h3>Metody fałszerskie</h3><p>${byMode[k.id].forg.map(wgo).join(', ')}</p>`})});
  const GIMG={'Krakelura':['paint5','crack'],'Werniks':['paint5','uv'],'Pentimenti':['paint5','ir'],'Reflektografia IR':['paint5','ir'],'RTG':['paint5','xray'],'Impast':['paint5','texture'],'Blejtram':['paint5','back'],
@@ -80,7 +80,7 @@ function wikiData(){const A=[];
   const rel=Object.keys(tech).filter(n=>n!==t&&n.toLowerCase().includes(t.toLowerCase().split(' ')[0]));
   A.push({cat:'Słowniczek',title:t,img,body:`<p class="wlead">${b}</p>${WGLOSS[t]?`<p>${WGLOSS[t]}</p>`:''}${rel.length?`<h3>Zobacz też</h3><p>${rel.map(wgo).join(', ')}</p>`:''}`})});
  if(typeof WART!=='undefined')WART.forEach(([k,t,spec,txt])=>A.push({cat:'Techniki malarskie i podłoża',title:t,tags:k==='tech'?'technika':k==='sur'?'podłoże':'oprawa',img:{type:'artkit',spec},body:wSecs(txt,WSEC)+'<p><small class="nb">Ilustracja: ArtKit z laboratorium sztuki GameLaboratory.</small></p>'}));
- if(typeof REAL!=='undefined')REAL.filter(e=>REAL_READY.includes(e.slug)).forEach(e=>{const M={paint5:'Obrazy – znajdź oryginał',drawing:'Rysunki i grafiki',water:'Akwarele i pastele'}[e.mode];
+ if(typeof REAL!=='undefined')REAL.filter(e=>REAL_READY.includes(e.slug)).forEach(e=>{const M={paint5:'Obrazy – przeprowadź ekspertyzę',drawing:'Rysunki i grafiki',water:'Akwarele i pastele'}[e.mode];
   A.push({cat:'Dzieła prawdziwe',title:`${e.artist} – „${e.title}”`,tags:e.year,img:{type:'real',slug:e.slug,cap:`${e.artist}, „${e.title}”, ${e.year}. Źródło: Wikimedia Commons (${e.license}).`},
    body:`<p class="wlead">${e.desc}</p><h3>Dzieło</h3><p>${e.artist} (${e.life}), „${e.title}”, ${e.year} – ${e.tech}${e.wcm?`, ok. ${fmt(e.hcm)} × ${fmt(e.wcm)} cm`:''}. ${e.museum}.</p><h3>Licencja i źródło</h3><p>${e.license[0].toUpperCase()+e.license.slice(1)}. Reprodukcja: <a href="${realSrc(e)}" target="_blank" rel="noopener">Wikimedia Commons – ${e.file}</a>.</p><h3>W grze</h3><p>Dzieło można wybrać na liście „Artysta” w trybie ${wgo(M)}. Reprodukcja jest oryginałem, a kopie na stole robi gra.</p><p><small class="nb">${REAL_NOTE}</small></p>`})});
  return A}
