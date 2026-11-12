@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.31.1] – 2026-11-12
+### Dodane
+- „O programie”: informacja, że to darmowa aplikacja edukacyjna (bez reklam i opłat, bez celu komercyjnego), po polsku i angielsku.
+
 ## [1.31.0] – 2026-11-12
 ### Zmienione
 - **„Zniszczony fragment” na dziele prawdziwym, zniszczonym w czasie wojny:** Gustave Courbet, „Kamieniarze” (1849, Gemäldegalerie w Dreźnie, zniszczony w lutym 1945 r., znany z fotografii). Lista „Artysta” w tym trybie: „Kamieniarze” i „Losowe dzieło”. Opis oryginału ma prawdziwą historię obrazu i sygnaturę „G. Courbet” (l.d.); opis badań, fragment i wyniki są symulowane (zlecenie to wyjaśnia).
