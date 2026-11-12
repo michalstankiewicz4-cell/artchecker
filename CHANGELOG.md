@@ -2,6 +2,13 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.27.0] – 2026-11-12
+### Zmienione
+- **Nowy styl całej gry: „Luxury Museum Laboratory”** (wg specyfikacji GPT): grafit (#17191D, #222630), stal (#394453), przyciemnione szkło i szczotkowany metal na panelach, miękkie cienie, stalowe krawędzie, złote narożniki; złoto (#F5C66B, #C99539, mosiądz #98702F) tylko dla ważnych elementów – aktywna sekcja (pulsująca poświata), najważniejsze przyciski z przesuwającym się refleksem, ramy obrazów, liczniki; zieleń sukcesu #65DB87, błękit informacji technicznych #65B9F5; bez neonowych poświat.
+- Przyciski w trzech stanach: grafit i stal → złoty gradient po najechaniu → przygaszone nieaktywne; przejścia 220 ms. Zakładki ze złotym podkreśleniem, wybrane narzędzie i obiekt w złocie.
+- Wspólne zmienne CSS (`--c-*`, `--shadow-panel`, `--shadow-gold`, `--border-gold`, `--border-steel`) dla ekranu startowego, stanowiska, wiki, okien i loadera; ziarno filmowe na całym ekranie; font Inter.
+- Tło ekranu startowego w ciepłej, grafitowej sali muzeum; stół badawczy, scena 3D i ikony wiki w nowych barwach.
+
 ## [1.26.0] – 2026-11-12
 ### Zmienione
 - **Ekran startowy według makiety – złote akcenty.** Wybrana kategoria w złotej ramce, złoty przycisk „Wiki”, „O programie” z ikoną, wynik w złocie; złocona, ozdobna rama obrazu na scenie (listwy, perełki, narożne rozety) i światło z góry; podpis sceny ze złotą kropką; złota ikona muzeum w panelu, zielona kropka wybranego trybu i „✓ +n”; złoty przycisk „Rozpocznij badania” ze ściętym brzegiem; karty na dole ze złotymi sześciokątami, zielonymi znacznikami ukończonych trybów, paskiem postępu z procentem i ikonami w tle (lupa, popiersie, moneta, klepsydra).

@@ -180,7 +180,7 @@ function check3Gates(){if(MODE!=='sculpt'||!T3)return;const T=tool&&TB[tool];let
  if(T&&T.gate3&&!T.gate3.click)for(const b of T3.busts){const r=camRel(b);if(r.d<=T.gate3.d&&azOK(T.gate3.az,r.az)&&!b.q.notes[tool]){note(b.q,tool,SV.obs(b.q,tool));ch=true;toast(`Zapisano: rzeźba ${b.q.letter} – ${T.name}`)}}
  if(ch)onChange();else if(tool)updatePanel()}
 function apply3View(){if(!T3)return;const v=curView();T3.busts.forEach(b=>{b.outer.forEach(m=>m.material=v==='uv'?b.uvMat:v==='xray'?b.xMat:b.mat);b.inner.visible=v==='xray';b.decal.visible=v==='normal';b.plinth.visible=v!=='xray'});
- T3.scene.background=new THREE.Color(v==='uv'?0x05030a:v==='xray'?0x000000:0x0a1426);T3.hemi.intensity=v==='normal'?0.75:0.05;T3.dir.intensity=v==='normal'?1.15:0.05;T3.fill.intensity=v==='normal'?0.4:0;T3.floor.visible=T3.wall.visible=v!=='xray';
+ T3.scene.background=new THREE.Color(v==='uv'?0x05030a:v==='xray'?0x000000:0x1a1c21);T3.hemi.intensity=v==='normal'?0.75:0.05;T3.dir.intensity=v==='normal'?1.15:0.05;T3.fill.intensity=v==='normal'?0.4:0;T3.floor.visible=T3.wall.visible=v!=='xray';
  T3.busts.forEach(b=>updateLabel(b));mark3Dirty()}
 function updateLabel(b){if(b.label){T3.scene.remove(b.label)}const q=b.q,col=q.umark==='excl'?'#e0584f':q.umark==='susp'?'#f0a030':'#cbb894';
  const s=spriteText([[q.letter,'bold 64px Georgia',sel===q?'#ffd27a':col,72],[q.umark==='excl'?'wykluczona':q.umark==='susp'?'podejrzana':'','24px system-ui',col,108]],160,124,'rgba(0,0,0,.55)');s.scale.set(0.16,0.124,1);s.position.set(b.center.x,1.72,0);T3.scene.add(s);b.label=s;mark3Dirty()}
