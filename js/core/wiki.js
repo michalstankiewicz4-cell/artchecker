@@ -105,11 +105,11 @@ function wAreaRect(p,area){if(!area||WHOLE.includes(area))return null;let x0=1e9
 function wShot(p,v,rect){const src=getView(p,v),[x,y,w,h]=rect||[0,0,W,H],sc=Math.min(1,560/(w*S),340/(h*S)),c=mk(Math.round(w*S*sc),Math.round(h*S*sc));
  c.getContext('2d').drawImage(src,x*S,y*S,w*S,h*S,0,0,c.width,c.height);return c}
 function wPanels(list){const H0=300,pad=14,lab=26,ws=list.map(o=>Math.round(o.c.width*H0/o.c.height)),tw=ws.reduce((a,b)=>a+b,0)+pad*(list.length+1);
- const out=mk(tw,H0+lab+pad*2),x=out.getContext('2d');x.fillStyle='#061430';x.fillRect(0,0,out.width,out.height);let X=pad;
- list.forEach((o,i)=>{x.drawImage(o.c,X,pad,ws[i],H0);x.strokeStyle=o.col||'rgba(95,184,255,.6)';x.lineWidth=2;x.strokeRect(X+1,pad+1,ws[i]-2,H0-2);
-  x.fillStyle=o.col||'#bfe0ff';x.font='600 15px "Segoe UI",system-ui';x.textAlign='center';x.fillText(o.label,X+ws[i]/2,pad+H0+20,ws[i]);X+=ws[i]+pad});return out}
+ const out=mk(tw,H0+lab+pad*2),x=out.getContext('2d');x.fillStyle='#17191D';x.fillRect(0,0,out.width,out.height);let X=pad;
+ list.forEach((o,i)=>{x.drawImage(o.c,X,pad,ws[i],H0);x.strokeStyle=o.col||'rgba(130,155,180,.6)';x.lineWidth=2;x.strokeRect(X+1,pad+1,ws[i]-2,H0-2);
+  x.fillStyle=o.col||'#E8E3D9';x.font='600 15px Inter,"Segoe UI",system-ui';x.textAlign='center';x.fillText(o.label,X+ws[i]/2,pad+H0+20,ws[i]);X+=ws[i]+pad});return out}
 function wFind(mode,test){for(let k=0;k<14;k++){const b=wBatch(mode,9100+k*37);const p=b.P.find(test);if(p)return{b,p}}return null}
-function wIcon(kind){const c=mk(600,320),x=c.getContext('2d');x.fillStyle='#17191D';x.fillRect(0,0,600,320);x.strokeStyle='#C99539';x.fillStyle='#C99539';x.lineWidth=5;x.lineCap='round';x.lineJoin='round';x.shadowColor='#3fb0ff';x.shadowBlur=14;
+function wIcon(kind){const c=mk(600,320),x=c.getContext('2d');x.fillStyle='#17191D';x.fillRect(0,0,600,320);x.strokeStyle='#C99539';x.fillStyle='#C99539';x.lineWidth=5;x.lineCap='round';x.lineJoin='round';x.shadowColor='rgba(245,198,107,.6)';x.shadowBlur=14;
  if(kind==='spectrum'){x.lineWidth=2;x.globalAlpha=.35;for(let i=0;i<=10;i++){x.beginPath();x.moveTo(60+i*48,40);x.lineTo(60+i*48,270);x.stroke()}x.globalAlpha=1;x.lineWidth=4;x.beginPath();x.moveTo(60,270);x.lineTo(540,270);x.moveTo(60,270);x.lineTo(60,40);x.stroke();
   const pk=[[140,170,'Fe'],[230,90,'Pb'],[300,200,'Cu'],[400,130,'Zn'],[470,220,'Sn']];x.lineWidth=3;x.beginPath();x.moveTo(60,262);for(let X=60;X<=540;X+=3){let y=262-Math.random()*6;for(const[px,ph]of pk)y-=ph*Math.exp(-((X-px)**2)/60);x.lineTo(X,y)}x.stroke();
   x.shadowBlur=0;x.font='600 18px "Segoe UI"';x.textAlign='center';pk.forEach(([px,ph,n])=>x.fillText(n,px,262-ph-12))}
@@ -125,12 +125,12 @@ function wikiIllus(img){const key=JSON.stringify(img);if(WIMG[key])return WIMG[k
  if(img.type==='view'){const T=(KINDS[img.mode]||{defs:DEF}).defs[img.tool];
   const f=wFind(img.mode,p=>!p.orig&&p.t&&p.t[img.tool]),o=f?f.b.P.find(p=>p.orig):wBatch(img.mode,9100).P.find(p=>p.orig)||wBatch(img.mode,9100).P[0];
   const b=f?f.b:wBatch(img.mode,9100);
-  out=wWith(b,()=>{const rect=wAreaRect(o,img.area),L=[{c:wShot(o,img.view,rect),label:img.mode==='frag'?'Fragment':'Oryginał',col:'#7ff0b0'}];
-   if(f)L.push({c:wShot(f.p,img.view,rect),label:'Falsyfikat: '+((b.KIND?b.KIND.profiles:PROFILES)[f.p.profile]||{name:''}).name,col:'#ff8a98'});return wPanels(L)});
+  out=wWith(b,()=>{const rect=wAreaRect(o,img.area),L=[{c:wShot(o,img.view,rect),label:tr(img.mode==='frag'?'Fragment':'Oryginał'),col:'#65DB87'}];
+   if(f)L.push({c:wShot(f.p,img.view,rect),label:tr('Falsyfikat:')+' '+tr(((b.KIND?b.KIND.profiles:PROFILES)[f.p.profile]||{name:''}).name),col:'#e0636e'});return wPanels(L)});
   cap=`Widok z gry: ${T?T.name:''}${img.view!=='normal'?' – '+(VIEWNAME[img.view]||img.view):''}.`}
  else if(img.type==='forge'){const f=wFind(img.mode,p=>p.profile===img.key);
   if(f){const defs=f.b.KIND?f.b.KIND.defs:DEF,d=img.tool&&defs[img.tool],v=d?d.view||'normal':'normal';
-   out=wWith(f.b,()=>{const o=f.b.P.find(p=>p.orig),rect=d?wAreaRect(o,(d.gate||{}).area):null;return wPanels([{c:wShot(o,v,rect),label:'Oryginał',col:'#7ff0b0'},{c:wShot(f.p,v,rect),label:'Ta metoda',col:'#ff8a98'}])});
+   out=wWith(f.b,()=>{const o=f.b.P.find(p=>p.orig),rect=d?wAreaRect(o,(d.gate||{}).area):null;return wPanels([{c:wShot(o,v,rect),label:tr('Oryginał'),col:'#65DB87'},{c:wShot(f.p,v,rect),label:tr('Ta metoda'),col:'#e0636e'}])});
    cap=d?`Porównanie w grze: ${d.name}${v!=='normal'?' – '+(VIEWNAME[v]||v):''}.`:'Oryginał i falsyfikat w świetle dziennym.'}}
  else if(img.type==='artist'){const b=wBatch('paint5',5150,img.id);out=wWith(b,()=>{const o=b.P.find(p=>p.orig);return frameIt(getView(o,'normal'),W,H,true)});cap='Oryginał w świetle dziennym (wygenerowany przez grę).'}
  else if(img.type==='preview'){out=preview(img.id);cap='Podgląd z gry.'}
@@ -138,12 +138,12 @@ function wikiIllus(img){const key=JSON.stringify(img);if(WIMG[key])return WIMG[k
  else if(img.type==='artkit'&&window.ArtKit){const sp=Object.assign({size:720,aspect:1.25,seed:11,relief:0.7,varnish:0.15},img.spec),full=ArtKit.render(sp).canvas;
   const det=ArtKit.render(Object.assign({},sp,{format:'none'})).canvas,d=mk(320,256);d.getContext('2d').drawImage(det,det.width*0.42,det.height*0.38,det.width*0.22,det.height*0.22,0,0,320,256);
   const rk=ArtKit.render(Object.assign({},sp,{format:'none',view:'raking'})).canvas,rc=mk(320,256);rc.getContext('2d').drawImage(rk,rk.width*0.42,rk.height*0.38,rk.width*0.22,rk.height*0.22,0,0,320,256);
-  out=wPanels([{c:full,label:'Całość'},{c:d,label:'Szczegół ×4'},{c:rc,label:'Światło boczne ×4'}]);cap='Wygenerowane przez ArtKit (laboratorium sztuki GameLaboratory).'}
+  out=wPanels([{c:full,label:tr('Cały obraz')},{c:d,label:tr('Szczegół ×4')},{c:rc,label:tr('Światło boczne ×4')}]);cap='Wygenerowane przez ArtKit (laboratorium sztuki GameLaboratory).'}
  else if(img.type==='icon'){out=wIcon(img.icon);cap='Schemat.'}
  return WIMG[key]={c:out,cap}}
 
 const wslug=t=>t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,70);
-let WIKI=null,WCAT=tr('Słowniczek'),WSEL=0,WTOK=0;
+let WCUR=null,WIKI=null,WCAT=tr('Słowniczek'),WSEL=0,WTOK=0;
 function showWiki(cat){WIKI=WIKI||wikiData();if(cat)WCAT=cat;document.getElementById('wiki').classList.remove('hidden');renderWiki()}
 function wikiOpen(title){const a=WIKI.find(x=>x.title===title||x.key===title);if(!a)return;WCAT=a.cat;document.getElementById('wq').value='';WSEL=WIKI.filter(x=>x.cat===WCAT).indexOf(a);renderWiki()}
 function renderWiki(){const q=(document.getElementById('wq').value||'').toLowerCase(),cats=[...new Set(WIKI.map(a=>a.cat))];
@@ -154,8 +154,8 @@ function renderWiki(){const q=(document.getElementById('wq').value||'').toLowerC
  document.getElementById('wlist').innerHTML=list.map((a,i)=>`<div class="wli${i===WSEL?' on':''}" data-i="${i}">${a.title}${a.tags?`<small>${a.tags}</small>`:''}</div>`).join('')||`<div class="sub">${tr('Brak wyników.')}</div>`;
  document.querySelectorAll('.wli').forEach(el=>el.onclick=()=>{WSEL=+el.dataset.i;renderWiki()});
  const on=document.querySelector('.wli.on');if(on)on.scrollIntoView({block:'nearest'});
- const a=list[WSEL],wa=document.getElementById('wart');wa.scrollTop=0;
- wa.innerHTML=a?`<div class="sub">${a.cat}${a.tags?' · '+a.tags:''}</div><h2>${a.title}</h2>${a.img&&a.img.type==='real'?`<figure class="wfig"><img src="img/real/${a.img.slug}.jpg" alt="${a.title}" loading="lazy"><figcaption>${a.img.cap}</figcaption></figure>`:a.img?(typeof WIMGS!=='undefined'&&WIMGS[wslug(a.key||a.title)]?(m=>`<figure class="wfig"><img src="img/wiki/${wslug(a.key||a.title)}.jpg" width="${m.w}" height="${m.h}" alt="${a.title}" loading="lazy"><figcaption>${m.cap}</figcaption></figure>`)(WIMGS[wslug(a.key||a.title)]):'<figure class="wfig" id="wfig"><div class="wload"><i></i>Generowanie ilustracji…</div></figure>'):''}${a.body}`:'';
+ const a=list[WSEL],wa=document.getElementById('wart');WCUR=a;wa.scrollTop=0;
+ wa.innerHTML=a?`<div class="sub">${a.cat}${a.tags?' · '+a.tags:''}</div><h2>${a.title}</h2>${a.img&&a.img.type==='real'?`<figure class="wfig"><img src="img/real/${a.img.slug}.jpg" alt="${a.title}" loading="lazy"><figcaption>${a.img.cap}</figcaption></figure>`:a.img?(typeof WIMGS!=='undefined'&&WIMGS[wslug(a.key||a.title)]?(m=>`<figure class="wfig"><img src="img/wiki/${LANG==='en'?'en/':''}${wslug(a.key||a.title)}.jpg" width="${m.w}" height="${m.h}" alt="${a.title}" loading="lazy"><figcaption>${m.cap}</figcaption></figure>`)(WIMGS[wslug(a.key||a.title)]):'<figure class="wfig" id="wfig"><div class="wload"><i></i>Generowanie ilustracji…</div></figure>'):''}${a.body}`:'';
  wa.querySelectorAll('.wgo').forEach(l=>l.onclick=()=>wikiOpen(l.dataset.t));
  if(a&&a.img&&document.getElementById('wfig')){const tok=++WTOK;setTimeout(()=>{if(tok!==WTOK)return;let r=null;try{r=wikiIllus(a.img)}catch(e){console.warn(e)}const fg=document.getElementById('wfig');if(!fg||tok!==WTOK)return;
   if(!r||!r.c){fg.remove();return}const im=document.createElement('img');im.src=r.c.toDataURL('image/jpeg',.9);im.alt=a.title;fg.innerHTML='';fg.appendChild(im);const fc=document.createElement('figcaption');fc.textContent=r.cap;fg.appendChild(fc)},30)}}

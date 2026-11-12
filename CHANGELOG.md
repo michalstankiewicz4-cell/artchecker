@@ -2,6 +2,12 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.27.1] – 2026-11-12
+### Naprawione
+- Zmiana języka w grze lub w wiki nie wraca już do menu głównego: gra wraca do tego samego trybu i artysty (nowa partia), wiki do tego samego hasła.
+### Zmienione
+- Ilustracje wiki wygenerowane od nowa w kolorach nowego stylu (grafit, zieleń oryginału, czerwień falsyfikatu, złote schematy). Dwa zestawy: `img/wiki/` z polskimi podpisami i `img/wiki/en/` z angielskimi (`tools/build-wiki-img.py`).
+
 ## [1.27.0] – 2026-11-12
 ### Zmienione
 - **Nowy styl całej gry: „Luxury Museum Laboratory”** (wg specyfikacji GPT): grafit (#17191D, #222630), stal (#394453), przyciemnione szkło i szczotkowany metal na panelach, miękkie cienie, stalowe krawędzie, złote narożniki; złoto (#F5C66B, #C99539, mosiądz #98702F) tylko dla ważnych elementów – aktywna sekcja (pulsująca poświata), najważniejsze przyciski z przesuwającym się refleksem, ramy obrazów, liczniki; zieleń sukcesu #65DB87, błękit informacji technicznych #65B9F5; bez neonowych poświat.

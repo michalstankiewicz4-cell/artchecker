@@ -14,7 +14,9 @@ const LANG=(()=>{try{const u=new URLSearchParams(location.search).get('lang');if
 document.documentElement.lang=LANG;
 const EN={};
 const tr=s=>LANG==='en'&&s!=null?trText(String(s)):s;
-function setLang(l){try{localStorage.setItem('artchecker.lang',l)}catch(e){}const u=new URL(location.href);u.searchParams.delete('lang');location.href=u.toString()}
+function setLang(l){try{localStorage.setItem('artchecker.lang',l)}catch(e){}
+ /* zapamiętaj, gdzie jest gracz (gra / wiki / hasło), żeby po przeładowaniu wrócić w to samo miejsce */
+ try{const g=id=>document.getElementById(id),wk=!g('wiki').classList.contains('hidden');sessionStorage.setItem('artchecker.resume',JSON.stringify({game:g('home').classList.contains('hidden'),mode:g('mode').value,artist:g('artist').value,wiki:wk,art:wk&&typeof WCUR!=='undefined'&&WCUR?(WCUR.key||WCUR.title):null,cat:wk&&typeof WCUR!=='undefined'&&WCUR?WCUR.cat:null}))}catch(e){}const u=new URL(location.href);u.searchParams.delete('lang');location.href=u.toString()}
 
 /* --- etap 1: interfejs, ekran startowy, menu --- */
 Object.assign(EN,{
