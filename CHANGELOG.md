@@ -2,6 +2,12 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.28.0] – 2026-11-12
+### Dodane
+- **Trzy kolejne dzieła prawdziwe** (lista „Artysta”, wiki „Dzieła prawdziwe”): Albrecht Dürer, „Dłonie modlącego się” (1508, „Rysunki i grafiki”), Albrecht Dürer, „Zając” (1502, „Akwarele i pastele”), Stanisław Wyspiański, „Macierzyństwo” (1902, „Akwarele i pastele”). Są już po 2 dzieła w każdym gatunku.
+- Dzieło na papierze maszynowym (Wyspiański): oryginał ma papier welinowy, więc papier pod światło nie jest zdradą kopii – zdradzają je inne badania.
+- **Wiki, hasło „Weryfikacja banknotów”:** akapit o zabezpieczeniach prawdziwych banknotów złotego (seria „Władcy polscy”, wg NBP) – tylko tekst, bez wizerunków, z linkiem do strony NBP.
+
 ## [1.27.1] – 2026-11-12
 ### Naprawione
 - Zmiana języka w grze lub w wiki nie wraca już do menu głównego: gra wraca do tego samego trybu i artysty (nowa partia), wiki do tego samego hasła.

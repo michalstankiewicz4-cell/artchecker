@@ -41,6 +41,8 @@ const PW_PROF_WATER={
 };
 const PW_W=600,PW_H=470,PW_ART={};
 const pwMode=(p,id,def)=>p.t[id]?p.m[id]:def;
+/* papier oryginału: czerpany, a dla dzieła prawdziwego na papierze maszynowym (np. Wyspiański 1902) – welinowy */
+const pwPaper=p=>p.kind.cur.real&&p.kind.cur.real.paper==='wove'?'wove':'laid';
 /* obraz pracy z ArtKit – jeden na partię (oryginał) i jeden dla kopii ręcznych (inne ziarno pociągnięć) */
 function pwArt(k,hand){const key=(k.cur.real?k.cur.real.slug:k.cur.tech)+'|'+k.cur.seed+'|'+(hand?1:0)+'|'+IW;if(PW_ART[key])return PW_ART[key];const T=PW_TECH[k.cur.tech];
  if(k.cur.real){const im=REALIM[k.cur.real.slug];let c;/* oryginał = reprodukcja dzieła; kopia ręczna = ten sam obraz przerysowany techniką ArtKit */
@@ -58,10 +60,10 @@ function pwPaperTone(x,old,r){x.save();x.globalCompositeOperation='multiply';x.f
 function pwView(p,v){const k=p.kind,hand=p.profile==='trace'||p.profile==='oldpaper'||p.profile==='modern';
  if(v==='normal')return kView(p,v,(x,c)=>{const r=rng(p.seed+3),old=pwMode(p,'uvp','old')==='old';x.save();x.setTransform(1,0,0,1,0,0);x.drawImage(pwArt(k,hand),0,0,IW,IH);
    if(pwMode(p,'micro','hand')==='inkjet'||pwMode(p,'micro','hand')==='screen'){x.filter='blur(0.6px)';x.drawImage(c,0,0);x.filter='none'}x.restore();
-  if(!k.cur.real)pwPaperTone(x,old,r);if(pwMode(p,'paper','laid')==='imitation'){x.strokeStyle='rgba(120,100,70,.12)';x.lineWidth=0.4;for(let y=0;y<H;y+=1.6){x.beginPath();x.moveTo(0,y);x.lineTo(W,y);x.stroke()}}
+  if(!k.cur.real)pwPaperTone(x,old,r);if(pwMode(p,'paper',pwPaper(p))==='imitation'){x.strokeStyle='rgba(120,100,70,.12)';x.lineWidth=0.4;for(let y=0;y<H;y+=1.6){x.beginPath();x.moveTo(0,y);x.lineTo(W,y);x.stroke()}}
   if(k.id==='water'){const f=pwMode(p,'fade','faded');if(f==='faded'){x.fillStyle='rgba(250,244,228,.16)';x.fillRect(42,42,W-84,H-84)}}
   if(k.cur.tech==='engraving'&&!k.cur.real){x.strokeStyle='rgba(60,50,40,.35)';x.lineWidth=0.8;x.strokeRect(22,22,W-44,H-44)}});
- if(v==='trans')return kView(p,v,x=>{const r=rng(p.seed+5),pm=pwMode(p,'paper','laid');x.fillStyle=pm==='wove'?'#f0e6c8':'#ecd9a8';x.fillRect(0,0,W,H);
+ if(v==='trans')return kView(p,v,x=>{const r=rng(p.seed+5),pm=pwMode(p,'paper',pwPaper(p));x.fillStyle=pm==='wove'?'#f0e6c8':'#ecd9a8';x.fillRect(0,0,W,H);
   for(let i=0;i<60;i++){x.fillStyle=`rgba(120,90,40,${r()*.08})`;x.beginPath();x.ellipse(r()*W,r()*H,8+r()*30,6+r()*20,r()*3,0,7);x.fill()}
   if(pm==='laid'){x.strokeStyle='rgba(255,252,235,.55)';x.lineWidth=0.5;for(let y=0;y<H;y+=1.4){x.beginPath();x.moveTo(0,y+(r()-.5)*.3);x.lineTo(W,y);x.stroke()}x.strokeStyle='rgba(110,80,40,.35)';x.lineWidth=1.4;for(let X=18;X<W;X+=24){x.beginPath();x.moveTo(X,0);x.lineTo(X+(r()-.5)*1.5,H);x.stroke()}
    x.save();x.translate(W*0.72,H*0.5);x.strokeStyle='rgba(255,252,235,.7)';x.lineWidth=2.4;x.beginPath();x.moveTo(-18,24);x.lineTo(-22,-4);x.lineTo(-10,8);x.lineTo(0,-16);x.lineTo(10,8);x.lineTo(22,-4);x.lineTo(18,24);x.closePath();x.stroke();x.font='bold 13px Georgia';x.textAlign='center';x.fillStyle='rgba(255,252,235,.7)';x.fillText('J W',0,44);x.restore()}
@@ -99,7 +101,7 @@ function pwLive(p){if(vw.z<6)return;const V=viewportWorld(),x0=Math.max(V.x0,p.x
 function pwArea(p,a,v){const lx=v.cx-p.x,ly=v.cy-p.y;if(lx<0||lx>W||ly<0||ly>H)return false;if(a==='all')return true;if(a==='pwdesign')return lx>50&&lx<W-50&&ly>50&&ly<H-50;
  if(a==='edge'){const d=Math.min(lx,ly,W-lx,H-ly);return d>20&&d<70}return false}
 function pwObs(p,id){const T=PW_TECH[p.kind.cur.tech],m=(k,d)=>pwMode(p,k,d);switch(id){
- case'paper':return{laid:'Pod światło: gęste linie żeberkowe, co ok. 2,5 cm linie sita i znak wodny – korona z literami „J W”. Papier czerpany.',wove:'Pod światło papier jednolicie chmurkowaty, bez linii sita i bez znaku wodnego – papier maszynowy.',imitation:'Pod światło linie są, ale bardzo równe i bez linii sita; te same linie widać w świetle dziennym – nadrukowane.'}[m('paper','laid')];
+ case'paper':return{laid:'Pod światło: gęste linie żeberkowe, co ok. 2,5 cm linie sita i znak wodny – korona z literami „J W”. Papier czerpany.',wove:'Pod światło papier jednolicie chmurkowaty, bez linii sita i bez znaku wodnego – papier maszynowy.',imitation:'Pod światło linie są, ale bardzo równe i bez linii sita; te same linie widać w świetle dziennym – nadrukowane.'}[m('paper',pwPaper(p))];
  case'uvp':return m('uvp','old')==='old'?'W UV papier matowy, żółtobrązowy, z jaśniejszymi plamkami zażółceń (foxing).':'W UV papier świeci jasnoniebiesko – wybielacze optyczne.';
  case'back':return{ok:'Na odwrociu stempel kolekcji „Coll. K.Z.” (owal, wyblakły brązowy tusz) i numer inwentarzowy; ślady dawnego podklejenia na brzegach.',forged:'Stempel „Coll. K.Z.” w świeżym, fioletowym tuszu anilinowym, ostry, bez śladów starzenia.',none:'Odwrocie czyste – brak stempli kolekcji i numerów, choć proweniencja je wymienia.'}[m('back','ok')];
  case'micro':return{hand:{pencil:'Ziarna grafitu na grzbietach papieru, połysk pod kątem; linia zmienia gęstość z naciskiem.',ink:'Tusz wsiąka w papier, brzegi linii postrzępione, na końcach pociągnięć więcej tuszu.',charcoal:'Czarne cząstki węgla na grzbietach ziarna papieru, zagłębienia jasne.',engraving:'Linie zwężają się ostro na końcach (cięcie rylcem), farba wypukła.',watercolor:'Ziarna pigmentu osiadłe w zagłębieniach papieru, ciemniejsze obwódki plam.',pastel:'Luźne cząstki pigmentu na grzbietach ziarna papieru.'}[p.kind.cur.tech],inkjet:'Obraz z kolorowych kropek (cyjan, magenta, żółty, czarny) – druk atramentowy.',screen:'Regularne ziarno rastra w jednakowych odstępach – reprodukcja fotomechaniczna.'}[m('micro','hand')];
@@ -118,6 +120,7 @@ function pwKind(id,label,noun,techs,defs,sets,profiles){return{id,label,noun,gro
   else{this.W=PW_W;this.H=PW_H;this.wcm=30;this.hcm=23.5;const tech=pick(techs,r);this.cur={tech,seed:1+(r()*1e6|0),art:pick(PAPER_ARTISTS,r)};this.cur.title=PW_TECH[tech].title}
   const tech=this.cur.tech;
   kindBatch(this,r);
+  if(R&&R.paper==='wove')for(const p of P)if(p.t.paper){delete p.t.paper;delete p.m.paper}/* oryginał też na papierze maszynowym – papier nie jest zdradą */
   if(tech==='engraving'){const extra=P.find(p=>!p.orig&&p.profile==='oldpaper');if(extra&&r()<0.5){extra.orig=true;extra.profile=null;extra.t={};extra.m={}}}},
  view:pwView,live:pwLive,area:pwArea,obs:pwObs,why:pwWhy,focus:p=>[p.x+W*0.35,p.y+H*0.3,W*0.3,H*0.3],
  get intro(){const c=this.cur,T=PW_TECH[c.tech];if(c.real)return`Na stole leżą arkusze: ${c.real.tech} „${c.title}” – ${c.art.name} (${c.art.life}), ${c.art.year}. Jeden to oryginał (reprodukcja dzieła), pozostałe to kopie zrobione przez grę. Sprawdź papier pod światło i w UV, odwrocie, `+(this.id==='water'?'strukturę farby, relief, granicę dawnej oprawy':'strukturę i relief kreski, jej płynność')+` oraz materiał. Na checkliście każdego arkusza zaznacz sygnały fałszerstwa. Wyniki badań, znak wodny i stempel kolekcji są symulowane.`;return`Na stole leżą arkusze: ${T.full.toLowerCase()} „${c.title}” – ${c.art.name} (${c.art.life}), ${c.art.year}. Oryginał na papierze czerpanym, z kolekcji K.Z. Sprawdź papier pod światło i w UV, odwrocie, `+(this.id==='water'?'strukturę farby, relief, granicę dawnej oprawy':'strukturę i relief kreski, jej płynność')+` oraz materiał. Na checkliście każdego arkusza zaznacz sygnały fałszerstwa.`},

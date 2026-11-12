@@ -19,7 +19,7 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 | Weryfikacja znaczków | ząbkowanie, znak wodny, druk, guma, przedruk – [opis](docs/tryby/znaczek.md) |
 | Weryfikacja monet | waga, średnica, stop, magnes, rant, bicie czy odlew, zużycie – [opis](docs/tryby/moneta.md) |
 
-Artyści, dzieła i waluta są fikcyjne – poza dziełami prawdziwymi z domeny publicznej (na razie: Jan Matejko, „Stańczyk”; Józef Chełmoński, „Babie lato”; Albrecht Dürer, „Melancholia I”), które można wybrać na liście „Artysta”; ich wyniki badań są symulowane.
+Artyści, dzieła i waluta są fikcyjne – poza dziełami prawdziwymi z domeny publicznej (na razie: Jan Matejko, „Stańczyk”; Józef Chełmoński, „Babie lato”; Albrecht Dürer, „Melancholia I”, „Dłonie modlącego się”, „Zając”; Stanisław Wyspiański, „Macierzyństwo”), które można wybrać na liście „Artysta”; ich wyniki badań są symulowane.
 
 **Język:** PL / EN – przycisk na ekranie startowym i pasku gry; domyślnie według języka przeglądarki. Po angielsku jest cała gra (interfejs, ekran startowy, badania, wyniki, zlecenia, podsumowania); także wiki (`js/core/i18n.js`, słowniki `js/i18n/`).
 
