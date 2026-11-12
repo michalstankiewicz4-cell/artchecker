@@ -86,5 +86,27 @@
     "license": "Public domain",
     "title": "\nPolish:  Macierzyństwo Motherhood.label QS:Lfr,\"La Maternité.\"label QS:Len,\"Motherhood.\"label QS:Lpl,\"Macierzyństwo.\"",
     "source": "https://commons.wikimedia.org/wiki/File:Stanisław_Wyspiański,_Macierzyństwo.jpg"
+  },
+  {
+    "slug": "mlodzieniec",
+    "file": "Raphael missing.jpg",
+    "w": 804,
+    "h": 1000,
+    "artist": "Raphael",
+    "date": "1514 Alternate: c. 1509-11",
+    "license": "Public domain",
+    "title": "\nItalian:  Ritratto di giovane uomoPortrait of a Youthtitle QS:P1476,it:\"Ritratto di giovane uomo\"label QS:Lit,\"Ritratto di giovane uomo\"label QS:Len,\"Portrait of a Youth\"",
+    "source": "https://commons.wikimedia.org/wiki/File:Raphael_missing.jpg"
+  },
+  {
+    "slug": "kamieniarze",
+    "file": "Gustave Courbet - The Stonebreakers - WGA05457.jpg",
+    "w": 1000,
+    "h": 608,
+    "artist": "Gustave Courbet",
+    "date": "1849date QS:P571,+1849-00-00T00:00:00Z/9",
+    "license": "Public domain",
+    "title": "\nThe Stonebreakers",
+    "source": "https://commons.wikimedia.org/wiki/File:Gustave_Courbet_-_The_Stonebreakers_-_WGA05457.jpg"
   }
 ]
