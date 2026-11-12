@@ -12,7 +12,7 @@ Na stole 5 obrazów (na miedzi 4): oryginał i kopie wykonane różnymi metodami
 RTG: płótno – blejtram i gwoździe; deska – słoje, spoiny i listwy; miedź – prawie jednolicie jasny obraz (metal pochłania promieniowanie), więc na miedzi RTG nie jest zdradą, a metody „stare podobrazie” i „giclée” nie występują.
 
 ## Dzieła prawdziwe
-Na liście „Artysta” są też dzieła z domeny publicznej (na razie: Jan Matejko, „Stańczyk”). „Stańczyk” jest pokazany na ekranie startowym i wybrany domyślnie po wejściu w tryb. Oryginałem jest reprodukcja z Wikimedia Commons, kopie robi gra. Prawdziwe są autor, tytuł, data, technika, wymiary i muzeum; wyniki badań są symulowane.
+Na liście „Artysta” są też dzieła z domeny publicznej (na razie: Jan Matejko, „Stańczyk”; Józef Chełmoński, „Babie lato”). „Stańczyk” jest pokazany na ekranie startowym i wybrany domyślnie po wejściu w tryb. Oryginałem jest reprodukcja z Wikimedia Commons, kopie robi gra. Prawdziwe są autor, tytuł, data, technika, wymiary i muzeum; wyniki badań są symulowane.
 
 ## Metody fałszerskie
 Giclée z fakturą, współczesna kopia, fałszerstwo na starym podobraziu z epoki, kopia z siatki, kopia z podrobioną dokumentacją – szczegóły w wiki gry.

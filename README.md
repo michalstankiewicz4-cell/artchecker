@@ -19,7 +19,7 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 | Weryfikacja znaczków | ząbkowanie, znak wodny, druk, guma, przedruk – [opis](docs/tryby/znaczek.md) |
 | Weryfikacja monet | waga, średnica, stop, magnes, rant, bicie czy odlew, zużycie – [opis](docs/tryby/moneta.md) |
 
-Artyści, dzieła i waluta są fikcyjne – poza dziełami prawdziwymi z domeny publicznej (na razie: Jan Matejko, „Stańczyk”), które można wybrać na liście „Artysta”; ich wyniki badań są symulowane.
+Artyści, dzieła i waluta są fikcyjne – poza dziełami prawdziwymi z domeny publicznej (na razie: Jan Matejko, „Stańczyk”; Józef Chełmoński, „Babie lato”), które można wybrać na liście „Artysta”; ich wyniki badań są symulowane.
 
 **Autor:** Michał Stankiewicz i Claude – zrobione przy pomocy vibecodingu i laboratorium sztuki (GameLaboratory).
 

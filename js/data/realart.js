@@ -10,7 +10,7 @@ const REAL=[
   license:'domena publiczna',file:'Jan Matejko, Stańczyk.jpg',fig:[0.36,0.3,0.32,0.62],style:[0.4,0.3,0.24,0.32],pig:{bg:['umb','bone','sien'],fig:['cyn','pb','lake']},
   desc:'Błazen Stańczyk siedzi w fotelu w ciemnej komnacie, w czerwonym stroju; w tle przez otwarte drzwi widać bal na dworze królowej Bony. Na stole list o utracie Smoleńska.'},
  {slug:'babie-lato',mode:'paint5',artist:'Józef Chełmoński',life:'1849–1914',title:'Babie lato',year:'1875',yearNum:1875,tech:'olej na płótnie',sup:'canvas',wcm:156.5,hcm:119.7,museum:'Muzeum Narodowe w Warszawie',
-  license:'domena publiczna',file:'Józef Chełmoński - Indian summer - Google Art Project.jpg',fig:[0.1,0.25,0.75,0.55],style:[0.5,0.25,0.28,0.32],pig:{bg:['ochy','sien','ultr','pb'],fig:['pb','ochy','umb']},
+  license:'domena publiczna',file:'Józef Chełmoński - Indian summer - Google Art Project.jpg',fig:[0.09,0.26,0.87,0.6],style:[0.55,0.22,0.3,0.42],pig:{bg:['ochy','sien','ultr','pb'],fig:['pb','ochy','umb']},
   desc:'Wiejska dziewczyna leży na ściernisku z uniesioną ręką, w której trzyma nitki babiego lata; obok czarny pies. Rozległe pole pod jesiennym niebem.'},
  {slug:'zydowka-z-pomaranczami',mode:'paint5',artist:'Aleksander Gierymski',life:'1850–1901',title:'Żydówka z pomarańczami',year:'1880–1881',yearNum:1881,tech:'olej na płótnie',sup:'canvas',wcm:55,hcm:66,museum:'Muzeum Narodowe w Warszawie',
   license:'domena publiczna',file:'Aleksander Gierymski, Żydówka z pomarańczami.jpg',fig:[0.15,0.08,0.7,0.88],style:[0.3,0.08,0.4,0.3],pig:{bg:['pb','ultr','ochy'],fig:['ochr','cyn','umb','cadY']},

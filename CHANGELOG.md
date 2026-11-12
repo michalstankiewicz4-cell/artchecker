@@ -2,6 +2,11 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.20.0] – 2026-11-12
+### Dodane
+- **Drugie dzieło prawdziwe: Józef Chełmoński, „Babie lato” (1875)** w trybie „Znajdź oryginał – obrazy” – na liście „Artysta” oraz w wiki („Dzieła prawdziwe”). Kluczowy detal do porównania stylu: głowa i uniesiona ręka z nitkami babiego lata.
+- Na liście „Artysta” pojawia się „Losowe dzieło prawdziwe” (są już dwa).
+
 ## [1.19.1] – 2026-11-09
 ### Zmienione
 - Ekran startowy: podgląd „Badania obrazów” / „Znajdź oryginał – obrazy” pokazuje „Stańczyka” Matejki (z podpisem), obraz wczytuje się razem z loaderem startowym.
