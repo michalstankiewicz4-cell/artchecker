@@ -32,7 +32,7 @@ docs/                 dokumentacja
 ```
 
 ## Pojęcia
-- **Obiekt** (`P[i]`) – rzecz na stole: obraz, banknot, rzeźba… Ma `letter`, `orig` (czy autentyczny), `profile` (metoda fałszerska), `t` (zestaw „zdrad” – które badania go demaskują), `m` (warianty zdrad), `notes` (notatnik), `check` (checklista gracza), `umark` (oznaczenie gracza).
+- **Obiekt** (`P[i]`) – rzecz na stole: obraz, banknot, rzeźba… Ma `letter`, `orig` (czy autentyczny), `profile` (metoda fałszerska), `t` (zestaw „zdrad” – które badania go demaskują), `m` (warianty zdrad), `notes` (notatnik), `check` (checklista gracza – obiekt z co najmniej jednym zaznaczonym sygnałem jest uznany za fałszywy, `flagged(p)` w `js/core/game.js`), `umark` (dawne ręczne oznaczenie – przyciski usunięte w 1.21.0, pole zostaje puste).
 - **Narzędzie** – definicja z `name`, `view` (widok planszy), `gate` (warunek zapisu obserwacji: zoom, obszar, nachylenie), `hint`.
 - **Bramka** – obserwacja zapisuje się dopiero, gdy spełniony jest warunek (np. zoom ≥ ×8 i środek widoku na mikrodruku).
 - **Profil** – metoda fałszerska: `core` (zawsze zdradza), `opt` (losowo), opcjonalnie warianty.

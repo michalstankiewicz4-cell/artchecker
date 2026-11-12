@@ -78,7 +78,7 @@ function stampWhy(p,id){const m=p.m;return({perf:()=>m.perf==='reperf'?'Dorobion
 registerKind({id:'stamp',label:'Weryfikacja znaczków',noun:'Znaczek',W:300,H:360,wcm:2.5,hcm:3,tilt:false,focusLabel:'Przedruk',
  defs:STAMP_DEF,sets:STAMP_SET,profiles:STAMP_PROF,newGame(r){kindBatch(this,r)},view:stampView,live:stampLive,area:stampArea,obs:stampObs,why:stampWhy,
  focus:p=>[p.x+50,p.y+160,200,100],
- intro:'Na stole leży 5 znaczków Poczty Arkadii z przedrukiem „5 hal. 1899” (znaczek fikcyjny). Część jest prawdziwa, część fałszywa albo przerobiona. Sprawdź ząbkowanie miarką, znak wodny w kąpieli, metodę druku, gumę na odwrociu i przedruk. Oznacz każdy znaczek i zakończ ekspertyzę.',
+ intro:'Na stole leży 5 znaczków Poczty Arkadii z przedrukiem „5 hal. 1899” (znaczek fikcyjny). Część jest prawdziwa, część fałszywa albo przerobiona. Sprawdź ząbkowanie miarką, znak wodny w kąpieli, metodę druku, gumę na odwrociu i przedruk. Na checkliście każdego znaczka zaznacz sygnały fałszerstwa i zakończ ekspertyzę.',
  caseText:()=>'Weryfikacja znaczków: Poczta Arkadii 1898, 10 halerzy z przedrukiem „5 hal. 1899” (fikcyjny). Katalog: ząbkowanie 12½, znak wodny korona, druk typograficzny, guma żółtawa.'});
 Object.assign(AREA,{perf:'środek widoku na brzegu z ząbkami',design:'środek widoku na rysunku znaczka',over:'środek widoku na przedruku'});
 Object.assign(VIEWNAME,{wmbath:'kąpiel w płynie do znaków wodnych',back:VIEWNAME.back});

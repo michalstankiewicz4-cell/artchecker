@@ -92,6 +92,6 @@ registerKind({id:'manuscript',label:'Weryfikacja rękopisów',noun:'Rękopis',W:
   const s=MS.strokes.find(s=>s.pts.some(q=>Math.hypot(q[0]-lx,q[1]-ly)<6));if(!s)return toast('Kliknij dokładnie w linię tekstu.');
   const txt=`wiersz ${s.li+1}: ${MS_INK[msInk(p,s.li)]}`;note(p,'ink',txt);toast(`Rękopis ${p.letter}, ${txt}`)},
  panel(p,id){if(id==='ink'&&p.notes.ink)return`<div class="obs"><b>Odczyty:</b><br>${[].concat(p.notes.ink).join('<br>')}</div>`},
- intro:'Na stole leży 5 egzemplarzy listu z 1712 r. (dokument fikcyjny). Część to oryginały, część kopie albo przeróbki. Zbadaj atrament w różnych wierszach, papier pod światło, ductus pisma, pieczęć lakową i odwrocie. Oznacz każdy rękopis i zakończ ekspertyzę.',
+ intro:'Na stole leży 5 egzemplarzy listu z 1712 r. (dokument fikcyjny). Część to oryginały, część kopie albo przeróbki. Zbadaj atrament w różnych wierszach, papier pod światło, ductus pisma, pieczęć lakową i odwrocie. Na checkliście każdego rękopisu zaznacz sygnały fałszerstwa i zakończ ekspertyzę.',
  caseText:()=>'Weryfikacja rękopisów: list Jana z Wierzbna do rady miasta Arkadii, 1712 (fikcyjny). Katalog: papier czerpany ze znakiem wodnym, atrament żelazowo-galasowy, gęsie pióro, pieczęć lakowa.'});
 Object.assign(AREA,{sheet:'środek widoku na arkuszu',text:'środek widoku na tekście',seal:'środek widoku na pieczęci'});

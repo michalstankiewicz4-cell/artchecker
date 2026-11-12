@@ -2,27 +2,27 @@
 /* =====================================================================
    OZNACZENIA, WERDYKT, START
    ===================================================================== */
-document.querySelectorAll('#markbtns button').forEach(b=>b.onclick=()=>{if(!sel)return;sel.umark=b.dataset.mark;updateDock();if(MODE==='sculpt'){const bb=T3.busts.find(x=>x.q===sel);updateLabel(bb)}else render()});
+/* Obiekt uznany za fałszywy = ma zaznaczony co najmniej jeden sygnał na checkliście. */
+const flagged=p=>!!(p.check&&Object.values(p.check).some(Boolean));
 function setVerdicts(){const v=document.getElementById('verdicts');
  v.innerHTML=KIND?'<button class="btn primary" data-v="end">Zakończ ekspertyzę</button>':MODE==='frag'?'<button class="btn primary" data-v="yes" disabled>Pochodzi z oryginału</button> <button class="btn primary" data-v="no" disabled>To nie oryginał</button>':'<button class="btn primary" data-v="pick" disabled>To jest oryginał</button>';
- v.querySelectorAll('button').forEach(b=>b.onclick=()=>verdict(b.dataset.v));document.getElementById('markbtns').style.display=MODE==='frag'||(MODE==='memory'&&MEM.phase===1)?'none':'';
- document.querySelector('#markbtns [data-mark=excl]').textContent=MODE==='memory'||KIND?'✕ Falsyfikat':'✕ Wykluczony';document.getElementById('markok').style.display=KIND?'':'none';if(MODE==='memory'&&MEM.phase===1)v.innerHTML=''}
+ v.querySelectorAll('button').forEach(b=>b.onclick=()=>verdict(b.dataset.v));if(MODE==='memory'&&MEM.phase===1)v.innerHTML=''}
 function verdict(v){if(!sel&&!KIND)return;const m=document.getElementById('modal');let h='';
- if(KIND){const good=P.filter(p=>(p.orig&&p.umark==='ok')||(!p.orig&&p.umark==='excl')).length;
+ if(KIND){const good=P.filter(p=>p.orig!==flagged(p)).length;
   h=`<h2 style="color:${good===5?'var(--ok)':'var(--bad)'}">Poprawnie sklasyfikowano ${good} z 5 banknotów.</h2>`;
-  h+=`<table class="mx"><tr><th>Zabezpieczenie</th>${P.map(p=>`<th>${p.letter}<br><small>${p.orig?'prawdziwy':'fałszywy'} · ${p.umark==='ok'?'oznaczono ✓':p.umark==='excl'?'oznaczono ✕':'bez oznaczenia'}</small></th>`).join('')}</tr>`+
+  h+=`<table class="mx"><tr><th>Zabezpieczenie</th>${P.map(p=>`<th>${p.letter}<br><small>${p.orig?'prawdziwy':'fałszywy'} · ${flagged(p)?'checklista: fałszywy':'checklista: prawdziwy'}</small></th>`).join('')}</tr>`+
    TLIST.map(t=>`<tr><td>${t.name}</td>${P.map(p=>`<td>${p.t[t.id]?'<span class="x">✖</span>':'<span class="v">✓</span>'}${p.notes[t.id]?'':' <small class="nb">(nie badano)</small>'}</td>`).join('')}</tr>`).join('')+'</table>';
   h+=P.filter(p=>!p.orig).map(p=>`<div class="cp"><b>${KIND.noun} ${p.letter} – ${KIND.profiles[p.profile].name}</b><ul>${TLIST.filter(t=>p.t[t.id]).map(t=>`<li>${t.name}: ${KIND.why(p,t.id)}</li>`).join('')}</ul></div>`).join('')}
  else 
- if(MODE==='memory'){const orig=P.find(p=>p.orig),ok=sel===orig,good=P.filter(p=>!p.orig&&p.umark==='excl').length,bad=orig.umark==='excl';
-  h=`<h2 style="color:${ok?'var(--ok)':'var(--bad)'}">${ok?`Trafnie! Oryginałem jest obraz ${orig.letter}.`:`Pudło – wskazano obraz ${sel.letter}, a oryginałem jest obraz ${orig.letter}.`}</h2><div class="cp">Poprawnie oznaczone falsyfikaty: <b>${good}/4</b>${bad?' · oryginał błędnie oznaczony jako falsyfikat':''}.</div>`+
-   P.map(p=>`<div class="cp"><b>Obraz ${p.letter} – ${p.orig?'oryginał':'falsyfikat'}</b>${p.umark==='excl'?' <small class="nb">(oznaczony jako falsyfikat)</small>':''}${p.orig?'':`<ul>${p.muts.map(q=>`<li>${q.desc}</li>`).join('')}</ul>`}</div>`).join('')+'<div class="cp">Po zamknięciu różnice zostaną zaznaczone na planszy czerwonymi okręgami.</div>';MEM.reveal=true;render()}
+ if(MODE==='memory'){const orig=P.find(p=>p.orig),ok=sel===orig,good=P.filter(p=>!p.orig&&flagged(p)).length,bad=flagged(orig);
+  h=`<h2 style="color:${ok?'var(--ok)':'var(--bad)'}">${ok?`Trafnie! Oryginałem jest obraz ${orig.letter}.`:`Pudło – wskazano obraz ${sel.letter}, a oryginałem jest obraz ${orig.letter}.`}</h2><div class="cp">Falsyfikaty z sygnałami na checkliście: <b>${good}/4</b>${bad?' · na checkliście oryginału zaznaczono sygnały fałszerstwa':''}.</div>`+
+   P.map(p=>`<div class="cp"><b>Obraz ${p.letter} – ${p.orig?'oryginał':'falsyfikat'}</b>${flagged(p)?' <small class="nb">(sygnały na checkliście)</small>':''}${p.orig?'':`<ul>${p.muts.map(q=>`<li>${q.desc}</li>`).join('')}</ul>`}</div>`).join('')+'<div class="cp">Po zamknięciu różnice zostaną zaznaczone na planszy czerwonymi okręgami.</div>';MEM.reveal=true;render()}
  else if(MODE==='frag'){const p=P[0],ok=(v==='yes')===p.orig,d=descItems();h=`<h2 style="color:${ok?'var(--ok)':'var(--bad)'}">${ok?'Trafnie!':'Pudło.'} Fragment ${p.orig?'POCHODZI':'NIE pochodzi'} z oryginału.</h2>`;
   h+=`<table class="mx"><tr><th>Badanie</th><th>Opis oryginału</th><th>Fragment</th><th></th></tr>`+TLIST.filter(t=>d[t.id]).map(t=>{const bad=p.t[t.id];return`<tr><td>${t.name}${p.notes[t.id]?'':' <small class="nb">(nie badano)</small>'}</td><td style="text-align:left">${d[t.id]}</td><td style="text-align:left">${bad?whyBad(p,t.id):t.id==='back'?`zgodne (${p.thread} nitek/cm)`:'zgodne z opisem'}</td><td>${bad?'<span class="x">✖</span>':'<span class="v">✓</span>'}</td></tr>`}).join('')+'</table>'}
  else{const orig=P.find(p=>p.orig),ok=sel===orig,noun=MODE==='sculpt'?'rzeźba':'obraz';
   h=`<h2 style="color:${ok?'var(--ok)':'var(--bad)'}">${ok?`Trafnie! Oryginałem jest ${noun} ${orig.letter}.`:`Pudło – wskazano ${noun} ${sel.letter}, a oryginałem jest ${noun} ${orig.letter}.`}</h2>`;
   const rows=TLIST.map(t=>t.id);if(MODE==='paint5'&&P.some(p=>p.t.mark))rows.push('mark');const nm=Object.assign({},EXTRA,...TLIST.map(t=>({[t.id]:t.name})));
-  h+=`<table class="mx"><tr><th>Badanie</th>${P.map(p=>`<th>${p.letter}<br><small>${p.orig?'oryginał':'kopia'}${p.umark?` · ${p.umark==='excl'?'wykluczono':'podejrzewano'}`:''}</small></th>`).join('')}</tr>`+
+  h+=`<table class="mx"><tr><th>Badanie</th>${P.map(p=>`<th>${p.letter}<br><small>${p.orig?'oryginał':'kopia'}${flagged(p)?' · checklista ✕':''}</small></th>`).join('')}</tr>`+
    rows.map(id=>`<tr><td>${nm[id]}</td>${P.map(p=>`<td>${p.t[id]?'<span class="x">✖</span>':'<span class="v">✓</span>'}${p.notes[id]?'':' <small class="nb">(nie badano)</small>'}</td>`).join('')}</tr>`).join('')+'</table>';
   const PR=MODE==='sculpt'?SV.profiles:PROFILES;h+=P.filter(p=>!p.orig).map(p=>`<div class="cp"><b>${MODE==='sculpt'?'Rzeźba':'Obraz'} ${p.letter} – ${MODE==='sculpt'?PR[p.profile].name:profName(p.profile)}</b><ul>${rows.filter(id=>p.t[id]).map(id=>`<li>${nm[id]}: ${whyBad(p,id)}</li>`).join('')}</ul></div>`).join('');
   if(MODE==='paint5'){const herr=[];if(orig.retouch)herr.push('ciemne plamy w UV to udokumentowane retusze z konserwacji w 1961 r.');if(orig.warGap)herr.push('luka w proweniencji 1939–1951 dotyczy wojny i sama nie przesądza o fałszerstwie');if(herr.length)h+=`<div class="cp"><b>Obraz ${orig.letter} – oryginał.</b> Pułapki: ${herr.join('; ')}.</div>`;

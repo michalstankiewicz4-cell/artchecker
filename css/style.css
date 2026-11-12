@@ -183,7 +183,6 @@ select option{background:#0a1d3a;color:var(--ink)}
 .btn:hover,.zoom button:hover,select:hover{border-color:#8fe0ff;filter:brightness(1.2)}
 .btn.primary{background:linear-gradient(180deg,#1e7be0,#0f4fa8);border-color:#6fd0ff;color:#fff;box-shadow:0 0 14px rgba(60,170,255,.45)}
 .btn.m-susp{border-color:var(--sus);color:#ffd9a0}.btn.m-excl{border-color:var(--bad);color:#ffc0c8}
-#markok{color:#b8f5cf}
 .col{background:linear-gradient(180deg,rgba(16,44,86,.66),rgba(6,18,40,.84));border:1px solid rgba(95,184,255,.45);border-radius:0;
  box-shadow:0 0 18px rgba(40,140,255,.18),inset 0 0 18px rgba(40,140,255,.08);clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px)}
 .grp h3,#notes h3,#check h3{color:#7fc4ff;letter-spacing:.09em}

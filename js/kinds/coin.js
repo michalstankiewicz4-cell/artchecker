@@ -104,7 +104,7 @@ registerKind({id:'coin',label:'Weryfikacja monet',noun:'Moneta',W:640,H:320,wcm:
   if(id==='xrf'){if(vw.z<2)return toast('Przybliż do ×2, aby przyłożyć głowicę XRF.');note(p,'xrf',coinObs(p,'xrf'));toast(`Moneta ${p.letter}: ${coinObs(p,'xrf')}`)}
   if(id==='magnet'&&note(p,'magnet',coinObs(p,'magnet')))toast(`Moneta ${p.letter}: ${coinObs(p,'magnet')}`)},
  panel(p,id){if((id==='xrf'||id==='magnet')&&p.notes[id])return`<div class="obs"><b>Odczyt:</b> ${[].concat(p.notes[id]).join('<br>')}</div>`},
- intro:'Na stole leży 5 srebrnych monet 5 talarów z 1867 r. (moneta fikcyjna) – awers i rewers każdej. Część jest prawdziwa, część fałszywa. Zważ, zmierz, zbadaj stop i magnes, obejrzyj rant, pole pod mikroskopem i zużycie wypukłości. Oznacz każdą monetę i zakończ ekspertyzę.',
+ intro:'Na stole leży 5 srebrnych monet 5 talarów z 1867 r. (moneta fikcyjna) – awers i rewers każdej. Część jest prawdziwa, część fałszywa. Zważ, zmierz, zbadaj stop i magnes, obejrzyj rant, pole pod mikroskopem i zużycie wypukłości. Na checkliście każdej monety zaznacz sygnały fałszerstwa i zakończ ekspertyzę.',
  caseText:()=>'Weryfikacja monet: 5 talarów Królestwa Arkadii, 1867 (moneta fikcyjna). Katalog: srebro próby 900, 25,00 g, Ø 37,0 mm, rant ząbkowany.'});
 Object.assign(AREA,{coin:'środek widoku na monecie',portrait:'środek widoku na portrecie (awers)',edge:'środek widoku na rozwinięciu rantu'});
 VIEWNAME.edge='rozwinięcie rantu';

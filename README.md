@@ -25,7 +25,7 @@ Artyści, dzieła i waluta są fikcyjne – poza dziełami prawdziwymi z domeny 
 
 ## Co jest w grze
 - **Ekran główny** z kategoriami, podglądem trybu i postępem (zapis w przeglądarce).
-- **Stanowisko eksperta**: okno narzędzi z licznikiem zbadań, zwijane zlecenie, stół badawczy z przybliżeniem do ×24, dok obiektów (stan oznaczeń, flagi checklisty, postęp), prawe okno z zakładkami *Wynik badania / Checklista / Notatnik*.
+- **Stanowisko eksperta**: okno narzędzi z licznikiem zbadań, zwijane zlecenie, stół badawczy z przybliżeniem do ×24, dok obiektów (flagi checklisty, postęp); obiekty ocenia się checklistą – egzemplarz z zaznaczonym sygnałem fałszerstwa uznaje się za fałszywy, prawe okno z zakładkami *Wynik badania / Checklista / Notatnik*.
 - **Lampa ruchoma**: UV, podczerwień, światło boczne i światło przechodzące świecą w kręgu za kursorem (Shift + kółko – wielkość kręgu); lampa boczna oświetla relief z kierunku lampy.
 - **Wiki eksperta** z ilustracjami: techniki badawcze, metody fałszerskie, obiekty i artyści, słowniczek oraz techniki malarskie i podłoża (ArtKit).
 - **Loader** przy przygotowywaniu partii i nowych widoków badań.

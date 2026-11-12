@@ -208,5 +208,5 @@ const SCULPT_VARIANTS={};let SV=null;
 SCULPT_VARIANTS.sculpt={id:'sculpt',label:'Znajdź oryginał – rzeźby z brązu',noun:'rzeźba',profiles:SPROF,defs:DEF3,sets:SET3,obs:obs3,why:why3,initQ:bronzeInitQ,
  surface:bronzeSurface,inner:bronzeInner,markTex:q=>markTex(q.mark),refQ:seed=>({t:{},seed,hcm:52,patina:'natural',tool:'chase',mark:'ok',xray:'sand',uv:'wax'}),
  prov:bronzeProv,cert:bronzeCert,photoCaption:'Fotografia z katalogu raisonné (Rudnicki, 2011, nr 76):',
- intro:'Na postumentach stoi 5 brązowych popiersi: jeden oryginał i cztery kopie. Obracaj kamerę i podchodź blisko – wiele badań działa tylko z bliska albo z określonej strony. Oznaczaj odlewy i wskaż oryginał.',
+ intro:'Na postumentach stoi 5 brązowych popiersi: jeden oryginał i cztery kopie. Obracaj kamerę i podchodź blisko – wiele badań działa tylko z bliska albo z określonej strony. Sygnały fałszerstwa zaznaczaj na checkliście każdego odlewu i wskaż oryginał.',
  caseText:()=>'Sprawa: „Popiersie Heleny”, Stanisław Rudnicki (1840–1905), 1888, brąz, wys. 52 cm. Na postumentach 5 odlewów – jeden jest oryginałem. (Artyści i dzieła są fikcyjne.)'};

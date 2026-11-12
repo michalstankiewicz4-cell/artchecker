@@ -28,7 +28,7 @@ function memPhase2(r){clearInterval(MEM.iv);if(MEM.phase!==1)return;MEM.phase=2;
  for(let k=0;k<4;k++){const p={orig:false,profile:null,t:{},seed:MEM.seed,letter:''};basePainting(p,r);p.seed=MEM.seed;const used=new Set(),n=r()<0.4?2:1;p.muts=[];for(let j=0;j<n;j++)p.muts.push(genMut(r,base,used));
   if(p.muts.filter(m=>m.type==='sig').length>1)p.muts.pop();p.shapes=applyMuts(base,p.muts,p);list.push(p)}
  shuffle(list,r);P=list.map((p,i)=>{p.letter='ABCDE'[i];p.umark='';p.x=i<3?G+i*(W+G):G+(W+G)/2+(i-3)*(W+G);p.y=i<3?G:G*2+H;return p});BW=3*W+4*G;BH=2*H+3*G;sel=null;
- fit();memUI();setVerdicts();onChange();toast('Oryginał zniknął. Oznacz falsyfikaty i wskaż oryginał.')}
+ fit();memUI();setVerdicts();onChange();toast('Oryginał zniknął. Zaznacz różnice na checkliście i wskaż oryginał.')}
 function memUI(){const t=document.getElementById('memtimer'),b=document.getElementById('memready');if(!t)return;
  t.textContent=MEM.phase===1?`${MEM.left} s`:'Faza 2';b.style.display=MEM.phase===1?'':'none'}
 function memToolsHTML(){return`<div class="grp"><h3>Pamięć eksperta</h3><p class="hint">Faza 1: oglądaj oryginał przez lupę (najedź kursorem) i zapamiętuj szczegóły. Faza 2: oryginał znika, pojawia się 5 prawie identycznych obrazów – 4 falsyfikaty mają po 1–2 minimalne różnice (przesunięcie, rozmiar, odcień, brakujący lub dodatkowy element, cyfra w sygnaturze).</p>

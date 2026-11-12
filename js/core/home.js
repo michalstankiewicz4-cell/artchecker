@@ -10,7 +10,7 @@ function homeCats(){return[
   modes:[['paint5','Znajdź oryginał – obrazy'],['frag','Zniszczony fragment'],['memory','Pamięć eksperta'],...Object.values(KINDS).filter(k=>k.group==='art').map(k=>[k.id,k.label])]},
  {title:'Rzeźby 3D',sub:'Obejdź i przybliż',desc:'Obracaj kamerę i podchodź blisko: skład stopu, patyna, ślady dłuta i frezu, szwy odlewnicze, sygnatury z tyłu cokołu, UV i RTG.',
   modes:Object.values(SCULPT_VARIANTS).map(v=>[v.id,(t=>t[0].toUpperCase()+t.slice(1))(v.label.replace('Znajdź oryginał – ',''))])},
- {title:'Obiekty i dokumenty',sub:'Odkryj prawdę',desc:'Banknoty, monety, znaczki i rękopisy – każdy ma własne zabezpieczenia, materiały i typowe metody fałszerstw. Oznacz każdy egzemplarz jako prawdziwy albo fałszywy.',
+ {title:'Obiekty i dokumenty',sub:'Odkryj prawdę',desc:'Banknoty, monety, znaczki i rękopisy – każdy ma własne zabezpieczenia, materiały i typowe metody fałszerstw. Na checkliście każdego egzemplarza zaznacz sygnały fałszerstwa – egzemplarz bez sygnałów uznajesz za prawdziwy.',
   modes:Object.values(KINDS).filter(k=>k.group!=='art').map(k=>[k.id,k.label])},
  {title:'Wkrótce',sub:'W przygotowaniu',desc:'Aukcja z budżetem, śledztwo w sprawie fałszerza i praca konserwatora – kolejne tryby są w przygotowaniu.',modes:SOON.map(([id,l])=>[id,l,1])}]}
 function store(){try{return JSON.parse(localStorage.getItem('artchecker.v1')||'{}')}catch(e){return{}}}

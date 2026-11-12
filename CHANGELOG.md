@@ -2,6 +2,13 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.21.0] – 2026-11-12
+### Usunięte
+- Przyciski ręcznego oznaczania obiektów („? Podejrzany”, „✕ Wykluczony / Falsyfikat”, „✓ Prawdziwy”, „Bez oznaczenia”) i ich znaczki na stole.
+### Zmienione
+- Ocenę egzemplarzy daje checklista: obiekt z co najmniej jednym zaznaczonym sygnałem fałszerstwa jest uznany za fałszywy, bez zaznaczeń – za prawdziwy. Tak liczy się wynik w trybach obiektów (banknoty, monety, znaczki, rękopisy, rysunki, akwarele) i w „Pamięci eksperta”; w podsumowaniu partii każdy obiekt ma dopisek z checklisty.
+- Teksty zleceń i wskazówek mówią o checkliście zamiast o oznaczaniu.
+
 ## [1.20.0] – 2026-11-12
 ### Dodane
 - **Drugie dzieło prawdziwe: Józef Chełmoński, „Babie lato” (1875)** w trybie „Znajdź oryginał – obrazy” – na liście „Artysta” oraz w wiki („Dzieła prawdziwe”). Kluczowy detal do porównania stylu: głowa i uniesiona ręka z nitkami babiego lata.
