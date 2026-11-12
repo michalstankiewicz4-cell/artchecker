@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.22.1] – 2026-11-12
+### Zmienione
+- **„Znajdź oryginał – obrazy”: zamiast „To jest oryginał” jest „Zakończ ekspertyzę”.** Ocenę daje checklista, tak jak w rzeźbach: obraz bez zaznaczonych sygnałów fałszerstwa liczy się jako wskazany oryginał.
+
 ## [1.22.0] – 2026-11-12
 ### Dodane
 - **Dzieło prawdziwe w „Rysunkach i grafikach”: Albrecht Dürer, „Melancholia I” (1514, miedzioryt, The Met, CC0).** Oryginał to reprodukcja dzieła, kopie druku to ten sam obraz z rastrem, a kopie ręczne tracą najdrobniejsze linie i mają lekko rozjechaną kreskę. Wymiary arkusza wynikają z proporcji dzieła; zlecenie i opis mówią, że wyniki badań, znak wodny i stempel kolekcji są symulowane. Hasło w wiki („Dzieła prawdziwe”).

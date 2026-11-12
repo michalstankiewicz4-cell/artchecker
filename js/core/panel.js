@@ -7,7 +7,7 @@ function gateStatus(p){const T=tool&&TB[tool];if(!T)return null;
  const g=T.gate;if(!g)return null;let txt=`Warunek: zoom ≥ ×${fmt(g.z)}`+(g.area?` i ${AREA[g.area]}`:T.probe?' (kliknij obiekt)':'')+(g.tilt==='both'?', przechyl od < 20° do > 60°':g.tilt==='hi'?', nachylenie > 65°':'');
  if(!p)return{txt,ok:false};const v=viewportWorld(),ok=vw.z>=g.z&&tiltOK(g)&&(!g.area||areaOK(p,g.area,v));return{txt:txt+` · teraz ×${vw.z.toFixed(1).replace('.',',')}`,ok}}
 function updatePanel(){const pn=document.getElementById('panel');
- const intro=KIND?KIND.intro:MODE==='sculpt'?SV.intro:({paint5:'Na stole leży 5 obrazów: jeden oryginał i cztery kopie, każda wykonana inną metodą i każda zdradza się w innych badaniach. Badania działają dopiero przy odpowiednim zoomie – przybliżaj szczegóły. Sygnały fałszerstwa zaznaczaj na checkliście każdego obrazu i wskaż oryginał.',
+ const intro=KIND?KIND.intro:MODE==='sculpt'?SV.intro:({paint5:'Na stole leży 5 obrazów: jeden oryginał i cztery kopie, każda wykonana inną metodą i każda zdradza się w innych badaniach. Badania działają dopiero przy odpowiednim zoomie – przybliżaj szczegóły. Sygnały fałszerstwa zaznaczaj na checkliście każdego obrazu i zakończ ekspertyzę – obraz bez zaznaczeń to Twój oryginał.',
   notes:'Na stole leży 5 banknotów 100 florenów (waluta fikcyjna). Część jest prawdziwa, część fałszywa – każdy fałszywy powstał inną metodą. Sprawdź zabezpieczenia: pod światło, przechylając suwakiem „Nachylenie”, pod lupą, w UV, IR i detektorem. Na checkliście każdego banknotu zaznacz sygnały fałszerstwa i zakończ ekspertyzę.',
   frag:'Na stole leży uszkodzony fragment obrazu. Oryginał zaginął w 1944 r. – znamy go tylko z opisu w katalogu i badań z 1965 r. Sprawdź każdy punkt opisu narzędziami (wiele wymaga dużego zoomu) i zdecyduj, czy fragment pochodzi z oryginału.',
   memory:'Najedź kursorem na obraz – lupa powiększa ×4. W fazie 2 wybierz obraz, zaznacz różnice na jego checkliście, a na końcu wskaż oryginał.'})[MODE];
@@ -64,7 +64,7 @@ function onChange(){if(tool!==TILT.tool){TILT.tool=tool;TILT.lo=TILT.v<20;TILT.h
  const v=curView();{const lb=document.getElementById('zlamp');lb.style.display=MODE!=='sculpt'&&MODE!=='memory'&&LAMPV[v]?'':'none';lb.textContent=LAMP.on?'🔦 Lampa ruchoma':'💡 Cały obiekt'}document.getElementById('viewlbl').textContent='Widok: '+(MODE==='sculpt'?{normal:'światło dzienne',uv:'promieniowanie UV',xray:'RTG'}[v]||'światło dzienne':VIEWNAME[v]);
  cv.classList.toggle('probe',!!(tool&&TB[tool].probe));
  document.getElementById('sel').textContent=sel?(MODE==='frag'?'Wybrany: fragment':`Wybrany: obiekt ${sel.letter}`):'Nie wybrano obiektu.';
- document.querySelectorAll('#verdicts button').forEach(b=>b.disabled=!KIND&&MODE!=='sculpt'&&!sel);
+ document.querySelectorAll('#verdicts button').forEach(b=>b.disabled=!KIND&&!byCheck()&&!sel);
  if(MODE==='sculpt'){apply3View();mark3Dirty();schedule3Gates()}else{render();scheduleGates()}
  updatePanel()}
 const VIEWNAME={trans:'światło przechodzące (pod światło)',normal:'światło dzienne',uv:'promieniowanie UV',back:'odwrocie',crackview:'wzmocniona krakelura',raking:'światło boczne',xray:'RTG',ir:'reflektografia IR'};
