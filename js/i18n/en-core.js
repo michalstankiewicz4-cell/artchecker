@@ -114,3 +114,4 @@ trAdd({
 });
 trAdd({'Gęstość płótna: katalog':'Canvas density: catalogue','nitek/cm':'threads/cm'});
 trAdd({'O programie':'About'});
+trAdd({'Losowe dzieło':'Random artwork'});

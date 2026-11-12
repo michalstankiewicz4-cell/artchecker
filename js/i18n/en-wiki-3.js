@@ -176,3 +176,4 @@ trAdd({
 /* nazwy haseł słowniczka */
 trAdd({'Atrament żelazowo-galasowy':'Iron gall ink','Blejtram':'Stretcher','Cyzelowanie':'Chasing','CNC (frezowanie)':'CNC (milling)','Ductus':'Ductus','Druk wklęsły (intaglio)':'Intaglio printing','Farba zmienna optycznie (OVI)':'Optically variable ink (OVI)','Galwanoplastyka':'Electrotyping','Giclée':'Giclée','Grunt':'Ground','Impast':'Impasto','Katalog raisonné':'Catalogue raisonné','Obraz utajony':'Latent image','Papier czerpany':'Laid paper','Patyna':'Patina','Pentimenti':'Pentimenti','Recto-verso':'See-through register','Surmoulage':'Surmoulage','Werniks':'Varnish','XRF':'XRF','Ząbkowanie':'Perforation','Znak wodny':'Watermark'});
 trAdd({'Falsyfikat:':'Forgery:','Cały obraz':'Whole picture'});
+trAdd({'Obraz tego artysty może pojawić się w trybach':'A painting by this artist can appear in the modes'});

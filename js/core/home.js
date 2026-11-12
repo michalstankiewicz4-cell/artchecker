@@ -48,7 +48,7 @@ function preview(id){if(PREV[id])return PREV[id];let c;
  else c=withSandbox(()=>{const r=rng(4242+id.length*131);MODE=id;KIND=KINDS[id]||null;
   if(KIND){KIND.newGame(r);const o=P.find(p=>p.orig)||P[0];return frameIt(o.kind.view(o,'normal'),W,H,false)}
   if(id==='frag'){newFrag(r);const o=P[0];return frameIt(getView(o,'normal'),W,H,false,(x,pad)=>{x.save();x.globalCompositeOperation='destination-out';x.beginPath();o.frag.missing.forEach((q,i)=>i?x.lineTo(pad+q[0],pad+q[1]):x.moveTo(pad+q[0],pad+q[1]));x.fill();x.restore()})}
-  if(id==='paint5'&&REAL_DEF.paint5&&REALIM[REAL_DEF.paint5]){const im=REALIM[REAL_DEF.paint5],w=680,h=Math.round(680*im.height/im.width),c=mk(w,h);c.getContext('2d').drawImage(im,0,0,w,h);return frameIt(c,w,h,true)}
+  {const hp=HPREV[id];if(hp&&REALIM[hp]){const im=REALIM[hp],a=im.width/im.height,w=a>=1?680:Math.round(560*a),h=a>=1?Math.round(680/a):560,c=mk(w,h);c.getContext('2d').drawImage(im,0,0,w,h);return frameIt(c,w,h,id==='paint5')}}
   newPaint5(r);const o=P.find(p=>p.orig);const v=getView(o,'normal');
   return frameIt(v,W,H,true,id==='memory'?(x,pad)=>{const cx=pad+W*0.55,cy=pad+H*0.45,R=H*0.22;x.save();x.beginPath();x.arc(cx,cy,R,0,7);x.clip();x.drawImage(v,(W*0.55-R/3)*S,(H*0.45-R/3)*S,R/1.5*S,R/1.5*S,cx-R,cy-R,2*R,2*R);x.restore();x.strokeStyle='#3a2a10';x.lineWidth=14;x.beginPath();x.arc(cx,cy,R+6,0,7);x.stroke();x.strokeStyle='#d6b058';x.lineWidth=4;x.stroke();x.lineWidth=16;x.strokeStyle='#3a2a10';x.beginPath();x.moveTo(cx+R*0.75,cy+R*0.75);x.lineTo(cx+R*1.5,cy+R*1.5);x.stroke()}:null)});
  return PREV[id]=c}
@@ -71,7 +71,9 @@ function homeBg(){const cv=document.getElementById('homebg'),d=devicePixelRatio|
 function toolNames(id){let sets,defs;if(KINDS[id]){sets=KINDS[id].sets;defs=KINDS[id].defs}else if(SCULPT_VARIANTS[id]){sets=SCULPT_VARIANTS[id].sets;defs=SCULPT_VARIANTS[id].defs}
  else if(SET[id]&&SET[id].length){sets=SET[id];defs=DEF}else return id==='memory'?['Lupa ×4','Zapamiętywanie','Minimalne różnice','Checklista różnic']:['W przygotowaniu'];
  return sets.flatMap(([,ids])=>ids.map(t=>(id==='frag'&&defs[t].nameF)||defs[t].name))}
-function homeCap(id,label){const e=id==='paint5'&&REAL_DEF.paint5&&REALIM[REAL_DEF.paint5]&&REAL_BY[REAL_DEF.paint5];return e?`${tr(label)} <span class="gd">•</span> ${e.artist} „${tr(e.title)}” (${e.year})`:tr(label)}
+/* podgląd trybu na ekranie startowym: dzieło prawdziwe */
+const HPREV={paint5:'stanczyk',drawing:'melencolia',water:'zajac'};
+function homeCap(id,label){const e=HPREV[id]&&REALIM[HPREV[id]]&&REAL_BY[HPREV[id]];return e?`${tr(label)} <span class="gd">•</span> ${e.artist} „${tr(e.title)}” (${e.year})`:tr(label)}
 function renderHome(){const cats=homeCats(),cat=cats[HCAT],done=(store().done)||{};if(!HMODE||!cat.modes.some(m=>m[0]===HMODE))HMODE=(cat.modes.find(m=>!m[2])||cat.modes[0])[0];
  const s=store();document.getElementById('hstat').innerHTML=`<b>${s.games||0}</b><span class="sub">– ${tr('trafne werdykty')}: ${s.ok||0}</span>`;
  document.getElementById('hcats').innerHTML=cats.map((c,i)=>`<div class="hp hcat${i===HCAT?' on':''}" data-i="${i}"><canvas></canvas><div><div class="t">${i+1}. ${c.title}</div><div class="s">${c.sub}</div></div><div class="arr">›</div></div>`).join('');

@@ -2,6 +2,13 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.29.0] – 2026-11-12
+### Usunięte
+- **Fikcyjne prace w trybach z dziełami prawdziwymi** („Przeprowadź ekspertyzę – obrazy”, „Rysunki i grafiki”, „Akwarele i pastele”): na liście „Artysta” są tylko dzieła prawdziwe i „Losowe dzieło”. Fikcyjni artyści zostają na razie w „Zniszczonym fragmencie” i „Pamięci eksperta” (wiki opisuje ich tylko tam).
+### Dodane
+- Wiki, „Weryfikacja banknotów”: akapit o zabezpieczeniach euro (seria pierwsza i „Europa”, sprawdzanie dotykiem, pod światło i pod kątem – znak wodny i okienko z portretem, szmaragdowa liczba, hologram, wypukły nadruk) wg EBC, z linkiem do strony EBC; tylko tekst.
+- Ekran startowy: podglądy „Rysunków i grafik” i „Akwareli i pasteli” pokazują dzieła prawdziwe („Melancholia I”, „Zając”).
+
 ## [1.28.0] – 2026-11-12
 ### Dodane
 - **Trzy kolejne dzieła prawdziwe** (lista „Artysta”, wiki „Dzieła prawdziwe”): Albrecht Dürer, „Dłonie modlącego się” (1508, „Rysunki i grafiki”), Albrecht Dürer, „Zając” (1502, „Akwarele i pastele”), Stanisław Wyspiański, „Macierzyństwo” (1902, „Akwarele i pastele”). Są już po 2 dzieła w każdym gatunku.
