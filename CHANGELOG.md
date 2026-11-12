@@ -2,6 +2,13 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.31.0] – 2026-11-12
+### Zmienione
+- **„Zniszczony fragment” na dziele prawdziwym, zniszczonym w czasie wojny:** Gustave Courbet, „Kamieniarze” (1849, Gemäldegalerie w Dreźnie, zniszczony w lutym 1945 r., znany z fotografii). Lista „Artysta” w tym trybie: „Kamieniarze” i „Losowe dzieło”. Opis oryginału ma prawdziwą historię obrazu i sygnaturę „G. Courbet” (l.d.); opis badań, fragment i wyniki są symulowane (zlecenie to wyjaśnia).
+- Daty w opisie oryginału uzgodnione z dziełami zaginionymi w czasie wojny: analiza i badania IR z 1938 r. (było 1965), konserwacja z 1928 r. (było 1958), „Oryginał zaginął lub został zniszczony w czasie wojny” (było „zaginął w 1944 r.”).
+### Naprawione
+- Krawędź urwanego fragmentu nie łączy się już linią prostą od początku do końca.
+
 ## [1.30.0] – 2026-11-12
 ### Zmienione
 - **„Pamięć eksperta” na dziełach prawdziwych** („Stańczyk”, „Babie lato” lub losowe). Różnice w falsyfikatach to łaty prawdziwego obrazu: przesunięty, powiększony lub pomniejszony fragment, zmieniony odcień, zamalowany szczegół, dodatkowy drobny element – z opisem miejsca (np. „w dolnej lewej części”).

@@ -18,18 +18,18 @@ function certHTML0(p){const bad=p.t.cert,m=p.m.cert,iss=bad&&m==='issuer',dim=`$
  return`<div class="doc"><h4>CERTYFIKAT AUTENTYCZNOŚCI</h4>${rows.map(r=>`<div class="row"><b>${r[0]}:</b><span>${r[1]}</span></div>`).join('')}<div class="stamp">${iss?'Wystawił: Art-Expert24 s.c. (brak na liście rzeczoznawców)<br>Podpis: nadruk, pieczątka firmowa':'Wystawił: dr hab. Jan Orlicz, rzeczoznawca, Dom Aukcyjny „Nowy Świat”<br>Podpis: odręczny atrament, pieczęć tłoczona'}</div></div><div class="cap">Pomiar obrazu na stole: ${dim}.</div>`}
 function descItems(){const s=ART.sig,side=P[0].frag.side,ra=side==='r'?'w prawej górnej części':'w lewej górnej części';
  return{back:`Olej na płótnie lnianym, splot płócienny, ok. ${C.thread} nitek/cm; ${PG[C.ground][0].toLowerCase()}.`,
-  pigment:'Analiza pigmentów (1965): '+P[0].descRegs.map(k=>`${k} – ${SC.REG[k].pig.map(q=>PG[q][0].toLowerCase()).join(', ')}`).join('; ')+'.',
-  uv:`Naturalny werniks żywiczny; retusze z konserwacji w 1958 r. ${ra} obrazu.`,
+  pigment:'Analiza pigmentów (1938): '+P[0].descRegs.map(k=>`${k} – ${SC.REG[k].pig.map(q=>PG[q][0].toLowerCase()).join(', ')}`).join('; ')+'.',
+  uv:`Naturalny werniks żywiczny; retusze z konserwacji w 1928 r. ${ra} obrazu.`,
   crack:'Drobna, nieregularna siatka spękań na całej powierzchni.',
   texture:'Wyraźne impasty w światłach, pociągnięcia pędzla zgodne z formą.',
-  sig:`Sygnowany ${s.corner==='br'?'p.d.':'l.d.'}: „${s.text}”.`,
+  sig:ART.real?(s.real?`Sygnowany ${s.corner==='br'?'p.d.':'l.d.'}: „${s.real}” (widoczny na fotografii archiwalnej).`:'Brak danych o sygnaturze.'):`Sygnowany ${s.corner==='br'?'p.d.':'l.d.'}: „${s.text}”.`,
   style:SC.compDesc,
   ir:`Rysunek przygotowawczy węglem; pentimenti: ${SC.pentiText}.`,
   xray:`W RTG widoczny ${SC.hidden.desc}.`,
   micro:'Farba olejna kładziona pędzlem z włosia.'}}
 function descHTML(){const d=descItems(),lab={back:'Podobrazie i grunt',pigment:'Pigmenty',uv:'Werniks i stan',crack:'Krakelura',texture:'Faktura',sig:'Sygnatura',style:'Kompozycja',ir:'Reflektografia IR',xray:'RTG',micro:'Technika'};
  return`<div class="doc"><h4>${ART.name.toUpperCase()} – „${ART.title}”</h4><div class="cap" style="color:#5a4a30;text-align:center">Katalog raisonné (2004), nr ${ART.crn} · ${fmt(ART.wcm)} × ${fmt(ART.hcm)} cm · ${ART.year}</div><ul>${Object.keys(lab).map(k=>`<li><b>${lab[k]}:</b> ${d[k]}</li>`).join('')}</ul>
- <div class="stamp">Historia: ${ART.year+2} – wystawa TZSP, Warszawa; 1902–1944 – kolekcja dworska pod Radomiem; 1944 – obraz uszkodzony w pożarze dworu, zaginiony. 2026 – fragment zgłoszony do ekspertyzy.</div></div>`}
+ <div class="stamp">${ART.real&&ART.real.hist?`Historia: ${ART.real.hist} 2026 – (symulacja) fragment zgłoszony do ekspertyzy.`:`Historia: ${ART.year+2} – wystawa TZSP, Warszawa; 1902–1944 – kolekcja dworska pod Radomiem; 1944 – obraz uszkodzony w pożarze dworu, zaginiony. 2026 – fragment zgłoszony do ekspertyzy.`}</div></div>`}
 function obs(p,id){if(MODE==='sculpt')return SV.obs(p,id);if(KIND)return KIND.obs(p,id);const t=p.t,m=p.m,F=MODE==='frag';
  switch(id){
  case'uv':if(F){const ra=p.frag.side==='r'?'w prawej górnej części':'w lewej górnej części';return t.uv?(m.uvKind==='fresh'?'Brak fluorescencji starego werniksu – powierzchnia jednolicie ciemnofioletowa; brak śladów retuszy.':`Zielonkawa fluorescencja werniksu, ale ${ra} żadnych retuszy.`):`Zielonkawa fluorescencja starego werniksu; ciemne plamy retuszy ${ra}.`+(sigLater(p)?' Sygnatura ciemna i ostra na tle świecącego werniksu.':'')}
@@ -55,7 +55,7 @@ function obs(p,id){if(MODE==='sculpt')return SV.obs(p,id);if(KIND)return KIND.ob
 function whyBad(p,id){if(MODE==='sculpt')return SV.why(p,id);if(KIND)return KIND.why(p,id);const m=p.m,F=MODE==='frag';
  const f={pigment:()=>{const R=SC.REG[m.pigReg],o=R.pig[0];if(MODE==='paint5'&&p.profile==='giclee')return'Wyłącznie współczesne pigmenty organiczne tuszów drukarskich.';
    return m.pigKind==='alt'?`${m.pigReg}: ${PG[ALT[o]||'zn'][0]} zamiast ${PG[o][0].toLowerCase()} z analizy oryginału.`:`${m.pigReg}: ${PG[R.an][0]} – pigment wprowadzony ok. ${PG[R.an][1]} r., po dacie obrazu (${ART.year}).`},
-  uv:()=>F?(m.uvKind==='fresh'?'Świeży werniks bez fluorescencji i bez opisanych retuszy z 1958 r.':'Brak retuszy w miejscu wskazanym w opisie.'):'Brak fluorescencji starego werniksu – świeży werniks, niezgodny z wiekiem obrazu.',
+  uv:()=>F?(m.uvKind==='fresh'?'Świeży werniks bez fluorescencji i bez opisanych retuszy z 1928 r.':'Brak retuszy w miejscu wskazanym w opisie.'):'Brak fluorescencji starego werniksu – świeży werniks, niezgodny z wiekiem obrazu.',
   back:()=>F?[m.backKind!=='ground'?`płótno ma ${p.thread} nitek/cm, a w opisie ${C.thread}`:'',m.backKind!=='thread'?`grunt: ${PG[p.ground][0].toLowerCase()} zamiast „${PG[C.ground][0].toLowerCase()}”`:''].filter(Boolean).join('; ').replace(/^./,c=>c.toUpperCase())+'.'
    :supOf()==='wood'?'Płyta pilśniowa zamiast dębowej deski – materiał z XX wieku.':supOf()==='copper'?'Walcowana blacha cynkowa zamiast kutej miedzi – współczesne podobrazie.':`Zszywki, świeże drewno i równe bawełniane płótno (${p.thread} nitek/cm zamiast ${C.thread}) – współczesne podobrazie.`,
   crack:()=>crackMode(p)==='none'?'Brak krakelury – farba zbyt młoda jak na XIX wiek.':'Sztuczna, zbyt regularna krakelura (wypiekana i wcierana pigmentem).',

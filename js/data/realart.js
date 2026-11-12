@@ -26,6 +26,12 @@ const REAL=[
   license:'domena publiczna',file:'Albrecht Dürer - Hare, 1502 - Google Art Project.jpg',desc:'Młody zając przycupnięty na jasnym tle, z każdym włoskiem sierści namalowanym pędzlem; monogram i data artysty u dołu.'},
  {slug:'macierzynstwo',mode:'water',kindTech:'pastel',artist:'Stanisław Wyspiański',life:'1869–1907',title:'Macierzyństwo',year:'1902',yearNum:1902,tech:'pastel na papierze',paper:'wove',wcm:null,hcm:null,museum:'Muzeum Narodowe w Warszawie',
   license:'domena publiczna',file:'Stanisław Wyspiański, Macierzyństwo.jpg',desc:'Żona artysty Teofila karmi synka Stasia – pastel z mocnym konturem i płaskimi plamami barwnymi.'},
+/* „Zniszczony fragment” – dzieła prawdziwe zaginione lub zniszczone, znane z fotografii */
+ {slug:'kamieniarze',mode:'frag',artist:'Gustave Courbet',life:'1819–1877',title:'Kamieniarze',year:'1849',yearNum:1849,tech:'olej na płótnie',sup:'canvas',wcm:257,hcm:165,museum:'Gemäldegalerie Alte Meister, Drezno (do 1945 r.)',
+  license:'domena publiczna',file:'Gustave Courbet - The Stonebreakers - WGA05457.jpg',fig:[0.3,0.05,0.67,0.9],style:[0.62,0.14,0.24,0.3],pig:{bg:['umb','ochy','sien','pb'],fig:['pb','ochy','umb','bone']},
+  sig:'G. Courbet',sigCorner:'bl',lost:true,
+  hist:'1849 – namalowany; 1850 – Salon paryski; ok. 1882 – Gemäldegalerie w Dreźnie; luty 1945 – zniszczony razem z ponad 150 innymi obrazami, gdy zbombardowano transport z Drezna do twierdzy Königstein.',
+  desc:'Dwóch robotników przy drodze: młody chłopak niesie kosz kamieni, starszy mężczyzna w kapeluszu klęczy i rozbija kamienie młotem. Ciemne zbocze w tle, w prawym dolnym rogu garnek i łyżka.'},
 ];
 const REAL_BY=Object.fromEntries(REAL.map(e=>[e.slug,e]));
 const realSrc=e=>'https://commons.wikimedia.org/wiki/File:'+encodeURIComponent(e.file.replace(/ /g,'_'));
@@ -35,7 +41,10 @@ Object.assign(EN,{'Stańczyk':'Stańczyk','Babie lato':'Indian Summer','Żydówk
  'Melancholia I':'Melencolia I','Dłonie modlącego się':'Praying Hands','Zając':'Young Hare','Macierzyństwo':'Motherhood',
  'Muzeum Narodowe w Warszawie':'National Museum in Warsaw','Muzeum Narodowe w Krakowie':'National Museum in Kraków','The Metropolitan Museum of Art, Nowy Jork':'The Metropolitan Museum of Art, New York','Albertina, Wiedeń':'Albertina, Vienna',
  'domena publiczna':'public domain','CC0 (The Met, Open Access)':'CC0 (The Met, Open Access)'});
-trAdd({'ok. {0} × {1} cm':'approx. {0} × {1} cm',
+trAdd({'Kamieniarze':'The Stone Breakers','Gemäldegalerie Alte Meister, Drezno (do 1945 r.)':'Gemäldegalerie Alte Meister, Dresden (until 1945)',
+ '1849 – namalowany; 1850 – Salon paryski; ok. 1882 – Gemäldegalerie w Dreźnie; luty 1945 – zniszczony razem z ponad 150 innymi obrazami, gdy zbombardowano transport z Drezna do twierdzy Königstein.':'1849 – painted; 1850 – Paris Salon; c. 1882 – Gemäldegalerie in Dresden; February 1945 – destroyed together with over 150 other paintings when a transport from Dresden to the Königstein fortress was bombed.',
+ 'Dwóch robotników przy drodze: młody chłopak niesie kosz kamieni, starszy mężczyzna w kapeluszu klęczy i rozbija kamienie młotem. Ciemne zbocze w tle, w prawym dolnym rogu garnek i łyżka.':'Two labourers by a road: a young boy carries a basket of stones, an older man in a hat kneels and breaks stones with a hammer. A dark slope in the background, a pot and a spoon in the lower right corner.',
+ 'ok. {0} × {1} cm':'approx. {0} × {1} cm',
  'Błazen Stańczyk siedzi w fotelu w ciemnej komnacie, w czerwonym stroju; w tle przez otwarte drzwi widać bal na dworze królowej Bony. Na stole list o utracie Smoleńska.':'The jester Stańczyk, dressed in red, sits in an armchair in a dark chamber; through the open door behind him a ball is under way at Queen Bona\'s court. On the table lies a letter about the loss of Smolensk.',
  'Wiejska dziewczyna leży na ściernisku z uniesioną ręką, w której trzyma nitki babiego lata; obok czarny pies. Rozległe pole pod jesiennym niebem.':'A country girl lies on a stubble field, her raised hand holding threads of gossamer; a black dog sits nearby. A vast field under an autumn sky.',
  'Stara przekupka w chustach na głowie i ramionach, z koszem pomarańczy, na tle zamglonej warszawskiej ulicy.':'An old street vendor in shawls over her head and shoulders, with a basket of oranges, against a misty Warsaw street.',

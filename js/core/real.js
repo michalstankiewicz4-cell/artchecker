@@ -4,14 +4,14 @@
    scena obrazu z prawdziwego dzieła dla trybu „Obrazy – przeprowadź ekspertyzę”.
    Włączane po kolei: REAL_READY.
    ===================================================================== */
-const REAL_READY=['stanczyk','babie-lato','melencolia','dlonie','zajac','macierzynstwo'];
+const REAL_READY=['stanczyk','babie-lato','melencolia','dlonie','zajac','macierzynstwo','kamieniarze'];
 const REAL_DEF={paint5:'stanczyk'};/* dzieło wybrane domyślnie po wejściu w tryb */
 const REALIM={};let REAL_CUR=null,RESUME_ART=null;
 function loadReal(slug){if(REALIM[slug])return Promise.resolve(REALIM[slug]);
  return new Promise((res,rej)=>{const go=()=>{const im=new Image();im.onload=()=>{REALIM[slug]=im;res(im)};im.onerror=rej;im.src=REALIMG[slug]};
   if(window.REALIMG&&REALIMG[slug])return go();const s=document.createElement('script');s.src='js/real/'+slug+'.js';s.onload=go;s.onerror=rej;document.head.appendChild(s)})}
-/* „Pamięć eksperta” korzysta z obrazów olejnych; „Zniszczony fragment” – na razie fikcyjne (zaginione) dzieła */
-const realFor=mode=>{const m=mode==='memory'?'paint5':mode;return REAL.filter(e=>e.mode===m&&REAL_READY.includes(e.slug))};
+/* „Pamięć eksperta” korzysta z obrazów olejnych; „Zniszczony fragment” – z dzieł zaginionych lub zniszczonych */
+const realFor=mode=>{const m=mode==='memory'?'paint5':mode;/* frag: dzieła oznaczone mode:'frag' (zaginione/zniszczone) */return REAL.filter(e=>e.mode===m&&REAL_READY.includes(e.slug))};
 /* lista „Artysta”: fikcyjni artyści + dzieła prawdziwe gotowe dla trybu */
 /* tryby z dziełami prawdziwymi: tylko dzieła prawdziwe (fikcyjne prace usunięte w 1.29);
    „Zniszczony fragment” i „Pamięć eksperta” nadal korzystają z fikcyjnych artystów (sceny generowane) */
@@ -27,7 +27,7 @@ async function resolveReal(mode){let v=document.getElementById('artist').value;R
  const L=realFor(mode);const e=v==='real:*'?L[Math.random()*L.length|0]:REAL_BY[v.slice(5)];if(!e||!realFor(mode).includes(e))return;await loadReal(e.slug);REAL_CUR=e}
 /* obiekt „artysty” dla prawdziwego obrazu */
 function realArtist(e){return{id:'real:'+e.slug,real:e,name:e.artist,life:e.life,title:e.title,year:e.yearNum,yearTxt:e.year,wcm:e.wcm,hcm:e.hcm,sup:e.sup,museum:e.museum,crn:'—',scene:'real',
- ref:`fotografia katalogowa (${e.museum})`,sig:{text:'',corner:'br',color:'#2a1d14',pig:'bone',font:'12px Georgia,serif',slant:0}}}
+ ref:`fotografia katalogowa (${e.museum})`,sig:{text:'',real:e.sig||'',corner:e.sigCorner==='bl'?'bl':'br',color:'#2a1d14',pig:'bone',font:'12px Georgia,serif',slant:0}}}
 /* scena z prawdziwego obrazu: obraz jest warstwą rysunkową, regiony (pigmenty, faktura) są przybliżone */
 const REALSC={};
 function realScene(e){if(REALSC[e.slug])return REALSC[e.slug];const im=REALIM[e.slug],a=im.width/im.height,W0=a>=1?680:Math.round(600*a),H0=a>=1?Math.round(680/a):600;

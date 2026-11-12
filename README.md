@@ -8,7 +8,7 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 | Tryb | Opis |
 |---|---|
 | Przeprowadź ekspertyzę – obrazy | 1 oryginał i 4 kopie, każda wykonana inną metodą fałszerską; podobrazia: płótno, deska dębowa, blacha miedziana |
-| Zniszczony fragment | czy fragment pochodzi z zaginionego dzieła znanego tylko z opisu |
+| Zniszczony fragment | czy fragment pochodzi z prawdziwego dzieła zniszczonego w czasie wojny (Courbet, „Kamieniarze”), znanego z fotografii i opisu |
 | Przeprowadź ekspertyzę – rzeźby z brązu (3D) | brązowe popiersia (Three.js); ocena z checklisty |
 | Przeprowadź ekspertyzę – rzeźby z marmuru (3D) | dłuto kontra CNC, patyna, kwas – [opis](docs/tryby/marmur.md) |
 | Pamięć eksperta | zapamiętaj oryginał przez lupę, potem znajdź minimalne różnice |
