@@ -12,6 +12,7 @@ const MENU=[
 document.getElementById('mode').innerHTML=MENU.map(([g,items])=>`<optgroup label="${tr(g)}">${items.map(([id,l,dis])=>`<option value="${id}"${dis?' disabled':''}>${tr(l)}</option>`).join('')}</optgroup>`).join('');
 document.getElementById('appver').textContent='v'+VERSION;document.getElementById('hver').textContent='· v'+VERSION;
 document.getElementById('homebtn').onclick=showHome;
+document.getElementById('hprev').onclick=()=>homeStep(-1);document.getElementById('hnext').onclick=()=>homeStep(1);
 for(const id of['hwiki','gwiki'])document.getElementById(id).onclick=()=>showWiki();
 document.getElementById('wclose').onclick=()=>document.getElementById('wiki').classList.add('hidden');
 document.getElementById('wq').oninput=()=>{WSEL=0;renderWiki()};

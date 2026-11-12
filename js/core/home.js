@@ -16,8 +16,19 @@ function homeCats(){return[
 function store(){try{return JSON.parse(localStorage.getItem('artchecker.v1')||'{}')}catch(e){return{}}}
 function recordDone(ok){try{const s=store();s.done=s.done||{};s.done[CUR]=(s.done[CUR]||0)+1;s.games=(s.games||0)+1;if(ok)s.ok=(s.ok||0)+1;localStorage.setItem('artchecker.v1',JSON.stringify(s))}catch(e){}}
 function withSandbox(fn){const sv={MODE,KIND,SV,ART,SC,C,W,H,IW,IH,P,BW,BH,sel,tool};try{return fn()}finally{({MODE,KIND,SV,ART,SC,C,W,H,IW,IH,P,BW,BH,sel,tool}=sv);REFC=null}}
-function frameIt(src,w,h,gilt,post){const pad=gilt?Math.round(Math.max(w,h)*0.07):Math.round(Math.max(w,h)*0.04),c=mk(w+pad*2,h+pad*2),x=c.getContext('2d');
- if(gilt){x.fillStyle=lin(0,0,c.width,c.height,[[0,'#8a6a2a'],[.5,'#e2bd62'],[1,'#6e521e']])(x);x.fillRect(0,0,c.width,c.height);x.fillStyle='#4a3712';x.fillRect(pad-6,pad-6,w+12,h+12)}
+/* złocona, ozdobna rama: profil z kilku listew, perełki i narożne ornamenty */
+function giltFrame(x,W0,H0,pad){const band=(i,o,cols)=>{x.fillStyle=lin(0,0,W0,H0,cols)(x);x.beginPath();x.rect(i,i,W0-2*i,H0-2*i);x.rect(o,o,W0-2*o,H0-2*o);x.fill('evenodd')};
+ band(0,pad*0.22,[[0,'#7a5a1c'],[.35,'#f3d27a'],[.6,'#a77c2c'],[1,'#5e4312']]);
+ band(pad*0.22,pad*0.42,[[0,'#c99a3e'],[.5,'#fff0b5'],[1,'#8a6420']]);
+ band(pad*0.42,pad*0.78,[[0,'#6c4c16'],[.3,'#e7c164'],[.55,'#9b7228'],[.8,'#f1d07a'],[1,'#5a3f10']]);
+ band(pad*0.78,pad,[[0,'#3a280a'],[1,'#7a5a1c']]);
+ x.fillStyle='rgba(255,240,180,.75)';const s=Math.max(2,pad*0.07),bead=(x0,y0,x1,y1)=>{const n=Math.max(4,Math.round(Math.hypot(x1-x0,y1-y0)/(s*3)));for(let k=0;k<=n;k++){x.beginPath();x.arc(x0+(x1-x0)*k/n,y0+(y1-y0)*k/n,s,0,7);x.fill()}};
+ const b=pad*0.32;bead(b,b,W0-b,b);bead(b,H0-b,W0-b,H0-b);bead(b,b,b,H0-b);bead(W0-b,b,W0-b,H0-b);
+ x.strokeStyle='rgba(60,40,10,.55)';x.lineWidth=Math.max(1,pad*0.04);const m=pad*0.6;for(let k=0;k<Math.max(8,(W0+H0)/(pad*0.9));k++){}
+ for(const[cx,cy]of[[pad*0.6,pad*0.6],[W0-pad*0.6,pad*0.6],[pad*0.6,H0-pad*0.6],[W0-pad*0.6,H0-pad*0.6]]){x.fillStyle=rad(cx-pad*0.1,cy-pad*0.1,1,pad*0.5,[[0,'#fff3c4'],[.5,'#d9a845'],[1,'#6e4c14']])(x);x.beginPath();for(let a=0;a<8;a++){const r=a%2?pad*0.22:pad*0.42,t=a*Math.PI/4;x.lineTo(cx+Math.cos(t)*r,cy+Math.sin(t)*r)}x.closePath();x.fill();x.stroke()}
+ x.fillStyle='#2a1c06';x.fillRect(pad-3,pad-3,W0-2*pad+6,H0-2*pad+6)}
+function frameIt(src,w,h,gilt,post){const pad=gilt?Math.round(Math.max(w,h)*0.075):Math.round(Math.max(w,h)*0.04),c=mk(w+pad*2,h+pad*2),x=c.getContext('2d');
+ if(gilt)giltFrame(x,c.width,c.height,pad);
  else{x.shadowColor='rgba(0,0,0,.6)';x.shadowBlur=pad;x.shadowOffsetY=pad/3}
  x.drawImage(src,pad,pad,w,h);x.shadowBlur=0;if(post)post(x,pad);return c}
 function bustIllus(marble){const c=mk(420,520),x=c.getContext('2d'),g=marble?[[0,'#ffffff'],[.6,'#e6e1d6'],[1,'#9a958a']]:[[0,'#d9a86a'],[.5,'#8a5a2e'],[1,'#3a2614']];
@@ -46,32 +57,45 @@ function fitDraw(cv,img,bgGlow){const r=cv.getBoundingClientRect(),d=devicePixel
  const k=Math.min(r.width*0.86/img.width,r.height*(bgGlow?0.74:0.92)/img.height),w=img.width*k,h=img.height*k,X=(r.width-w)/2,Y=bgGlow?(r.height-h)*0.38:(r.height-h)/2;
  if(bgGlow){x.fillStyle=rad(r.width/2,Y+h+8,4,w*0.6,[[0,'rgba(0,0,0,.55)'],[1,'rgba(0,0,0,0)']])(x);x.beginPath();x.ellipse(r.width/2,Y+h+8,w*0.55,14,0,0,7);x.fill()}x.drawImage(img,X,Y,w,h)}
 function homeBg(){const cv=document.getElementById('homebg'),d=devicePixelRatio||1,w=innerWidth,h=innerHeight;cv.width=w*d;cv.height=h*d;const x=cv.getContext('2d');x.setTransform(d,0,0,d,0,0);const r=rng(7);
- x.fillStyle=lin(0,0,0,h,[[0,'#06142a'],[.55,'#0b2142'],[1,'#030a16']])(x);x.fillRect(0,0,w,h);
- for(let i=0;i<14;i++){const X=r()*w;x.fillStyle=lin(X,0,X+40,0,[[0,'rgba(80,160,255,0)'],[.5,'rgba(80,160,255,.06)'],[1,'rgba(80,160,255,0)']])(x);x.fillRect(X,0,40+r()*40,h*0.62)}
- x.strokeStyle='rgba(90,170,255,.16)';x.lineWidth=1;const hz=h*0.62;for(let i=-20;i<=20;i++){x.beginPath();x.moveTo(w/2+i*30,hz);x.lineTo(w/2+i*170,h);x.stroke()}for(let k=0;k<12;k++){const y=hz+(h-hz)*Math.pow(k/12,1.8);x.beginPath();x.moveTo(0,y);x.lineTo(w,y);x.stroke()}
- for(let i=0;i<60;i++){x.fillStyle=`rgba(${120+r()*80|0},${180+r()*60|0},255,${.04+r()*.1})`;x.beginPath();x.arc(r()*w,r()*h*0.7,4+r()*26,0,7);x.fill()}
- x.strokeStyle='rgba(200,230,255,.35)';x.lineWidth=6;x.shadowColor='#bfe4ff';x.shadowBlur=30;x.beginPath();x.ellipse(w/2,24,170,26,0,0,7);x.stroke();x.shadowBlur=0;jpegize(cv)}
+ /* sala muzeum: ściany, kolumny, obrazy w ramach, lampy, posągi po bokach, odbicie w posadzce – rozmyte jak tło */
+ x.fillStyle=lin(0,0,0,h,[[0,'#13284a'],[.6,'#1c3658'],[1,'#07101e']])(x);x.fillRect(0,0,w,h);x.filter='blur(2.5px)';
+ const hz=h*0.66;x.fillStyle=lin(0,hz,0,h,[[0,'#1a2c44'],[1,'#070e1a']])(x);x.fillRect(0,hz,w,h-hz);
+ for(let i=-6;i<=6;i++){x.strokeStyle='rgba(140,180,230,.06)';x.beginPath();x.moveTo(w/2+i*60,hz);x.lineTo(w/2+i*260,h);x.stroke()}
+ for(let i=0;i<9;i++){const fx=w*(0.08+i*0.105)+r()*20,fy=h*(0.28+r()*0.06),fw=40+r()*70,fh=fw*(0.7+r()*0.5);x.fillStyle='rgba(150,110,40,.55)';x.fillRect(fx-4,fy-4,fw+8,fh+8);x.fillStyle=`rgba(${40+r()*60|0},${30+r()*40|0},${30+r()*30|0},.8)`;x.fillRect(fx,fy,fw,fh);
+  x.fillStyle=rad(fx+fw/2,fy-30,2,fw,[[0,'rgba(255,230,170,.35)'],[1,'rgba(0,0,0,0)']])(x);x.fillRect(fx-fw,fy-60,fw*3,fh+80)}
+ for(const px of[0.03,0.2,0.8,0.97]){const X=w*px,cw=w*0.045;x.fillStyle=lin(X-cw/2,0,X+cw/2,0,[[0,'#0c1a30'],[.45,'#3a5a84'],[.55,'#4a6c98'],[1,'#0b1830']])(x);x.fillRect(X-cw/2,0,cw,hz+10);x.fillStyle='rgba(120,160,210,.12)';x.fillRect(X-cw*0.6,hz-6,cw*1.2,16)}
+ const statue=(X,s)=>{x.fillStyle=lin(X-40*s,0,X+40*s,0,[[0,'#2b3c55'],[.5,'#9fb4cc'],[1,'#26364c']])(x);x.fillRect(X-28*s,hz-60*s,56*s,60*s);x.beginPath();x.ellipse(X,hz-120*s,30*s,62*s,0,0,7);x.fill();x.beginPath();x.arc(X,hz-200*s,20*s,0,7);x.fill()};statue(w*0.06,1.1);statue(w*0.93,1.2);
+ x.strokeStyle='rgba(170,40,40,.6)';x.lineWidth=4;for(const[a,b]of[[0.02,0.16],[0.84,0.98]]){x.beginPath();x.moveTo(w*a,hz+40);x.quadraticCurveTo(w*(a+b)/2,hz+70,w*b,hz+40);x.stroke()}
+ for(let i=0;i<5;i++){const X=w*(0.15+i*0.175);x.fillStyle=rad(X,8,2,160,[[0,'rgba(255,240,200,.75)'],[1,'rgba(255,240,200,0)']])(x);x.fillRect(X-200,0,400,220)}
+ x.filter='none';x.fillStyle='rgba(4,10,22,.12)';x.fillRect(0,0,w,h);jpegize(cv)}
 function toolNames(id){let sets,defs;if(KINDS[id]){sets=KINDS[id].sets;defs=KINDS[id].defs}else if(SCULPT_VARIANTS[id]){sets=SCULPT_VARIANTS[id].sets;defs=SCULPT_VARIANTS[id].defs}
  else if(SET[id]&&SET[id].length){sets=SET[id];defs=DEF}else return id==='memory'?['Lupa ×4','Zapamiętywanie','Minimalne różnice','Checklista różnic']:['W przygotowaniu'];
  return sets.flatMap(([,ids])=>ids.map(t=>(id==='frag'&&defs[t].nameF)||defs[t].name))}
-function homeCap(id,label){const e=id==='paint5'&&REAL_DEF.paint5&&REALIM[REAL_DEF.paint5]&&REAL_BY[REAL_DEF.paint5];return e?`${tr(label)} · ${e.artist}, „${tr(e.title)}” (${e.year})`:tr(label)}
+function homeCap(id,label){const e=id==='paint5'&&REAL_DEF.paint5&&REALIM[REAL_DEF.paint5]&&REAL_BY[REAL_DEF.paint5];return e?`${tr(label)} <span class="gd">•</span> ${e.artist} „${tr(e.title)}” (${e.year})`:tr(label)}
 function renderHome(){const cats=homeCats(),cat=cats[HCAT],done=(store().done)||{};if(!HMODE||!cat.modes.some(m=>m[0]===HMODE))HMODE=(cat.modes.find(m=>!m[2])||cat.modes[0])[0];
- const s=store();document.getElementById('hstat').innerHTML=`<span class="sub">${tr('Ukończone ekspertyzy')}</span><br><b>${s.games||0}</b> <span class="sub">· ${tr('trafne werdykty')}: ${s.ok||0}</span>`;
+ const s=store();document.getElementById('hstat').innerHTML=`<b>${s.games||0}</b><span class="sub">– ${tr('trafne werdykty')}: ${s.ok||0}</span>`;
  document.getElementById('hcats').innerHTML=cats.map((c,i)=>`<div class="hp hcat${i===HCAT?' on':''}" data-i="${i}"><canvas></canvas><div><div class="t">${i+1}. ${c.title}</div><div class="s">${c.sub}</div></div><div class="arr">›</div></div>`).join('');
  document.querySelectorAll('.hcat').forEach((el,i)=>{el.onclick=()=>{HCAT=i;HMODE=null;renderHome()};setTimeout(()=>fitDraw(el.querySelector('canvas'),preview(cats[i].modes[0][0]),false),0)});
  const soon=SOON.some(x=>x[0]===HMODE),label=(cat.modes.find(m=>m[0]===HMODE)||[])[1];
- document.getElementById('hdetail').innerHTML=`<div class="hscroll"><h2>${HCAT+1}. ${cat.title}</h2><div class="row"><canvas id="hthumb"></canvas><p>${cat.desc}</p></div>
-  <div>${cat.modes.map(([id,l,dis])=>`<div class="hmode${id===HMODE?' on':''}${dis?' dis':''}" data-id="${id}"><span class="dot"></span>${l}${done[id]?`<span class="done">✓ ×${done[id]}</span>`:''}</div>`).join('')}</div>
-  <div class="sub">Badania w tym trybie:</div><div class="htools">${toolNames(HMODE).map(t=>`<span>${t}</span>`).join('')}</div></div>
+ document.getElementById('hdetail').innerHTML=`<div class="hscroll"><h2>${HICO}${HCAT+1}. ${cat.title}</h2><div class="row"><canvas id="hthumb"></canvas><p>${cat.desc}</p></div>
+  <div>${cat.modes.map(([id,l,dis])=>`<div class="hmode${id===HMODE?' on':''}${dis?' dis':''}" data-id="${id}"><span class="dot"></span>${l}${done[id]?`<span class="done">✓ +${done[id]}</span>`:''}</div>`).join('')}</div>
+  <div class="sub hsep">Badania w tym trybie:</div><div class="htools">${toolNames(HMODE).map(t=>`<span>${t}</span>`).join('')}</div></div>
   <button class="hbtn" id="hstart"${soon?' disabled':''}>▶ ${soon?'Wkrótce':'Rozpocznij badania'}</button>`;
  document.querySelectorAll('.hmode').forEach(el=>{if(!el.classList.contains('dis'))el.onclick=()=>{HMODE=el.dataset.id;renderHome()}});
  document.getElementById('hstart').onclick=()=>startMode(HMODE);
  document.getElementById('hcards').innerHTML=cats.map((c,i)=>{const act=c.modes.filter(m=>!m[2]),n=act.filter(m=>done[m[0]]).length,pct=act.length?Math.round(n/act.length*100):0;
-  return`<div class="hp hcard"><h3><span class="num">${i+1}</span>${c.title}</h3><ul>${c.modes.map(([id,l,dis])=>`<li><i class="${done[id]?'y':'n'}">${done[id]?'✔':dis?'…':'○'}</i>${l}</li>`).join('')}</ul>
-   <div class="hbar"><div style="width:${pct}%"></div></div><small>${act.length?pct+'%':'wkrótce'}</small>
+  return`<div class="hp hcard"><i class="wm">${HWM[i]||''}</i><h3><span class="num">${i+1}</span>${c.title}</h3><ul>${c.modes.map(([id,l,dis])=>`<li><i class="${done[id]?'y':dis?'s':'n'}">${done[id]?'✔':dis?'…':''}</i>${l}</li>`).join('')}</ul>
+   <div class="hbrow"><div class="hbar"><div style="width:${pct}%"></div></div><small>${act.length?pct+'%':'wkrótce'}</small></div>
    <div style="margin-top:8px"><button class="hbtn ghost${pct===100?' ok':''}" data-i="${i}"${act.length?'':' disabled'}>${pct===100?'✔ Zakończono':'▶ Rozpocznij'}</button></div></div>`}).join('');
  document.querySelectorAll('#hcards .hbtn').forEach(b=>b.onclick=()=>{HCAT=+b.dataset.i;HMODE=null;renderHome();window.scrollTo(0,0)});
- setTimeout(()=>{fitDraw(document.getElementById('hthumb'),preview(HMODE),false);FX.drawId++;fitDraw(document.getElementById('hcanvas'),preview(HMODE),true);document.getElementById('hcap').textContent=homeCap(HMODE,label||'')},0)}
+ setTimeout(()=>{fitDraw(document.getElementById('hthumb'),preview(HMODE),false);FX.drawId++;fitDraw(document.getElementById('hcanvas'),preview(HMODE),true);document.getElementById('hcap').innerHTML=homeCap(HMODE,label||'')},0)}
+/* strzałki na scenie: poprzedni / następny tryb w kategorii */
+function homeStep(d){const m=homeCats()[HCAT].modes.filter(x=>!x[2]);if(!m.length)return;const i=m.findIndex(x=>x[0]===HMODE);HMODE=m[(i+d+m.length)%m.length][0];renderHome()}
+const HICO='<svg class="hico" width="30" height="30" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M4 15 20 5l16 10H4z"/><path d="M8 17v14M15 17v14M25 17v14M32 17v14M4 34h32"/></svg>';
+const HWM=['<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><circle cx="26" cy="26" r="16"/><path d="M38 38l18 18"/></svg>',
+ '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5"><ellipse cx="32" cy="20" rx="10" ry="13"/><path d="M27 32l-1 5c-9 2-14 8-15 17h42c-1-9-6-15-15-17l-1-5M22 58h20"/></svg>',
+ '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="32" cy="32" r="25"/><circle cx="32" cy="32" r="20" stroke-dasharray="2 3"/><path d="M36 17c-6-1-11 3-11 9 0 3-3 5-4 7l3 1-1 4c0 3 3 4 6 3l1 6h8M36 17c5 2 7 7 6 12-1 4-3 6-3 9"/></svg>',
+ '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><path d="M16 6h32M16 58h32M20 6c0 16 24 16 24 26S20 42 20 58M44 6c0 16-24 16-24 26s24 10 24 26"/></svg>'];
 function showLoader(t){document.getElementById('ltxt').textContent=t||'Przygotowywanie…';document.getElementById('loader').classList.remove('hidden')}
 function hideLoader(){document.getElementById('loader').classList.add('hidden')}
 function withLoader(fn,t){showLoader(t);setTimeout(async()=>{try{await fn()}finally{hideLoader()}},40)}

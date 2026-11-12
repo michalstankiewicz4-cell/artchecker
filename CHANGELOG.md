@@ -2,6 +2,13 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.26.0] – 2026-11-12
+### Zmienione
+- **Ekran startowy według makiety – złote akcenty.** Wybrana kategoria w złotej ramce, złoty przycisk „Wiki”, „O programie” z ikoną, wynik w złocie; złocona, ozdobna rama obrazu na scenie (listwy, perełki, narożne rozety) i światło z góry; podpis sceny ze złotą kropką; złota ikona muzeum w panelu, zielona kropka wybranego trybu i „✓ +n”; złoty przycisk „Rozpocznij badania” ze ściętym brzegiem; karty na dole ze złotymi sześciokątami, zielonymi znacznikami ukończonych trybów, paskiem postępu z procentem i ikonami w tle (lupa, popiersie, moneta, klepsydra).
+- Tło ekranu startowego: rozmyta sala muzeum (kolumny, obrazy w ramach, lampy, posągi, barierki).
+### Dodane
+- Strzałki ‹ › na scenie – poprzedni / następny tryb w kategorii.
+
 ## [1.25.0] – 2026-11-12
 ### Dodane
 - **Język EN – etap 3: wiki po angielsku.** Wszystkie hasła (techniki badawcze, metody fałszerskie, obiekty i artyści, słowniczek, techniki malarskie i podłoża, dzieła prawdziwe), kategorie, nagłówki, podpisy ilustracji i opisy dzieł prawdziwych. Teksty: `js/i18n/en-wiki-1.js` … `en-wiki-3.js`; w wersji EN polski tytuł hasła zostaje kluczem (obrazy, linki między hasłami), wyszukiwarka szuka po angielsku.

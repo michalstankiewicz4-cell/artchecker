@@ -113,3 +113,4 @@ trAdd({
 'Pod spodem inny obraz – użyto starego płótna z epoki.':'Another painting underneath – an old period canvas was used.',
 });
 trAdd({'Gęstość płótna: katalog':'Canvas density: catalogue','nitek/cm':'threads/cm'});
+trAdd({'O programie':'About'});
