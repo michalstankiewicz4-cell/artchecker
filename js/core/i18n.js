@@ -13,7 +13,7 @@ const LANG=(()=>{try{const u=new URLSearchParams(location.search).get('lang');if
  const l=(navigator.languages&&navigator.languages[0])||navigator.language||'';return/^pl\b/i.test(l)?'pl':'en'})();
 document.documentElement.lang=LANG;
 const EN={};
-const tr=s=>LANG==='en'&&s!=null&&EN[s]||s;
+const tr=s=>LANG==='en'&&s!=null?trText(String(s)):s;
 function setLang(l){try{localStorage.setItem('artchecker.lang',l)}catch(e){}const u=new URL(location.href);u.searchParams.delete('lang');location.href=u.toString()}
 
 /* --- etap 1: interfejs, ekran startowy, menu --- */
@@ -53,12 +53,26 @@ Object.assign(EN,{
  'Przełącz na angielski':'Switch to English','Przełącz na polski':'Switch to Polish',
 });
 
-/* --- tłumaczenie DOM: węzły tekstowe i atrybuty, których cała treść jest w słowniku --- */
-function trNode(n){if(LANG!=='en')return;
- if(n.nodeType===3){const t=n.nodeValue,k=t.trim();if(k&&EN[k])n.nodeValue=t.replace(k,EN[k]);return}
- if(n.nodeType!==1)return;for(const a of['title','placeholder','label','alt','aria-label']){const v=n.getAttribute&&n.getAttribute(a);if(v&&EN[v.trim()])n.setAttribute(a,EN[v.trim()])}
- for(const c of n.childNodes)trNode(c)}
-if(LANG==='en'){const obs=new MutationObserver(ms=>{for(const m of ms){if(m.type==='childList')m.addedNodes.forEach(trNode);else if(m.type==='characterData')trNode(m.target);else if(m.type==='attributes')trNode(m.target)}});
+/* --- tłumaczenie tekstu: 1) cały tekst, 2) wzorce z {0},{1}… (klucz z miejscami na wartości), 3) frazy od najdłuższych (granica słowa) --- */
+let TRX=null;const TRC=new Map();
+function trBuild(){const esc=x=>x.replace(/[.*+?^$()|[\]\\]/g,'\\$&').replace(/[{}]/g,'\\$&');const pats=[],phr=[];
+ for(const k in EN){if(k.length<3||EN[k]===k)continue;if(/\{\d\}/.test(k)){const parts=k.split(/\{(\d)\}/),ord=[];let re='';parts.forEach((t,i)=>{if(i%2){ord.push(+t);re+='([^:\\n]+?)'}else re+=esc(t)});pats.push([new RegExp((/^\\{/.test(k)?'':'(?<![\\p{L}\\d])')+re+(/\{\d\}$/.test(k)?'$':''),'gu'),EN[k],ord,k.length])}else phr.push(k)}
+ pats.sort((a,b)=>b[3]-a[3]);phr.sort((a,b)=>b.length-a.length);
+ TRX={pats,phr:phr.length?new RegExp('(?<![\\p{L}\\d])('+phr.map(esc).join('|')+')(?![\\p{L}])','gu'):null};TRC.clear()}
+function trText(s){if(LANG!=='en'||!s)return s;const k=s.trim();if(!k||!/[A-Za-ząćęłńóśźżĄĆĘŁŃÓŚŹŻ]/.test(k))return s;if(EN[k])return s.replace(k,EN[k]);
+ if(TRC.has(s))return TRC.get(s);if(!TRX)trBuild();let o=s;
+ for(const[re,en,ord]of TRX.pats)o=o.replace(re,(...m)=>en.replace(/\{(\d)\}/g,(_,d)=>{const v=m[1+ord.indexOf(+d)];return EN[v]||v}));
+ if(TRX.phr)o=o.replace(TRX.phr,m=>EN[m]);if(TRC.size>4000)TRC.clear();TRC.set(s,o);return o}
+const trAdd=o=>{Object.assign(EN,o);TRX=null};
+
+/* --- tłumaczenie DOM: węzły tekstowe i atrybuty (wiki – tylko całe teksty, do etapu 3) --- */
+function trNode(n,exact){if(LANG!=='en')return;
+ if(n.nodeType===3){const t=n.nodeValue;if(exact){const k=t.trim();if(k&&EN[k])n.nodeValue=t.replace(k,EN[k])}else{const o=trText(t);if(o!==t)n.nodeValue=o}return}
+ if(n.nodeType!==1)return;const ex=exact||n.id==='wart'||n.id==='wlist'||n.id==='wcats'||n.closest&&n.closest('#wart,#wlist,#wcats');
+ for(const a of['title','placeholder','label','alt','aria-label']){const v=n.getAttribute&&n.getAttribute(a);if(v){const o=ex?(EN[v.trim()]||v):trText(v);if(o!==v)n.setAttribute(a,o)}}
+ for(const c of n.childNodes)trNode(c,ex)}
+const trIn=n=>trNode(n,n.parentElement&&!!n.parentElement.closest('#wart,#wlist,#wcats'));
+if(LANG==='en'){const obs=new MutationObserver(ms=>{for(const m of ms){if(m.type==='childList')m.addedNodes.forEach(trIn);else trIn(m.target)}});
  const go=()=>{trNode(document.body);obs.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['title','placeholder','label','alt','aria-label']})};
  if(document.body)go();else document.addEventListener('DOMContentLoaded',go)}
 

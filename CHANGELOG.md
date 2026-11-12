@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.24.0] – 2026-11-12
+### Dodane
+- **Język EN – etap 2: cała rozgrywka po angielsku.** Nazwy i wskazówki badań, warunki (zoom, obszar, odległość), wyniki i obserwacje, przyczyny fałszerstw, metody fałszerskie, zlecenia, „Jak grać”, checklisty, notatnik, proweniencje, certyfikaty, opisy oryginału, podsumowania partii i komunikaty – we wszystkich trybach (obrazy, fragment, pamięć, rysunki, akwarele, banknoty, monety, znaczki, rękopisy, rzeźby z brązu i marmuru). Podpisy obiektów na stole też.
+- Słowniki: `js/i18n/en-core.js`, `en-paint.js`, `en-money.js`, `en-docs.js`, `en-art3d.js`.
+### Zmienione
+- Silnik tłumaczeń (`js/core/i18n.js`): oprócz całych tekstów tłumaczy wzorce z wartościami (`{0}`, `{1}` – liczby, nazwy, litery) i frazy w tekstach składanych w kodzie (od najdłuższych, z granicą słowa). Wiki na razie bez zmian (etap 3).
+- W wersji EN liczby dziesiętne z kropką.
+### Naprawione
+- Proweniencja dzieła prawdziwego: numer katalogu wystawy pokazywał „NaN”.
+
 ## [1.23.0] – 2026-11-12
 ### Dodane
 - **Język PL / EN – etap 1.** Przycisk PL/EN na ekranie startowym i na pasku gry. Język wykrywa przeglądarka (polski → PL, każdy inny → EN), chyba że gracz przełączy go ręcznie (wybór zapamiętany); `?lang=pl` / `?lang=en` w adresie ma pierwszeństwo.

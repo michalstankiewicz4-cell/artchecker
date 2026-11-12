@@ -5,7 +5,7 @@
 function gateStatus(p){const T=tool&&TB[tool];if(!T)return null;
  if(MODE==='sculpt')return gate3Status(p,T);
  const g=T.gate;if(!g)return null;let txt=`Warunek: zoom ≥ ×${fmt(g.z)}`+(g.area?` i ${AREA[g.area]}`:T.probe?' (kliknij obiekt)':'')+(g.tilt==='both'?', przechyl od < 20° do > 60°':g.tilt==='hi'?', nachylenie > 65°':'');
- if(!p)return{txt,ok:false};const v=viewportWorld(),ok=vw.z>=g.z&&tiltOK(g)&&(!g.area||areaOK(p,g.area,v));return{txt:txt+` · teraz ×${vw.z.toFixed(1).replace('.',',')}`,ok}}
+ if(!p)return{txt,ok:false};const v=viewportWorld(),ok=vw.z>=g.z&&tiltOK(g)&&(!g.area||areaOK(p,g.area,v));return{txt:txt+` · teraz ×${fmt(vw.z.toFixed(1))}`,ok}}
 function updatePanel(){const pn=document.getElementById('panel');
  const intro=KIND?KIND.intro:MODE==='sculpt'?SV.intro:({paint5:'Na stole leży 5 obrazów: jeden oryginał i cztery kopie, każda wykonana inną metodą i każda zdradza się w innych badaniach. Badania działają dopiero przy odpowiednim zoomie – przybliżaj szczegóły. Sygnały fałszerstwa zaznaczaj na checkliście każdego obrazu i zakończ ekspertyzę – obraz bez zaznaczeń to Twój oryginał.',
   notes:'Na stole leży 5 banknotów 100 florenów (waluta fikcyjna). Część jest prawdziwa, część fałszywa – każdy fałszywy powstał inną metodą. Sprawdź zabezpieczenia: pod światło, przechylając suwakiem „Nachylenie”, pod lupą, w UV, IR i detektorem. Na checkliście każdego banknotu zaznacz sygnały fałszerstwa i zakończ ekspertyzę.',

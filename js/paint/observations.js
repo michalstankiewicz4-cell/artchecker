@@ -5,7 +5,7 @@
 const SIMNOTE=()=>ART.real?`<div class="cap" style="color:#ffcf80">Symulacja: historia i dokumenty są fikcyjne. Prawdziwe są autor, tytuł, data, technika i miejsce przechowywania (${ART.museum}).</div>`:'';
 function provHTML(p){return SIMNOTE()+provHTML0(p)}
 function provHTML0(p){const t=p.t,y=ART.year;let li=[];
- if(!t.prov){li=[[y,`namalowany (list artysty, archiwum rodzinne)`],[y+2,`wystawa Towarzystwa Zachęty Sztuk Pięknych, Warszawa, kat. nr ${ART.crn%150+12}`],[y+3,'zakup: kolekcja Ludwika Krasnodębskiego, Warszawa'],[1908,'spadek: Zofia Krasnodębska']];
+ if(!t.prov){li=[[y,`namalowany (list artysty, archiwum rodzinne)`],[y+2,`wystawa Towarzystwa Zachęty Sztuk Pięknych, Warszawa, kat. nr ${Number.isFinite(ART.crn)?ART.crn%150+12:(ART.yearNum||ART.year)%150+12}`],[y+3,'zakup: kolekcja Ludwika Krasnodębskiego, Warszawa'],[1908,'spadek: Zofia Krasnodębska']];
   if(p.warGap)li.push(['1939–1951','brak dokumentów'],[1951,'wpis do inwentarza kolekcji prywatnej, Kraków']);else li.push(['1939–1945','ukryty w majątku pod Lublinem (relacja rodziny, 1946)']);
   if(p.retouch)li.push([1961,'konserwacja – uzupełnienie ubytków, retusze (protokół pracowni)']);
   li.push([1987,'aukcja, Dom Aukcyjny „Nowy Świat”, poz. 38'],[2026,'zgłoszony do ekspertyzy przez spadkobierców']);
