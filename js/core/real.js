@@ -10,7 +10,8 @@ const REALIM={};let REAL_CUR=null,RESUME_ART=null;
 function loadReal(slug){if(REALIM[slug])return Promise.resolve(REALIM[slug]);
  return new Promise((res,rej)=>{const go=()=>{const im=new Image();im.onload=()=>{REALIM[slug]=im;res(im)};im.onerror=rej;im.src=REALIMG[slug]};
   if(window.REALIMG&&REALIMG[slug])return go();const s=document.createElement('script');s.src='js/real/'+slug+'.js';s.onload=go;s.onerror=rej;document.head.appendChild(s)})}
-const realFor=mode=>REAL.filter(e=>e.mode===mode&&REAL_READY.includes(e.slug));
+/* „Pamięć eksperta” korzysta z obrazów olejnych; „Zniszczony fragment” – na razie fikcyjne (zaginione) dzieła */
+const realFor=mode=>{const m=mode==='memory'?'paint5':mode;return REAL.filter(e=>e.mode===m&&REAL_READY.includes(e.slug))};
 /* lista „Artysta”: fikcyjni artyści + dzieła prawdziwe gotowe dla trybu */
 /* tryby z dziełami prawdziwymi: tylko dzieła prawdziwe (fikcyjne prace usunięte w 1.29);
    „Zniszczony fragment” i „Pamięć eksperta” nadal korzystają z fikcyjnych artystów (sceny generowane) */
@@ -23,7 +24,7 @@ function fillArtist(mode){const el=document.getElementById('artist'),L=realFor(m
  RESUME_ART=null;el.innerHTML=h;el.value=[...el.options].some(o=>o.value===v)?v:(el.options[0]?el.options[0].value:'');
  el.style.display=(R||mode==='frag'||mode==='memory')?'':'none'}
 async function resolveReal(mode){let v=document.getElementById('artist').value;REAL_CUR=null;if(!v.startsWith('real:')){if(!realMode(mode))return;v='real:*'}
- const L=realFor(mode);const e=v==='real:*'?L[Math.random()*L.length|0]:REAL_BY[v.slice(5)];if(!e||e.mode!==mode)return;await loadReal(e.slug);REAL_CUR=e}
+ const L=realFor(mode);const e=v==='real:*'?L[Math.random()*L.length|0]:REAL_BY[v.slice(5)];if(!e||!realFor(mode).includes(e))return;await loadReal(e.slug);REAL_CUR=e}
 /* obiekt „artysty” dla prawdziwego obrazu */
 function realArtist(e){return{id:'real:'+e.slug,real:e,name:e.artist,life:e.life,title:e.title,year:e.yearNum,yearTxt:e.year,wcm:e.wcm,hcm:e.hcm,sup:e.sup,museum:e.museum,crn:'—',scene:'real',
  ref:`fotografia katalogowa (${e.museum})`,sig:{text:'',corner:'br',color:'#2a1d14',pig:'bone',font:'12px Georgia,serif',slant:0}}}

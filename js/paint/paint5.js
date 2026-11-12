@@ -12,7 +12,7 @@ const PROFILES={
 function profName(k){const n=PROFILES[k].name,u=supOf();if(u==='wood')return k==='oldcanvas'?'Fałszerstwo na starej desce z epoki':k==='giclee'?'Wydruk giclée na płótnie naklejonym na deskę, z ręcznie nałożoną fakturą':n;return n}
 function rollTells(pr,r){const t={};pr.core.forEach(a=>t[a]=true);pr.opt.forEach(a=>{if(r()<0.45)t[a]=true});const rest=pr.opt.filter(a=>!t[a]);while(Object.keys(t).length<3&&rest.length)t[rest.splice(Math.floor(r()*rest.length),1)[0]]=true;return t}
 function chooseArtist(r){const v=document.getElementById('artist').value.startsWith('real:')?'':document.getElementById('artist').value,L=MODE==='paint5'?ARTISTS:ARTISTS.filter(a=>!a.sup||a.sup==='canvas');return L.find(a=>a.id===v)||pick(L,r)}
-function setupScene(r){if(REAL_CUR&&MODE==='paint5'){ART=realArtist(REAL_CUR);SC=realScene(REAL_CUR);W=SC.W;H=SC.H;IW=W*S;IH=H*S;C=SC.make(r);C.sd=(r()*1e9)|0;sigLayout(C);return}ART=chooseArtist(r);SC=SCENES[ART.scene];W=SC.W;H=SC.H;IW=W*S;IH=H*S;C=SC.make(r);C.sd=(r()*1e9)|0;sigLayout(C)}
+function setupScene(r){if(REAL_CUR&&(MODE==='paint5'||MODE==='frag'||MODE==='memory')){ART=realArtist(REAL_CUR);SC=realScene(REAL_CUR);W=SC.W;H=SC.H;IW=W*S;IH=H*S;C=SC.make(r);C.sd=(r()*1e9)|0;sigLayout(C);return}ART=chooseArtist(r);SC=SCENES[ART.scene];W=SC.W;H=SC.H;IW=W*S;IH=H*S;C=SC.make(r);C.sd=(r()*1e9)|0;sigLayout(C)}
 function basePainting(p,r){const q=rng(p.seed),pr=(p.profile&&PROFILES[p.profile])||{};
  const anRegs=Object.keys(SC.REG).filter(k=>SC.REG[k].an);
  p.m={pigReg:pick(p.descRegs||anRegs,q),pigKind:'an',texture:pick(['flat','mismatch'],q),crack:pr.crack||pick(['none','artificial'],q),sig:pr.sig||pick(['later','graph'],q),

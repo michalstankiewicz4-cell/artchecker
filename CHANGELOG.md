@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.30.0] – 2026-11-12
+### Zmienione
+- **„Pamięć eksperta” na dziełach prawdziwych** („Stańczyk”, „Babie lato” lub losowe). Różnice w falsyfikatach to łaty prawdziwego obrazu: przesunięty, powiększony lub pomniejszony fragment, zmieniony odcień, zamalowany szczegół, dodatkowy drobny element – z opisem miejsca (np. „w dolnej lewej części”).
+
 ## [1.29.0] – 2026-11-12
 ### Usunięte
 - **Fikcyjne prace w trybach z dziełami prawdziwymi** („Przeprowadź ekspertyzę – obrazy”, „Rysunki i grafiki”, „Akwarele i pastele”): na liście „Artysta” są tylko dzieła prawdziwe i „Losowe dzieło”. Fikcyjni artyści zostają na razie w „Zniszczonym fragmencie” i „Pamięci eksperta” (wiki opisuje ich tylko tam).

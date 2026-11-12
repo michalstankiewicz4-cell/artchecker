@@ -35,8 +35,10 @@ function verdict(v){if(!sel&&!KIND&&!byCheck())return;const m=document.getElemen
  document.getElementById('mbox').innerHTML=h;m.classList.add('show');recordDone(/Trafnie|5 z 5/.test(h.slice(0,300)));document.getElementById('mnew').onclick=()=>{m.classList.remove('show');runNewGame()};document.getElementById('mclose').onclick=()=>m.classList.remove('show')}
 function setCase(){const e=document.getElementById('case');
  if(KIND)e.textContent=KIND.caseText();else
+ if(MODE==='memory'&&ART.real)e.textContent=`Pamięć eksperta: „${ART.title}” – ${ART.name} (${ART.life}), ${ART.yearTxt}, ${ART.museum}. Zapamiętaj oryginał, a potem wskaż go wśród prawie identycznych falsyfikatów. Różnice w falsyfikatach wprowadziła gra.`;else
  if(MODE==='memory')e.textContent=`Pamięć eksperta: „${ART.title}” – ${ART.name} (${ART.life}). Zapamiętaj oryginał, a potem wskaż go wśród prawie identycznych falsyfikatów. (Artyści i dzieła są fikcyjne.)`;else
  if(MODE==='sculpt')e.textContent=SV.caseText();
+ else if(MODE==='frag'&&ART.real)e.textContent=`Dzieło prawdziwe: „${ART.title}” – ${ART.name} (${ART.life}), ${ART.yearTxt}, ${ART.museum}. Symulacja: na rynku pojawił się fragment, który może pochodzić z tego obrazu; „oryginał” jest znany tylko z opisu i dawnych badań. Opis, historia i wyniki badań są symulowane.`;
  else if(MODE==='frag')e.textContent=`Sprawa: fragment obrazu, który może pochodzić z zaginionego dzieła „${ART.title}” – ${ART.name} (${ART.life}), ${ART.year}. Oryginał znany tylko z opisu. (Artyści i dzieła są fikcyjne.)`;
  else if(ART.real)e.textContent=`Dzieło prawdziwe: „${ART.title}” – ${ART.name} (${ART.life}), ${ART.yearTxt}, ${ART.real.tech}, ok. ${fmt(ART.hcm)} × ${fmt(ART.wcm)} cm, ${ART.museum}. Na stole ${P.length===4?'4 obrazy':'5 obrazów'}: reprodukcja oryginału i kopie zrobione przez grę. Wyniki badań są symulowane.`;
  else e.textContent=`Sprawa: „${ART.title}”, przypisywany: ${ART.name} (${ART.life}), ${ART.year}, ${SUP[supOf()].tech}, ${fmt(ART.wcm)} × ${fmt(ART.hcm)} cm. Na stole ${P.length===4?'4 obrazy':'5 obrazów'} – jeden jest oryginałem. (Artyści i dzieła są fikcyjne.)`}
