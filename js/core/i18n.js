@@ -64,14 +64,15 @@ function trText(s){if(LANG!=='en'||!s)return s;const k=s.trim();if(!k||!/[A-Za-z
  for(const[re,en,ord]of TRX.pats)o=o.replace(re,(...m)=>en.replace(/\{(\d)\}/g,(_,d)=>{const v=m[1+ord.indexOf(+d)];return EN[v]||v}));
  if(TRX.phr)o=o.replace(TRX.phr,m=>EN[m]);if(TRC.size>4000)TRC.clear();TRC.set(s,o);return o}
 const trAdd=o=>{Object.assign(EN,o);TRX=null};
+const trHTML=h=>LANG==='en'&&h?String(h).split(/(<[^>]*>)/).map(x=>x[0]==='<'?x:trText(x)).join(''):h;
 
 /* --- tłumaczenie DOM: węzły tekstowe i atrybuty (wiki – tylko całe teksty, do etapu 3) --- */
 function trNode(n,exact){if(LANG!=='en')return;
  if(n.nodeType===3){const t=n.nodeValue;if(exact){const k=t.trim();if(k&&EN[k])n.nodeValue=t.replace(k,EN[k])}else{const o=trText(t);if(o!==t)n.nodeValue=o}return}
- if(n.nodeType!==1)return;const ex=exact||n.id==='wart'||n.id==='wlist'||n.id==='wcats'||n.closest&&n.closest('#wart,#wlist,#wcats');
+ if(n.nodeType!==1)return;const ex=exact;
  for(const a of['title','placeholder','label','alt','aria-label']){const v=n.getAttribute&&n.getAttribute(a);if(v){const o=ex?(EN[v.trim()]||v):trText(v);if(o!==v)n.setAttribute(a,o)}}
  for(const c of n.childNodes)trNode(c,ex)}
-const trIn=n=>trNode(n,n.parentElement&&!!n.parentElement.closest('#wart,#wlist,#wcats'));
+const trIn=n=>trNode(n,false);
 if(LANG==='en'){const obs=new MutationObserver(ms=>{for(const m of ms){if(m.type==='childList')m.addedNodes.forEach(trIn);else trIn(m.target)}});
  const go=()=>{trNode(document.body);obs.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['title','placeholder','label','alt','aria-label']})};
  if(document.body)go();else document.addEventListener('DOMContentLoaded',go)}

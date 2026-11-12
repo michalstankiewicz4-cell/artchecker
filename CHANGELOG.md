@@ -2,6 +2,13 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.25.0] – 2026-11-12
+### Dodane
+- **Język EN – etap 3: wiki po angielsku.** Wszystkie hasła (techniki badawcze, metody fałszerskie, obiekty i artyści, słowniczek, techniki malarskie i podłoża, dzieła prawdziwe), kategorie, nagłówki, podpisy ilustracji i opisy dzieł prawdziwych. Teksty: `js/i18n/en-wiki-1.js` … `en-wiki-3.js`; w wersji EN polski tytuł hasła zostaje kluczem (obrazy, linki między hasłami), wyszukiwarka szuka po angielsku.
+- **Wiki: przyciski „O programie” i PL/EN** – w tej samej kolejności co na ekranie startowym i pasku gry (Wiki · O programie · PL/EN).
+### Naprawione
+- Hasła wiki „Rysunki i grafiki” i „Akwarele i pastele”: w zleceniu brakowało tytułu pracy i liczby arkuszy.
+
 ## [1.24.0] – 2026-11-12
 ### Dodane
 - **Język EN – etap 2: cała rozgrywka po angielsku.** Nazwy i wskazówki badań, warunki (zoom, obszar, odległość), wyniki i obserwacje, przyczyny fałszerstw, metody fałszerskie, zlecenia, „Jak grać”, checklisty, notatnik, proweniencje, certyfikaty, opisy oryginału, podsumowania partii i komunikaty – we wszystkich trybach (obrazy, fragment, pamięć, rysunki, akwarele, banknoty, monety, znaczki, rękopisy, rzeźby z brązu i marmuru). Podpisy obiektów na stole też.

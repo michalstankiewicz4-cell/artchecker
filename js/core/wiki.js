@@ -39,7 +39,11 @@ const WHOLE=['all','note','coin','sheet'];
 const WICON={pigment:'spectrum',xrf:'spectrum',ink:'spectrum',magnet:'magnet',mag:'magnet',weight:'scale',dims:'caliper',diam:'caliper',paper:'caliper',prov:'doc',cert:'doc',docs:'doc',micro:'micro'};
 function wSecs(t,secs){if(!t)return'';return(t.lead?`<p class="wlead">${t.lead}</p>`:'')+secs.filter(([k])=>t[k]).map(([k,n])=>`<h3>${n}</h3><p>${t[k]}</p>`).join('')}
 const wgo=t=>`<a class="wgo" data-t="${t.replace(/"/g,'&quot;')}">${t}</a>`;
-function wikiData(){const A=[];
+const WEN=()=>LANG==='en'&&typeof WT_EN!=='undefined';
+function wikiData(){const A=wikiData0();if(!WEN())return A;
+ /* EN: polski tytuł zostaje kluczem (obrazy, linki), reszta po angielsku */
+ return A.map(a=>Object.assign(a,{key:a.title,title:tr(a.title),cat:tr(a.cat),tags:a.tags?tr(a.tags):a.tags,body:trHTML(a.body)}))}
+function wikiData0(){const A=[];
  const modes=[['paint5','Obrazy – przeprowadź ekspertyzę',SET.paint5,DEF,PROFILES],['frag','Zniszczony fragment',SET.frag,DEF,null]];
  Object.values(SCULPT_VARIANTS).forEach(v=>modes.push([v.id,v.label,v.sets,v.defs,v.profiles]));
  Object.values(KINDS).forEach(k=>modes.push([k.id,k.label,k.sets,k.defs,k.profiles]));
@@ -53,12 +57,12 @@ function wikiData(){const A=[];
   const pick=L.find(e=>W2D.includes(e.id)&&e.id!=='frag'&&e.view&&e.view!=='normal')||L.find(e=>W2D.includes(e.id)&&e.id!=='frag'&&e.area&&!WHOLE.includes(e.area))||L.find(e=>W2D.includes(e.id)&&e.view&&e.view!=='normal');
   let img=pick?{type:'view',mode:pick.id,tool:pick.tool,view:pick.view||'normal',area:pick.area}:WICON[L[0].tool]?{type:'icon',icon:WICON[L[0].tool]}:L.find(e=>SCULPT_VARIANTS[e.id])?{type:'bust',marble:L.every(e=>e.id==='marble')}:{type:'icon',icon:'doc'};
   A.push({cat:'Techniki badawcze',title:nm,tags:L.map(e=>e.label).join(' · '),img,
-   body:wSecs(WT[nm],WSEC)+`<h3>W grze</h3>`+L.map(e=>`<p class="wmode"><b>${e.label}.</b> ${e.hint}</p>`).join('')})}
+   body:wSecs((WEN()&&WT_EN[nm])||WT[nm],WSEC)+`<h3>W grze</h3>`+L.map(e=>`<p class="wmode"><b>${e.label}.</b> ${e.hint}</p>`).join('')})}
  for(const[nm,L]of Object.entries(forg)){const e=L[0];
   const tl=e.core.find(t=>{const d=e.defs[t];return d&&d.view&&d.view!=='normal'})||e.core.find(t=>{const d=e.defs[t];return d&&d.gate&&d.gate.area&&!WHOLE.includes(d.gate.area)});
   const img=W2D.includes(e.id)&&e.id!=='frag'?{type:'forge',mode:e.id,key:e.key,tool:tl||null}:SCULPT_VARIANTS[e.id]?{type:'bust',marble:e.id==='marble'}:{type:'icon',icon:'doc'};
   A.push({cat:'Metody fałszerskie',title:nm,tags:L.map(x=>x.label).join(' · '),img,
-   body:wSecs(WT[nm],WSEC_F)+L.map(x=>`<h3>W grze – ${x.label}</h3><p><b>Zawsze zdradzają:</b> ${x.coreN.map(wgo).join(', ')}</p>${x.optN.length?`<p><b>Mogą zdradzać:</b> ${x.optN.map(wgo).join(', ')}</p>`:''}`).join('')})}
+   body:wSecs((WEN()&&WT_EN[nm])||WT[nm],WSEC_F)+L.map(x=>`<h3>W grze – ${x.label}</h3><p><b>Zawsze zdradzają:</b> ${x.coreN.map(wgo).join(', ')}</p>${x.optN.length?`<p><b>Mogą zdradzać:</b> ${x.optN.map(wgo).join(', ')}</p>`:''}`).join('')})}
  const SCN={pejzaz:'pejzaż',portret:'portret',martwa:'martwa natura',marina:'marina'};
  ARTISTS.forEach(a=>A.push({cat:'Obiekty i artyści',title:`${a.name} (${a.life})`,tags:'obrazy',img:{type:'artist',id:a.id},
   body:`<p class="wlead">„${a.title}”, ${a.year} – ${SUP[a.sup||'canvas'].tech}, ${fmt(a.wcm)} × ${fmt(a.hcm)} cm.</p><h3>Dzieło</h3><p>${a.ref?`Dzieło referencyjne: ${a.ref}. `:''}${a.scene&&SCN[a.scene]?`Gatunek: ${SCN[a.scene]}. `:''}Sygnatura: „${a.sig.text}”.</p><h3>W grze</h3><p>Obraz tego artysty może pojawić się w trybach ${wgo('Obrazy – przeprowadź ekspertyzę')}, ${wgo('Zniszczony fragment')} i ${wgo('Pamięć eksperta')}. Do porównania sygnatury i stylu gra pokazuje detale z jego „dzieł pewnych”.</p><p><small class="nb">Artysta i dzieło są fikcyjne.</small></p>`}));
@@ -69,7 +73,7 @@ function wikiData(){const A=[];
   body:`<p class="wlead">${txt}</p>`+(byMode[id]?`<h3>Badania w tym trybie</h3><p>${[...new Set(byMode[id].tech)].map(wgo).join(', ')}</p>`+(byMode[id].forg.length?`<h3>Metody fałszerskie</h3><p>${byMode[id].forg.map(wgo).join(', ')}</p>`:''):'')}));
  [...Object.values(SCULPT_VARIANTS),...Object.values(KINDS)].forEach(k=>{const t=k.label.replace('Przeprowadź ekspertyzę – ','').replace('Weryfikacja ','');
   A.push({cat:'Obiekty i artyści',title:t,tags:SCULPT_VARIANTS[k.id]?'rzeźby':'obiekty',img:SCULPT_VARIANTS[k.id]?{type:'bust',marble:k.id==='marble'}:{type:'preview',id:k.id},
-   body:(WOBJ[t]?`<p class="wlead">${WOBJ[t]}</p>`:'')+`<h3>Zlecenie</h3><p>${k.caseText()}</p>${k.intro?`<p>${k.intro}</p>`:''}<h3>Badania</h3><p>${[...new Set(byMode[k.id].tech)].map(wgo).join(', ')}</p><h3>Metody fałszerskie</h3><p>${byMode[k.id].forg.map(wgo).join(', ')}</p>`})});
+   body:(((WEN()&&WOBJ_EN[t])||WOBJ[t])?`<p class="wlead">${(WEN()&&WOBJ_EN[t])||WOBJ[t]}</p>`:'')+`<h3>Zlecenie</h3><p>${k.caseText()}</p>${k.intro?`<p>${k.intro}</p>`:''}<h3>Badania</h3><p>${[...new Set(byMode[k.id].tech)].map(wgo).join(', ')}</p><h3>Metody fałszerskie</h3><p>${byMode[k.id].forg.map(wgo).join(', ')}</p>`})});
  const GIMG={'Krakelura':['paint5','crack'],'Werniks':['paint5','uv'],'Pentimenti':['paint5','ir'],'Reflektografia IR':['paint5','ir'],'RTG':['paint5','xray'],'Impast':['paint5','texture'],'Blejtram':['paint5','back'],
   'Znak wodny':['notes','watermark'],'Druk wklęsły (intaglio)':['notes','intaglio'],'Farba zmienna optycznie (OVI)':['notes','ovi'],'Obraz utajony':['notes','latent'],'Recto-verso':['notes','register'],
   'Ząbkowanie':['stamp','perf'],'Przedruk':['stamp','overprint'],'Ductus':['manuscript','ductus'],'Atrament żelazowo-galasowy':['manuscript','verso'],'Papier czerpany':['manuscript','paper'],'Galwanoplastyka':['coin','edge']};
@@ -78,8 +82,8 @@ function wikiData(){const A=[];
   if(g){const d=(KINDS[g[0]]||{defs:DEF}).defs[g[1]];if(d)img={type:'view',mode:g[0],tool:g[1],view:d.view||'normal',area:(d.gate||{}).area||''}}
   else if(t in BUST)img={type:'bust',marble:BUST[t]};else if(GICON[t])img={type:'icon',icon:GICON[t]};else if(t==='Grunt')img={type:'preview',id:'frag'};
   const rel=Object.keys(tech).filter(n=>n!==t&&n.toLowerCase().includes(t.toLowerCase().split(' ')[0]));
-  A.push({cat:'Słowniczek',title:t,img,body:`<p class="wlead">${b}</p>${WGLOSS[t]?`<p>${WGLOSS[t]}</p>`:''}${rel.length?`<h3>Zobacz też</h3><p>${rel.map(wgo).join(', ')}</p>`:''}`})});
- if(typeof WART!=='undefined')WART.forEach(([k,t,spec,txt])=>A.push({cat:'Techniki malarskie i podłoża',title:t,tags:k==='tech'?'technika':k==='sur'?'podłoże':'oprawa',img:{type:'artkit',spec},body:wSecs(txt,WSEC)+'<p><small class="nb">Ilustracja: ArtKit z laboratorium sztuki GameLaboratory.</small></p>'}));
+  A.push({cat:'Słowniczek',title:t,img,body:`<p class="wlead">${(WEN()&&GLOSS_EN[t])||b}</p>${WGLOSS[t]?`<p>${(WEN()&&WGLOSS_EN[t])||WGLOSS[t]}</p>`:''}${rel.length?`<h3>Zobacz też</h3><p>${rel.map(wgo).join(', ')}</p>`:''}`})});
+ if(typeof WART!=='undefined')WART.forEach(([k,t,spec,txt])=>{if(WEN()&&WART_EN[t]){EN[t]=WART_EN[t][0];txt=WART_EN[t][1]}A.push({cat:'Techniki malarskie i podłoża',title:t,tags:k==='tech'?'technika':k==='sur'?'podłoże':'oprawa',img:{type:'artkit',spec},body:wSecs(txt,WSEC)+'<p><small class="nb">Ilustracja: ArtKit z laboratorium sztuki GameLaboratory.</small></p>'})});
  if(typeof REAL!=='undefined')REAL.filter(e=>REAL_READY.includes(e.slug)).forEach(e=>{const M={paint5:'Obrazy – przeprowadź ekspertyzę',drawing:'Rysunki i grafiki',water:'Akwarele i pastele'}[e.mode];
   A.push({cat:'Dzieła prawdziwe',title:`${e.artist} – „${e.title}”`,tags:e.year,img:{type:'real',slug:e.slug,cap:`${e.artist}, „${e.title}”, ${e.year}. Źródło: Wikimedia Commons (${e.license}).`},
    body:`<p class="wlead">${e.desc}</p><h3>Dzieło</h3><p>${e.artist} (${e.life}), „${e.title}”, ${e.year} – ${e.tech}${e.wcm?`, ok. ${fmt(e.hcm)} × ${fmt(e.wcm)} cm`:''}. ${e.museum}.</p><h3>Licencja i źródło</h3><p>${e.license[0].toUpperCase()+e.license.slice(1)}. Reprodukcja: <a href="${realSrc(e)}" target="_blank" rel="noopener">Wikimedia Commons – ${e.file}</a>.</p><h3>W grze</h3><p>Dzieło można wybrać na liście „Artysta” w trybie ${wgo(M)}. Reprodukcja jest oryginałem, a kopie na stole robi gra.</p><p><small class="nb">${REAL_NOTE}</small></p>`})});
@@ -139,19 +143,19 @@ function wikiIllus(img){const key=JSON.stringify(img);if(WIMG[key])return WIMG[k
  return WIMG[key]={c:out,cap}}
 
 const wslug=t=>t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,70);
-let WIKI=null,WCAT='Słowniczek',WSEL=0,WTOK=0;
+let WIKI=null,WCAT=tr('Słowniczek'),WSEL=0,WTOK=0;
 function showWiki(cat){WIKI=WIKI||wikiData();if(cat)WCAT=cat;document.getElementById('wiki').classList.remove('hidden');renderWiki()}
-function wikiOpen(title){const a=WIKI.find(x=>x.title===title);if(!a)return;WCAT=a.cat;document.getElementById('wq').value='';WSEL=WIKI.filter(x=>x.cat===WCAT).indexOf(a);renderWiki()}
+function wikiOpen(title){const a=WIKI.find(x=>x.title===title||x.key===title);if(!a)return;WCAT=a.cat;document.getElementById('wq').value='';WSEL=WIKI.filter(x=>x.cat===WCAT).indexOf(a);renderWiki()}
 function renderWiki(){const q=(document.getElementById('wq').value||'').toLowerCase(),cats=[...new Set(WIKI.map(a=>a.cat))];
  const list=WIKI.filter(a=>(q?(a.title+a.body+(a.tags||'')).toLowerCase().includes(q):a.cat===WCAT));
  document.getElementById('wcats').innerHTML=cats.map(c=>`<button class="hbtn ghost${c===WCAT&&!q?' on':''}" data-c="${c}">${c} <small>(${WIKI.filter(a=>a.cat===c).length})</small></button>`).join('');
  document.querySelectorAll('#wcats button').forEach(b=>b.onclick=()=>{WCAT=b.dataset.c;WSEL=0;document.getElementById('wq').value='';renderWiki()});
  if(WSEL>=list.length)WSEL=0;
- document.getElementById('wlist').innerHTML=list.map((a,i)=>`<div class="wli${i===WSEL?' on':''}" data-i="${i}">${a.title}${a.tags?`<small>${a.tags}</small>`:''}</div>`).join('')||'<div class="sub">Brak wyników.</div>';
+ document.getElementById('wlist').innerHTML=list.map((a,i)=>`<div class="wli${i===WSEL?' on':''}" data-i="${i}">${a.title}${a.tags?`<small>${a.tags}</small>`:''}</div>`).join('')||`<div class="sub">${tr('Brak wyników.')}</div>`;
  document.querySelectorAll('.wli').forEach(el=>el.onclick=()=>{WSEL=+el.dataset.i;renderWiki()});
  const on=document.querySelector('.wli.on');if(on)on.scrollIntoView({block:'nearest'});
  const a=list[WSEL],wa=document.getElementById('wart');wa.scrollTop=0;
- wa.innerHTML=a?`<div class="sub">${a.cat}${a.tags?' · '+a.tags:''}</div><h2>${a.title}</h2>${a.img&&a.img.type==='real'?`<figure class="wfig"><img src="img/real/${a.img.slug}.jpg" alt="${a.title}" loading="lazy"><figcaption>${a.img.cap}</figcaption></figure>`:a.img?(typeof WIMGS!=='undefined'&&WIMGS[wslug(a.title)]?(m=>`<figure class="wfig"><img src="img/wiki/${wslug(a.title)}.jpg" width="${m.w}" height="${m.h}" alt="${a.title}" loading="lazy"><figcaption>${m.cap}</figcaption></figure>`)(WIMGS[wslug(a.title)]):'<figure class="wfig" id="wfig"><div class="wload"><i></i>Generowanie ilustracji…</div></figure>'):''}${a.body}`:'';
+ wa.innerHTML=a?`<div class="sub">${a.cat}${a.tags?' · '+a.tags:''}</div><h2>${a.title}</h2>${a.img&&a.img.type==='real'?`<figure class="wfig"><img src="img/real/${a.img.slug}.jpg" alt="${a.title}" loading="lazy"><figcaption>${a.img.cap}</figcaption></figure>`:a.img?(typeof WIMGS!=='undefined'&&WIMGS[wslug(a.key||a.title)]?(m=>`<figure class="wfig"><img src="img/wiki/${wslug(a.key||a.title)}.jpg" width="${m.w}" height="${m.h}" alt="${a.title}" loading="lazy"><figcaption>${m.cap}</figcaption></figure>`)(WIMGS[wslug(a.key||a.title)]):'<figure class="wfig" id="wfig"><div class="wload"><i></i>Generowanie ilustracji…</div></figure>'):''}${a.body}`:'';
  wa.querySelectorAll('.wgo').forEach(l=>l.onclick=()=>wikiOpen(l.dataset.t));
  if(a&&a.img&&document.getElementById('wfig')){const tok=++WTOK;setTimeout(()=>{if(tok!==WTOK)return;let r=null;try{r=wikiIllus(a.img)}catch(e){console.warn(e)}const fg=document.getElementById('wfig');if(!fg||tok!==WTOK)return;
   if(!r||!r.c){fg.remove();return}const im=document.createElement('img');im.src=r.c.toDataURL('image/jpeg',.9);im.alt=a.title;fg.innerHTML='';fg.appendChild(im);const fc=document.createElement('figcaption');fc.textContent=r.cap;fg.appendChild(fc)},30)}}
