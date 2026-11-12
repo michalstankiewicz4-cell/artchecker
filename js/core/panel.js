@@ -64,7 +64,7 @@ function onChange(){if(tool!==TILT.tool){TILT.tool=tool;TILT.lo=TILT.v<20;TILT.h
  const v=curView();{const lb=document.getElementById('zlamp');lb.style.display=MODE!=='sculpt'&&MODE!=='memory'&&LAMPV[v]?'':'none';lb.textContent=LAMP.on?'🔦 Lampa ruchoma':'💡 Cały obiekt'}document.getElementById('viewlbl').textContent='Widok: '+(MODE==='sculpt'?{normal:'światło dzienne',uv:'promieniowanie UV',xray:'RTG'}[v]||'światło dzienne':VIEWNAME[v]);
  cv.classList.toggle('probe',!!(tool&&TB[tool].probe));
  document.getElementById('sel').textContent=sel?(MODE==='frag'?'Wybrany: fragment':`Wybrany: obiekt ${sel.letter}`):'Nie wybrano obiektu.';
- document.querySelectorAll('#verdicts button').forEach(b=>b.disabled=!KIND&&!sel);
+ document.querySelectorAll('#verdicts button').forEach(b=>b.disabled=!KIND&&MODE!=='sculpt'&&!sel);
  if(MODE==='sculpt'){apply3View();mark3Dirty();schedule3Gates()}else{render();scheduleGates()}
  updatePanel()}
 const VIEWNAME={trans:'światło przechodzące (pod światło)',normal:'światło dzienne',uv:'promieniowanie UV',back:'odwrocie',crackview:'wzmocniona krakelura',raking:'światło boczne',xray:'RTG',ir:'reflektografia IR'};

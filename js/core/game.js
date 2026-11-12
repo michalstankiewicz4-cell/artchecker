@@ -5,9 +5,9 @@
 /* Obiekt uznany za fałszywy = ma zaznaczony co najmniej jeden sygnał na checkliście. */
 const flagged=p=>!!(p.check&&Object.values(p.check).some(Boolean));
 function setVerdicts(){const v=document.getElementById('verdicts');
- v.innerHTML=KIND?'<button class="btn primary" data-v="end">Zakończ ekspertyzę</button>':MODE==='frag'?'<button class="btn primary" data-v="yes" disabled>Pochodzi z oryginału</button> <button class="btn primary" data-v="no" disabled>To nie oryginał</button>':'<button class="btn primary" data-v="pick" disabled>To jest oryginał</button>';
+ v.innerHTML=KIND||MODE==='sculpt'?'<button class="btn primary" data-v="end">Zakończ ekspertyzę</button>':MODE==='frag'?'<button class="btn primary" data-v="yes" disabled>Pochodzi z oryginału</button> <button class="btn primary" data-v="no" disabled>To nie oryginał</button>':'<button class="btn primary" data-v="pick" disabled>To jest oryginał</button>';
  v.querySelectorAll('button').forEach(b=>b.onclick=()=>verdict(b.dataset.v));if(MODE==='memory'&&MEM.phase===1)v.innerHTML=''}
-function verdict(v){if(!sel&&!KIND)return;const m=document.getElementById('modal');let h='';
+function verdict(v){if(!sel&&!KIND&&MODE!=='sculpt')return;const m=document.getElementById('modal');let h='';
  if(KIND){const good=P.filter(p=>p.orig!==flagged(p)).length;
   h=`<h2 style="color:${good===5?'var(--ok)':'var(--bad)'}">Poprawnie sklasyfikowano ${good} z 5 banknotów.</h2>`;
   h+=`<table class="mx"><tr><th>Zabezpieczenie</th>${P.map(p=>`<th>${p.letter}<br><small>${p.orig?'prawdziwy':'fałszywy'} · ${flagged(p)?'checklista: fałszywy':'checklista: prawdziwy'}</small></th>`).join('')}</tr>`+
@@ -19,8 +19,10 @@ function verdict(v){if(!sel&&!KIND)return;const m=document.getElementById('modal
    P.map(p=>`<div class="cp"><b>Obraz ${p.letter} – ${p.orig?'oryginał':'falsyfikat'}</b>${flagged(p)?' <small class="nb">(sygnały na checkliście)</small>':''}${p.orig?'':`<ul>${p.muts.map(q=>`<li>${q.desc}</li>`).join('')}</ul>`}</div>`).join('')+'<div class="cp">Po zamknięciu różnice zostaną zaznaczone na planszy czerwonymi okręgami.</div>';MEM.reveal=true;render()}
  else if(MODE==='frag'){const p=P[0],ok=(v==='yes')===p.orig,d=descItems();h=`<h2 style="color:${ok?'var(--ok)':'var(--bad)'}">${ok?'Trafnie!':'Pudło.'} Fragment ${p.orig?'POCHODZI':'NIE pochodzi'} z oryginału.</h2>`;
   h+=`<table class="mx"><tr><th>Badanie</th><th>Opis oryginału</th><th>Fragment</th><th></th></tr>`+TLIST.filter(t=>d[t.id]).map(t=>{const bad=p.t[t.id];return`<tr><td>${t.name}${p.notes[t.id]?'':' <small class="nb">(nie badano)</small>'}</td><td style="text-align:left">${d[t.id]}</td><td style="text-align:left">${bad?whyBad(p,t.id):t.id==='back'?`zgodne (${p.thread} nitek/cm)`:'zgodne z opisem'}</td><td>${bad?'<span class="x">✖</span>':'<span class="v">✓</span>'}</td></tr>`}).join('')+'</table>'}
- else{const orig=P.find(p=>p.orig),ok=sel===orig,noun=MODE==='sculpt'?'rzeźba':'obraz';
-  h=`<h2 style="color:${ok?'var(--ok)':'var(--bad)'}">${ok?`Trafnie! Oryginałem jest ${noun} ${orig.letter}.`:`Pudło – wskazano ${noun} ${sel.letter}, a oryginałem jest ${noun} ${orig.letter}.`}</h2>`;
+ else{const orig=P.find(p=>p.orig),noun=MODE==='sculpt'?'rzeźba':'obraz';
+  if(MODE==='sculpt'){/* rzeźby: ocena z checklisty – oryginał bez sygnałów, kopie z co najmniej jednym */const good=P.filter(p=>p.orig!==flagged(p)).length,ok=good===P.length;
+   h=`<h2 style="color:${ok?'var(--ok)':'var(--bad)'}">${ok?'Trafnie! ':''}Checklista poprawnie oceniła ${good} z ${P.length} rzeźb. Oryginałem jest rzeźba ${orig.letter}.</h2>`+(flagged(orig)?'<div class="cp">Na checkliście oryginału zaznaczono sygnały fałszerstwa.</div>':'')+(P.some(p=>!p.orig&&!flagged(p))?`<div class="cp">Kopie bez zaznaczeń na checkliście: ${P.filter(p=>!p.orig&&!flagged(p)).map(p=>p.letter).join(', ')}.</div>`:'')}
+  else{const ok=sel===orig;h=`<h2 style="color:${ok?'var(--ok)':'var(--bad)'}">${ok?`Trafnie! Oryginałem jest ${noun} ${orig.letter}.`:`Pudło – wskazano ${noun} ${sel.letter}, a oryginałem jest ${noun} ${orig.letter}.`}</h2>`}
   const rows=TLIST.map(t=>t.id);if(MODE==='paint5'&&P.some(p=>p.t.mark))rows.push('mark');const nm=Object.assign({},EXTRA,...TLIST.map(t=>({[t.id]:t.name})));
   h+=`<table class="mx"><tr><th>Badanie</th>${P.map(p=>`<th>${p.letter}<br><small>${p.orig?'oryginał':'kopia'}${flagged(p)?' · checklista ✕':''}</small></th>`).join('')}</tr>`+
    rows.map(id=>`<tr><td>${nm[id]}</td>${P.map(p=>`<td>${p.t[id]?'<span class="x">✖</span>':'<span class="v">✓</span>'}${p.notes[id]?'':' <small class="nb">(nie badano)</small>'}</td>`).join('')}</tr>`).join('')+'</table>';

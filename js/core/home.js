@@ -60,9 +60,9 @@ function renderHome(){const cats=homeCats(),cat=cats[HCAT],done=(store().done)||
  document.getElementById('hcats').innerHTML=cats.map((c,i)=>`<div class="hp hcat${i===HCAT?' on':''}" data-i="${i}"><canvas></canvas><div><div class="t">${i+1}. ${c.title}</div><div class="s">${c.sub}</div></div><div class="arr">›</div></div>`).join('');
  document.querySelectorAll('.hcat').forEach((el,i)=>{el.onclick=()=>{HCAT=i;HMODE=null;renderHome()};setTimeout(()=>fitDraw(el.querySelector('canvas'),preview(cats[i].modes[0][0]),false),0)});
  const soon=SOON.some(x=>x[0]===HMODE),label=(cat.modes.find(m=>m[0]===HMODE)||[])[1];
- document.getElementById('hdetail').innerHTML=`<h2>${HCAT+1}. ${cat.title}</h2><div class="row"><canvas id="hthumb"></canvas><p>${cat.desc}</p></div>
+ document.getElementById('hdetail').innerHTML=`<div class="hscroll"><h2>${HCAT+1}. ${cat.title}</h2><div class="row"><canvas id="hthumb"></canvas><p>${cat.desc}</p></div>
   <div>${cat.modes.map(([id,l,dis])=>`<div class="hmode${id===HMODE?' on':''}${dis?' dis':''}" data-id="${id}"><span class="dot"></span>${l}${done[id]?`<span class="done">✓ ×${done[id]}</span>`:''}</div>`).join('')}</div>
-  <div class="sub">Badania w tym trybie:</div><div class="htools">${toolNames(HMODE).map(t=>`<span>${t}</span>`).join('')}</div>
+  <div class="sub">Badania w tym trybie:</div><div class="htools">${toolNames(HMODE).map(t=>`<span>${t}</span>`).join('')}</div></div>
   <button class="hbtn" id="hstart"${soon?' disabled':''}>▶ ${soon?'Wkrótce':'Rozpocznij badania'}</button>`;
  document.querySelectorAll('.hmode').forEach(el=>{if(!el.classList.contains('dis'))el.onclick=()=>{HMODE=el.dataset.id;renderHome()}});
  document.getElementById('hstart').onclick=()=>startMode(HMODE);

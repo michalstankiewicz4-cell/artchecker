@@ -9,7 +9,7 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 |---|---|
 | Znajdź oryginał – obrazy | 1 oryginał i 4 kopie, każda wykonana inną metodą fałszerską; podobrazia: płótno, deska dębowa, blacha miedziana |
 | Zniszczony fragment | czy fragment pochodzi z zaginionego dzieła znanego tylko z opisu |
-| Znajdź oryginał – rzeźby z brązu (3D) | brązowe popiersia (Three.js) |
+| Znajdź oryginał – rzeźby z brązu (3D) | brązowe popiersia (Three.js); ocena z checklisty |
 | Znajdź oryginał – rzeźby z marmuru (3D) | dłuto kontra CNC, patyna, kwas – [opis](docs/tryby/marmur.md) |
 | Pamięć eksperta | zapamiętaj oryginał przez lupę, potem znajdź minimalne różnice |
 | Rysunki i grafiki | ołówek, tusz, węgiel, miedzioryt – papier, kreska, odcisk płyty, stemple kolekcji – [opis](docs/tryby/papier.md) |
@@ -19,7 +19,7 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 | Weryfikacja znaczków | ząbkowanie, znak wodny, druk, guma, przedruk – [opis](docs/tryby/znaczek.md) |
 | Weryfikacja monet | waga, średnica, stop, magnes, rant, bicie czy odlew, zużycie – [opis](docs/tryby/moneta.md) |
 
-Artyści, dzieła i waluta są fikcyjne – poza dziełami prawdziwymi z domeny publicznej (na razie: Jan Matejko, „Stańczyk”; Józef Chełmoński, „Babie lato”), które można wybrać na liście „Artysta”; ich wyniki badań są symulowane.
+Artyści, dzieła i waluta są fikcyjne – poza dziełami prawdziwymi z domeny publicznej (na razie: Jan Matejko, „Stańczyk”; Józef Chełmoński, „Babie lato”; Albrecht Dürer, „Melancholia I”), które można wybrać na liście „Artysta”; ich wyniki badań są symulowane.
 
 **Autor:** Michał Stankiewicz i Claude – zrobione przy pomocy vibecodingu i laboratorium sztuki (GameLaboratory).
 

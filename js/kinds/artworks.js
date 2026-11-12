@@ -3,7 +3,7 @@
    PRACE NA PAPIERZE – dwa rodzaje z technikami z ArtKit (laboratorium sztuki GameLaboratory):
    „Rysunki i grafiki” (ołówek, tusz, węgiel, miedzioryt) oraz „Akwarele i pastele”.
    Obraz pracy rysuje ArtKit (js/lab/artkit.js); papier, widoki i zdrady – ten plik.
-   Artyści i dzieła są fikcyjni.
+   Artyści i dzieła są fikcyjni – poza dziełami prawdziwymi (REAL_CUR, js/core/real.js).
    ===================================================================== */
 const PAPER_ARTISTS=[
  {name:'Adam Siemaszko',life:'1820–1879',year:1851},{name:'Ludwika Orańska',life:'1832–1901',year:1864},{name:'Kazimierz Dębicz',life:'1808–1870',year:1839}];
@@ -42,7 +42,14 @@ const PW_PROF_WATER={
 const PW_W=600,PW_H=470,PW_ART={};
 const pwMode=(p,id,def)=>p.t[id]?p.m[id]:def;
 /* obraz pracy z ArtKit – jeden na partię (oryginał) i jeden dla kopii ręcznych (inne ziarno pociągnięć) */
-function pwArt(k,hand){const key=k.cur.tech+'|'+k.cur.seed+'|'+(hand?1:0)+'|'+IW;if(PW_ART[key])return PW_ART[key];const T=PW_TECH[k.cur.tech];
+function pwArt(k,hand){const key=(k.cur.real?k.cur.real.slug:k.cur.tech)+'|'+k.cur.seed+'|'+(hand?1:0)+'|'+IW;if(PW_ART[key])return PW_ART[key];const T=PW_TECH[k.cur.tech];
+ if(k.cur.real){const im=REALIM[k.cur.real.slug];let c;/* oryginał = reprodukcja dzieła; kopia ręczna = ten sam obraz przerysowany techniką ArtKit */
+  c=mk(IW,IH);const x=c.getContext('2d');
+  if(!hand)x.drawImage(im,0,0,IW,IH);
+  else{/* kopia ręczna: najdrobniejsze linie się zlewają (mniejsza rozdzielczość), pasy obrazu lekko przesunięte – kopista prowadzi kreskę wolniej i nierówno */
+   const lo=mk(Math.round(IW*0.45),Math.round(IH*0.45));lo.getContext('2d').drawImage(im,0,0,lo.width,lo.height);const r=rng(k.cur.seed+17),B=24;
+   x.fillStyle='#ece3cf';x.fillRect(0,0,IW,IH);x.filter='contrast(1.06) sepia(0.12)';for(let y=0;y<IH;y+=B){const dx=(r()-.5)*3;x.drawImage(lo,0,y*lo.height/IH,lo.width,B*lo.height/IH,dx,y,IW,B)}x.filter='none'}
+  if(Object.keys(PW_ART).length>8)for(const q in PW_ART)delete PW_ART[q];return PW_ART[key]=c}
  const spec={size:Math.max(IW,IH),aspect:IW/IH,seed:k.cur.seed+(hand?17:0),subject:T.subj,palette:T.kind==='water'?'natural':'cool',technique:k.cur.tech,surface:'paper',relief:0.25,light:135,varnish:0,cracks:0,age:0,stroke:hand?1.08:1,detail:(T.kind==='water'?1:0.7)*(hand?0.85:1)};
  let c=window.ArtKit?ArtKit.render(spec).canvas:null;if(!c){c=mk(IW,IH);const x=c.getContext('2d');x.fillStyle='#ece4d2';x.fillRect(0,0,IW,IH)}
  if(Object.keys(PW_ART).length>8)for(const q in PW_ART)delete PW_ART[q];return PW_ART[key]=c}
@@ -51,9 +58,9 @@ function pwPaperTone(x,old,r){x.save();x.globalCompositeOperation='multiply';x.f
 function pwView(p,v){const k=p.kind,hand=p.profile==='trace'||p.profile==='oldpaper'||p.profile==='modern';
  if(v==='normal')return kView(p,v,(x,c)=>{const r=rng(p.seed+3),old=pwMode(p,'uvp','old')==='old';x.save();x.setTransform(1,0,0,1,0,0);x.drawImage(pwArt(k,hand),0,0,IW,IH);
    if(pwMode(p,'micro','hand')==='inkjet'||pwMode(p,'micro','hand')==='screen'){x.filter='blur(0.6px)';x.drawImage(c,0,0);x.filter='none'}x.restore();
-  pwPaperTone(x,old,r);if(pwMode(p,'paper','laid')==='imitation'){x.strokeStyle='rgba(120,100,70,.12)';x.lineWidth=0.4;for(let y=0;y<H;y+=1.6){x.beginPath();x.moveTo(0,y);x.lineTo(W,y);x.stroke()}}
+  if(!k.cur.real)pwPaperTone(x,old,r);if(pwMode(p,'paper','laid')==='imitation'){x.strokeStyle='rgba(120,100,70,.12)';x.lineWidth=0.4;for(let y=0;y<H;y+=1.6){x.beginPath();x.moveTo(0,y);x.lineTo(W,y);x.stroke()}}
   if(k.id==='water'){const f=pwMode(p,'fade','faded');if(f==='faded'){x.fillStyle='rgba(250,244,228,.16)';x.fillRect(42,42,W-84,H-84)}}
-  if(k.cur.tech==='engraving'){x.strokeStyle='rgba(60,50,40,.35)';x.lineWidth=0.8;x.strokeRect(22,22,W-44,H-44)}});
+  if(k.cur.tech==='engraving'&&!k.cur.real){x.strokeStyle='rgba(60,50,40,.35)';x.lineWidth=0.8;x.strokeRect(22,22,W-44,H-44)}});
  if(v==='trans')return kView(p,v,x=>{const r=rng(p.seed+5),pm=pwMode(p,'paper','laid');x.fillStyle=pm==='wove'?'#f0e6c8':'#ecd9a8';x.fillRect(0,0,W,H);
   for(let i=0;i<60;i++){x.fillStyle=`rgba(120,90,40,${r()*.08})`;x.beginPath();x.ellipse(r()*W,r()*H,8+r()*30,6+r()*20,r()*3,0,7);x.fill()}
   if(pm==='laid'){x.strokeStyle='rgba(255,252,235,.55)';x.lineWidth=0.5;for(let y=0;y<H;y+=1.4){x.beginPath();x.moveTo(0,y+(r()-.5)*.3);x.lineTo(W,y);x.stroke()}x.strokeStyle='rgba(110,80,40,.35)';x.lineWidth=1.4;for(let X=18;X<W;X+=24){x.beginPath();x.moveTo(X,0);x.lineTo(X+(r()-.5)*1.5,H);x.stroke()}
@@ -103,14 +110,18 @@ function pwObs(p,id){const T=PW_TECH[p.kind.cur.tech],m=(k,d)=>pwMode(p,k,d);swi
 function pwWhy(p,id){const m=p.m;return({paper:()=>m.paper==='imitation'?'Linie sita nadrukowane – imitacja papieru czerpanego.':'Papier maszynowy zamiast czerpanego.',uvp:()=>'Wybielacze optyczne – papier po 1950 r.',
  back:()=>m.back==='forged'?'Podrobiony stempel kolekcji – świeży tusz anilinowy.':'Brak znaków kolekcji wymienionej w proweniencji.',micro:()=>m.micro==='inkjet'?'Druk atramentowy zamiast rysunku.':'Raster reprodukcji fotomechanicznej.',
  relief:()=>m.relief==='traced'?'Puste rowki po rysiku – przerys przez kalkę.':'Brak wgnieceń narzędzia i odcisku płyty – druk płaski.',line:()=>'Wolna, drżąca linia kopisty.',xrf:()=>'Materiał współczesny, niedostępny w epoce.',fade:()=>'Brak granicy dawnej oprawy – praca nie była wystawiana na światło.'}[id]||(()=>''))()}
-function pwKind(id,label,noun,techs,defs,sets,profiles){return{id,label,noun,group:'art',W:PW_W,H:PW_H,wcm:30,hcm:23.5,tilt:false,focusLabel:'Detal',defs,sets,profiles,cur:{tech:techs[0],seed:1,art:PAPER_ARTISTS[0]},
+function pwKind(id,label,noun,techs,defs,sets,profiles){return{id,label,noun,group:'art',W:PW_W,H:PW_H,wcm:30,hcm:23.5,techs,tilt:false,focusLabel:'Detal',defs,sets,profiles,cur:{tech:techs[0],seed:1,art:PAPER_ARTISTS[0]},
  originals:r=>1,
- newGame(r){const tech=pick(techs,r);this.cur={tech,seed:1+(r()*1e6|0),art:pick(PAPER_ARTISTS,r)};this.cur.title=PW_TECH[tech].title;
+ newGame(r){const R=REAL_CUR&&REAL_CUR.mode===id?REAL_CUR:null;
+  if(R){const im=REALIM[R.slug],a=im.width/im.height;this.W=a>=1?600:Math.round(560*a);this.H=a>=1?Math.round(600/a):560;this.wcm=R.wcm||Math.round(this.W/20);this.hcm=R.hcm||Math.round(this.H/20);
+   this.cur={tech:R.kindTech,seed:1+(r()*1e6|0),art:{name:R.artist,life:R.life,year:R.year},title:R.title,real:R}}
+  else{this.W=PW_W;this.H=PW_H;this.wcm=30;this.hcm=23.5;const tech=pick(techs,r);this.cur={tech,seed:1+(r()*1e6|0),art:pick(PAPER_ARTISTS,r)};this.cur.title=PW_TECH[tech].title}
+  const tech=this.cur.tech;
   kindBatch(this,r);
   if(tech==='engraving'){const extra=P.find(p=>!p.orig&&p.profile==='oldpaper');if(extra&&r()<0.5){extra.orig=true;extra.profile=null;extra.t={};extra.m={}}}},
  view:pwView,live:pwLive,area:pwArea,obs:pwObs,why:pwWhy,focus:p=>[p.x+W*0.35,p.y+H*0.3,W*0.3,H*0.3],
- get intro(){const c=this.cur,T=PW_TECH[c.tech];return`Na stole leżą arkusze: ${T.full.toLowerCase()} „${c.title}” – ${c.art.name} (${c.art.life}), ${c.art.year}. Oryginał na papierze czerpanym, z kolekcji K.Z. Sprawdź papier pod światło i w UV, odwrocie, `+(this.id==='water'?'strukturę farby, relief, granicę dawnej oprawy':'strukturę i relief kreski, jej płynność')+` oraz materiał. Na checkliście każdego arkusza zaznacz sygnały fałszerstwa.`},
- caseText(){const c=this.cur,T=PW_TECH[c.tech];return`Sprawa: ${T.full} „${c.title}” – ${c.art.name} (${c.art.life}), ${c.art.year}, ${T.label} na papierze czerpanym, 30 × 23,5 cm, stempel kolekcji K.Z. na odwrociu. Na stole ${P.length} arkuszy. (Artyści i dzieła są fikcyjni.)`}}}
+ get intro(){const c=this.cur,T=PW_TECH[c.tech];if(c.real)return`Na stole leżą arkusze: ${c.real.tech} „${c.title}” – ${c.art.name} (${c.art.life}), ${c.art.year}. Jeden to oryginał (reprodukcja dzieła), pozostałe to kopie zrobione przez grę. Sprawdź papier pod światło i w UV, odwrocie, `+(this.id==='water'?'strukturę farby, relief, granicę dawnej oprawy':'strukturę i relief kreski, jej płynność')+` oraz materiał. Na checkliście każdego arkusza zaznacz sygnały fałszerstwa. Wyniki badań, znak wodny i stempel kolekcji są symulowane.`;return`Na stole leżą arkusze: ${T.full.toLowerCase()} „${c.title}” – ${c.art.name} (${c.art.life}), ${c.art.year}. Oryginał na papierze czerpanym, z kolekcji K.Z. Sprawdź papier pod światło i w UV, odwrocie, `+(this.id==='water'?'strukturę farby, relief, granicę dawnej oprawy':'strukturę i relief kreski, jej płynność')+` oraz materiał. Na checkliście każdego arkusza zaznacz sygnały fałszerstwa.`},
+ caseText(){const c=this.cur,T=PW_TECH[c.tech];if(c.real){const e=c.real;return`Dzieło prawdziwe: „${e.title}” – ${e.artist} (${e.life}), ${e.year}, ${e.tech}${e.wcm?`, ok. ${fmt(e.hcm)} × ${fmt(e.wcm)} cm`:''}, ${e.museum}. Na stole ${P.length} arkuszy: reprodukcja oryginału i kopie zrobione przez grę. Wyniki badań są symulowane.`}return`Sprawa: ${T.full} „${c.title}” – ${c.art.name} (${c.art.life}), ${c.art.year}, ${T.label} na papierze czerpanym, 30 × 23,5 cm, stempel kolekcji K.Z. na odwrociu. Na stole ${P.length} arkuszy. (Artyści i dzieła są fikcyjni.)`}}}
 registerKind(pwKind('drawing','Rysunki i grafiki','Arkusz',['pencil','ink','charcoal','engraving'],Object.fromEntries(Object.entries(PW_DEF).filter(([k])=>k!=='fade')),PW_SET_DRAW,PW_PROF_DRAW));
 registerKind(pwKind('water','Akwarele i pastele','Arkusz',['watercolor','pastel'],Object.fromEntries(Object.entries(PW_DEF).filter(([k])=>k!=='line')),PW_SET_WATER,PW_PROF_WATER));
 Object.assign(AREA,{pwdesign:'środek widoku na rysunku',edge:'środek widoku przy brzegu arkusza (dawne passe-partout)'});

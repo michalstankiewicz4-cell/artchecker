@@ -2,6 +2,13 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.22.0] – 2026-11-12
+### Dodane
+- **Dzieło prawdziwe w „Rysunkach i grafikach”: Albrecht Dürer, „Melancholia I” (1514, miedzioryt, The Met, CC0).** Oryginał to reprodukcja dzieła, kopie druku to ten sam obraz z rastrem, a kopie ręczne tracą najdrobniejsze linie i mają lekko rozjechaną kreskę. Wymiary arkusza wynikają z proporcji dzieła; zlecenie i opis mówią, że wyniki badań, znak wodny i stempel kolekcji są symulowane. Hasło w wiki („Dzieła prawdziwe”).
+### Zmienione
+- **Rzeźby (brąz i marmur): bez przycisku „To jest oryginał”.** Jest „Zakończ ekspertyzę”, a ocenę daje checklista – rzeźba bez zaznaczonych sygnałów fałszerstwa liczy się jako wskazany oryginał.
+- **Ekran startowy:** przycisk „Rozpocznij badania” jest zawsze widoczny, a opis, lista trybów i badania nad nim przewijają się.
+
 ## [1.21.0] – 2026-11-12
 ### Usunięte
 - Przyciski ręcznego oznaczania obiektów („? Podejrzany”, „✕ Wykluczony / Falsyfikat”, „✓ Prawdziwy”, „Bez oznaczenia”) i ich znaczki na stole.

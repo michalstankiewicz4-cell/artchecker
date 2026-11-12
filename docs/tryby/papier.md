@@ -1,6 +1,6 @@
 # Tryby: Rysunki i grafiki · Akwarele i pastele
 
-Prace na papierze (`js/kinds/artworks.js`). Obraz pracy rysuje ArtKit z laboratorium sztuki GameLaboratory (`js/lab/artkit.js`) – techniką wylosowaną dla partii. Artyści i dzieła są fikcyjni.
+Prace na papierze (`js/kinds/artworks.js`). Obraz pracy rysuje ArtKit z laboratorium sztuki GameLaboratory (`js/lab/artkit.js`) – techniką wylosowaną dla partii. Artyści i dzieła są fikcyjni – poza dziełami prawdziwymi z listy „Artysta” (na razie: Albrecht Dürer, „Melancholia I”, miedzioryt). Przy dziele prawdziwym oryginałem jest reprodukcja z Wikimedia Commons; kopie druku (faksymile, reprodukcja fotomechaniczna) to ten sam obraz z drukiem rastrowym, a kopie ręczne – obraz z utratą najdrobniejszych linii i lekkim rozjechaniem kreski. Wymiary arkusza wynikają z proporcji dzieła. Znak wodny, stempel kolekcji i wyniki badań są symulowane.
 
 | | Rysunki i grafiki | Akwarele i pastele |
 |---|---|---|
