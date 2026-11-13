@@ -2,6 +2,15 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.34.0] – 2026-11-13
+### Zmienione
+- **Rzeźby na prawdziwych dziełach (skany 3D):**
+  - brąz: „James Garfield”, John Quincy Adams Ward, ok. 1883–1887, wys. 47,6 cm – National Portrait Gallery, Smithsonian (NPG.2008.3), skan CC0 z oryginalną teksturą;
+  - marmur: „Napoleon”, Antoine-Denis Chaudet, wys. 64 cm – The Usher Gallery, Lincoln, skan Olivera Larica (threedscans.com), bez ograniczeń praw autorskich; powierzchnia marmuru z materiałów gry.
+  Siatki uproszczone (45 i 50 tys. trójkątów) skryptem `tools/build-models.mjs` (GitHub Actions). Fikcyjne „Popiersie Heleny” i „Popiersie Zofii” usunięte.
+- Teksty, katalog, proweniencja i certyfikaty dopasowane do prawdziwych dzieł; masa, sygnatury, proweniencja, certyfikaty i wyniki badań są symulowane (zlecenie to mówi).
+- „O programie”: źródła i licencje skanów 3D.
+
 ## [1.33.1] – 2026-11-13
 ### Zmienione
 - Prawy przycisk myszy zablokowany wszędzie poza wiki: nie otwiera menu przeglądarki, nie wybiera obiektów ani nie przesuwa widoku. W rzeźbach 3D widok przesuwa się teraz przez Shift + przeciągnij.

@@ -1,3 +1,3 @@
 "use strict";
 /* Wersja gry – podbijaj przy każdej zmianie (semver) i dopisz wpis w CHANGELOG.md */
-const VERSION='1.33.1';
+const VERSION='1.34.0';

@@ -2,20 +2,20 @@
 /* =====================================================================
    RZEŹBY 3D
    ===================================================================== */
-const SCU={name:'Stanisław Rudnicki',life:'1840–1905',title:'Popiersie Heleny',year:1888,hcm:52.0,kg:8.4};
+const SCU={name:'John Quincy Adams Ward',life:'1830–1910',title:'James Garfield',year:1885,hcm:47.6,kg:9.6};
 const SPROF={
- surm:{name:'Surmoulage – odlew z formy zdjętej z oryginału',core:['dims','tool','mark'],opt:['prov','cert','seam'],mark:'blur',tool:'soft',hcm:51.2},
+ surm:{name:'Surmoulage – odlew z formy zdjętej z oryginału',core:['dims','tool','mark'],opt:['prov','cert','seam'],mark:'blur',tool:'soft',hcm:46.9},
  cold:{name:'Odlew z żywicy z pyłem brązu (cold cast)',core:['weight','xray','xrf','uv'],opt:['tool','patina','prov'],xrf:'resin',xray:'resin',tool:'smooth'},
  modern:{name:'Współczesny odlew w brązie krzemowym',core:['xrf','patina','seam'],opt:['mark','xray','style'],xrf:'si',xray:'lost',mark:'none'},
- oldcopy:{name:'Nieautoryzowany odlew z epoki z innej odlewni',core:['mark','dims'],opt:['style','prov','cert'],mark:'other',hcm:52.9},
+ oldcopy:{name:'Nieautoryzowany odlew z epoki z innej odlewni',core:['mark','dims'],opt:['style','prov','cert'],mark:'other',hcm:48.4},
  papers:{name:'Odlew z podrobioną dokumentacją',core:['prov','cert'],opt:['mark','patina','xrf'],xrf:'brass',mark:'none',prov:'noCR',cert:'issuer'},
 };
 const DEF3={
  xrf:{name:'Analiza stopu (XRF)',probe:'xrf',gate3:{d:0.75,click:true},hint:'Podejdź blisko (≤ 75 cm) i kliknij powierzchnię rzeźby. Katalog podaje brąz cynowy. Brąz krzemowy pojawił się dopiero ok. 1927 r.; żywica z pyłem metalu to nie brąz.'},
  uv:{name:'Lampa UV',view:'uv',gate3:{d:2.5},hint:'Stary wosk konserwujący świeci słabo i równomiernie. Żywice syntetyczne fluoryzują silnie.'},
  patina:{name:'Patyna (z bliska)',gate3:{d:0.6},hint:'Naturalna patyna gromadzi zielone produkty korozji na powierzchniach poziomych i w zagłębieniach, a wypukłości (nos, broda) są wytarte do jaśniejszego metalu. Patyna chemiczna jest jednolita.'},
- weight:{name:'Waga',hint:'Porównaj masę z katalogiem (8,4 kg). Odlew z żywicy z pyłem metalu jest wielokrotnie lżejszy.'},
- dims:{name:'Pomiar (suwmiarka)',gate3:{d:1.6},hint:'Podejdź na ≤ 1,6 m – obok wybranej rzeźby pojawi się miara. Katalog: 52,0 cm. Odlew z formy zdjętej z gotowej rzeźby (surmoulage) jest mniejszy o 1–2% przez skurcz metalu.'},
+ weight:{name:'Waga',hint:'Porównaj masę z opisem w katalogu zbiorów (9,6 kg). Odlew z żywicy z pyłem metalu jest wielokrotnie lżejszy.'},
+ dims:{name:'Pomiar (suwmiarka)',gate3:{d:1.6},hint:'Podejdź na ≤ 1,6 m – obok wybranej rzeźby pojawi się miara. Katalog: 47,6 cm. Odlew z formy zdjętej z gotowej rzeźby (surmoulage) jest mniejszy o 1–2% przez skurcz metalu.'},
  style:{name:'Porównanie z fotografią katalogową',gate3:{d:1.1,az:'front'},hint:'Stań na wprost rzeźby (≤ 1,1 m). Porównaj proporcje i ułożenie głowy z fotografią z katalogu raisonné. Kopie modelowane „z oka” mają błędy proporcji.'},
  mark:{name:'Znak odlewni i sygnatura',gate3:{d:0.5,az:'back'},hint:'Znak odlewni i sygnatura są z tyłu cokołu – obejdź rzeźbę i podejdź na ≤ 50 cm. Odlew wtórny ma rozmyty znak; inna odlewnia – inny znak; brak znaku i świeżo wyryty podpis są podejrzane.'},
  prov:{name:'Proweniencja',hint:'Prześledź historię odlewu: księgi odlewni, wystawy, katalog raisonné.'},
@@ -30,26 +30,26 @@ function obs3(q,id){const t=q.t;switch(id){
  case'uv':return q.uv==='resin'?'Silna, zielonkawa fluorescencja całej powierzchni.':'Słaba, równomierna fluorescencja warstwy wosku.';
  case'patina':return t.patina?'Jednolita brązowa patyna chemiczna – brak produktów korozji w zagłębieniach, wypukłości nie są wytarte.':'Zielone produkty korozji na powierzchniach poziomych i w zagłębieniach (pod brodą, na cokole); nos i broda wytarte do jaśniejszego metalu.';
  case'weight':return`Masa: ${fmt(q.kg.toFixed(1))} kg.`;case'dims':return`Wysokość: ${fmt(q.hcm.toFixed(1))} cm.`;
- case'style':return t.style?'Nos wyraźnie dłuższy, głowa przechylona w bok – inaczej niż na fotografii katalogowej.':'Proporcje twarzy i ułożenie głowy zgodne z fotografią katalogową.';
- case'mark':return{ok:'Ostry znak odlewni „J. BRACŁAWSKI · WARSZAWA” i sygnatura „S. Rudnicki 1888” odlane razem z cokołem.',blur:'Znak odlewni i sygnatura rozmyte, płytkie i nieco mniejsze niż na fotografii katalogowej.',other:'Znak innej odlewni: „ODLEWNIA K. SZPAKOWSKI”.',none:'Brak znaku odlewni; sygnatura cienko wyryta w gotowym odlewie – ostre, jasne krawędzie rytu.'}[q.mark];
+ case'style':return t.style?'Głowa przechylona w bok – inaczej niż na fotografii katalogowej.':'Proporcje twarzy i ułożenie głowy zgodne z fotografią katalogową.';
+ case'mark':return{ok:'Sygnatura „J.Q.A. WARD SC.” odlana razem z cokołem – ostre krawędzie, ta sama patyna co na cokole.',blur:'Sygnatura rozmyta, płytka i nieco mniejsza niż na fotografii katalogowej.',other:'Pod sygnaturą znak odlewni „N.Y. BRONZE CO.”, którego nie ma na fotografii katalogowej.',none:'Brak sygnatury odlanej z cokołem; podpis cienko wyryty w gotowym odlewie – ostre, jasne krawędzie rytu.'}[q.mark];
  case'tool':return{chase:'Krótkie, nieregularne ślady cyzelowania i drobna porowatość odlewu.',soft:'Detal zmiękczony i rozmyty, ślady cyzelowania niewyraźne – jakby odbite z innej powierzchni.',smooth:'Powierzchnia gładka, bez śladów narzędzi; drobne kuliste pęcherzyki powietrza.'}[q.tool];
  case'seam':return t.seam?'Ciągły, wyraźny szew formy po obu bokach głowy, szyi i tułowia.':'Szwy formy usunięte i zacyzelowane – brak widocznych linii podziału.';
  case'xray':return{sand:'Ścianki nierównej grubości, resztki rdzenia odlewniczego, kute żelazne trzpienie.',lost:'Cienkie, równe ścianki; brak rdzenia i trzpieni.',resin:'Materiał jednolity, słabo pochłaniający promieniowanie; brak metalowej skorupy i rdzenia.'}[q.xray];
- case'prov':return!t.prov?'Ciągła historia od 1888 r.: księga zamówień odlewni, wystawa 1890, katalog raisonné nr 76.':q.m.prov==='attic'?'Brak historii przed 2025 r. – „znaleziony na strychu”; brak w katalogu raisonné.':'Historia dopiero od 1998 r.; brak w katalogu raisonné i w księgach odlewni.';
- case'cert':return!t.cert?'Certyfikat kompletny, dane zgodne z katalogiem, podpis rzeczoznawcy.':q.m.cert==='dims'?'Wysokość w certyfikacie: 49,5 cm – niezgodna z pomiarem.':'Wystawca bez uprawnień, brak materiału i daty, podpis drukowany.'}}
+ case'prov':return!t.prov?'Historia zgodna z opisem w zbiorach National Portrait Gallery (NPG.2008.3).':q.m.prov==='attic'?'Brak historii przed 2025 r. – „znaleziony na strychu”; brak w katalogu zbiorów.':'Historia dopiero od 1998 r.; brak w katalogu zbiorów.';
+ case'cert':return!t.cert?'Certyfikat kompletny, dane zgodne z katalogiem, podpis rzeczoznawcy.':q.m.cert==='dims'?'Wysokość w certyfikacie: 45,5 cm – niezgodna z pomiarem.':'Wystawca bez uprawnień, brak materiału i daty, podpis drukowany.'}}
 function why3(q,id){return({xrf:()=>({si:'Brąz krzemowy – stop wprowadzony ok. 1927 r., po dacie rzeźby.',resin:'Żywica z pyłem metalu – to nie jest odlew w brązie.',brass:'Mosiądz zamiast brązu cynowego podanego w katalogu.'})[q.xrf],
  uv:()=>'Silna fluorescencja żywicy syntetycznej.',patina:()=>'Sztuczna, chemiczna patyna – brak naturalnego starzenia.',weight:()=>'Masa kilkakrotnie mniejsza niż w katalogu – to nie jest pełny odlew z brązu.',
- dims:()=>q.hcm<52?'Wysokość mniejsza o ok. 1,5% – skurcz odlewu wtórnego (surmoulage).':'Wysokość niezgodna z katalogiem – inny model odlewniczy.',
- style:()=>'Błąd proporcji – kopia modelowana bez dostępu do oryginału.',mark:()=>({blur:'Rozmyty, mniejszy znak – odbity z oryginału razem z formą.',other:'Znak innej odlewni – nieautoryzowany odlew.',none:'Brak znaku odlewni, sygnatura dodana po odlaniu.'})[q.mark],
+ dims:()=>q.hcm<47.6?'Wysokość mniejsza o ok. 1,5% – skurcz odlewu wtórnego (surmoulage).':'Wysokość niezgodna z katalogiem – inny model odlewniczy.',
+ style:()=>'Błąd proporcji – kopia modelowana bez dostępu do oryginału.',mark:()=>({blur:'Rozmyty, mniejszy znak – odbity z oryginału razem z formą.',other:'Znak odlewni, którego nie ma na oryginale – nieautoryzowany odlew.',none:'Sygnatura dodana po odlaniu.'})[q.mark],
  tool:()=>q.tool==='soft'?'Zmiękczony detal – typowy dla odlewu z formy zdjętej z gotowej rzeźby.':'Gładka powierzchnia z pęcherzykami – odlew żywiczny.',seam:()=>'Niezacyzelowany szew – seryjny odlew współczesny.',
  xray:()=>q.xray==='lost'?'Cienkie, równe ścianki – współczesny wosk tracony ze skorupą ceramiczną.':'Brak metalu wewnątrz – odlew żywiczny.',
- prov:()=>q.m.prov==='attic'?'„Znaleziony na strychu” – brak historii.':'Historia od 1998 r., brak w katalogu i księgach odlewni.',cert:()=>q.m.cert==='dims'?'Wysokość w certyfikacie niezgodna z rzeźbą.':'Certyfikat od podmiotu bez uprawnień.'}[id]||(()=>''))()}
+ prov:()=>q.m.prov==='attic'?'„Znaleziony na strychu” – brak historii.':'Historia od 1998 r., brak w katalogu zbiorów.',cert:()=>q.m.cert==='dims'?'Wysokość w certyfikacie niezgodna z rzeźbą.':'Certyfikat od podmiotu bez uprawnień.'}[id]||(()=>''))()}
 let T3=null,THREE_P=null;
 function loadThree(){if(window.THREE)return Promise.resolve();if(THREE_P)return THREE_P;THREE_P=new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s)});return THREE_P}
 function newSculpt(r){const PR=SV.profiles,list=[{orig:true,profile:null,t:{}}];shuffle(Object.keys(PR),r).slice(0,4).forEach(k=>list.push({orig:false,profile:k,t:rollTells(PR[k],r)}));shuffle(list,r);
  P=list.map((q,i)=>{const pr=q.profile?PR[q.profile]:{},t=q.t,qr=rng((r()*1e9)|0);q.letter='ABCDE'[i];q.seed=(qr()*1e9)|0;q.notes={};q.samples=[];q.umark='';
   SV.initQ(q,pr,t,qr);q.m={prov:pr.prov||pick(['attic','noCR'],qr),cert:pr.cert||pick(['dims','issuer'],qr)};return q})}
-function bronzeInitQ(q,pr,t,qr){q.hcm=t.dims?pr.hcm:52.0;q.kg=t.weight?3.1:8.4+(qr()-.5)*0.12;q.xrf=t.xrf?pr.xrf:'bronze';q.patina=t.patina?'chem':'natural';q.uv=t.uv?'resin':'wax';q.tool=t.tool?pr.tool:'chase';
+function bronzeInitQ(q,pr,t,qr){q.hcm=t.dims?pr.hcm:47.6;q.kg=t.weight?3.6:9.6+(qr()-.5)*0.12;q.xrf=t.xrf?pr.xrf:'bronze';q.patina=t.patina?'chem':'natural';q.uv=t.uv?'resin':'wax';q.tool=t.tool?pr.tool:'chase';
  q.xray=t.xray?(pr.xray||'lost'):'sand';q.mark=t.mark?(pr.mark||'none'):'ok';q.cold=q.profile==='cold'}
 function texCanvas(fn,w=1024,h=1024){const c=mk(w,h);fn(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t}
 function bumpTex(mode,seed){const r=rng(seed);return texCanvas((x,w,h)=>{x.fillStyle='#808080';x.fillRect(0,0,w,h);
@@ -74,7 +74,7 @@ function lathed(prof,seg){const pos=[],idx=[],add=(x,y,z)=>(pos.push(x,y,z),pos.
  cap(R[0],prof[0][0],prof[0][1],true);cap(R[R.length-1],prof[prof.length-1][0],prof[prof.length-1][1],false);
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));const uv=[];for(let i=0;i<pos.length;i+=3)uv.push(Math.atan2(pos[i],pos[i+2])/(Math.PI*2)+0.5,pos[i+1]/40);
  g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();return g}
-function bustGeoms(q){const V2=(p)=>p.map(a=>new THREE.Vector2(a[0],a[1])),gs=[];
+function bustGeoms(q){if(SV&&SV.real&&R3[SV.real.model])return[real3Geo(q)];const V2=(p)=>p.map(a=>new THREE.Vector2(a[0],a[1])),gs=[];
  gs.push(lathed([[11,0],[11,1.5],[10,2.2],[9.2,3],[9.2,6],[10,7],[10,8]],56));
  const torso=lathed([[13,8],...TORSO.map(a=>[a[1],a[0]])],64);torso.scale(1.18,1,0.55);gs.push(torso);
  const neck=new THREE.CylinderGeometry(5.1,5.4,3.6,40);neck.scale(1,1,0.82);neck.translate(0,30.3,-0.95);gs.push(neck);
@@ -105,23 +105,24 @@ function headGeoms(q){const key=q.t.style?'s':'n';if(!BH_CACHE[key]){const P=BUS
    for(let i=0;i<m;i+=3){HT.push(HT[i]+n,HT[i+2]+n,HT[i+1]+n);for(const[a,b]of[[HT[i],HT[i+1]],[HT[i+1],HT[i+2]],[HT[i+2],HT[i]]]){const kk=a<b?a+'_'+b:b+'_'+a;if(ec.get(kk)===1)HT.push(b,a,a+n,b,a+n,b+n)}}}
   BH_CACHE[key]={P,T,H,HT}}
  const c=BH_CACHE[key];return{head:bhGeo(c.P,c.T),hair:bhGeo(c.H,c.HT)}}
-function seamGeo(sign){const v=[];for(let y=9;y<=29;y+=2)v.push(new THREE.Vector3(sign*(torsoR(y)+0.05),y,0));for(let y=30.5;y<=32.5;y+=1)v.push(new THREE.Vector3(sign*4.9,y,0));
+function seamGeo(sign){if(SV&&SV.real&&R3[SV.real.model])return real3Seam(sign);const v=[];for(let y=9;y<=29;y+=2)v.push(new THREE.Vector3(sign*(torsoR(y)+0.05),y,0));for(let y=30.5;y<=32.5;y+=1)v.push(new THREE.Vector3(sign*4.9,y,0));
  const c=BH_CACHE.n||BH_CACHE.s;if(c)for(let y=-0.55;y<=0.6;y+=0.05){let m=0;for(const p of c.P)if(Math.abs(p[1]-y)<0.03&&Math.abs(p[2])<0.08)m=Math.max(m,Math.abs(p[0]));if(m>0)v.push(new THREE.Vector3(sign*(m*BH_S+0.08),y*BH_S+BH_Y,0))}return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(v),160,0.14,6,false)}
 function markTex(mode){return texCanvas((x,w,h)=>{x.clearRect(0,0,w,h);const draw=(t,y,f)=>{x.font=f;x.textAlign='center';x.fillStyle='rgba(255,226,170,.35)';x.fillText(t,w/2+2,y+3);x.fillStyle='rgba(22,13,6,.95)';x.fillText(t,w/2,y)};
- if(mode==='ok'||mode==='blur'){if(mode==='blur'){x.filter='blur(5px)';x.translate(w/2,h/2);x.scale(0.9,0.9);x.translate(-w/2,-h/2)}draw('J. BRACŁAWSKI · WARSZAWA',110,'bold 72px Georgia');draw('S. Rudnicki 1888',220,'italic 70px Georgia')}
- if(mode==='other'){draw('ODLEWNIA K. SZPAKOWSKI',110,'bold 70px Georgia');draw('S. Rudnicki 1888',220,'italic 70px Georgia')}
- if(mode==='none'){x.font='italic 62px Georgia';x.textAlign='center';x.strokeStyle='rgba(235,220,190,.95)';x.lineWidth=2.2;x.strokeText('S. Rudnicki 1888',w/2,180)}},1024,280)}
+ if(mode==='ok'||mode==='blur'){if(mode==='blur'){x.filter='blur(5px)';x.translate(w/2,h/2);x.scale(0.9,0.9);x.translate(-w/2,-h/2)}draw('J.Q.A. WARD SC.',150,'bold 92px Georgia')}
+ if(mode==='other'){draw('J.Q.A. WARD SC.',110,'bold 84px Georgia');draw('N.Y. BRONZE CO.',220,'bold 66px Georgia')}
+ if(mode==='none'){x.font='italic 70px Georgia';x.textAlign='center';x.strokeStyle='rgba(235,220,190,.95)';x.lineWidth=2.2;x.strokeText('J.Q.A. Ward',w/2,170)}},1024,280)}
 function spriteText(lines,w,h,bg){const c=mk(w,h),x=c.getContext('2d');if(bg){x.fillStyle=bg;x.beginPath();x.roundRect?x.roundRect(4,4,w-8,h-8,18):x.rect(4,4,w-8,h-8);x.fill()}
  x.textAlign='center';lines.forEach(([t,f,col,y])=>{x.font=f;x.fillStyle=col;x.fillText(t,w/2,y)});const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false,transparent:true}));return s}
 function bronzeSurface(q,gs){gs.forEach(g=>colorize(g,q.patina,q.seed%1000));const bt=bumpTex(q.tool,q.seed),pt=patTex(q.seed+1);bt.repeat.set(7,7);pt.repeat.set(2,2);
- return{mat:new THREE.MeshStandardMaterial({vertexColors:true,map:pt,bumpMap:bt,bumpScale:0.012,metalness:q.cold?0.45:0.82,roughness:q.cold?0.6:0.46}),
+ const rt=q.patina==='natural'&&SV.real?real3Tex():null;
+ return{mat:new THREE.MeshStandardMaterial({vertexColors:!rt,map:rt||pt,bumpMap:bt,bumpScale:rt?0.003:0.012,metalness:rt?0.3:(q.cold?0.45:0.82),roughness:rt?0.55:(q.cold?0.6:0.46)}),
   uvMat:new THREE.MeshStandardMaterial({color:0x0c0812,emissive:q.uv==='resin'?0x4f9a3c:0x23301f,roughness:.9,metalness:0}),
   xMat:new THREE.MeshBasicMaterial({color:q.xray==='resin'?0x6a8a70:0xa8c4dc,transparent:true,opacity:q.xray==='resin'?0.05:0.08,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide})}}
 function buildBust(q,i,forPhoto){const grp=new THREE.Group(),gs=bustGeoms(q),{mat,uvMat,xMat}=SV.surface(q,gs);
  const outer=[];gs.forEach(g=>{const m=new THREE.Mesh(g,mat);m.userData.q=q;outer.push(m);grp.add(m)});
  if(q.t.seam)for(const s of[-1,1]){const m=new THREE.Mesh(seamGeo(s),mat);m.userData.q=q;outer.push(m);grp.add(m)}
  const decal=new THREE.Mesh(new THREE.PlaneGeometry(9.5,2.6),new THREE.MeshStandardMaterial({map:SV.markTex(q),transparent:true,metalness:.5,roughness:.6,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2}));
- decal.position.set(0,4.6,-9.32);decal.rotation.y=Math.PI;grp.add(decal);
+ if(SV.real&&R3[SV.real.model]){const rb=real3Base(SV.real);decal.position.set(0,4.6,rb.backZ-0.06);const ws=Math.min(1,rb.baseW*0.85/9.5);decal.scale.set(ws,ws,1)}else decal.position.set(0,4.6,-9.32);decal.rotation.y=Math.PI;grp.add(decal);
  const inner=SV.inner(q);inner.visible=false;
  grp.add(inner);const k=q.hcm/52*0.01;grp.scale.setScalar(k);
  const root=new THREE.Group();root.add(grp);if(forPhoto)return root;
@@ -197,16 +198,16 @@ function panel3(q){let h='';if(tool==='xrf'){const v=q.notes.xrf;h+=v?`<div clas
  else if(T.gate3&&!T.gate3.click)h+=`<div class="obs" style="color:var(--mut)">Spełnij warunek powyżej – obserwacja zapisze się automatycznie.</div>`;
  else if(['prov','cert'].includes(tool)){note(q,tool,SV.obs(q,tool));h+=`<div class="obs"><b>Obserwacja:</b> ${q.notes[tool]}</div>`}return h}
 function after3(q){const b=document.getElementById('weigh');if(b)b.onclick=()=>{note(q,'weight',SV.obs(q,'weight'));toast(`Rzeźba ${q.letter}: ${fmt(q.kg.toFixed(1))} kg`);onChange()}}
-function bronzeProv(q){return !q.t.prov?`<ul class="tl"><li><b>1888</b> – odlew w odlewni J. Bracławskiego (księga zamówień, poz. 412)</li><li><b>1890</b> – wystawa TZSP, Warszawa, kat. nr 58</li><li><b>1891</b> – zakup: kolekcja Ludwika Krasnodębskiego</li><li><b>1937</b> – spadek: rodzina Orliczów</li><li><b>1975</b> – aukcja, Dom Aukcyjny „Nowy Świat”</li><li><b>2026</b> – zgłoszona do ekspertyzy</li></ul><div class="obs"><b>Katalog raisonné</b> (2011), nr 76: brąz, wys. 52,0 cm, 8,4 kg; znak odlewni i sygnatura z tyłu cokołu; fotografia.</div>`
+function bronzeProv(q){return !q.t.prov?`<ul class="tl"><li><b>ok. 1883–1887</b> – statuetka wykonana przez J.Q.A. Warda</li><li><b>2008</b> – National Portrait Gallery, Smithsonian Institution (NPG.2008.3)</li><li><b>2026</b> – (symulacja) zgłoszona do ekspertyzy</li></ul><div class="obs"><b>Katalog zbiorów NPG:</b> brąz na integralnym brązowym cokole, wys. 47,6 cm. Symulowane: masa 9,6 kg, sygnatura z tyłu cokołu, fotografia.</div>`
   :q.m.prov==='attic'?`<ul class="tl"><li><b>2025</b> – „znaleziona na strychu” (oświadczenie sprzedającego)</li><li><b>2026</b> – oferowana prywatnie</li></ul><div class="obs">Katalog raisonné: brak wpisu.</div>`:`<ul class="tl"><li><b>1998</b> – zakup na targu staroci w Pradze</li><li><b>2014</b> – kolekcja prywatna</li><li><b>2026</b> – oferowana do sprzedaży</li></ul><div class="obs">Katalog raisonné i księgi odlewni: brak wpisu.</div>`}
-function bronzeCert(q){const bad=q.t.cert,iss=bad&&q.m.cert==='issuer';const rows=[['Artysta','Stanisław Rudnicki (1840–1905)'],['Tytuł','Popiersie Heleny'],['Materiał',iss?'—':'brąz patynowany'],['Wysokość',bad&&q.m.cert==='dims'?'49,5 cm':'52,0 cm'],['Masa','8,4 kg'],['Odlewnia','J. Bracławski, Warszawa'],['Data',iss?'—':'1888']];
+function bronzeCert(q){const bad=q.t.cert,iss=bad&&q.m.cert==='issuer';const rows=[['Artysta','John Quincy Adams Ward (1830–1910)'],['Tytuł','James Garfield'],['Materiał',iss?'—':'brąz patynowany'],['Wysokość',bad&&q.m.cert==='dims'?'45,5 cm':'47,6 cm'],['Masa','9,6 kg'],['Data',iss?'—':'ok. 1883–1887']];
   return`<div class="doc"><h4>CERTYFIKAT AUTENTYCZNOŚCI</h4>${rows.map(r=>`<div class="row"><b>${r[0]}:</b><span>${r[1]}</span></div>`).join('')}<div class="stamp">${iss?'Wystawił: Art-Expert24 s.c. (brak na liście rzeczoznawców)<br>Podpis: nadruk':'Wystawił: dr hab. Jan Orlicz, rzeczoznawca<br>Podpis: odręczny atrament, pieczęć tłoczona'}</div></div>`}
 /* =====================================================================
    WARIANTY RZEŹB – każdy materiał rejestruje się w SCULPT_VARIANTS (brąz tutaj, marmur w js/modes/marble.js)
    ===================================================================== */
 const SCULPT_VARIANTS={};let SV=null;
 SCULPT_VARIANTS.sculpt={id:'sculpt',label:'Przeprowadź ekspertyzę – rzeźby z brązu',noun:'rzeźba',profiles:SPROF,defs:DEF3,sets:SET3,obs:obs3,why:why3,initQ:bronzeInitQ,
- surface:bronzeSurface,inner:bronzeInner,markTex:q=>markTex(q.mark),refQ:seed=>({t:{},seed,hcm:52,patina:'natural',tool:'chase',mark:'ok',xray:'sand',uv:'wax'}),
- prov:bronzeProv,cert:bronzeCert,photoCaption:'Fotografia z katalogu raisonné (Rudnicki, 2011, nr 76):',
- intro:'Na postumentach stoi 5 brązowych popiersi: jeden oryginał i cztery kopie. Obracaj kamerę i podchodź blisko – wiele badań działa tylko z bliska albo z określonej strony. Sygnały fałszerstwa zaznaczaj na checkliście każdego odlewu i zakończ ekspertyzę – odlew bez zaznaczeń to Twój oryginał.',
- caseText:()=>'Sprawa: „Popiersie Heleny”, Stanisław Rudnicki (1840–1905), 1888, brąz, wys. 52 cm. Na postumentach 5 odlewów – jeden jest oryginałem. (Artyści i dzieła są fikcyjne.)'};
+ surface:bronzeSurface,inner:bronzeInner,markTex:q=>markTex(q.mark),refQ:seed=>({t:{},seed,hcm:47.6,patina:'natural',tool:'chase',mark:'ok',xray:'sand',uv:'wax'}),
+ prov:bronzeProv,cert:bronzeCert,photoCaption:'Fotografia z katalogu zbiorów (National Portrait Gallery, NPG.2008.3):',
+ intro:'Na postumentach stoi 5 brązowych statuetek: jeden oryginał i cztery kopie. Obracaj kamerę i podchodź blisko – wiele badań działa tylko z bliska albo z określonej strony. Sygnały fałszerstwa zaznaczaj na checkliście każdego odlewu i zakończ ekspertyzę – odlew bez zaznaczeń to Twój oryginał.',
+ caseText:()=>'Sprawa: „James Garfield”, John Quincy Adams Ward (1830–1910), ok. 1883–1887, brąz, wys. 47,6 cm (National Portrait Gallery, NPG.2008.3; skan 3D CC0). Na postumentach 5 odlewów – jeden jest oryginałem. Prawdziwe są dzieło, autor, data, materiał i wysokość; masa, sygnatura, proweniencja, certyfikaty i wyniki badań są symulowane.'};

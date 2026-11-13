@@ -2,7 +2,7 @@
 
 Pliki: `js/modes/marble.js` (wariant) + `js/modes/sculpture3d.js` (wspólny silnik 3D) · wariant: `marble`
 
-**Obiekt:** Aleksander Królikowski (1835–1898), „Popiersie Zofii”, 1879, marmur karraryjski, wys. 54,0 cm, 31,5 kg (fikcyjne).
+**Obiekt:** Antoine-Denis Chaudet (1763–1810), „Napoleon”, marmur, wys. 64 cm, The Usher Gallery, Lincoln. Skan 3D Olivera Larica (threedscans.com, bez ograniczeń praw autorskich), uproszczony do 50 tys. trójkątów (`tools/build-models.mjs`, `js/real/model-napoleon.js`). Masa (58 kg), sygnatura, proweniencja i certyfikat są symulowane.
 Na postumentach stoi 5 popiersi: 1 oryginał i 4 kopie. Sygnały fałszerstwa zaznacza się na checkliście każdej rzeźby, a po „Zakończ ekspertyzę” rzeźba bez zaznaczeń liczy się jako wskazany oryginał. Warunki badań zależą od **odległości kamery** i **strony**, z której patrzysz.
 
 ## Narzędzia

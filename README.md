@@ -9,8 +9,8 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 |---|---|
 | Przeprowadź ekspertyzę – obrazy | 1 oryginał i 4 kopie, każda wykonana inną metodą fałszerską; podobrazia: płótno, deska dębowa, blacha miedziana |
 | Zniszczony fragment | czy fragment pochodzi z prawdziwego dzieła zniszczonego w czasie wojny (Courbet, „Kamieniarze”), znanego z fotografii i opisu |
-| Przeprowadź ekspertyzę – rzeźby z brązu (3D) | brązowe popiersia (Three.js); ocena z checklisty |
-| Przeprowadź ekspertyzę – rzeźby z marmuru (3D) | dłuto kontra CNC, patyna, kwas – [opis](docs/tryby/marmur.md) |
+| Przeprowadź ekspertyzę – rzeźby z brązu (3D) | prawdziwa statuetka „James Garfield” (J.Q.A. Ward, skan Smithsonian CC0) w Three.js; ocena z checklisty |
+| Przeprowadź ekspertyzę – rzeźby z marmuru (3D) | prawdziwe popiersie „Napoleon” (A.-D. Chaudet, skan threedscans); dłuto kontra CNC, patyna, kwas – [opis](docs/tryby/marmur.md) |
 | Pamięć eksperta | zapamiętaj oryginał przez lupę, potem znajdź minimalne różnice |
 | Rysunki i grafiki | ołówek, tusz, węgiel, miedzioryt – papier, kreska, odcisk płyty, stemple kolekcji – [opis](docs/tryby/papier.md) |
 | Akwarele i pastele | papier, pigmenty, struktura farby, granica dawnej oprawy – [opis](docs/tryby/papier.md) |
@@ -45,6 +45,7 @@ Tryb 3D pobiera Three.js z CDN (cdnjs), więc wymaga internetu.
 
 ## Narzędzia (Python + Playwright)
 - `python3 tools/build-wiki-img.py` – generuje ilustracje wiki (`img/wiki/`, manifest `js/data/wikiimg.js`).
+- `.github/workflows/fetch-models.yml` + `tools/build-models.mjs` – pobierają i upraszczają skany rzeźb do `js/real/model-*.js`.
 - `python3 tools/doctor-3d.py /ścieżka/do/GameLaboratory` – sprawdza rzeźby 3D doktorem modeli z GameLaboratory.
 - Akcja GitHub „Pobierz prawdziwe dzieła” – pobiera dzieła z domeny publicznej z listy `tools/real-art.txt` do `img/real/`.
 
