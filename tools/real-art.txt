@@ -11,3 +11,15 @@ mlodzieniec|Raphael missing.jpg
 kamieniarze|Gustave Courbet - The Stonebreakers - WGA05457.jpg
 pb-c|Pennyblack-pd.jpg
 pl1-a|Znaczek Fi 1.jpg
+vm-1|Voynich Manuscript (1).jpg
+vm-10|Voynich Manuscript (10).jpg
+vm-32|Voynich Manuscript (32).jpg
+vm-60|Voynich Manuscript (60).jpg
+vm-100|Voynich Manuscript (100).jpg
+vm-120|Voynich Manuscript (120).jpg
+vm-140|Voynich Manuscript (140).jpg
+vm-150|Voynich Manuscript (150).jpg
+vm-160|Voynich Manuscript (160).jpg
+vm-170|Voynich Manuscript (170).jpg
+vm-180|Voynich Manuscript (180).jpg
+vm-200|Voynich Manuscript (200).jpg
