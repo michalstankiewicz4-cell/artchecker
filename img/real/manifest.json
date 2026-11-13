@@ -108,5 +108,60 @@
     "license": "Public domain",
     "title": "\nThe Stonebreakers",
     "source": "https://commons.wikimedia.org/wiki/File:Gustave_Courbet_-_The_Stonebreakers_-_WGA05457.jpg"
+  },
+  {
+    "slug": "pb-a",
+    "file": "Penny black.jpg",
+    "w": 490,
+    "h": 570,
+    "artist": "General Post Office of the United Kingdom of Great Britain and Ireland",
+    "date": "May 1840",
+    "license": "Public domain",
+    "title": "Penny black",
+    "source": "https://commons.wikimedia.org/wiki/File:Penny_black.jpg"
+  },
+  {
+    "slug": "pb-b",
+    "file": "Penny Black.jpg",
+    "w": 288,
+    "h": 324,
+    "artist": "Vijinvenu",
+    "date": "2011-12-25",
+    "license": "CC BY-SA 3.0",
+    "title": "Penny Black",
+    "source": "https://commons.wikimedia.org/wiki/File:Penny_Black.jpg"
+  },
+  {
+    "slug": "pb-c",
+    "file": "Pennyblack-pd.jpg",
+    "w": 450,
+    "h": 484,
+    "artist": "",
+    "date": "",
+    "license": "Public domain",
+    "title": "Pennyblack-pd",
+    "source": "https://commons.wikimedia.org/wiki/File:Pennyblack-pd.jpg"
+  },
+  {
+    "slug": "pl1-a",
+    "file": "Znaczek Fi 1.jpg",
+    "w": 300,
+    "h": 400,
+    "artist": "Processed by A. Sdobnikov",
+    "date": "1860",
+    "license": "Public domain",
+    "title": "Znaczek Fi 1",
+    "source": "https://commons.wikimedia.org/wiki/File:Znaczek_Fi_1.jpg"
+  },
+  {
+    "slug": "pl1-b",
+    "file": "Królestwo Polskie 1860r..jpg",
+    "w": 777,
+    "h": 1000,
+    "artist": "Jakges1",
+    "date": "2018-12-27",
+    "license": "CC BY-SA 4.0",
+    "title": "Królestwo Polskie 1860r.",
+    "source": "https://commons.wikimedia.org/wiki/File:Królestwo_Polskie_1860r..jpg"
   }
 ]
