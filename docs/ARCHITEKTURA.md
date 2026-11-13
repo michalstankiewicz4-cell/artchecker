@@ -19,14 +19,17 @@ js/core/              rdzeń niezależny od trybu
   home.js             ekran główny: kategorie, podgląd trybu, postęp (localStorage), loader
   homefx.js           efekty menu: ziarno, pasmowanie tła (JPG), paralaksa
   wiki.js             wiki eksperta: artykuły z danych trybów + słowniczek (GLOSS), ilustracje generowane w piaskownicy
-js/data/              dane: pigmenty, artyści i podobrazia (SUP), wikitexts.js – teksty wiki, wikiimg.js – manifest ilustracji
+js/data/              dane: pigmenty, podobrazia (supports.js – SUP), realart.js – dzieła prawdziwe, wikitexts.js – teksty wiki, wikiimg.js – manifest ilustracji
 js/lab/               kod z GameLaboratory: artkit.js (ArtKit)
 img/wiki/             gotowe ilustracje wiki (JPG)
-tools/                build-wiki-img.py, doctor-3d.py
-js/paint/             silnik obrazów: sceny, widoki (UV, IR, RTG…), obserwacje, próbki
+tools/                build-wiki-img.py, build-thumbs.py, build-real.py, build-stamps.py, build-manuscript.py, build-models.mjs, probe.sh, real-art.txt, doctor-3d.py
+js/real/              dane prawdziwych dzieł i obiektów jako skrypty (REALIMG – obrazy JPEG/PNG w data URL, REALMODEL – skany 3D); ładowane na żądanie
+img/real/             źródłowe zdjęcia z Wikimedia Commons (manifest.json z autorem i licencją)
+.github/workflows/    fetch-art.yml (dzieła, znaczki, karty rękopisu), fetch-models.yml (skany rzeźb), probe.yml (rozpoznanie źródeł)
+js/paint/             silnik obrazów: kształty (scenes.js), widoki (UV, IR, RTG…), obserwacje, próbki; obrazem bazowym jest zawsze dzieło prawdziwe (js/core/real.js)
 js/core/kinds.js      rejestr obiektów 2D + wspólne nachylenie i tworzenie partii
-js/kinds/             rodzaje obiektów 2D (banknot, moneta, znaczek, rękopis, prace na papierze: artworks.js)
-js/modes/             tryby gry o własnej mechanice (fragment, pamięć, rzeźby 3D + warianty materiału: marble.js)
+js/kinds/             rodzaje obiektów 2D (banknot, moneta, znaczek, rękopis – Manuskrypt Wojnicza, prace na papierze: artworks.js)
+js/modes/             tryby gry o własnej mechanice (fragment, pamięć, rzeźby 3D + warianty materiału: marble.js; realsculpt.js – prawdziwe skany 3D)
 js/main.js            start – ładowany jako ostatni
 docs/                 dokumentacja
 ```

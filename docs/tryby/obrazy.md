@@ -3,11 +3,13 @@
 Na stole 5 obrazów (na miedzi 4): oryginał i kopie wykonane różnymi metodami fałszerskimi. Każda kopia ma zestaw zdrad – badań, które ją demaskują.
 
 ## Podobrazia
-| Podobrazie | Artyści | Oryginał | Falsyfikat (odwrocie) |
-|---|---|---|---|
-| płótno | Wierzbicki, Brzostowska, Moraczewski, Lindorf | len, kute gwoździe, ciemny blejtram, gęstość nici z katalogu | zszywki, świeże drewno, równe płótno bawełniane |
-| deska dębowa | Korwin-Ostrowski (1846) | trzy deski ze słojami, spoiny, parkietaż, chodniki kołatka | płyta pilśniowa (HDF) |
-| blacha miedziana | Walewicz (1853) | kuta miedź z patyną, ślady młotka, punca płatnerza | walcowana blacha cynkowa |
+Oryginałem jest zawsze dzieło prawdziwe z domeny publicznej (`js/data/realart.js`, lista „Artysta”); dziś wszystkie dostępne obrazy olejne są na płótnie. Silnik obsługuje też deskę dębową i blachę miedzianą (`SUP` w `js/data/supports.js`) – wrócą, gdy dojdą prawdziwe dzieła na tych podobraziach.
+
+| Podobrazie | Oryginał | Falsyfikat (odwrocie) |
+|---|---|---|
+| płótno | len, kute gwoździe, ciemny blejtram, gęstość nici z katalogu | zszywki, świeże drewno, równe płótno bawełniane |
+| deska dębowa (nieaktywne) | trzy deski ze słojami, spoiny, parkietaż, chodniki kołatka | płyta pilśniowa (HDF) |
+| blacha miedziana (nieaktywne) | kuta miedź z patyną, ślady młotka, punca płatnerza | walcowana blacha cynkowa |
 
 RTG: płótno – blejtram i gwoździe; deska – słoje, spoiny i listwy; miedź – prawie jednolicie jasny obraz (metal pochłania promieniowanie), więc na miedzi RTG nie jest zdradą, a metody „stare podobrazie” i „giclée” nie występują.
 

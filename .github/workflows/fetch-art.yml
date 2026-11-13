@@ -32,7 +32,11 @@ jobs:
           jq . img/real/manifest.json > /tmp/m.json && mv /tmp/m.json img/real/manifest.json
           ls -la img/real
       - name: Skrypty z obrazami (js/real)
-        run: python3 tools/build-real.py
+        run: |
+          python3 -m pip install -q pillow
+          python3 tools/build-real.py
+          python3 tools/build-stamps.py
+          python3 tools/build-manuscript.py
       - name: Zapisz w repozytorium
         run: |
           git config user.name "github-actions[bot]"

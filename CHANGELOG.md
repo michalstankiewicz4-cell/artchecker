@@ -2,6 +2,12 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.36.1] – 2026-11-13
+### Zmienione
+- Porządki w plikach: usunięte nieużywane dane (obraz Rafaela, kopie źródeł znaczków i kart rękopisu w `js/real/`); akcja „Pobierz prawdziwe dzieła” uruchamia też `build-stamps.py` i `build-manuscript.py`.
+- Tłumaczenie: brakujące klucze (papier pod światło, sygnatura i historia dzieła zniszczonego, opis płótna).
+- Dokumentacja: README, ARCHITEKTURA, ROADMAPA i opisy trybów zaktualizowane do prawdziwych dzieł i obiektów.
+
 ## [1.36.0] – 2026-11-13
 ### Zmienione
 - **Weryfikacja rękopisów na Manuskrypcie Wojnicza** (Beinecke, Yale, MS 408, domena publiczna): cztery karty – sam tekst, dwie zielnikowe i karta z postaciami (lista „Karta”). Fikcyjny list z 1712 r. usunięty.

@@ -25,4 +25,5 @@
 Pełna lista zebranych pomysłów: [POMYSLY.md](POMYSLY.md).
 
 ## Do rozważenia
-- Tryb z prawdziwymi dziełami z domeny publicznej (CC0) – pliki dostarczone do repo.
+- ~~Prawdziwe dzieła i obiekty zamiast fikcyjnych~~ (1.28–1.36): obrazy, rysunki, akwarele, fragment, pamięć, rzeźby 3D (skany), monety, znaczki, rękopis (Manuskrypt Wojnicza). Fikcyjne zostają tylko banknoty.
+- Przywrócenie technik, które zostały tylko w kodzie: deska i blacha miedziana (potrzebne prawdziwe dzieła na tych podobraziach), galwanoplastyka monet, przedruk na znaczkach, pieczęć lakowa i papier czerpany w rękopisach.
