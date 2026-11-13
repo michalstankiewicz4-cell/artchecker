@@ -1,51 +1,123 @@
-=== Stamp Poland Mi3.jpg
-{{Information
-|Description={{en|1=Overprinted stamp of the Warsaw Municipal Post. Issue for the area of German occupation of the former Russian partition. Mi3.}}
-{{pl|1=Przedrukowany znaczek poczty miejskiej Warszawy. Wydanie dla obszaru okupacji niemieckiej byłego zaboru rosyjskiego. Mi3.}}
-|Source=Own collection
-|Author=Stamp: [[:pl:Edward Trojanowski|Edward Trojanowski]]. Scan: [[User:Enzik|Enzik]]
-|Date=Stamp: 1918-11-17. Scan: 2010-05-10
-|Permission='''For stamp'''{{PD-old-auto-expired|deathyear=1930}}'''For overprint'''{{PD-ineligible}}
-|other_versions=
-}}
-
-[[Category:Overprinted stamps]]
-[[Category:1918 stamps of Poland]]
-[[Category:Occupation stamps]]
-[[Category:Number 10 on stamps]]
-[[Category:Stamps with a face value of 10]]
-=== PL Fi70 over DE Mi90.jpg
-{{Information
-|Description={{en|1=Polish overprint on German 40Pf Germania}}
-{{pl|1=Polski przedruk niemieckiego znaczka Germania }}
-|Source=Own collection
-|Author=[[User:Enzik|Enzik]]
-|Date=Original in Germany: 1905/1913; overprint in Poland: 1919; scan: 2010
-|Permission= '''For the stamp'''{{PD-old-auto-1923|1917}} '''For the overprint'''{{PD-trivial}}
-|other_versions=
-}}
-
-[[Category:Overprints on Germania stamps]]
-[[Category:1919 stamps of Poland]]
-=== Poland 50h1919 1st.jpg
-=={{int:filedesc}}==
-{{Information
-|description={{ru|1=Польша. Марка первого стандартного выпуска номиналом в 50 геллеров. 1919 г.}}
-|date=1919
-|source=http://www.stampspoland.nl/series/prewar/0055.html
-|author={{unknown|author}}
-|permission=
-|other_versions=
-|other_fields=
-}}
-
-=={{int:license-header}}==
-{{PD-Polishsymbol}}
-
-[[Category:1919 stamps of Poland]]
-[[Category:Eagles on stamps of Poland]]
-[[Category:Number 50 on stamps]]
-[[Category:Stamps with a face value of 50]]
-=== search: Poland 1919 halerzy eagle stamp
-=== search: Poland 1919 first definitive halerzy
-=== search: Polish eagle 1919 stamp fenigi
+=== Category:Sealing wax seals
+=== Category:Letters with wax seals
+=== Category:Documents with sealing wax seals
+=== Category:Sealing wax on documents
+=== Category:Wax seals in Poland
+=== Category:Sealing wax
+Category:PD-Wax seal scan
+Category:Sealing wax in paintings
+Category:Wax seals
+File:1778 wax seal of merchant guild in Sombor.jpg
+File:1824 wax seal from Serbian opanak shoemaker guild in Sombor.png
+File:1840 wax seal from Serbian tailor guild in Sombor.png
+File:1842 wax seal of hat maker guild in Sombor.jpg
+File:19th century wax seal from German shoemaker guild in Sombor.png
+File:19th century wax seal from municipality Kupusina in Vojvodina.jpg
+File:19th century wax seal from ropemaker guild in Sombor.jpg
+File:19th century wax seal from Serbian school of education in Sombor.png
+File:19th century wax seal from Serbian shoemaker guild in Sombor.jpg
+File:19th century wax seal of ropemaker guild in Sombor.jpg
+File:Artisanat. Cire à cacheter.JPG
+File:Cachet à cire - Maison Léon Losseau.jpg
+File:Ceralacca 3.png
+File:Custom Stamps Metal Stamps Wax Seals Stamps on table.jpg
+File:Custom Stamps Metal Stamps Wax Seals Stamps.jpg
+File:Emperor Charles VI confirms the free farm in Orlová to Jiří Ježíšek (1651).jpg
+File:Encrier et cachet - Maison Léon Losseau.jpg
+File:Late 18th century wax seal from municipality Sonta in Vojvodina.jpg
+File:LetterfromCharlesdeSalis.jpg
+File:MEK II-388.jpg
+File:MEK II-389.jpg
+File:MEK II-390.jpg
+File:Modena - Statuti dell'Arte dei Fabbri ferrai (1601-1781).jpg
+File:NMAx.0085486.jpg
+File:NMAx.0085487.jpg
+File:NMAx.0085488.jpg
+File:NMAx.0085587.jpg
+File:NMAx.0085588.jpg
+File:NMAx.0085624.jpg
+File:NMAx.0085625.jpg
+File:RU-сургуч (adult female).flac
+File:RU-сургучик (adult female).flac
+File:RU-сургучный (adult female).flac
+File:RU-сургучовый (adult female).flac
+File:Seal on the back of instructions for medicine against rabies Wellcome L0000969.jpg
+File:Sealing wax (AM 2015.34.48-1).jpg
+File:Sealing wax (AM 2015.34.48-2).jpg
+File:Sealing wax (AM 2015.34.48-4).jpg
+File:Sealing wax case (étui) MET 116426.jpg
+File:Sealing wax case (étui) MET 116438.jpg
+File:Sealing wax case (étui) MET 144737.jpg
+File:Sealing wax case (étui) MET SF24 80 78ab.jpg
+File:Sealing wax case (étui) MET SF38 50 46 img1.jpg
+File:Sealing wax case (étui) MET SF38 50 46 img2.jpg
+File:Sealing wax case MET DP-12252-034.jpg
+File:Sealing wax case MET SF2014 737 2 img3.jpg
+File:Sealing wax electric heater.JPG
+File:Sealing wax on letters.jpg
+File:Siegel.jpg
+File:Siegellack - VEB Bürochemie - 5103 Neudietendorf - Bild 001.jpg
+File:Siegellack MEK GLAM-Tour 20181117 06.jpg
+File:Siegellack MEK GLAM-Tour 20181117 07.jpg
+File:Siegellack MEK GLAM-Tour 20181117 08.jpg
+File:Siegellack MEK GLAM-Tour 20181117 09.jpg
+File:Siegellack MEK GLAM-Tour 20181117 10.jpg
+File:Siegellack MEK GLAM-Tour 20181117 11.jpg
+File:Siegellack Pelikan rot.jpg
+File:Stamp, sealing wax (AM 1962.54-1).jpg
+File:Stamp, sealing wax (AM 1962.54-10).jpg
+File:Stamp, sealing wax (AM 1962.54-2).jpg
+File:Stamp, sealing wax (AM 1962.54-3).jpg
+File:Stamp, sealing wax (AM 1962.54-4).jpg
+File:Stamp, sealing wax (AM 1962.54-5).jpg
+File:Stamp, sealing wax (AM 1962.54-6).jpg
+File:Stamp, sealing wax (AM 1962.54-7).jpg
+File:Stamp, sealing wax (AM 1962.54-8).jpg
+File:Stamp, sealing wax (AM 1962.54-9).jpg
+File:Still life with Portuguese Bible, rosary and writing implements..jpg
+File:Tanta Museum 92.jpg
+File:Wax seal from Sonta 1464.jpg
+File:Étui for sealing wax and case MET SF38 50 28.jpg
+File:Étui for sealing wax MET 116429.jpg
+File:Étui for sealing wax MET 116435.jpg
+File:Étui for sealing wax MET 116439.jpg
+File:Étui for sealing wax MET ES5939.jpg
+File:Étui for sealing wax MET SF38 50 34 img1.jpg
+File:Étui for sealing wax MET SF38 50 34 img2.jpg
+=== search: pieczęć lakowa dokument
+File:AGAD (3) Koperta z pieczęcią lakową, Pudło 660-12 s. 8.png
+File:Актовая бумага на продажу недвижимости в г. Новогрудке 5.png
+File:PL May Nad Rio de la Plata.djvu
+=== search: dokument z pieczęcią lakową
+File:AGAD (3) Koperta z pieczęcią lakową, Pudło 660-12 s. 8.png
+File:Актовая бумага на продажу недвижимости в г. Новогрудке 5.png
+=== search: list pieczęć lakowa XVIII
+=== search: letter sealing wax 18th century document
+File:Letter received by Patrick Polyphemus from his friend Timothy Truthlover, Esquire, touching a letter written by Rev. G.P. to His Ldp. the Bp. of Q (microform) (IA cihm 91034).pdf
+File:Memoirs of the life and mission of Joanna Southcott. Interspersed with authentic anecdotes, and elusidated (sic) by interesting documents (IA b30375903).pdf
+File:The vicar's courtship (IA vicarscourtship01thor).pdf
+File:Collections for a history of Staffordshire (IA collectionsforhi62staf).pdf
+File:The British Merchant.pdf
+File:Sonoma Valley Expositor 1905-11-10 (IA casomvhs 000231).pdf
+File:The Enterprise 1906-02-10 (IA cssf 000548).pdf
+File:Board of Trade Journal. London. 1922-10-12- Vol 109 Iss 1350 (IA sim great-britain-board-of-trade-board-of-trade-journal 1922-10-12 109 1350).pdf
+File:Pope (electronic resource) - additional facts concerning his maternal ancestry (IA popeadditionalfa00davirich).pdf
+File:Miracles in Modern Life (IA miraclesinmodern01lamo).pdf
+File:Pope- additional facts concerning his maternal ancestry (IA cu31924032382636).pdf
+File:Dr. Edward Jenner M.D. F.R.S. etc. (discoverer of vaccination) catalogue of the collection of relics formed by F. Mockler Esq. lately exhibited at Kings College (IA b2244788x).pdf
+File:Dr. Edward Jenner M.D. F.R.S. c. c. (discoverer of vaccination) the collection formed by Frederick Mockler of portraits diplomas freedoms grants presentations addresses visiting books (IA b2232009x).pdf
+File:Enquire within for many useful facts relating to your health and happiness - a book for everybody (IA 101489427.nlm.nih.gov).pdf
+File:The Bristol Industrial and Fine Art Exhibition 1893 Fine Art Section. Exhibit IV. Dr. Edward Jenner M.D. F.R.S. c. (IA b21359799).pdf
+File:Collections for a history of Staffordshire (IA collectionsforhi188626staf).pdf
+File:The drama of Saint Helena (IA dramaofsainthele00frem).pdf
+File:Collections for a history of Staffordshire (IA collectionsforpt206stafuoft).pdf
+File:The manuscripts of Shrewsbury and Coventry corporations, the Earl of Radnor, Sir Walter Corbet, Bart., and others (IA manuscriptsofshr00grea).pdf
+File:The curiosities and law of wills (IA curiositieslawof00profiala).pdf
+File:The collected essays & addresses of the Rt. Hon. Augustine Birrell, 1880-1920 .. (IA collectedessaysa02birr).pdf
+File:The memento, old and new Natchez, 1700 to 1897. (IA mementooldnewnat01powe).pdf
+File:Solomon Caesar Malan, D.D. - memorials of his life and writings (IA solomoncaesarmal00mala).pdf
+File:Memorials of the Rev. William J. Shrewsbury (microform) (IA 28689420.1869.emory.edu).pdf
+=== search: Urkunde Lacksiegel Papier
+=== search: passport 18th century wax seal
+=== search: patent nobility paper wax seal
+=== search: akt pieczęć lakowa
