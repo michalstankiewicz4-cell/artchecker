@@ -18,3 +18,9 @@ function updateDock(){const el=document.getElementById('strip'),nt=TLIST.length;
  el.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{sel=P[+b.dataset.i];document.getElementById('zsel').click();onChange()})}
 document.getElementById('zlamp').onclick=()=>{LAMP.on=!LAMP.on;updatePanel();render()};
 document.getElementById('board').addEventListener('pointerleave',()=>{LAMP.sx=LAMP.sy=null});
+/* Prawy przycisk myszy i przeciąganie lewym przyciskiem (zaznaczanie tekstu, przeciąganie obrazków) są zablokowane
+   wszędzie poza wiki i polami tekstowymi. Przesuwanie stołu i obrót rzeźb 3D działają jak dotąd. */
+{const free=t=>t&&t.closest&&t.closest('#wiki,input,textarea,select,[contenteditable]');
+ document.addEventListener('contextmenu',e=>{if(!free(e.target))e.preventDefault()});
+ document.addEventListener('dragstart',e=>{if(!free(e.target))e.preventDefault()});
+ document.addEventListener('selectstart',e=>{if(!free(e.target))e.preventDefault()})}

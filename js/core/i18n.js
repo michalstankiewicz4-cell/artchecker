@@ -29,7 +29,7 @@ Object.assign(EN,{
  '🔦 Lampa ruchoma':'🔦 Moving lamp','💡 Cały obiekt':'💡 Whole object','Nie wybrano obiektu.':'No object selected.',
  'Wynik badania':'Result','Checklista':'Checklist','Notatnik':'Notebook',
  '📖 Wiki eksperta':'📖 Expert wiki','Szukaj: krakelura, XRF, ząbkowanie…':'Search: craquelure, XRF, perforation…','✕ Zamknij':'✕ Close','Zamknij':'Close',
- 'Przeciągnij – obracaj · prawy przycisk / Shift – przesuń · kółko / szczypanie – przybliż · kliknij rzeźbę – wybierz':'Drag – rotate · right button / Shift – pan · wheel / pinch – zoom · click a sculpture – select',
+ 'Przeciągnij – obracaj · Shift + przeciągnij – przesuń · kółko / szczypanie – przybliż · kliknij rzeźbę – wybierz':'Drag – rotate · Shift + drag – pan · wheel / pinch – zoom · click a sculpture – select',
  'Kółko myszy / szczypanie – zoom (do ×24) · przeciągnij – przesuń · kliknij obiekt – wybierz · lampa świeci za kursorem (Shift + kółko – wielkość)':'Mouse wheel / pinch – zoom (up to ×24) · drag – pan · click an object – select · the lamp follows the cursor (Shift + wheel – size)',
  'Najedź kursorem – lupa ×4 · kliknij obraz – wybierz':'Hover – ×4 magnifier · click a painting – select',
  'Zakończ ekspertyzę':'Finish examination','Pochodzi z oryginału':'Comes from the original','To nie oryginał':'Not the original','To jest oryginał':'This is the original',

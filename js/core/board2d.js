@@ -96,7 +96,7 @@ function checkGates2D(){if(MODE==='sculpt')return;const v=viewportWorld(),T=tool
   if(p.t.mark&&vw.z>=8&&(view==='normal'||view==='crackview')&&!p.notes.mark){const mx=p.x+p.markPos.x,my=p.y+p.markPos.y;if(mx>v.x0&&mx<v.x1&&my>v.y0&&my<v.y1){note(p,'mark',obs(p,'mark'));ch=true;toast(`Odkrycie przy dużym zoomie: obraz ${p.letter} – ukryty napis!`)}}}
  if(ch)onChange();else if(tool)updatePanel()}
 const pts=new Map();let drag=null,pinch=null;
-cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.offsetX,y:e.offsetY});
+cv.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.offsetX,y:e.offsetY});
  if(pts.size===1)drag={sx:e.offsetX,sy:e.offsetY,vx:vw.x,vy:vw.y,moved:false};
  if(pts.size===2){const[a,b]=[...pts.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y)};drag=null}});
 cv.addEventListener('pointerleave',()=>{if(MODE==='memory'){MEM.lens=null;render()}});

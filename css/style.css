@@ -490,3 +490,7 @@ input[type=range]{accent-color:var(--c-agold)}
 .wload i{border-color:rgba(130,155,180,.2)!important;border-top-color:var(--c-gold)!important}
 #about .abl{color:#d5d0c6!important}
 .hcat canvas,#hdetail canvas{background:#1b1e23!important}
+/* 1.33.1 – bez zaznaczania tekstu poza wiki i polami tekstowymi */
+body{-webkit-user-select:none;user-select:none}
+#wiki,#wiki *,input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text}
+img{-webkit-user-drag:none}

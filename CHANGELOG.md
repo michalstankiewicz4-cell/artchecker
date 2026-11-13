@@ -2,6 +2,11 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.33.1] – 2026-11-13
+### Zmienione
+- Prawy przycisk myszy zablokowany wszędzie poza wiki: nie otwiera menu przeglądarki, nie wybiera obiektów ani nie przesuwa widoku. W rzeźbach 3D widok przesuwa się teraz przez Shift + przeciągnij.
+- Przeciąganie lewym przyciskiem nie zaznacza już tekstu ani nie wyciąga obrazków – poza wiki i polami tekstowymi. Przesuwanie stołu i obrót rzeźb działają jak dotąd.
+
 ## [1.33.0] – 2026-11-13
 ### Zmienione
 - **Weryfikacja znaczków na prawdziwych znaczkach z domeny publicznej:** Penny Black (1840) i Polska nr 1 (1860). Zdjęcia oryginałów z Wikimedia Commons; podróbki i wyniki badań symuluje gra. Fikcyjny znaczek Poczty Arkadii usunięty.

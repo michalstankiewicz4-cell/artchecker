@@ -147,7 +147,7 @@ function init3D(){if(T3)return;const el=document.getElementById('three');const r
  T3={renderer,scene,camera,hemi,dir,fill,floor,wall,el,cam:{t:new THREE.Vector3(0,1.15,0),dist:5.6,az:0,el:0.16},busts:[],dirty:true,anim:null,ray:new THREE.Raycaster(),photo:null};
  const dom=renderer.domElement,pp=new Map();let dr=null,pc=null;
  dom.addEventListener('contextmenu',e=>e.preventDefault());
- dom.addEventListener('pointerdown',e=>{dom.setPointerCapture(e.pointerId);pp.set(e.pointerId,{x:e.offsetX,y:e.offsetY});if(pp.size===1)dr={x:e.offsetX,y:e.offsetY,moved:false,pan:e.button===2||e.shiftKey};if(pp.size===2){const[a,b]=[...pp.values()];pc=Math.hypot(a.x-b.x,a.y-b.y);dr=null}});
+ dom.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;dom.setPointerCapture(e.pointerId);pp.set(e.pointerId,{x:e.offsetX,y:e.offsetY});if(pp.size===1)dr={x:e.offsetX,y:e.offsetY,moved:false,pan:e.shiftKey};if(pp.size===2){const[a,b]=[...pp.values()];pc=Math.hypot(a.x-b.x,a.y-b.y);dr=null}});
  dom.addEventListener('pointermove',e=>{if(!pp.has(e.pointerId))return;const o=pp.get(e.pointerId);pp.set(e.pointerId,{x:e.offsetX,y:e.offsetY});
   if(pc&&pp.size===2){const[a,b]=[...pp.values()],d=Math.hypot(a.x-b.x,a.y-b.y);zoom3(pc/d);pc=d;return}
   if(!dr)return;const dx=e.offsetX-o.x,dy=e.offsetY-o.y;if(Math.abs(e.offsetX-dr.x)+Math.abs(e.offsetY-dr.y)>4)dr.moved=true;if(!dr.moved)return;const c=T3.cam;
