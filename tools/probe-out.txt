@@ -1,106 +1,12 @@
-=== ids media_view
-/tmp/p1: HTML document, ASCII text
--rw-r--r-- 1 runner runner 525 Nov 13 00:55 /tmp/p1
-Archive:  /tmp/p1
-<!doctype html>
-<html lang="'en">
-<head>
-  <meta charset="'utf-8" />
-    <title>Smithsonian Institution Media View</title>
-    <link rel="stylesheet" href="/mads/webjars/github-com-twbs-bootstrap/5.2.3/css/bootstrap.min.css" />
-    <script src="/mads/webjars/jquery/3.7.1/jquery.min.js"></script>
-    <script src="/mads/ids/js/media_viewer.js"></script>
-    <link  href="/mads/ids/css/media_viewer.css" rel="stylesheet">
-</head>
-<body>
-<noscript>Please enable Javascript to access the Media Viewer.</noscript>
-</body>
-</html>=== 3d-api search
-{
-  "rows": [
-    {
-      "title": "James Garfield",
-      "content": {
-        "usage": "Web3D",
-        "quality": "Thumb",
-        "uri": "https://3d-api.si.edu/content/document/3d_package:d2887438-0f09-4e72-887d-0966ff177149/james-garfield-bronze-sculpture-20k-512-thumb.glb",
-        "file_type": "glb",
-        "model_type": "glb",
-        "draco_compressed": true,
-        "model_url": "3d_package:d2887438-0f09-4e72-887d-0966ff177149",
-        "gltf_orientation_compliant": true
-      }
-    },
-    {
-      "title": "James Garfield",
-      "content": {
-        "usage": "Web3D",
-        "quality": "Low",
-        "uri": "https://3d-api.si.edu/content/document/3d_package:d2887438-0f09-4e72-887d-0966ff177149/james-garfield-bronze-sculpture-150k-1024-low.glb",
-        "file_type": "glb",
-        "model_type": "glb",
-        "draco_compressed": true,
-        "model_url": "3d_package:d2887438-0f09-4e72-887d-0966ff177149",
-        "gltf_orientation_compliant": true
-      }
-    },
-    {
-      "title": "James Garfield",
-      "content": {
-        "usage": "Web3D",
-        "quality": "Medium",
-        "uri": "https://3d-api.si.edu/content/document/3d_package:d2887438-0f09-4e72-887d-0966ff177149/james-garfield-bronze-sculpture-150k-2048-medium.glb",
-        "file_type": "glb",
-        "model_type": "glb",
-        "draco_compressed": true,
-        "model_url": "3d_package:d2887438-0f09-4e72-887d-0966ff177149",
-        "gltf_orientation_compliant": true
-      }
-    },
-    {
-      "title": "James Garfield",
-      "content": {
-        "usage": "Web3D",
-        "quality": "High",
-        "uri": "https://3d-api.si.edu/content/document/3d_package:d2887438-0f09-4e72-887d-0966ff177149/james-garfield-bronze-sculpture-150k-4096-high.glb",
-        "file_type": "glb",
-        "model_type": "glb",
-        "draco_compressed": true,
-        "model_url": "3d_package:d2887438-0f09-4e72-887d-0966ff177149",
-        "gltf_orientation_compliant": true
-      }
-    },
-    {
-      "title": "James Garfield",
-      "content": {
-        "usage": "Web3D",
-        "quality": "AR",
-        "uri": "https://3d-api.si.edu/content/document/3d_package:d2887438-0f09-4e72-887d-0966ff177149/james-garfield-bronze-sculpture-150k-2048-medium-100k-2048_draco.glb",
-        "file_type": "glb",
-        "model_type": "glb",
-        "draco_compressed": true,
-        "model_url": "3d_package:d2887438-0f09-4e72-887d-0966ff177149",
-        "gltf_orientation_compliant": true
-      }
-    },
-    {
-      "title": "James Garfield",
-      "content": {
-        "usage": "Image2D",
-        "quality": "Low",
-        "uri": "https://3d-api.si.edu/content/document/3d_package:d2887438-0f09-4e72-887d-0966ff177149/scene-image-low.jpg",
-        "file_type": "jpg",
-        "model_url": "3d_package:d2887438-0f09-4e72-887d-0966ff177149"
-      }
-    },
-    {
-      "title": "James Garfield",
-      "content": {
-        "usage": "Image2D",
-        "quality": "Thumb",
-        "uri": "https://3d-api.si.edu/content/document/3d_packa
-=== 3d.si.edu search
-=== edan collections
-=== threedscans napoleon
-Download Scan</a></div>
-Download', 'Napoleon');
+96-<h3 class=''>
+97-<!-- <a href="https://threedscans.com/category/lincoln/">
+98-Lincoln</a> -->
+99:<div class='singleSection stlDL'><a onclick="ga('send', 'event', '3D', 'Download', 'Napoleon');"  target='_blank' href='https://threedscans.com/wp-content/uploads/2016/02/Napoleon.stl.zip'>Download Scan</a></div>
+100-</h3>
+101-<section class="entry-summary front-scan single-scan">
+102-
+=== garfield low glb size
+HTTP/1.1 200 OK
+Content-Length: 750060
+HTTP/1.1 200 OK
+Content-Length: 150916
