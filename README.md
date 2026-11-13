@@ -17,7 +17,7 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 | Weryfikacja banknotów | fikcyjna waluta, wszystkie typowe zabezpieczenia |
 | Weryfikacja rękopisów | atrament, papier czerpany, ductus, pieczęć, korozja – [opis](docs/tryby/rekopis.md) |
 | Weryfikacja znaczków | ząbkowanie, znak wodny, druk, guma, przedruk – [opis](docs/tryby/znaczek.md) |
-| Weryfikacja monet | waga, średnica, stop, magnes, rant, bicie czy odlew, zużycie – [opis](docs/tryby/moneta.md) |
+| Weryfikacja monet | prawdziwe 1 zł, 2 zł, 5 zł, 1 € i 2 € (rysowane przez grę); waga, średnica, stop, magnes, rant, bicie czy odlew, zużycie – [opis](docs/tryby/moneta.md) |
 
 Artyści, dzieła i waluta są fikcyjne – poza dziełami prawdziwymi z domeny publicznej (na razie: Jan Matejko, „Stańczyk”; Józef Chełmoński, „Babie lato”; Albrecht Dürer, „Melancholia I”, „Dłonie modlącego się”, „Zając”; Stanisław Wyspiański, „Macierzyństwo”), które można wybrać na liście „Artysta”; ich wyniki badań są symulowane.
 

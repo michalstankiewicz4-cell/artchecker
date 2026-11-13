@@ -20,9 +20,10 @@ function fillArtist(mode){const el=document.getElementById('artist'),L=realFor(m
   def=R?(REAL_DEF[mode]&&REAL_READY.includes(REAL_DEF[mode])?'real:'+REAL_DEF[mode]:'real:*'):'',
   v=RESUME_ART!=null&&RESUME_ART!==''?RESUME_ART:el.dataset.mode===mode?el.value:def;el.dataset.mode=mode;let h='';
  if(R)h=`<option value="real:*">${tr('Losowe dzieło')}</option>`+L.map(e=>`<option value="real:${e.slug}">${e.artist} – „${tr(e.title)}”</option>`).join('');
+ else if(mode==='coin'&&typeof COINS!=='undefined')h=`<option value="">${tr('Losowa moneta')}</option>`+COINS.map(c=>`<option value="${c.id}">${tr(c.name)} – ${tr(c.country)}</option>`).join('');
  else if(mode==='frag'||mode==='memory')h=`<option value="">${tr('Losowy artysta (fikcyjny)')}</option>`+ARTISTS.filter(a=>!a.sup||a.sup==='canvas').map(a=>`<option value="${a.id}">${a.name} – ${tr(({pejzaz:'pejzaż',portret:'portret',martwa:'martwa natura',marina:'marina'})[a.scene])}</option>`).join('');
- RESUME_ART=null;el.innerHTML=h;el.value=[...el.options].some(o=>o.value===v)?v:(el.options[0]?el.options[0].value:'');
- el.style.display=(R||mode==='frag'||mode==='memory')?'':'none'}
+ RESUME_ART=null;el.innerHTML=h;{const lb=document.getElementById('artistLbl');if(lb)lb.textContent=tr(mode==='coin'?'Moneta':'Artysta')}el.value=[...el.options].some(o=>o.value===v)?v:(el.options[0]?el.options[0].value:'');
+ el.style.display=(R||mode==='frag'||mode==='memory'||mode==='coin')?'':'none'}
 async function resolveReal(mode){let v=document.getElementById('artist').value;REAL_CUR=null;if(!v.startsWith('real:')){if(!realMode(mode))return;v='real:*'}
  const L=realFor(mode);const e=v==='real:*'?L[Math.random()*L.length|0]:REAL_BY[v.slice(5)];if(!e||!realFor(mode).includes(e))return;await loadReal(e.slug);REAL_CUR=e}
 /* obiekt „artysty” dla prawdziwego obrazu */

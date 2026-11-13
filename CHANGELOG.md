@@ -2,6 +2,15 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.32.0] – 2026-11-13
+### Zmienione
+- **Weryfikacja monet na prawdziwych monetach obiegowych:** 1 zł (od 2020 r.), 2 zł, 5 zł oraz 1 € i 2 € ze stroną niemiecką. Prawdziwe średnice, masy, stopy, ranty i reakcja na magnes (NBP, rozporządzenie Rady (WE) nr 975/98). Wizerunki rysuje gra (uproszczone), bez zdjęć. Fikcyjne 5 talarów usunięte.
+- Wybór monety na liście „Moneta” (w tym trybie zamiast „Artysta”), także „Losowa moneta”.
+- XRF w monetach dwumetalowych bada osobno rdzeń i pierścień; mikroskop pokazuje szczelinę między nimi.
+- Nowe metody fałszerskie: odlew ze stopu cynku, podróbka bita z niewłaściwego stopu, podróbka o złych własnościach magnetycznych, moneta jednolita udająca bimetaliczną. Wiki i ilustracje wiki zaktualizowane (PL i EN).
+### Naprawione
+- Wiki nie otwierała się od 1.31.0 (brak nazwy trybu „Zniszczony fragment” w opisie dzieła „Kamieniarze”).
+
 ## [1.31.1] – 2026-11-12
 ### Dodane
 - „O programie”: informacja, że to darmowa aplikacja edukacyjna (bez reklam i opłat, bez celu komercyjnego), po polsku i angielsku.
