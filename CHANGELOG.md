@@ -2,6 +2,12 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.38.0] – 2026-11-13
+### Dodane
+- Znaczki z lat 1918–19 (Wikimedia Commons, domena publiczna): 10 fen. na 6 gr Poczty Miejskiej w Warszawie z przedrukiem „Poczta Polska” (1918), 10 fen. na 40 Pf Germania – wydanie poznańskie (1919), 50 halerzy z orłem (1919, bez ząbkowania, bez gumy).
+- Narzędzie „Przedruk (mikroskop)” i metoda „Prawdziwy znaczek z podrobionym przedrukiem” (raster kropek, płaska farba w innym odcieniu, przedruk świecący w UV); znak wodny „romby” Germanii; guma jako sygnał fałszerstwa na znaczku wydanym bez gumy.
+- Wiki: artykuły o przedruku i podrobionym przedruku, hasło o znaczkach (PL i EN). O programie: licencje nowych znaczków.
+
 ## [1.37.2] – 2026-11-13
 ### Zmienione
 - Miniatura dla wyszukiwarek i udostępnień (`og-image.jpg`): nowy ekran startowy.

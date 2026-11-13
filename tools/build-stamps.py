@@ -1,10 +1,14 @@
 # Przygotowuje zdjęcia znaczków (Wikimedia Commons, domena publiczna) dla trybu „Weryfikacja znaczków”:
 # usuwa ciemne tło (wypełnienie od brzegów), przycina i zapisuje js/real/stamp-<id>.js (PNG z przezroczystością, data URL).
-# Źródła: img/real/pb-c.jpg („Pennyblack-pd.jpg”), img/real/pl1-a.jpg („Znaczek Fi 1.jpg”).
+# Źródła: img/real/pb-c.jpg („Pennyblack-pd.jpg”), img/real/pl1-a.jpg („Znaczek Fi 1.jpg”), w10-a.jpg („Stamp Poland Mi3.jpg”),
+# pz10-a.jpg („PL Fi70 over DE Mi90.jpg”), or50-a.jpg („Poland 50h1919 1st.jpg”) – trzy ostatnie tylko przycinane (bez usuwania tła).
 import base64,io,os,sys
 from collections import deque
 from PIL import Image
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+def crop(src,inset):
+    im=Image.open(os.path.join(ROOT,'img','real',src)).convert('RGB');W,H=im.size;l,t,r,b=inset
+    return im.crop((int(W*l),int(H*t),int(W*(1-r)),int(H*(1-b))))
 def cut(src,thr,inset=None):
     im=Image.open(os.path.join(ROOT,'img','real',src)).convert('RGBA');w,h=im.size;px=im.load()
     lum=lambda p:0.3*p[0]+0.59*p[1]+0.11*p[2]
@@ -21,7 +25,8 @@ def cut(src,thr,inset=None):
     if inset:
         W,H=im.size;l,t,r,b=inset;im=im.crop((int(W*l),int(H*t),int(W*(1-r)),int(H*(1-b))))
     return im
-out={'pb':cut('pb-c.jpg',70),'pl1':cut('pl1-a.jpg',85,(0.075,0.035,0.04,0.06))}
+out={'pb':cut('pb-c.jpg',70),'pl1':cut('pl1-a.jpg',85,(0.075,0.035,0.04,0.06)),
+     'w10':crop('w10-a.jpg',(0.035,0.035,0.065,0.07)),'pz10':crop('pz10-a.jpg',(0.065,0.05,0.065,0.075)),'or50':crop('or50-a.jpg',(0.02,0.015,0.02,0.015))}
 for k,im in out.items():
     b=io.BytesIO();png=k=='pb'
     (im.save(b,'PNG',optimize=True) if png else im.convert('RGB').save(b,'JPEG',quality=88));d=base64.b64encode(b.getvalue()).decode()
