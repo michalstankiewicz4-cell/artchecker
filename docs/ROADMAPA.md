@@ -26,4 +26,4 @@ Pełna lista zebranych pomysłów: [POMYSLY.md](POMYSLY.md).
 
 ## Do rozważenia
 - ~~Prawdziwe dzieła i obiekty zamiast fikcyjnych~~ (1.28–1.36): obrazy, rysunki, akwarele, fragment, pamięć, rzeźby 3D (skany), monety, znaczki, rękopis (Manuskrypt Wojnicza). Fikcyjne zostają tylko banknoty.
-- Przywrócenie technik, które zostały tylko w kodzie: deska i blacha miedziana (potrzebne prawdziwe dzieła na tych podobraziach), galwanoplastyka monet, przedruk na znaczkach, pieczęć lakowa i papier czerpany w rękopisach.
+- Przywrócenie technik, które zostały tylko w kodzie: ~~deska i blacha miedziana~~ (1.37: Rembrandt, Elsheimer), ~~przedruk na znaczkach~~ (1.38), ~~pieczęć lakowa i papier czerpany w rękopisach~~ (1.39: dokumenty z AGAD i z Nowogródka); zostały: galwanoplastyka i posrebrzanie monet, patyna marmuru, cecha stylu rzeźby (nos).

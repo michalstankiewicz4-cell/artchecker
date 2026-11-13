@@ -2,6 +2,13 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.39.0] – 2026-11-13
+### Dodane
+- Rękopisy: dwa dokumenty papierowe z pieczęcią lakową (Wikimedia Commons, domena publiczna) – koperta z dokumentem Rządu Narodowego z 1863 r. (AGAD, „Dowody do rachunków Józefa Ordęgi”) i akt sprzedaży domu w Nowogródku (1902–1911).
+- Narzędzia dokumentów: papier pod światło (żeberkowanie, znak wodny), lampa UV, patyna i przebarwienia, atrament (XRF), pismo stalówką, korozja atramentu na odwrociu, jednolitość tekstu w UV, pieczęć lakowa.
+- Metody: faksymile na nowym papierze, kopia na papierze postarzonym herbatą, oryginał z dopiskiem innym atramentem, oryginał z podrobioną pieczęcią lakową.
+- Wiki (PL i EN): 7 artykułów o technikach, 4 o metodach, hasło o rękopisach; O programie: licencje dokumentów. Dane o papierze, atramencie i laku są symulowane.
+
 ## [1.38.1] – 2026-11-13
 ### Naprawione
 - Ekran startowy: miniatura weryfikacji rękopisów (karta Manuskryptu Wojnicza ładowana przy starcie, jak zdjęcia znaczków).

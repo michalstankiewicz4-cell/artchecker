@@ -67,3 +67,4 @@ Stan: 🟡 – rejestr obiektów 2D (`js/core/kinds.js`) już obsługuje banknot
 - Datowanie archeologiczne (C14, dendrochronologia, termoluminescencja, stratygrafia) – do przemyślenia.
 - Badanie warstw malarskich, rozpoznawanie pigmentów, odkrywanie przemalowań, ustalanie techniki – do przemyślenia (pasuje do trybu Konserwator i przekroju 3D).
 - Tryb z prawdziwymi dziełami z domeny publicznej (CC0), w zmniejszonym rozmiarze.
+- Banknoty z „Krakozhii” – do dodania w trybie banknotów. Uwaga: Krakozhia to fikcyjne państwo z filmu „Terminal” (2004), więc przed realizacją trzeba sprawdzić prawa do nazwy i wyglądu.
