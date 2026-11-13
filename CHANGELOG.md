@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.37.2] – 2026-11-13
+### Zmienione
+- Miniatura dla wyszukiwarek i udostępnień (`og-image.jpg`): nowy ekran startowy.
+
 ## [1.37.1] – 2026-11-13
 ### Dodane
 - O programie: kontakt (numer telefonu autora).
