@@ -17,3 +17,11 @@ function inPoly(x,y,p){let ins=false;for(let i=0,j=p.length-1;i<p.length;j=i++){
 function distSeg(px,py,a,b){const dx=b[0]-a[0],dy=b[1]-a[1],l=dx*dx+dy*dy||1;let t=((px-a[0])*dx+(py-a[1])*dy)/l;t=Math.max(0,Math.min(1,t));return Math.hypot(px-a[0]-t*dx,py-a[1]-t*dy)}
 function distPath(px,py,pts){let m=1e9;for(let i=1;i<pts.length;i++)m=Math.min(m,distSeg(px,py,pts[i-1],pts[i]));return m}
 let toastT=0;function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),2600)}
+/* Ikony przycisków – jeden styl (obrys 2 px, 20 px), wstawiane w <i class="ico" data-ico="…"> albo przez ICO(nazwa) */
+const ICONS={menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',refresh:'<path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v5h-5"/>',
+ book:'<path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/>',
+ info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.6v.4"/>',close:'<path d="M6 6l12 12M18 6 6 18"/>',
+ play:'<path d="M8 5.5v13l10-6.5z"/>',check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'};
+const ICO=(n,s=20)=>`<svg class="ico" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]||''}</svg>`;
+function fillIcons(root){(root||document).querySelectorAll('i[data-ico]').forEach(e=>{e.outerHTML=ICO(e.dataset.ico,+e.dataset.s||20)})}
+document.addEventListener('DOMContentLoaded',()=>fillIcons());

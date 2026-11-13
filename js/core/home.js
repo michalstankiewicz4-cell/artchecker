@@ -11,7 +11,7 @@ function homeCats(){return[
  {title:tr('Rzeźby 3D'),sub:tr('Obejdź i przybliż'),desc:'Obracaj kamerę i podchodź blisko: skład stopu, patyna, ślady dłuta i frezu, szwy odlewnicze, sygnatury z tyłu cokołu, UV i RTG.',
   modes:['marble','sculpt'].map(k=>SCULPT_VARIANTS[k]).map(v=>[v.id,(t=>t[0].toUpperCase()+t.slice(1))(v.label.replace('Przeprowadź ekspertyzę – ',''))])},
  {title:tr('Obiekty i dokumenty'),sub:tr('Odkryj prawdę'),desc:'Banknoty, monety, znaczki i rękopisy – każdy ma własne zabezpieczenia, materiały i typowe metody fałszerstw. Na checkliście każdego egzemplarza zaznacz sygnały fałszerstwa – egzemplarz bez sygnałów uznajesz za prawdziwy.',
-  modes:Object.values(KINDS).filter(k=>k.group!=='art').map(k=>[k.id,k.label])},
+  modes:['stamp','coin','manuscript','notes'].map(id=>KINDS[id]).filter(Boolean).map(k=>[k.id,k.label])},
  {title:tr('Wkrótce'),sub:tr('W przygotowaniu'),desc:'Aukcja z budżetem, śledztwo w sprawie fałszerza i praca konserwatora – kolejne tryby są w przygotowaniu.',modes:SOON.map(([id,l])=>[id,l,1])}]}
 function store(){try{return JSON.parse(localStorage.getItem('artchecker.v1')||'{}')}catch(e){return{}}}
 function recordDone(ok){try{const s=store();s.done=s.done||{};s.done[CUR]=(s.done[CUR]||0)+1;s.games=(s.games||0)+1;if(ok)s.ok=(s.ok||0)+1;localStorage.setItem('artchecker.v1',JSON.stringify(s))}catch(e){}}
@@ -83,13 +83,13 @@ function renderHome(){const cats=homeCats(),cat=cats[HCAT],done=(store().done)||
  document.getElementById('hdetail').innerHTML=`<div class="hscroll"><h2>${HICO}${HCAT+1}. ${cat.title}</h2><div class="row"><canvas id="hthumb"></canvas><p>${cat.desc}</p></div>
   <div>${cat.modes.map(([id,l,dis])=>`<div class="hmode${id===HMODE?' on':''}${dis?' dis':''}" data-id="${id}"><span class="dot"></span>${l}${done[id]?`<span class="done">✓ +${done[id]}</span>`:''}</div>`).join('')}</div>
   <div class="sub hsep">Badania w tym trybie:</div><div class="htools">${toolNames(HMODE).map(t=>`<span>${t}</span>`).join('')}</div></div>
-  <button class="hbtn" id="hstart"${soon?' disabled':''}>▶ ${soon?'Wkrótce':'Rozpocznij badania'}</button>`;
+  <button class="hbtn" id="hstart"${soon?' disabled':''}>${ICO(soon?'clock':'play')}${tr(soon?'Wkrótce':'Rozpocznij badania')}</button>`;
  document.querySelectorAll('.hmode').forEach(el=>{if(!el.classList.contains('dis'))el.onclick=()=>{HMODE=el.dataset.id;renderHome()}});
  document.getElementById('hstart').onclick=()=>startMode(HMODE);
  document.getElementById('hcards').innerHTML=cats.map((c,i)=>{const act=c.modes.filter(m=>!m[2]),n=act.filter(m=>done[m[0]]).length,pct=act.length?Math.round(n/act.length*100):0;
   return`<div class="hp hcard"><i class="wm">${HWM[i]||''}</i><h3><span class="num">${i+1}</span>${c.title}</h3><ul>${c.modes.map(([id,l,dis])=>`<li><i class="${done[id]?'y':dis?'s':'n'}">${done[id]?'✔':dis?'…':''}</i>${l}</li>`).join('')}</ul>
    <div class="hbrow"><div class="hbar"><div style="width:${pct}%"></div></div><small>${act.length?pct+'%':'wkrótce'}</small></div>
-   <div style="margin-top:8px"><button class="hbtn ghost${pct===100?' ok':''}" data-i="${i}"${act.length?'':' disabled'}>${pct===100?'✔ Zakończono':'▶ Rozpocznij'}</button></div></div>`}).join('');
+   <div style="margin-top:8px"><button class="hbtn ghost${pct===100?' ok':''}" data-i="${i}"${act.length?'':' disabled'}>${pct===100?ICO('check')+tr('Zakończono'):ICO('play')+tr('Rozpocznij')}</button></div></div>`}).join('');
  document.querySelectorAll('#hcards .hbtn').forEach(b=>b.onclick=()=>{HCAT=+b.dataset.i;HMODE=null;renderHome();window.scrollTo(0,0)});
  setTimeout(()=>{fitDraw(document.getElementById('hthumb'),preview(HMODE),false);FX.drawId++;fitDraw(document.getElementById('hcanvas'),preview(HMODE),true);document.getElementById('hcap').innerHTML=homeCap(HMODE,label||'')},0)}
 /* strzałki na scenie: poprzedni / następny tryb w kategorii */

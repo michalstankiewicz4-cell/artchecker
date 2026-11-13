@@ -22,7 +22,7 @@ function setLang(l){try{localStorage.setItem('artchecker.lang',l)}catch(e){}
 Object.assign(EN,{
  'Pracownia ekspertyz':'Authentication Lab','Laboratorium badań i autentyczności':'Laboratory of analysis and authenticity',
  'Uruchamianie laboratorium…':'Starting the lab…','Przygotowywanie…':'Preparing…','Przygotowywanie stołu ekspertyz…':'Preparing the examination table…','Wczytywanie sceny 3D…':'Loading the 3D scene…',
- 'Ekran główny':'Home screen','☰ Menu':'☰ Menu','Tryb':'Mode','Artysta':'Artist','↻ Nowa partia':'↻ New round','📖 Wiki':'📖 Wiki','ℹ O programie':'ℹ About',
+ 'Ekran główny':'Home screen','☰ Menu':'☰ Menu','Menu':'Menu','Nowa partia':'New round','O programie':'About','Wiki eksperta':'Expert wiki','Rozpocznij badania':'Start examination','Rozpocznij':'Start','Zakończono':'Completed','Tryb':'Mode','Artysta':'Artist','↻ Nowa partia':'↻ New round','📖 Wiki':'📖 Wiki','ℹ O programie':'ℹ About',
  'Narzędzia':'Tools','Zlecenie':'Commission','Zwiń / rozwiń':'Collapse / expand','Stół badawczy':'Examination table','Oddal':'Zoom out','Przybliż':'Zoom in','Nachylenie':'Tilt',
  'Całość':'Fit all','Wybrany':'Selected','Sygnatura':'Signature','Tył cokołu':'Back of plinth','Detal':'Detail','Numer':'Number','Pieczęć':'Seal','Awers':'Obverse','Przedruk':'Overprint',
  'Przełącz: lampa ruchoma (krąg światła za kursorem) albo cały obiekt naraz':'Toggle: moving lamp (a circle of light following the cursor) or the whole object at once',

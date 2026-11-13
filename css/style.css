@@ -337,7 +337,7 @@ html[lang=en] [data-l=pl],html[lang=pl] [data-l=en]{display:none}
 .hmode.on .dot{background:#3fd27a;border-color:#8ff0b4;box-shadow:0 0 10px #3fd27a}
 .hmode .done{color:#5fe08a;font-weight:600}
 #hdetail .hsep{padding-top:8px;border-top:1px solid rgba(95,184,255,.18)}
-#hdetail #hstart{color:#2a1a02;font-size:18px;border:none;background:linear-gradient(90deg,#b8771c,#f2bb4a 45%,#ffd57a 75%,#c88a25);box-shadow:0 0 22px rgba(231,176,74,.55);clip-path:polygon(24px 0,100% 0,100% 100%,0 100%);text-shadow:none;margin-left:22px}
+#hdetail #hstart{color:#2a1a02;font-size:18px;border:none;background:linear-gradient(90deg,#b8771c,#f2bb4a 45%,#ffd57a 75%,#c88a25);box-shadow:0 0 22px rgba(231,176,74,.55);text-shadow:none}
 #hdetail #hstart:hover{filter:brightness(1.08)}
 #hdetail #hstart[disabled]{filter:grayscale(.7)}
 /* karty na dole */
@@ -404,7 +404,7 @@ header,#topbar{border-radius:0;border-width:0 0 1px 0!important}
 select option{background:#22262e;color:var(--c-ink)}
 /* najważniejsze przyciski – złoto z przesuwającym się refleksem */
 .btn.primary,#hdetail #hstart,.hbtn.gold{background:var(--gold-grad)!important;color:#241604!important;border:1px solid var(--c-gold)!important;box-shadow:var(--shadow-gold)!important;font-weight:700;position:relative;overflow:hidden}
-#hdetail #hstart{clip-path:polygon(24px 0,100% 0,100% 100%,0 100%)!important;border:none!important}
+#hdetail #hstart{clip-path:none!important;margin-left:0!important;width:100%}
 .btn.primary::after,#hdetail #hstart::after,.hbtn.gold::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,250,225,.45),transparent);animation:sheen 4.5s ease-in-out infinite;pointer-events:none}
 @keyframes sheen{0%,70%{left:-60%}100%{left:130%}}
 .btn.primary:disabled{background:#3a3226!important;color:#8d7a58!important;border-color:#5a4a30!important;box-shadow:none!important}
@@ -494,3 +494,20 @@ input[type=range]{accent-color:var(--c-agold)}
 body{-webkit-user-select:none;user-select:none}
 #wiki,#wiki *,input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text}
 img{-webkit-user-drag:none}
+
+/* 1.35.2 – jednolite ikony przycisków (SVG, obrys 2 px) */
+.ico{flex:none;display:inline-block;vertical-align:-4px}
+.btn .ico{margin-right:6px}
+#wtop h1 .ico{margin-right:10px;vertical-align:-5px;color:var(--c-gold)}
+.hbtn .ico,.btn .ico{width:20px!important;height:20px!important}
+#htitle .hbtn .ico{width:22px!important;height:22px!important}
+/* 1.35.2 – paski przewijania w kolorach motywu (Chrome 121+ i Firefox używają scrollbar-color, który ma pierwszeństwo przed ::-webkit-scrollbar) */
+*{scrollbar-color:#98702F rgba(23,25,29,.75)!important}
+#about .abscroll{scrollbar-color:#C99539 rgba(23,25,29,.85)!important}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#C99539,#98702F)!important}
+#about .abscroll::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#C99539,#98702F)!important}
+/* wiki bez poziomego przewijania: treść zawija się i mieści w kolumnach */
+#wiki,#wcats,#wlist,#wart{overflow-x:hidden!important}
+#wart{overflow-wrap:anywhere}
+#wart img,#wart canvas,#wart figure,#wart svg{max-width:100%!important;height:auto}
+#wart table{width:100%;table-layout:fixed}

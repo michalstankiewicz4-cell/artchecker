@@ -52,7 +52,7 @@ const WREAL={notes:()=>(WEN()?WEURO_EN():WEURO_PL())+(WEN()?`<h3>Real banknotes:
 function wikiData0(){const A=[];
  const modes=[['paint5','Obrazy – przeprowadź ekspertyzę',SET.paint5,DEF,PROFILES],['frag','Zniszczony fragment',SET.frag,DEF,null]];
  Object.values(SCULPT_VARIANTS).forEach(v=>modes.push([v.id,v.label,v.sets,v.defs,v.profiles]));
- Object.values(KINDS).forEach(k=>modes.push([k.id,k.label,k.sets,k.defs,k.profiles]));
+ Object.values(KINDS).forEach(k=>modes.push([k.id,k.label,k.wikiSets||k.sets,k.defs,k.wikiProfiles||k.profiles]));
  const tech={},forg={},byMode={};
  for(const[id,label,sets,defs,profs]of modes){byMode[id]={label,tech:[],forg:[]};
   for(const[g,ids]of sets)for(const t of ids){const d=defs[t],F=id==='frag';const nm=F&&d.nameF||d.name;
@@ -100,7 +100,7 @@ const WREAL_MODE={paint5:'stanczyk',frag:'kamieniarze',memory:'stanczyk',drawing
 function wBatch(mode,seed,artist){const k=mode+'|'+seed+'|'+(artist||'');if(WBATCH[k])return WBATCH[k];
  const sel0=document.getElementById('artist'),a0=sel0.value;if(artist!=null)sel0.value=artist;
  const rc0=REAL_CUR,rs=artist&&String(artist).startsWith('real:')?String(artist).slice(5):WREAL_MODE[mode];if(rs&&REALIM[rs])REAL_CUR=REAL_BY[rs];
- try{return WBATCH[k]=withSandbox(()=>{const r=rng(seed);MODE=mode;KIND=KINDS[mode]||null;SV=null;sel=null;tool=null;
+ try{return WBATCH[k]=withSandbox(()=>{const r=rng(seed);MODE=mode;KIND=KINDS[mode]||null;SV=null;sel=null;tool=null;if(KIND&&KIND.wikiSetup)KIND.wikiSetup(artist);
   if(KIND)KIND.newGame(r);else if(mode==='frag')newFrag(r);else newPaint5(r);
   return{MODE,KIND,ART,SC,C,W,H,IW,IH,P,BW,BH}})}finally{sel0.value=a0;REAL_CUR=rc0}}
 function wWith(b,fn){return withSandbox(()=>{({MODE,KIND,ART,SC,C,W,H,IW,IH,P,BW,BH}=b);SV=null;sel=null;tool=null;return fn(P)})}
@@ -115,7 +115,7 @@ function wPanels(list){const H0=300,pad=14,lab=26,ws=list.map(o=>Math.round(o.c.
  const out=mk(tw,H0+lab+pad*2),x=out.getContext('2d');x.fillStyle='#17191D';x.fillRect(0,0,out.width,out.height);let X=pad;
  list.forEach((o,i)=>{x.drawImage(o.c,X,pad,ws[i],H0);x.strokeStyle=o.col||'rgba(130,155,180,.6)';x.lineWidth=2;x.strokeRect(X+1,pad+1,ws[i]-2,H0-2);
   x.fillStyle=o.col||'#E8E3D9';x.font='600 15px Inter,"Segoe UI",system-ui';x.textAlign='center';x.fillText(o.label,X+ws[i]/2,pad+H0+20,ws[i]);X+=ws[i]+pad});return out}
-function wFind(mode,test){for(let k=0;k<14;k++){const b=wBatch(mode,9100+k*37);const p=b.P.find(test);if(p)return{b,p}}return null}
+function wFind(mode,test){const V=(KINDS[mode]&&KINDS[mode].wikiVariants)||[null];for(const v of V)for(let k=0;k<14;k++){const b=wBatch(mode,9100+k*37,v);const p=b.P.find(test);if(p)return{b,p}}return null}
 function wIcon(kind){const c=mk(600,320),x=c.getContext('2d');x.fillStyle='#17191D';x.fillRect(0,0,600,320);x.strokeStyle='#C99539';x.fillStyle='#C99539';x.lineWidth=5;x.lineCap='round';x.lineJoin='round';x.shadowColor='rgba(245,198,107,.6)';x.shadowBlur=14;
  if(kind==='spectrum'){x.lineWidth=2;x.globalAlpha=.35;for(let i=0;i<=10;i++){x.beginPath();x.moveTo(60+i*48,40);x.lineTo(60+i*48,270);x.stroke()}x.globalAlpha=1;x.lineWidth=4;x.beginPath();x.moveTo(60,270);x.lineTo(540,270);x.moveTo(60,270);x.lineTo(60,40);x.stroke();
   const pk=[[140,170,'Fe'],[230,90,'Pb'],[300,200,'Cu'],[400,130,'Zn'],[470,220,'Sn']];x.lineWidth=3;x.beginPath();x.moveTo(60,262);for(let X=60;X<=540;X+=3){let y=262-Math.random()*6;for(const[px,ph]of pk)y-=ph*Math.exp(-((X-px)**2)/60);x.lineTo(X,y)}x.stroke();

@@ -2,6 +2,14 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.35.2] – 2026-11-13
+### Zmienione
+- Ekran startowy: przycisk „Rozpocznij badania” prostokątny, na całą szerokość sekcji (jak przycisk Wiki).
+- Jednolite ikony przycisków (SVG, jeden styl): Menu, Nowa partia, Wiki, O programie, Zamknij, Rozpocznij, Zakończono – zamiast emoji i znaków.
+- „Obiekty i dokumenty”: kolejność trybów – znaczki, monety, rękopisy, banknoty; kafelek pokazuje Penny Black.
+- Paski przewijania w kolorach motywu (złoto/stal zamiast starego niebieskiego); wiki bez poziomych pasków przewijania.
+- Wiki: wszystkie narzędzia i metody fałszerskie obu znaczków (także ząbkowanie i guma Polski nr 1) z ilustracjami; usunięte nieużywane ilustracje (fikcyjni artyści, przedruk, dawne fałszerstwa monet).
+
 ## [1.35.1] – 2026-11-13
 ### Naprawione
 - Miniatura trybu „Zniszczony fragment” na ekranie startowym pokazuje „Kamieniarzy” Courbeta (zamiast Stańczyka).

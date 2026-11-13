@@ -54,7 +54,7 @@ function stampAux(kind){const k=STAMP.id+':'+kind;if(STC[k])return STC[k];const 
    else if(kind==='relief'){const v=-(gx+gy)*0.9;if(v>12){q[i]=255;q[i+1]=255;q[i+2]=245;q[i+3]=Math.min(170,v*2)}}}}
  x.clearRect(0,0,w,h);x.putImageData(o,0,0);return STC[k]=c}
 /* rysuje zdjęcie znaczka na obszarze druku; filtr dla podróbek */
-function stampArt(x,p,opt={}){const im=stampImg(),bx=STAMP.perf?12:0,by=STAMP.perf?12:0,bw=W-2*bx,bh=H-2*by;
+function stampArt(x,p,opt={}){const im=stampImg();if(!im)return[0,0,W,H];const bx=STAMP.perf?12:0,by=STAMP.perf?12:0,bw=W-2*bx,bh=H-2*by;
  x.save();const f=[];if(stampMode(p,'colors','ok')==='shade')f.push(STAMP.id==='pb'?'sepia(.35) brightness(1.12)':'hue-rotate(-14deg) saturate(1.35) brightness(.97)');
  const pm=opt.flat?'typo':stampMode(p,'print',STAMP.print);if(pm==='inkjet')f.push('blur(1.4px)');if(pm==='litho')f.push('blur(.5px) contrast(.92)');
  if(opt.filter)f.push(opt.filter);if(f.length)x.filter=f.join(' ');x.drawImage(im,bx,by,bw,bh);x.filter='none';
@@ -148,7 +148,8 @@ async function stampPick(r){const el=document.getElementById('artist'),v=el.valu
 const stampCat=()=>`${STAMP.name} (${STAMP.country}, ${STAMP.year}). Katalog: ${STAMP.cat}.`;
 registerKind({id:'stamp',label:'Weryfikacja znaczków',noun:'Znaczek',W:261,H:291,wcm:2.175,hcm:2.425,tilt:false,focusLabel:'Narożnik',
  defs:STAMP_DEF_ALL,sets:STAMP_SETS.pb,profiles:STAMP_PROF_ALL,originals:r=>Object.keys(KINDS.stamp.profiles).length>=4?1+Math.floor(r()*3):2+Math.floor(r()*2),
- pick:stampPick,newGame(r){if(!stampImg())stampSetup(STAMP.id);kindBatch(this,r)},view:stampView,live:stampLive,area:stampArea,obs:stampObs,why:stampWhy,
+ pick:stampPick,wikiVariants:['pb','pl1'],wikiSetup(id){const s=STAMP_BY[id]||STAMPS[0];if(REALIM[s.img])stampSetup(s.id)},
+ wikiSets:[['1. Papier',['perf','margins','wm','uv','gum']],['2. Druk',['print','letters','colors']],['3. Obieg',['cancel']]],wikiProfiles:STAMP_PROF_ALL,newGame(r){if(!stampImg())stampSetup(STAMP.id);kindBatch(this,r)},view:stampView,live:stampLive,area:stampArea,obs:stampObs,why:stampWhy,
  focus:p=>[p.x,p.y+H*0.75,W,H*0.25],
  get intro(){return`Na stole leży 5 znaczków ${STAMP.name}. Część jest prawdziwa, część fałszywa albo przerobiona. Zbadaj papier, znak wodny, druk pod mikroskopem i pozostałe cechy z katalogu. Na checkliście każdego znaczka zaznacz sygnały fałszerstwa i zakończ ekspertyzę.`},
  caseText:()=>`Weryfikacja znaczków: ${stampCat()} Zdjęcie oryginału: Wikimedia Commons (domena publiczna); podróbki i wyniki badań symuluje gra.`});
