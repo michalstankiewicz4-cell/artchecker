@@ -48,7 +48,7 @@ async function newGame(){showTab('panel');CUR=document.getElementById('mode').va
  document.getElementById('zsig').textContent=is3?'Tył cokołu':KIND?KIND.focusLabel:'Sygnatura';
  document.querySelector('.zoom').style.display=MODE==='memory'?'none':'';if(MODE!=='memory'){clearInterval(MEM.iv);MEM.phase=0}else MEM.phase=1;
  if(MODE==='memory')document.getElementById('help').textContent='Najedź kursorem – lupa ×4 · kliknij obraz – wybierz';
- buildToolDefs();setVerdicts();
+ if(KIND&&KIND.pick)await KIND.pick(r);buildToolDefs();setVerdicts();
  if(is3){document.getElementById('panel').innerHTML='<div class="obs">Ładowanie sceny 3D…</div>';try{await loadThree()}catch(e){document.getElementById('panel').innerHTML='<div class="obs">Nie udało się wczytać biblioteki 3D (three.js). Sprawdź połączenie z internetem.</div>';return}
   init3D();newSculpt(r);build3Scene()}
  else{if(MODE==='frag')newFrag(r);else if(MODE==='memory')newMemory(r);else if(KIND)KIND.newGame(r);else newPaint5(r);fit()}

@@ -2,6 +2,14 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.33.0] – 2026-11-13
+### Zmienione
+- **Weryfikacja znaczków na prawdziwych znaczkach z domeny publicznej:** Penny Black (1840) i Polska nr 1 (1860). Zdjęcia oryginałów z Wikimedia Commons; podróbki i wyniki badań symuluje gra. Fikcyjny znaczek Poczty Arkadii usunięty.
+- Lista „Znaczek” (w tym trybie zamiast „Artysta”) z „Losowym znaczkiem”. Narzędzia zależą od znaczka: marginesy, znak wodny „mała korona”, litery kontrolne i kasownik dla Penny Black; ząbkowanie 11½–12½ i guma dla Polski nr 1; dla obu lampa UV, metoda druku i odcień barw.
+- Nowe metody fałszerskie: dorobiony margines, podrobiony kasownik; faksymile, litografia z epoki i regumowanie dostosowane do obu znaczków. Wiki i ilustracje wiki zaktualizowane (PL i EN).
+- „O programie”: monety (parametry prawdziwe, wizerunki rysowane przez grę), znaczki (domena publiczna), banknoty i rękopisy fikcyjne.
+- Podpisy obiektów na stole dopasowują wielkość do rozmiaru obiektu.
+
 ## [1.32.0] – 2026-11-13
 ### Zmienione
 - **Weryfikacja monet na prawdziwych monetach obiegowych:** 1 zł (od 2020 r.), 2 zł, 5 zł oraz 1 € i 2 € ze stroną niemiecką. Prawdziwe średnice, masy, stopy, ranty i reakcja na magnes (NBP, rozporządzenie Rady (WE) nr 975/98). Wizerunki rysuje gra (uproszczone), bez zdjęć. Fikcyjne 5 talarów usunięte.
