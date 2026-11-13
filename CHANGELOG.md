@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.37.1] – 2026-11-13
+### Dodane
+- O programie: kontakt (numer telefonu autora).
+
 ## [1.37.0] – 2026-11-13
 ### Dodane
 - Obraz na desce: Rembrandt, „Uczony przy pulpicie” (1641, Zamek Królewski w Warszawie) – wracają odwrocie deski z parkietażem, podróbka na płycie pilśniowej i fałszerstwo na starej desce z epoki. Wiki zaznacza, że analiza konserwatorska z 2009 r. wskazuje drewno topolowe (Commons podaje dąb).
