@@ -1,0 +1,14 @@
+/* Wiki – układ – część dawnego css/style.css; kolejność plików w index.html ma znaczenie */
+/* ===================== WIKI ===================== */
+#wiki{position:fixed;inset:0;z-index:30;background:rgba(3,10,22,.86);display:grid;grid-template-columns:300px 340px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:14px;padding:18px;color:#dbeafe;font-family:"Segoe UI",system-ui,sans-serif}
+#wiki.hidden{display:none}
+#wtop{grid-column:1/4;display:flex;gap:12px;align-items:center}
+#wtop h1{margin:0;font:600 24px "Segoe UI",system-ui;color:#eaf4ff;flex:1}
+#wq{background:rgba(10,30,60,.8);border:1px solid rgba(95,184,255,.5);color:#eaf4ff;padding:9px 12px;font-size:14px;width:320px}
+#wcats{display:flex;flex-direction:column;gap:8px;overflow:auto}
+#wcats .hbtn{justify-content:flex-start;text-align:left}#wcats .hbtn.on{border-color:#5fd0ff;box-shadow:0 0 14px rgba(60,180,255,.5)}
+#wlist{overflow:auto}
+.wli{padding:8px 10px;border-bottom:1px solid rgba(95,184,255,.15);cursor:pointer;font-size:14px}
+.wli small{display:block;color:#8fbfe8;font-size:11.5px}.wli:hover{background:rgba(60,140,230,.15)}.wli.on{background:rgba(60,140,230,.3);border-left:3px solid #5fd0ff}
+#wart{overflow:auto;font-size:15px;line-height:1.6}#wart h2{font-size:24px}#wart p{color:#cfe3f8}
+@media(max-width:1000px){#wiki{grid-template-columns:1fr;grid-template-rows:auto auto auto 1fr;overflow:auto}#wtop{grid-column:auto;flex-wrap:wrap}#wcats{flex-direction:row;flex-wrap:wrap}}

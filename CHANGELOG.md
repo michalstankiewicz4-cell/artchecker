@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.36.2] – 2026-11-13
+### Zmienione
+- Podział plików: `css/style.css` → 8 plików w `css/` (base, home, wiki, ui, layout, wiki-articles, home-gold, theme – ładowane w tej kolejności, wygląd bez zmian); `js/data/wikitexts.js` → `js/data/wiki/` (techniki badawcze, metody fałszerskie, słowniczek i opisy obiektów, techniki malarskie).
+
 ## [1.36.1] – 2026-11-13
 ### Zmienione
 - Porządki w plikach: usunięte nieużywane dane (obraz Rafaela, kopie źródeł znaczków i kart rękopisu w `js/real/`); akcja „Pobierz prawdziwe dzieła” uruchamia też `build-stamps.py` i `build-manuscript.py`.

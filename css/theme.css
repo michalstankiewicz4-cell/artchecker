@@ -1,0 +1,153 @@
+/* Design system „Luxury Museum Laboratory” i późniejsze poprawki (ikony, paski przewijania, wiki) – część dawnego css/style.css; kolejność plików w index.html ma znaczenie */
+/* =====================================================================
+   DESIGN SYSTEM – LUXURY MUSEUM LABORATORY (1.27)
+   Grafit, stal, szczotkowany metal, przyciemnione szkło; złoto tylko dla ważnych elementów
+   (aktywna sekcja, najważniejsze przyciski, ramy obrazów, wyróżnienia). Bez neonu.
+   ===================================================================== */
+:root{
+ --c-bg:#17191D;--c-panel:#222630;--c-panel2:#172437;--c-steel:#394453;
+ --c-gold:#F5C66B;--c-agold:#C99539;--c-brass:#98702F;--c-brown:#49301D;--c-burg:#67252C;
+ --c-ink:#E8E3D9;--c-mut:#A8AFB8;--c-ok:#65DB87;--c-info:#65B9F5;
+ --shadow-panel:0 12px 35px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08);
+ --shadow-gold:0 0 12px rgba(245,198,107,.25),0 0 28px rgba(201,149,57,.12);
+ --border-gold:1px solid rgba(201,149,57,.75);--border-steel:1px solid rgba(130,155,180,.4);
+ --metal:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,rgba(0,0,0,.02) 1px 3px);
+ --glass:linear-gradient(180deg,rgba(44,50,62,.78),rgba(26,29,36,.86));
+ --gold-grad:linear-gradient(180deg,#F5C66B 0%,#C99539 55%,#98702F 100%);
+ --ease:220ms ease;
+ /* nadpisanie dawnych zmiennych */
+ --bg:var(--c-bg);--panel:var(--c-panel);--line:rgba(130,155,180,.28);--ink:var(--c-ink);--mut:var(--c-mut);--acc:var(--c-agold);--ok:var(--c-ok);--hi:var(--c-ink);--bad:#e0636e;--sus:#e3a54a;
+ --gold:var(--c-agold);--gold2:var(--c-gold);--goldd:var(--c-brass)}
+body{background:radial-gradient(ellipse at 50% -10%,#2a2f39 0%,#1b1e24 45%,#121417 100%) fixed;color:var(--c-ink);font-family:Inter,"Segoe UI",system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:60;opacity:.06;mix-blend-mode:overlay;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+h1,header h1,#htitle h1,.hp h2,.hcard h3,#panel h2,.box h2{text-shadow:none!important;color:var(--c-ink);font-family:Inter,"Segoe UI",system-ui,sans-serif}
+/* panele: szkło + szczotkowany metal, miękki cień, stalowa krawędź, złote narożniki */
+.hp,.col,#boardwin,#bar,#brief,header,#topbar,.box,#wtop{
+ background:var(--metal),var(--glass)!important;border:var(--border-steel)!important;box-shadow:var(--shadow-panel)!important;clip-path:none!important;border-radius:4px;backdrop-filter:blur(8px);animation:none!important}
+.hp::after,.col::after,#boardwin::after{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:4px;
+ background:linear-gradient(var(--c-agold),var(--c-agold)) 0 0/14px 1.5px no-repeat,linear-gradient(var(--c-agold),var(--c-agold)) 0 0/1.5px 14px no-repeat,
+ linear-gradient(var(--c-agold),var(--c-agold)) 100% 100%/14px 1.5px no-repeat,linear-gradient(var(--c-agold),var(--c-agold)) 100% 100%/1.5px 14px no-repeat;opacity:.7}
+.col,#boardwin{position:relative}
+header,#topbar{border-radius:0;border-width:0 0 1px 0!important}
+/* aktywna sekcja – złoto z animowaną poświatą */
+@keyframes goldpulse{0%,100%{box-shadow:var(--shadow-panel),0 0 10px rgba(245,198,107,.18)}50%{box-shadow:var(--shadow-panel),0 0 22px rgba(245,198,107,.32)}}
+.hcat.on,#wcats .hbtn.on{border:var(--border-gold)!important;background:var(--metal),linear-gradient(180deg,rgba(73,48,29,.7),rgba(30,26,22,.9))!important;animation:goldpulse 2.8s ease-in-out infinite!important}
+.hcat.on .arr,.hcat .arr{color:var(--c-agold)}.hcat .arr{opacity:.55}
+.hcat canvas,#hdetail .row canvas{border:var(--border-steel)}.hcat.on canvas{border:var(--border-gold)}
+.hcat .s,.hp .sub{color:var(--c-mut)}
+/* przyciski: grafit + stal → hover złoty gradient → disabled przygaszony */
+.btn,.zoom button,select,.hbtn,.harr,.tool,.chip,#briefx{background:linear-gradient(180deg,#2c313b,#22262e)!important;color:var(--c-ink)!important;border:var(--border-steel)!important;
+ clip-path:none!important;border-radius:3px!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)!important;text-shadow:none!important;transition:background var(--ease),border-color var(--ease),box-shadow var(--ease),color var(--ease)!important;filter:none!important}
+.btn:hover,.zoom button:hover,.hbtn:hover,.harr:hover,.tool:hover,.chip:hover,#briefx:hover,select:hover{background:var(--gold-grad)!important;color:#241604!important;border-color:var(--c-gold)!important;box-shadow:var(--shadow-gold)!important}
+.btn:disabled,.hbtn[disabled],.hbtn[disabled]:hover,.btn:disabled:hover{background:#24272d!important;color:#6d7480!important;border-color:rgba(130,155,180,.18)!important;box-shadow:none!important;cursor:not-allowed}
+select option{background:#22262e;color:var(--c-ink)}
+/* najważniejsze przyciski – złoto z przesuwającym się refleksem */
+.btn.primary,#hdetail #hstart,.hbtn.gold{background:var(--gold-grad)!important;color:#241604!important;border:1px solid var(--c-gold)!important;box-shadow:var(--shadow-gold)!important;font-weight:700;position:relative;overflow:hidden}
+#hdetail #hstart{clip-path:none!important;margin-left:0!important;width:100%}
+.btn.primary::after,#hdetail #hstart::after,.hbtn.gold::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,250,225,.45),transparent);animation:sheen 4.5s ease-in-out infinite;pointer-events:none}
+@keyframes sheen{0%,70%{left:-60%}100%{left:130%}}
+.btn.primary:disabled{background:#3a3226!important;color:#8d7a58!important;border-color:#5a4a30!important;box-shadow:none!important}
+.btn.primary:disabled::after{display:none}
+/* narzędzia, zakładki, dok */
+.tool.on,.chip.on{background:linear-gradient(180deg,rgba(201,149,57,.38),rgba(73,48,29,.55))!important;border:var(--border-gold)!important;color:var(--c-ink)!important;box-shadow:var(--shadow-gold)!important}
+.tool.used::after{color:var(--c-ok)}
+.grp h3,#notes h3,#check h3,.tsel span,.whead{color:var(--c-mut)!important}
+.whead{background:linear-gradient(180deg,rgba(255,255,255,.03),transparent)!important;border-bottom:var(--border-steel)!important;color:#cfd5dd!important}
+.whead small{color:var(--c-gold)}
+.tabs{background:rgba(23,25,29,.6)!important;border-bottom:var(--border-steel)!important}
+.tabs button{color:var(--c-mut)!important;transition:color var(--ease),background var(--ease),border-color var(--ease)}
+.tabs button:hover{background:rgba(255,255,255,.04)!important;color:var(--c-ink)!important}
+.tabs button.on{color:var(--c-gold)!important;border-bottom-color:var(--c-agold)!important;background:linear-gradient(180deg,transparent,rgba(201,149,57,.14))!important}
+.tabs i{background:var(--c-brass)!important;color:#fff}.tabs button[data-tab=check] i{background:var(--c-burg)!important}
+.chip b{color:var(--c-ink)}.chip small{color:var(--c-mut)}.chip small.fl{color:#e88b93}
+.chip em{background:linear-gradient(90deg,#3fae66,var(--c-ok))}
+#strip .chip.on b{color:var(--c-gold)}
+/* stół */
+#boardwrap{background:#14161a!important;box-shadow:inset 0 0 40px rgba(0,0,0,.6)!important}
+.brk{background:linear-gradient(var(--c-agold),var(--c-agold)) 0 0/22px 1.5px no-repeat,linear-gradient(var(--c-agold),var(--c-agold)) 0 0/1.5px 22px no-repeat,
+ linear-gradient(var(--c-agold),var(--c-agold)) 100% 0/22px 1.5px no-repeat,linear-gradient(var(--c-agold),var(--c-agold)) 100% 0/1.5px 22px no-repeat,
+ linear-gradient(var(--c-agold),var(--c-agold)) 0 100%/22px 1.5px no-repeat,linear-gradient(var(--c-agold),var(--c-agold)) 0 100%/1.5px 22px no-repeat,
+ linear-gradient(var(--c-agold),var(--c-agold)) 100% 100%/22px 1.5px no-repeat,linear-gradient(var(--c-agold),var(--c-agold)) 100% 100%/1.5px 22px no-repeat!important;opacity:.6!important}
+#zlv,.viewlbl,.help,#tiltw{background:rgba(23,25,29,.85)!important;border:var(--border-steel)!important;color:var(--c-mut)}
+.viewlbl,#boardwin .whead .viewlbl{color:var(--c-info)!important}
+#toast{background:rgba(34,38,48,.95)!important;border:var(--border-gold)!important;box-shadow:var(--shadow-panel),var(--shadow-gold)!important;color:var(--c-ink)!important}
+#brief{border-left:3px solid var(--c-agold)!important}
+#brief b{color:var(--c-gold)!important}#brief .case{color:#d5d0c6!important}
+/* panel wyników */
+#panel h2{color:var(--c-ink)!important}
+.hint{border-left-color:var(--c-brass)!important;color:var(--c-mut)!important}
+.obs{background:rgba(23,36,55,.55)!important;border:var(--border-steel)!important;color:var(--c-ink)}
+.obs b{color:var(--c-gold)}
+.gate{background:rgba(23,25,29,.6)!important;border:1px dashed rgba(130,155,180,.4)!important;color:var(--c-mut)}
+.gate.ok{border-color:var(--c-ok)!important;color:#cdeed6!important}.gate.no{border-color:var(--c-brass)!important;color:#e9d6ac!important}
+.tl li{border-left-color:var(--c-brass)!important}.tl li b,#notes li span,.cp b{color:var(--c-gold)!important}
+table.mx th,table.pig th{background:rgba(57,68,83,.5)!important;color:var(--c-ink)!important}
+table.pig td,table.pig th,table.mx th,table.mx td{border-color:rgba(130,155,180,.25)!important}
+#check label:hover{background:rgba(255,255,255,.04)!important}#check label.on{color:#f0b3b8!important}#check input{accent-color:#c0505c}
+input[type=range]{accent-color:var(--c-agold)}
+.modal{background:rgba(10,11,13,.72)!important}
+.box{border:var(--border-gold)!important}
+/* paski przewijania */
+::-webkit-scrollbar-track{background:rgba(23,25,29,.7)!important}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#5a6372,#394453)!important;border:2px solid rgba(23,25,29,.95)!important}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--c-gold),var(--c-brass))!important}
+#about .abscroll::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#5a6372,#394453)!important}
+#about .abscroll{scrollbar-color:#5a6372 rgba(23,25,29,.85)!important}
+/* loader */
+#loader{background:radial-gradient(circle at 50% 45%,#2a2f39,#121417 70%)!important}
+#loader .ring{border-color:rgba(130,155,180,.2)!important;border-top-color:var(--c-gold)!important;box-shadow:var(--shadow-gold)!important}
+#loader b{color:var(--c-ink)!important}
+/* ekran startowy */
+#htitle .ico{border:var(--border-steel)!important;background:rgba(23,25,29,.6)!important}
+#htitle .ico svg,#topbar .brand svg{stroke:var(--c-agold)}
+#hstats b{color:var(--c-gold)!important;text-shadow:none!important}
+#hstats .chip svg{stroke:var(--c-mut)}
+.hmode{transition:background var(--ease)}.hmode:hover{background:rgba(255,255,255,.04)}
+.hmode .dot{border-color:#b9c0ca}.hmode.on .dot{background:var(--c-ok);border-color:#a8f0c0;box-shadow:0 0 8px rgba(101,219,135,.6)}
+.hmode .done{color:var(--c-ok)}
+#hdetail p,.hcard li{color:#cfcac0}
+.htools span{background:rgba(57,68,83,.45)!important;border:var(--border-steel)!important;color:var(--c-mut)!important}
+#hdetail h2,#hdetail .hsep{border-color:rgba(130,155,180,.22)!important}
+.hcard .wm{color:rgba(232,227,217,.07)}
+.hcard li i.n{border-color:#8b939e}.hcard li i.y{color:var(--c-ok)}
+.hbar{background:rgba(255,255,255,.1)!important}.hbar>div{background:linear-gradient(90deg,#3fae66,var(--c-ok))!important;box-shadow:none!important}
+#hstage .cap{color:var(--c-ink)}#hstage .cap .gd{color:var(--c-gold)}
+#hstage::before{background:radial-gradient(ellipse at 50% 0,rgba(255,228,170,.3),rgba(255,228,170,0) 70%)}
+#hfx{opacity:.35}
+#home::after{background:radial-gradient(ellipse at 50% 45%,transparent 55%,rgba(0,0,0,.5) 100%)}
+/* wiki */
+#wart h3,#about .abh{color:var(--c-agold)!important;border-bottom:var(--border-steel)!important}
+#wart .wlead{color:var(--c-ink)!important}
+#wart .wmode{border-left-color:var(--c-brass)!important}#wart .wmode b{color:var(--c-gold)!important}
+.wgo,#wiki a[href],#about a{color:var(--c-gold)!important;border-bottom-color:rgba(245,198,107,.5)!important}.wgo:hover,#wiki a[href]:hover{color:#fff4d8!important}
+.wfig{background:#14161a!important;border:var(--border-steel)!important;box-shadow:var(--shadow-panel)!important}
+.wfig figcaption{color:var(--c-mut)!important;border-top:var(--border-steel)!important}
+.wli{transition:background var(--ease)}.wli.on{border-left-color:var(--c-agold)!important;background:linear-gradient(90deg,rgba(201,149,57,.22),transparent)!important}
+.wli small{color:var(--c-mut)!important}
+#wiki{background:rgba(14,15,18,.9)!important;color:var(--c-ink)!important}
+#wq{background:#1c1f25!important;border:var(--border-steel)!important;color:var(--c-ink)!important}
+.wload i{border-color:rgba(130,155,180,.2)!important;border-top-color:var(--c-gold)!important}
+#about .abl{color:#d5d0c6!important}
+.hcat canvas,#hdetail canvas{background:#1b1e23!important}
+/* 1.33.1 – bez zaznaczania tekstu poza wiki i polami tekstowymi */
+body{-webkit-user-select:none;user-select:none}
+#wiki,#wiki *,input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text}
+img{-webkit-user-drag:none}
+
+/* 1.35.2 – jednolite ikony przycisków (SVG, obrys 2 px) */
+.ico{flex:none;display:inline-block;vertical-align:-4px}
+.btn .ico{margin-right:6px}
+#wtop h1 .ico{margin-right:10px;vertical-align:-5px;color:var(--c-gold)}
+.hbtn .ico,.btn .ico{width:20px!important;height:20px!important}
+#htitle .hbtn .ico{width:22px!important;height:22px!important}
+/* 1.35.2 – paski przewijania w kolorach motywu (Chrome 121+ i Firefox używają scrollbar-color, który ma pierwszeństwo przed ::-webkit-scrollbar) */
+*{scrollbar-color:#98702F rgba(23,25,29,.75)!important}
+#about .abscroll{scrollbar-color:#C99539 rgba(23,25,29,.85)!important}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#C99539,#98702F)!important}
+#about .abscroll::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#C99539,#98702F)!important}
+/* wiki bez poziomego przewijania: treść zawija się i mieści w kolumnach */
+#wiki,#wcats,#wlist,#wart{overflow-x:hidden!important}
+#wart{overflow-wrap:anywhere}
+#wart img,#wart canvas,#wart figure,#wart svg{max-width:100%!important;height:auto}
+#wart table{width:100%;table-layout:fixed}

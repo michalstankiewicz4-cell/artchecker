@@ -1,5 +1,5 @@
 "use strict";
-/* EN – wiki, część 1: techniki badawcze (klucze jak w WT, js/data/wikitexts.js). Etap 3. */
+/* EN – wiki, część 1: techniki badawcze (klucze jak w WT, js/data/wiki/). Etap 3. */
 const WT_EN={
 'Spektroskopia pigmentów':{lead:'Tells you which pigments the paint is made of – and so the earliest moment the painting could have been made.',
  how:'From a chosen spot (in practice a sample the size of a grain of sand, or non-invasively with a Raman or XRF spectrometer) you read a chemical “fingerprint”. Every pigment has characteristic elements and a spectrum – lead white is lead, Prussian blue is iron and cyanide, titanium white is titanium.',

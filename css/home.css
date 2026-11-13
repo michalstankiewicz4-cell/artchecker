@@ -1,0 +1,55 @@
+/* Ekran główny – część dawnego css/style.css; kolejność plików w index.html ma znaczenie */
+/* ===================== EKRAN GŁÓWNY ===================== */
+#home{position:fixed;inset:0;z-index:20;display:grid;grid-template-columns:330px minmax(0,1fr) 390px;grid-template-rows:auto minmax(0,1fr) auto;gap:16px;padding:18px;color:#dbeafe;font-family:"Segoe UI",system-ui,sans-serif;overflow:auto}
+#home.hidden{display:none}
+#homebg{position:fixed;inset:0;z-index:-1;width:100%;height:100%}
+.hp{position:relative;background:linear-gradient(180deg,rgba(16,44,86,.72),rgba(6,18,40,.82));border:1px solid rgba(95,184,255,.55);box-shadow:0 0 22px rgba(40,140,255,.25),inset 0 0 22px rgba(40,140,255,.10);
+ clip-path:polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px);backdrop-filter:blur(5px);padding:14px 16px}
+.hp h2{margin:0 0 8px;font:600 21px "Segoe UI",system-ui;color:#eaf4ff;letter-spacing:.01em}
+.hp .sub{color:#8fbfe8;font-size:13px}
+#htitle{grid-column:1/3;display:flex;gap:16px;align-items:center;max-width:720px}
+#htitle .ico{width:62px;height:62px;flex:none;display:grid;place-items:center;border:1px solid rgba(95,184,255,.5);background:rgba(20,60,110,.6)}
+#htitle h1{margin:0;font:600 30px "Segoe UI",system-ui;color:#eaf4ff;text-shadow:0 0 12px rgba(80,170,255,.6)}
+#hstats{grid-column:3;justify-self:end;display:flex;gap:12px;align-items:center}
+#hstats .chip{display:flex;gap:10px;align-items:center}
+#hstats b{font-size:20px;color:#ffd166}
+#hcats{display:flex;flex-direction:column;gap:12px;min-height:0;overflow:auto}
+.hcat{display:flex;gap:12px;align-items:center;cursor:pointer;transition:transform .15s}
+.hcat:hover{transform:translateX(3px)}
+.hcat canvas{width:96px;height:72px;flex:none;border:1px solid rgba(95,184,255,.4);background:#081a33}
+.hcat .t{font:600 17px "Segoe UI",system-ui;color:#eaf4ff}.hcat .s{font-size:12.5px;color:#8fbfe8}
+.hcat .arr{margin-left:auto;font-size:26px;color:#5fb8ff;opacity:.4}
+.hcat.on{border-color:#5fd0ff;box-shadow:0 0 26px rgba(60,180,255,.6),inset 0 0 26px rgba(60,180,255,.22)}
+.hcat.on .arr{opacity:1}
+#hstage{position:relative;min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#hstage canvas{width:100%;height:100%;position:absolute;inset:0}
+#hstage .cap{position:absolute;bottom:10px;left:0;right:0;text-align:center;color:#bfe0ff;font-size:14px;text-shadow:0 0 8px #000}
+#hdetail{display:flex;flex-direction:column;gap:10px;min-height:0;overflow:hidden}
+#hdetail .hscroll{flex:1 1 auto;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:10px;padding-right:6px}
+#hdetail .htools{flex:none;align-content:flex-start}
+#hdetail .hmode{padding-top:4px;padding-bottom:4px}
+#hdetail #hstart{flex:none}
+#hdetail .row{display:flex;gap:12px}
+#hdetail canvas{width:150px;height:110px;flex:none;border:1px solid rgba(95,184,255,.4)}
+#hdetail p{margin:0;font-size:13.5px;line-height:1.45;color:#cfe3f8}
+.hmode{display:flex;gap:10px;align-items:center;padding:6px 8px;border-radius:4px;cursor:pointer;font-size:14px}
+.hmode:hover{background:rgba(60,140,230,.15)}
+.hmode .dot{width:16px;height:16px;border-radius:50%;border:2px solid #7fbfff;flex:none}
+.hmode.on .dot{background:#5fd0ff;box-shadow:0 0 10px #5fd0ff}
+.hmode.dis{opacity:.45;cursor:not-allowed}
+.hmode .done{margin-left:auto;color:#5fe08a;font-size:13px}
+.htools{display:flex;flex-wrap:wrap;gap:6px}
+.htools span{font-size:11.5px;padding:3px 8px;border:1px solid rgba(95,184,255,.35);background:rgba(30,80,140,.35);color:#cfe3f8}
+.hbtn{display:flex;gap:10px;align-items:center;justify-content:center;font:600 18px "Segoe UI",system-ui;color:#fff;padding:12px 16px;cursor:pointer;border:1px solid #6fd0ff;
+ background:linear-gradient(180deg,#1e7be0,#0f4fa8);box-shadow:0 0 20px rgba(60,170,255,.55);clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px)}
+.hbtn:hover{filter:brightness(1.15)}.hbtn.ghost{background:rgba(20,50,90,.6);box-shadow:none;font-size:15px;padding:8px 12px}.hbtn.ok{background:linear-gradient(180deg,#1f9a52,#11663a);border-color:#5fe08a}
+.hbtn[disabled]{opacity:.45;cursor:not-allowed}
+#hcards{grid-column:1/4;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.hcard h3{margin:0 0 8px;display:flex;gap:10px;align-items:center;font:600 17px "Segoe UI",system-ui;color:#eaf4ff}
+.hcard .num{width:28px;height:28px;display:grid;place-items:center;border:1px solid #5fb8ff;color:#9fd6ff;font-weight:700;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:rgba(40,110,200,.4)}
+.hcard ul{list-style:none;margin:0 0 10px;padding:0;font-size:13px}.hcard li{display:flex;gap:8px;align-items:center;padding:2px 0;color:#cfe3f8}
+.hcard li i{font-style:normal;width:16px;text-align:center}.hcard li i.y{color:#5fe08a}.hcard li i.n{color:#6f8fb0}
+.hbar{height:8px;background:rgba(255,255,255,.08);border:1px solid rgba(95,184,255,.3);margin:6px 0 10px;position:relative}
+.hbar>div{position:absolute;inset:0;width:0;background:linear-gradient(90deg,#2fd17a,#9cf0b8);box-shadow:0 0 10px #2fd17a}
+.hbar+small{font-size:12px;color:#9fc3e6}
+@media(max-width:1100px){#home{grid-template-columns:1fr;grid-template-rows:auto}#htitle,#hstats,#hcards{grid-column:auto}#hcards{grid-template-columns:1fr 1fr}#hstage{min-height:300px}}

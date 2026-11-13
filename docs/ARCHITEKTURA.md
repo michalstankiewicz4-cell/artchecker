@@ -6,7 +6,7 @@ Zmienne najwyższego poziomu (`let`/`const`) są wspólne dla wszystkich skrypt�
 ```
 index.html            szkielet strony, meta SEO/Open Graph, lista skryptów
 og-image.jpg, favicon.svg, robots.txt, sitemap.xml – pliki dla wyszukiwarek i udostępniania
-css/style.css         wygląd
+css/                 wygląd: base, home, wiki, ui, layout, wiki-articles, home-gold, theme (kolejność w index.html ma znaczenie)
 js/version.js         numer wersji (semver)
 js/core/              rdzeń niezależny od trybu
   util.js             losowanie z ziarnem, gradienty, geometria, toast
@@ -19,7 +19,7 @@ js/core/              rdzeń niezależny od trybu
   home.js             ekran główny: kategorie, podgląd trybu, postęp (localStorage), loader
   homefx.js           efekty menu: ziarno, pasmowanie tła (JPG), paralaksa
   wiki.js             wiki eksperta: artykuły z danych trybów + słowniczek (GLOSS), ilustracje generowane w piaskownicy
-js/data/              dane: pigmenty, podobrazia (supports.js – SUP), realart.js – dzieła prawdziwe, wikitexts.js – teksty wiki, wikiimg.js – manifest ilustracji
+js/data/              dane: pigmenty, podobrazia (supports.js – SUP), realart.js – dzieła prawdziwe, wiki/*.js – teksty wiki (techniki, metody, słowniczek, techniki malarskie), wikiimg.js – manifest ilustracji
 js/lab/               kod z GameLaboratory: artkit.js (ArtKit)
 img/wiki/             gotowe ilustracje wiki (JPG)
 tools/                build-wiki-img.py, build-thumbs.py, build-real.py, build-stamps.py, build-manuscript.py, build-models.mjs, probe.sh, real-art.txt, doctor-3d.py
@@ -99,4 +99,4 @@ Dane dzieł: `js/data/realart.js` (`REAL`). Obsługa w grze: `js/core/real.js` �
 `js/core/i18n.js` (ładowany zaraz po `version.js`): `LANG` (`?lang=` > `localStorage['artchecker.lang']` > język przeglądarki), słownik `EN` (klucz = tekst polski), `tr(s)` do użycia w kodzie, obserwator DOM, który tłumaczy każdy węzeł tekstowy i atrybut (`title`, `placeholder`, `label`, `alt`) o treści zgodnej z kluczem słownika. Długie bloki HTML (okno „O programie”) mają wersje `data-l="pl"` i `data-l="en"`, CSS pokazuje tę dla `html[lang]`. Słowniki są w `js/i18n/en-*.js` (`trAdd({...})`). `trText` tłumaczy: 1) cały tekst, 2) wzorce – klucz z `{0}`, `{1}` (wartość nie obejmuje dwukropka ani nowej linii, wartość też jest tłumaczona, jeśli jest w słowniku), 3) frazy od najdłuższych z granicą słowa. Nowy tekst w grze: dopisz tłumaczenie do słownika (dla tekstu z wartościami – wzorzec). Tekst rysowany na canvasie przepuść przez `tr()`. Kontrola: test, który przechodzi wszystkie tryby i badania w EN i wypisuje linie z polskimi znakami lub słowami. Przełącznik (`.langbtn`) zapisuje wybór i przeładowuje stronę. Wiki EN: angielskie teksty haseł w `js/i18n/en-wiki-*.js` (`WT_EN`, `GLOSS_EN`, `WGLOSS_EN`, `WOBJ_EN`, `WART_EN`), a `wikiData()` w EN zamienia tytuły i treść przez `tr`/`trHTML`, zostawiając polski tytuł w `key` (obrazy `img/wiki`, linki). SEO: statyczny `<head>` po angielsku, `hreflang` dla `?lang=en` i `?lang=pl`.
 
 ## Styl (design system)
-„Luxury Museum Laboratory” – zmienne w ostatniej sekcji `css/style.css` (`--c-bg`, `--c-panel`, `--c-steel`, `--c-gold`, `--c-agold`, `--c-brass`, `--c-burg`, `--c-ink`, `--c-mut`, `--c-ok`, `--c-info`, `--shadow-panel`, `--shadow-gold`, `--border-gold`, `--border-steel`, `--metal`, `--glass`, `--gold-grad`). Złoto tylko dla ważnych elementów (aktywna sekcja, główne przyciski `.btn.primary`/`.hbtn.gold`/`#hstart`, ramy obrazów, liczniki). Kolory rysowane na canvasie (stół, scena 3D, ikony wiki) dobierz z tej palety.
+„Luxury Museum Laboratory” – zmienne w `css/theme.css` (`--c-bg`, `--c-panel`, `--c-steel`, `--c-gold`, `--c-agold`, `--c-brass`, `--c-burg`, `--c-ink`, `--c-mut`, `--c-ok`, `--c-info`, `--shadow-panel`, `--shadow-gold`, `--border-gold`, `--border-steel`, `--metal`, `--glass`, `--gold-grad`). Złoto tylko dla ważnych elementów (aktywna sekcja, główne przyciski `.btn.primary`/`.hbtn.gold`/`#hstart`, ramy obrazów, liczniki). Kolory rysowane na canvasie (stół, scena 3D, ikony wiki) dobierz z tej palety.

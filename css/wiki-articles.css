@@ -1,0 +1,27 @@
+/* Wiki – artykuły – część dawnego css/style.css; kolejność plików w index.html ma znaczenie */
+/* ===================== WIKI – artykuły ===================== */
+#wart h2{margin:4px 0 12px}
+#wart h3{margin:18px 0 6px;font:600 13px "Segoe UI",system-ui;letter-spacing:.12em;text-transform:uppercase;color:#7fd6ff;border-bottom:1px solid rgba(95,184,255,.25);padding-bottom:4px}
+#wart .wlead{font-size:16.5px;color:#eaf4ff;line-height:1.55}
+#wart .wmode{border-left:2px solid rgba(95,184,255,.5);padding-left:10px}
+#wart .wmode b{color:#bfe4ff}
+.wgo{color:#7fd6ff;cursor:pointer;border-bottom:1px dotted rgba(127,214,255,.6);text-decoration:none}.wgo:hover{color:#fff;border-bottom-color:#fff}
+.wfig{margin:6px 0 14px;padding:0;border:1px solid rgba(95,184,255,.4);background:#061430;box-shadow:0 0 18px rgba(40,140,255,.2)}
+.wfig img{display:block;width:100%;height:auto;max-height:380px;object-fit:contain}
+.wfig figcaption{padding:6px 10px;font-size:12px;color:#8fbfe8;border-top:1px solid rgba(95,184,255,.25)}
+.wload{height:220px;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;color:#8fbfe8;font-size:13px}
+.wload i{width:34px;height:34px;border-radius:50%;border:3px solid rgba(95,184,255,.2);border-top-color:#5fd0ff;animation:spin 1s linear infinite}
+
+#about .abh{margin:14px 0 6px;font:600 12px "Segoe UI",system-ui;letter-spacing:.14em;text-transform:uppercase;color:#7fd6ff;border-bottom:1px solid rgba(95,184,255,.3);padding-bottom:4px}
+#about .abl{font-size:13px;line-height:1.5;color:#cfe3f8}#about .abl ul{margin:4px 0 8px 18px;padding:0}#about .abl li{margin:2px 0}#about a{color:#7fd6ff}
+#about .abox{max-width:680px;width:100%;max-height:86vh;display:flex;flex-direction:column;padding:0}
+#about .abscroll{flex:1;min-height:0;overflow-y:scroll;padding:18px 16px 8px 22px;scrollbar-gutter:stable}
+#about .abscroll::-webkit-scrollbar{width:12px}#about .abscroll::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#6fd8ff,#1e6fc8);border:2px solid rgba(6,18,40,.95)}
+#about .abfoot{flex:none;padding:10px 22px 16px;border-top:1px solid rgba(95,184,255,.25);display:flex;justify-content:flex-end}
+#about .abscroll{scrollbar-width:auto;scrollbar-color:#5fd0ff rgba(6,18,40,.85);-webkit-mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 36px),rgba(0,0,0,.25) 100%);mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 36px),rgba(0,0,0,.25) 100%)}
+#about .abscroll.end{-webkit-mask-image:none;mask-image:none}
+#wiki a[href]{color:#6fd0ff;text-decoration:none;border-bottom:1px dotted rgba(111,208,255,.6)}
+#wiki a[href]:hover{color:#bfe0ff;border-bottom-color:#bfe0ff}
+
+html[lang=en] [data-l=pl],html[lang=pl] [data-l=en]{display:none}
+.langbtn{min-width:44px;font-weight:700;letter-spacing:.06em}
