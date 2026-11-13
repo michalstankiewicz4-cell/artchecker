@@ -132,28 +132,6 @@
     "source": "https://commons.wikimedia.org/wiki/File:Znaczek_Fi_1.jpg"
   },
   {
-    "slug": "vm-1",
-    "file": "Voynich Manuscript (1).jpg",
-    "w": 721,
-    "h": 1000,
-    "artist": "Unknown authorUnknown author",
-    "date": "Exact date of creation unknown, thought to have been written in the 15th or 16th century.",
-    "license": "Public domain",
-    "title": "Voynich Manuscript (1)",
-    "source": "https://commons.wikimedia.org/wiki/File:Voynich_Manuscript_(1).jpg"
-  },
-  {
-    "slug": "vm-10",
-    "file": "Voynich Manuscript (10).jpg",
-    "w": 712,
-    "h": 1000,
-    "artist": "Unknown authorUnknown author",
-    "date": "Exact date of creation unknown, thought to have been written in the 15th or 16th century.",
-    "license": "Public domain",
-    "title": "Voynich Manuscript (10)",
-    "source": "https://commons.wikimedia.org/wiki/File:Voynich_Manuscript_(10).jpg"
-  },
-  {
     "slug": "vm-32",
     "file": "Voynich Manuscript (32).jpg",
     "w": 744,
@@ -163,17 +141,6 @@
     "license": "Public domain",
     "title": "Voynich Manuscript (32)",
     "source": "https://commons.wikimedia.org/wiki/File:Voynich_Manuscript_(32).jpg"
-  },
-  {
-    "slug": "vm-60",
-    "file": "Voynich Manuscript (60).jpg",
-    "w": 753,
-    "h": 1000,
-    "artist": "Unknown authorUnknown author",
-    "date": "Exact date of creation unknown, thought to have been written in the 15th or 16th century.",
-    "license": "Public domain",
-    "title": "Voynich Manuscript (60)",
-    "source": "https://commons.wikimedia.org/wiki/File:Voynich_Manuscript_(60).jpg"
   },
   {
     "slug": "vm-100",
@@ -187,17 +154,6 @@
     "source": "https://commons.wikimedia.org/wiki/File:Voynich_Manuscript_(100).jpg"
   },
   {
-    "slug": "vm-120",
-    "file": "Voynich Manuscript (120).jpg",
-    "w": 772,
-    "h": 1000,
-    "artist": "Unknown authorUnknown author",
-    "date": "Exact date of creation unknown, thought to have been written in the 15th or 16th century.",
-    "license": "Public domain",
-    "title": "Voynich Manuscript (120)",
-    "source": "https://commons.wikimedia.org/wiki/File:Voynich_Manuscript_(120).jpg"
-  },
-  {
     "slug": "vm-140",
     "file": "Voynich Manuscript (140).jpg",
     "w": 789,
@@ -207,50 +163,6 @@
     "license": "Public domain",
     "title": "Voynich Manuscript (140)",
     "source": "https://commons.wikimedia.org/wiki/File:Voynich_Manuscript_(140).jpg"
-  },
-  {
-    "slug": "vm-150",
-    "file": "Voynich Manuscript (150).jpg",
-    "w": 797,
-    "h": 1000,
-    "artist": "Unknown authorUnknown author",
-    "date": "Exact date of creation unknown, thought to have been written in the 15th or 16th century.",
-    "license": "Public domain",
-    "title": "Voynich Manuscript (150)",
-    "source": "https://commons.wikimedia.org/wiki/File:Voynich_Manuscript_(150).jpg"
-  },
-  {
-    "slug": "vm-160",
-    "file": "Voynich Manuscript (160).jpg",
-    "w": 747,
-    "h": 1000,
-    "artist": "Unknown authorUnknown author",
-    "date": "Exact date of creation unknown, thought to have been written in the 15th or 16th century.",
-    "license": "Public domain",
-    "title": "Voynich Manuscript (160)",
-    "source": "https://commons.wikimedia.org/wiki/File:Voynich_Manuscript_(160).jpg"
-  },
-  {
-    "slug": "vm-170",
-    "file": "Voynich Manuscript (170).jpg",
-    "w": 1000,
-    "h": 510,
-    "artist": "Unknown authorUnknown author",
-    "date": "Exact date of creation unknown, thought to have been written in the 15th or 16th century.",
-    "license": "Public domain",
-    "title": "Voynich Manuscript (170)",
-    "source": "https://commons.wikimedia.org/wiki/File:Voynich_Manuscript_(170).jpg"
-  },
-  {
-    "slug": "vm-180",
-    "file": "Voynich Manuscript (180).jpg",
-    "w": 1000,
-    "h": 483,
-    "artist": "Unknown authorUnknown author",
-    "date": "Exact date of creation unknown, thought to have been written in the 15th or 16th century.",
-    "license": "Public domain",
-    "title": "Voynich Manuscript (180)",
-    "source": "https://commons.wikimedia.org/wiki/File:Voynich_Manuscript_(180).jpg"
   },
   {
     "slug": "vm-200",

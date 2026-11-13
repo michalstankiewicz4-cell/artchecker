@@ -20,10 +20,11 @@ function fillArtist(mode){const el=document.getElementById('artist'),L=realFor(m
   v=RESUME_ART!=null&&RESUME_ART!==''?RESUME_ART:el.dataset.mode===mode?el.value:def;el.dataset.mode=mode;let h='';
  if(R)h=`<option value="real:*">${tr('Losowe dzieło')}</option>`+L.map(e=>`<option value="real:${e.slug}">${e.artist} – „${tr(e.title)}”</option>`).join('');
  else if(mode==='coin'&&typeof COINS!=='undefined')h=`<option value="">${tr('Losowa moneta')}</option>`+COINS.map(c=>`<option value="${c.id}">${tr(c.name)} – ${tr(c.country)}</option>`).join('');
+ else if(mode==='manuscript'&&typeof MSPAGES!=='undefined')h=`<option value="">${tr('Losowa karta')}</option>`+MSPAGES.map(c=>`<option value="${c.id}">${tr(c.name)}</option>`).join('');
  else if(mode==='stamp'&&typeof STAMPS!=='undefined')h=`<option value="">${tr('Losowy znaczek')}</option>`+STAMPS.map(c=>`<option value="${c.id}">${tr(c.name)} – ${tr(c.country)}, ${c.year}</option>`).join('');
 
- RESUME_ART=null;el.innerHTML=h;{const lb=document.getElementById('artistLbl');if(lb)lb.textContent=tr(mode==='coin'?'Moneta':mode==='stamp'?'Znaczek':'Artysta')}el.value=[...el.options].some(o=>o.value===v)?v:(el.options[0]?el.options[0].value:'');
- el.style.display=(R||mode==='coin'||mode==='stamp')?'':'none'}
+ RESUME_ART=null;el.innerHTML=h;{const lb=document.getElementById('artistLbl');if(lb)lb.textContent=tr(mode==='coin'?'Moneta':mode==='stamp'?'Znaczek':mode==='manuscript'?'Karta':'Artysta')}el.value=[...el.options].some(o=>o.value===v)?v:(el.options[0]?el.options[0].value:'');
+ el.style.display=(R||mode==='coin'||mode==='stamp'||mode==='manuscript')?'':'none'}
 async function resolveReal(mode){let v=document.getElementById('artist').value;REAL_CUR=null;if(!v.startsWith('real:')){if(!realMode(mode))return;v='real:*'}
  const L=realFor(mode);const e=v==='real:*'?L[Math.random()*L.length|0]:REAL_BY[v.slice(5)];if(!e||!realFor(mode).includes(e))return;await loadReal(e.slug);REAL_CUR=e}
 /* obiekt „artysty” dla prawdziwego obrazu */

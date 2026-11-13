@@ -81,7 +81,7 @@ function wikiData0(){const A=[];
    body:(((WEN()&&WOBJ_EN[t])||WOBJ[t])?`<p class="wlead">${(WEN()&&WOBJ_EN[t])||WOBJ[t]}</p>`:'')+`<h3>Zlecenie</h3><p>${k.caseText()}</p>${k.intro?`<p>${k.intro}</p>`:''}<h3>Badania</h3><p>${[...new Set(byMode[k.id].tech)].map(wgo).join(', ')}</p><h3>Metody fałszerskie</h3><p>${byMode[k.id].forg.map(wgo).join(', ')}</p>`+(WREAL[k.id]?WREAL[k.id]():'')})});
  const GIMG={'Krakelura':['paint5','crack'],'Werniks':['paint5','uv'],'Pentimenti':['paint5','ir'],'Reflektografia IR':['paint5','ir'],'RTG':['paint5','xray'],'Impast':['paint5','texture'],'Blejtram':['paint5','back'],
   'Znak wodny':['notes','watermark'],'Druk wklęsły (intaglio)':['notes','intaglio'],'Farba zmienna optycznie (OVI)':['notes','ovi'],'Obraz utajony':['notes','latent'],'Recto-verso':['notes','register'],
-  'Ząbkowanie':['stamp','perf'],'Ductus':['manuscript','ductus'],'Atrament żelazowo-galasowy':['manuscript','verso'],'Papier czerpany':['manuscript','paper'],'Galwanoplastyka':['coin','edge']};
+  'Ząbkowanie':['stamp','perf'],'Ductus':['manuscript','ductus'],'Atrament żelazowo-galasowy':['manuscript','ink'],'Galwanoplastyka':['coin','edge']};
  const BUST={'Patyna':false,'Cyzelowanie':false,'Surmoulage':false,'CNC (frezowanie)':true},GICON={'XRF':'spectrum','Katalog raisonné':'doc','Proweniencja':'doc','Giclée':'micro'};
  GLOSS.forEach(([t,b])=>{let img=null;const g=GIMG[t];
   if(g){const d=(KINDS[g[0]]||{defs:DEF}).defs[g[1]];if(d)img={type:'view',mode:g[0],tool:g[1],view:d.view||'normal',area:(d.gate||{}).area||''}}

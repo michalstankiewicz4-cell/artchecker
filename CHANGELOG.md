@@ -2,6 +2,14 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.36.0] – 2026-11-13
+### Zmienione
+- **Weryfikacja rękopisów na Manuskrypcie Wojnicza** (Beinecke, Yale, MS 408, domena publiczna): cztery karty – sam tekst, dwie zielnikowe i karta z postaciami (lista „Karta”). Fikcyjny list z 1712 r. usunięty.
+- Nowe badania: pergamin pod światło, lampa UV, datowanie radiowęglowe (1404–1438; „bomba węglowa”), atrament i farby ilustracji w XRF (azuryt, ochra, zieleń miedziowa kontra pigmenty syntetyczne), pismo pod mikroskopem.
+- Nowe metody fałszerskie: faksymile na papierze, kopia na współczesnym pergaminie, fałszerstwo na starym czystym pergaminie (C-14 „prawidłowe”), dorobione kolory.
+- Wiki: nowe hasła narzędzi i metod, opisy obiektów (monety, znaczki, rękopisy) zaktualizowane, ilustracje wygenerowane na nowo; usunięte hasła i obrazki starego listu (pieczęć lakowa, papier czerpany, odwrocie).
+- „O programie”: licencja Manuskryptu Wojnicza; fikcyjne zostały tylko banknoty.
+
 ## [1.35.2] – 2026-11-13
 ### Zmienione
 - Ekran startowy: przycisk „Rozpocznij badania” prostokątny, na całą szerokość sekcji (jak przycisk Wiki).
