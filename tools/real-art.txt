@@ -19,3 +19,5 @@ vm-32|Voynich Manuscript (32).jpg
 vm-100|Voynich Manuscript (100).jpg
 vm-140|Voynich Manuscript (140).jpg
 vm-200|Voynich Manuscript (200).jpg
+doc-agad|AGAD (3) Koperta z pieczęcią lakową, Pudło 660-12 s. 8.png
+doc-nowo|Актовая бумага на продажу недвижимости в г. Новогрудке 5.png
