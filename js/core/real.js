@@ -12,9 +12,8 @@ function loadReal(slug){if(REALIM[slug])return Promise.resolve(REALIM[slug]);
   if(window.REALIMG&&REALIMG[slug])return go();const s=document.createElement('script');s.src='js/real/'+slug+'.js';s.onload=go;s.onerror=rej;document.head.appendChild(s)})}
 /* „Pamięć eksperta” korzysta z obrazów olejnych; „Zniszczony fragment” – z dzieł zaginionych lub zniszczonych */
 const realFor=mode=>{const m=mode==='memory'?'paint5':mode;/* frag: dzieła oznaczone mode:'frag' (zaginione/zniszczone) */return REAL.filter(e=>e.mode===m&&REAL_READY.includes(e.slug))};
-/* lista „Artysta”: fikcyjni artyści + dzieła prawdziwe gotowe dla trybu */
-/* tryby z dziełami prawdziwymi: tylko dzieła prawdziwe (fikcyjne prace usunięte w 1.29);
-   „Zniszczony fragment” i „Pamięć eksperta” nadal korzystają z fikcyjnych artystów (sceny generowane) */
+/* lista „Artysta”: dzieła prawdziwe gotowe dla trybu (fikcyjni artyści i sceny usunięte w 1.35);
+   w trybach monet i znaczków ta sama lista wybiera monetę albo znaczek */
 const realMode=mode=>realFor(mode).length>0;
 function fillArtist(mode){const el=document.getElementById('artist'),L=realFor(mode),R=realMode(mode),
   def=R?(REAL_DEF[mode]&&REAL_READY.includes(REAL_DEF[mode])?'real:'+REAL_DEF[mode]:'real:*'):'',
@@ -22,9 +21,9 @@ function fillArtist(mode){const el=document.getElementById('artist'),L=realFor(m
  if(R)h=`<option value="real:*">${tr('Losowe dzieło')}</option>`+L.map(e=>`<option value="real:${e.slug}">${e.artist} – „${tr(e.title)}”</option>`).join('');
  else if(mode==='coin'&&typeof COINS!=='undefined')h=`<option value="">${tr('Losowa moneta')}</option>`+COINS.map(c=>`<option value="${c.id}">${tr(c.name)} – ${tr(c.country)}</option>`).join('');
  else if(mode==='stamp'&&typeof STAMPS!=='undefined')h=`<option value="">${tr('Losowy znaczek')}</option>`+STAMPS.map(c=>`<option value="${c.id}">${tr(c.name)} – ${tr(c.country)}, ${c.year}</option>`).join('');
- else if(mode==='frag'||mode==='memory')h=`<option value="">${tr('Losowy artysta (fikcyjny)')}</option>`+ARTISTS.filter(a=>!a.sup||a.sup==='canvas').map(a=>`<option value="${a.id}">${a.name} – ${tr(({pejzaz:'pejzaż',portret:'portret',martwa:'martwa natura',marina:'marina'})[a.scene])}</option>`).join('');
+
  RESUME_ART=null;el.innerHTML=h;{const lb=document.getElementById('artistLbl');if(lb)lb.textContent=tr(mode==='coin'?'Moneta':mode==='stamp'?'Znaczek':'Artysta')}el.value=[...el.options].some(o=>o.value===v)?v:(el.options[0]?el.options[0].value:'');
- el.style.display=(R||mode==='frag'||mode==='memory'||mode==='coin'||mode==='stamp')?'':'none'}
+ el.style.display=(R||mode==='coin'||mode==='stamp')?'':'none'}
 async function resolveReal(mode){let v=document.getElementById('artist').value;REAL_CUR=null;if(!v.startsWith('real:')){if(!realMode(mode))return;v='real:*'}
  const L=realFor(mode);const e=v==='real:*'?L[Math.random()*L.length|0]:REAL_BY[v.slice(5)];if(!e||!realFor(mode).includes(e))return;await loadReal(e.slug);REAL_CUR=e}
 /* obiekt „artysty” dla prawdziwego obrazu */

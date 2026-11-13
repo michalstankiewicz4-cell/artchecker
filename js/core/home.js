@@ -9,7 +9,7 @@ function homeCats(){return[
  {title:tr('Badania obrazów'),sub:tr('Poznaj dzieło'),desc:'Zbadaj obrazy nowoczesnymi metodami: UV, podczerwień, RTG, spektroskopia pigmentów, krakelura i mikroskop. Odkryj kopie, przemalowania i ślady historii dzieła.',
   modes:[['paint5','Przeprowadź ekspertyzę – obrazy'],['frag','Zniszczony fragment'],['memory','Pamięć eksperta'],...Object.values(KINDS).filter(k=>k.group==='art').map(k=>[k.id,k.label])]},
  {title:tr('Rzeźby 3D'),sub:tr('Obejdź i przybliż'),desc:'Obracaj kamerę i podchodź blisko: skład stopu, patyna, ślady dłuta i frezu, szwy odlewnicze, sygnatury z tyłu cokołu, UV i RTG.',
-  modes:Object.values(SCULPT_VARIANTS).map(v=>[v.id,(t=>t[0].toUpperCase()+t.slice(1))(v.label.replace('Przeprowadź ekspertyzę – ',''))])},
+  modes:['marble','sculpt'].map(k=>SCULPT_VARIANTS[k]).map(v=>[v.id,(t=>t[0].toUpperCase()+t.slice(1))(v.label.replace('Przeprowadź ekspertyzę – ',''))])},
  {title:tr('Obiekty i dokumenty'),sub:tr('Odkryj prawdę'),desc:'Banknoty, monety, znaczki i rękopisy – każdy ma własne zabezpieczenia, materiały i typowe metody fałszerstw. Na checkliście każdego egzemplarza zaznacz sygnały fałszerstwa – egzemplarz bez sygnałów uznajesz za prawdziwy.',
   modes:Object.values(KINDS).filter(k=>k.group!=='art').map(k=>[k.id,k.label])},
  {title:tr('Wkrótce'),sub:tr('W przygotowaniu'),desc:'Aukcja z budżetem, śledztwo w sprawie fałszerza i praca konserwatora – kolejne tryby są w przygotowaniu.',modes:SOON.map(([id,l])=>[id,l,1])}]}
@@ -44,7 +44,7 @@ function soonIllus(id){const c=mk(420,320),x=c.getContext('2d');x.strokeStyle='#
  else if(id==='investigation'){x.beginPath();x.arc(180,140,80,0,7);x.stroke();x.beginPath();x.moveTo(240,200);x.lineTo(320,280);x.stroke()}
  else{x.beginPath();x.moveTo(110,260);x.lineTo(300,70);x.stroke();x.lineWidth=26;x.beginPath();x.moveTo(110,260);x.lineTo(140,230);x.stroke()}return c}
 function preview(id){if(PREV[id])return PREV[id];let c;
- if(SCULPT_VARIANTS[id])c=bustIllus(id==='marble');else if(SOON.some(s=>s[0]===id))c=soonIllus(id);
+ if(SCULPT_VARIANTS[id]){const im=REALIM['thumb-'+id];if(im){c=mk(im.width,im.height);c.getContext('2d').drawImage(im,0,0)}else c=bustIllus(id==='marble')}else if(SOON.some(s=>s[0]===id))c=soonIllus(id);
  else c=withSandbox(()=>{const r=rng(4242+id.length*131);MODE=id;KIND=KINDS[id]||null;
   if(KIND){KIND.newGame(r);const o=P.find(p=>p.orig)||P[0];return frameIt(o.kind.view(o,'normal'),W,H,false)}
   if(id==='frag'){newFrag(r);const o=P[0];return frameIt(getView(o,'normal'),W,H,false,(x,pad)=>{x.save();x.globalCompositeOperation='destination-out';x.beginPath();o.frag.missing.forEach((q,i)=>i?x.lineTo(pad+q[0],pad+q[1]):x.moveTo(pad+q[0],pad+q[1]));x.fill();x.restore()})}
@@ -73,7 +73,8 @@ function toolNames(id){let sets,defs;if(KINDS[id]){sets=KINDS[id].sets;defs=KIND
  return sets.flatMap(([,ids])=>ids.map(t=>(id==='frag'&&defs[t].nameF)||defs[t].name))}
 /* podgląd trybu na ekranie startowym: dzieło prawdziwe */
 const HPREV={paint5:'stanczyk',drawing:'melencolia',water:'zajac'};
-function homeCap(id,label){const e=HPREV[id]&&REALIM[HPREV[id]]&&REAL_BY[HPREV[id]];return e?`${tr(label)} <span class="gd">•</span> ${e.artist} „${tr(e.title)}” (${e.year})`:tr(label)}
+const HCAP3={marble:['Antoine-Denis Chaudet','Napoleon','przełom XVIII i XIX w.'],sculpt:['John Quincy Adams Ward','James Garfield','ok. 1883–1887']};
+function homeCap(id,label){if(HCAP3[id]&&REALIM['thumb-'+id]){const c=HCAP3[id];return`${tr(label)} <span class="gd">•</span> ${c[0]} „${tr(c[1])}” (${tr(c[2])})`}const e=HPREV[id]&&REALIM[HPREV[id]]&&REAL_BY[HPREV[id]];return e?`${tr(label)} <span class="gd">•</span> ${e.artist} „${tr(e.title)}” (${e.year})`:tr(label)}
 function renderHome(){const cats=homeCats(),cat=cats[HCAT],done=(store().done)||{};if(!HMODE||!cat.modes.some(m=>m[0]===HMODE))HMODE=(cat.modes.find(m=>!m[2])||cat.modes[0])[0];
  const s=store();document.getElementById('hstat').innerHTML=`<b>${s.games||0}</b><span class="sub">– ${tr('trafne werdykty')}: ${s.ok||0}</span>`;
  document.getElementById('hcats').innerHTML=cats.map((c,i)=>`<div class="hp hcat${i===HCAT?' on':''}" data-i="${i}"><canvas></canvas><div><div class="t">${i+1}. ${c.title}</div><div class="s">${c.sub}</div></div><div class="arr">›</div></div>`).join('');

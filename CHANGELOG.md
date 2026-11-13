@@ -2,6 +2,14 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.35.0] – 2026-11-13
+### Zmienione
+- Rzeźby z brązu ustawione poprawnie: statuetka stoi pionowo, twarzą do kamery, podstawa płasko na cokole (wypoziomowanie wyliczone z podstawy skanu i zapisane na stałe).
+- Ekran startowy: w kategorii „Rzeźby 3D” pierwszy jest marmur z miniaturą „Napoleona” (render prawdziwego skanu), brąz pokazuje „Jamesa Garfielda”; podpis z autorem i datą jak przy „Stańczyku”.
+- Wiki: ilustracje rzeźb to rendery prawdziwych skanów; ilustracje obrazów, fragmentu i pamięci powstają na dziełach prawdziwych (Stańczyk, Kamieniarze).
+### Usunięte
+- Fikcyjni artyści i ich sceny (pejzaż, portret, martwa natura, marina), fikcyjni autorzy prac na papierze, artykuły wiki o fikcyjnych artystach, dawna głowa popiersia low-poly (i jej licencja w „O programie”). Pozostały fikcyjne banknoty i rękopis – do czasu ich zastąpienia.
+
 ## [1.34.0] – 2026-11-13
 ### Zmienione
 - **Rzeźby na prawdziwych dziełach (skany 3D):**

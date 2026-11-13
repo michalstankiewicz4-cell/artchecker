@@ -3,10 +3,8 @@
    PRACE NA PAPIERZE – dwa rodzaje z technikami z ArtKit (laboratorium sztuki GameLaboratory):
    „Rysunki i grafiki” (ołówek, tusz, węgiel, miedzioryt) oraz „Akwarele i pastele”.
    Obraz pracy rysuje ArtKit (js/lab/artkit.js); papier, widoki i zdrady – ten plik.
-   Artyści i dzieła są fikcyjni – poza dziełami prawdziwymi (REAL_CUR, js/core/real.js).
+   Oryginałem jest zawsze dzieło prawdziwe (REAL_CUR, js/core/real.js); fikcyjnych artystów usunięto w 1.35.
    ===================================================================== */
-const PAPER_ARTISTS=[
- {name:'Adam Siemaszko',life:'1820–1879',year:1851},{name:'Ludwika Orańska',life:'1832–1901',year:1864},{name:'Kazimierz Dębicz',life:'1808–1870',year:1839}];
 const PW_TECH={
  pencil:{label:'ołówek',full:'Rysunek ołówkiem',mat:'grafit',matObs:'Węgiel (grafit) z glinką – typowy sztyft grafitowy z epoki.',subj:'landscape',title:'Pejzaż z rzeką i mostem',kind:'drawing'},
  ink:{label:'tusz',full:'Rysunek piórem i tuszem',mat:'atrament',matObs:'Żelazo i siarka – atrament żelazowo-galasowy, zbrązowiały na brzegach linii.',subj:'still',title:'Martwa natura z dzbanem',kind:'drawing'},
@@ -112,12 +110,12 @@ function pwObs(p,id){const T=PW_TECH[p.kind.cur.tech],m=(k,d)=>pwMode(p,k,d);swi
 function pwWhy(p,id){const m=p.m;return({paper:()=>m.paper==='imitation'?'Linie sita nadrukowane – imitacja papieru czerpanego.':'Papier maszynowy zamiast czerpanego.',uvp:()=>'Wybielacze optyczne – papier po 1950 r.',
  back:()=>m.back==='forged'?'Podrobiony stempel kolekcji – świeży tusz anilinowy.':'Brak znaków kolekcji wymienionej w proweniencji.',micro:()=>m.micro==='inkjet'?'Druk atramentowy zamiast rysunku.':'Raster reprodukcji fotomechanicznej.',
  relief:()=>m.relief==='traced'?'Puste rowki po rysiku – przerys przez kalkę.':'Brak wgnieceń narzędzia i odcisku płyty – druk płaski.',line:()=>'Wolna, drżąca linia kopisty.',xrf:()=>'Materiał współczesny, niedostępny w epoce.',fade:()=>'Brak granicy dawnej oprawy – praca nie była wystawiana na światło.'}[id]||(()=>''))()}
-function pwKind(id,label,noun,techs,defs,sets,profiles){return{id,label,noun,group:'art',W:PW_W,H:PW_H,wcm:30,hcm:23.5,techs,tilt:false,focusLabel:'Detal',defs,sets,profiles,cur:{tech:techs[0],seed:1,art:PAPER_ARTISTS[0],title:PW_TECH[techs[0]].title},
+function pwKind(id,label,noun,techs,defs,sets,profiles){return{id,label,noun,group:'art',W:PW_W,H:PW_H,wcm:30,hcm:23.5,techs,tilt:false,focusLabel:'Detal',defs,sets,profiles,cur:{tech:techs[0],seed:1,art:{name:'—',life:'—',year:1850},title:PW_TECH[techs[0]].title},
  originals:r=>1,
- newGame(r){const R=REAL_CUR&&REAL_CUR.mode===id?REAL_CUR:null;
+ newGame(r){const R=REAL_CUR&&REAL_CUR.mode===id?REAL_CUR:REAL.find(e=>e.mode===id&&REALIM[e.slug])||null;
   if(R){const im=REALIM[R.slug],a=im.width/im.height;this.W=a>=1?600:Math.round(560*a);this.H=a>=1?Math.round(600/a):560;this.wcm=R.wcm||Math.round(this.W/20);this.hcm=R.hcm||Math.round(this.H/20);
    this.cur={tech:R.kindTech,seed:1+(r()*1e6|0),art:{name:R.artist,life:R.life,year:R.year},title:R.title,real:R}}
-  else{this.W=PW_W;this.H=PW_H;this.wcm=30;this.hcm=23.5;const tech=pick(techs,r);this.cur={tech,seed:1+(r()*1e6|0),art:pick(PAPER_ARTISTS,r)};this.cur.title=PW_TECH[tech].title}
+  else{this.W=PW_W;this.H=PW_H;this.wcm=30;this.hcm=23.5;const tech=pick(techs,r);this.cur={tech,seed:1+(r()*1e6|0),art:{name:'—',life:'—',year:1850}};this.cur.title=PW_TECH[tech].title}
   const tech=this.cur.tech;
   kindBatch(this,r);
   if(R&&R.paper==='wove')for(const p of P)if(p.t.paper){delete p.t.paper;delete p.m.paper}/* oryginał też na papierze maszynowym – papier nie jest zdradą */

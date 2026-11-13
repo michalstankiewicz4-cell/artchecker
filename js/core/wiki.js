@@ -70,8 +70,7 @@ function wikiData0(){const A=[];
   A.push({cat:'Metody fałszerskie',title:nm,tags:L.map(x=>x.label).join(' · '),img,
    body:wSecs((WEN()&&WT_EN[nm])||WT[nm],WSEC_F)+L.map(x=>`<h3>W grze – ${x.label}</h3><p><b>Zawsze zdradzają:</b> ${x.coreN.map(wgo).join(', ')}</p>${x.optN.length?`<p><b>Mogą zdradzać:</b> ${x.optN.map(wgo).join(', ')}</p>`:''}`).join('')})}
  const SCN={pejzaz:'pejzaż',portret:'portret',martwa:'martwa natura',marina:'marina'};
- ARTISTS.filter(a=>!a.sup||a.sup==='canvas').forEach(a=>A.push({cat:'Obiekty i artyści',title:`${a.name} (${a.life})`,tags:'obrazy',img:{type:'artist',id:a.id},
-  body:`<p class="wlead">„${a.title}”, ${a.year} – ${SUP[a.sup||'canvas'].tech}, ${fmt(a.wcm)} × ${fmt(a.hcm)} cm.</p><h3>Dzieło</h3><p>${a.ref?`Dzieło referencyjne: ${a.ref}. `:''}${a.scene&&SCN[a.scene]?`Gatunek: ${SCN[a.scene]}. `:''}Sygnatura: „${a.sig.text}”.</p><h3>W grze</h3><p>Obraz tego artysty może pojawić się w trybach ${wgo('Zniszczony fragment')} i ${wgo('Pamięć eksperta')}. Do porównania sygnatury i stylu gra pokazuje detale z jego „dzieł pewnych”.</p><p><small class="nb">Artysta i dzieło są fikcyjne.</small></p>`}));
+
  const objs=[['paint5','Obrazy – przeprowadź ekspertyzę','Obraz olejny to warstwowa konstrukcja: płótno na blejtramie, grunt, rysunek, kolejne warstwy farby i werniks. Każda warstwa ma swoją chemię i swój wiek – dlatego obraz bada się od odwrocia po mikroskopijną strukturę powierzchni. Na stole leży oryginał i kopie wykonane różnymi metodami.'],
   ['frag','Zniszczony fragment','Oryginał zaginął – zostały po nim opis w katalogu i wyniki dawnych badań. Zadanie polega na sprawdzeniu, czy ocalały fragment zgadza się ze wszystkimi punktami tej dokumentacji.'],
   ['memory','Pamięć eksperta','Trening spostrzegawczości: najpierw ogląda się oryginał przez lupę, potem wskazuje go wśród prawie identycznych falsyfikatów różniących się drobnymi szczegółami.']];
@@ -97,11 +96,13 @@ function wikiData0(){const A=[];
 
 /* ---------- ilustracje (generowane z silnika gry, w piaskownicy) ---------- */
 const WIMG={},WBATCH={};
+const WREAL_MODE={paint5:'stanczyk',frag:'kamieniarze',memory:'stanczyk',drawing:'melencolia',water:'zajac'};
 function wBatch(mode,seed,artist){const k=mode+'|'+seed+'|'+(artist||'');if(WBATCH[k])return WBATCH[k];
  const sel0=document.getElementById('artist'),a0=sel0.value;if(artist!=null)sel0.value=artist;
+ const rc0=REAL_CUR,rs=artist&&String(artist).startsWith('real:')?String(artist).slice(5):WREAL_MODE[mode];if(rs&&REALIM[rs])REAL_CUR=REAL_BY[rs];
  try{return WBATCH[k]=withSandbox(()=>{const r=rng(seed);MODE=mode;KIND=KINDS[mode]||null;SV=null;sel=null;tool=null;
   if(KIND)KIND.newGame(r);else if(mode==='frag')newFrag(r);else newPaint5(r);
-  return{MODE,KIND,ART,SC,C,W,H,IW,IH,P,BW,BH}})}finally{sel0.value=a0}}
+  return{MODE,KIND,ART,SC,C,W,H,IW,IH,P,BW,BH}})}finally{sel0.value=a0;REAL_CUR=rc0}}
 function wWith(b,fn){return withSandbox(()=>{({MODE,KIND,ART,SC,C,W,H,IW,IH,P,BW,BH}=b);SV=null;sel=null;tool=null;return fn(P)})}
 function wAreaRect(p,area){if(!area||WHOLE.includes(area))return null;let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;const N=56;
  for(let j=0;j<=N;j++)for(let i=0;i<=N;i++){const lx=W*i/N,ly=H*j/N;let ok=false;try{ok=areaOK(p,area,{cx:p.x+lx,cy:p.y+ly,x0:p.x,y0:p.y,x1:p.x+W,y1:p.y+H})}catch(e){}
@@ -138,9 +139,8 @@ function wikiIllus(img){const key=JSON.stringify(img);if(WIMG[key])return WIMG[k
   if(f){const defs=f.b.KIND?f.b.KIND.defs:DEF,d=img.tool&&defs[img.tool],v=d?d.view||'normal':'normal';
    out=wWith(f.b,()=>{const o=f.b.P.find(p=>p.orig),rect=d?wAreaRect(o,(d.gate||{}).area):null;return wPanels([{c:wShot(o,v,rect),label:tr('Oryginał'),col:'#65DB87'},{c:wShot(f.p,v,rect),label:tr('Ta metoda'),col:'#e0636e'}])});
    cap=d?`Porównanie w grze: ${d.name}${v!=='normal'?' – '+(VIEWNAME[v]||v):''}.`:'Oryginał i falsyfikat w świetle dziennym.'}}
- else if(img.type==='artist'){const b=wBatch('paint5',5150,img.id);out=wWith(b,()=>{const o=b.P.find(p=>p.orig);return frameIt(getView(o,'normal'),W,H,true)});cap='Oryginał w świetle dziennym (wygenerowany przez grę).'}
  else if(img.type==='preview'){out=preview(img.id);cap='Podgląd z gry.'}
- else if(img.type==='bust'){out=bustIllus(!!img.marble);cap=img.marble?'Rzeźba z marmuru – w grze badana w 3D.':'Rzeźba z brązu – w grze badana w 3D.'}
+ else if(img.type==='bust'){out=(typeof bustIllus3D==='function'&&bustIllus3D(!!img.marble))||bustIllus(!!img.marble);cap=img.marble?'Rzeźba z marmuru – w grze badana w 3D.':'Rzeźba z brązu – w grze badana w 3D.'}
  else if(img.type==='artkit'&&window.ArtKit){const sp=Object.assign({size:720,aspect:1.25,seed:11,relief:0.7,varnish:0.15},img.spec),full=ArtKit.render(sp).canvas;
   const det=ArtKit.render(Object.assign({},sp,{format:'none'})).canvas,d=mk(320,256);d.getContext('2d').drawImage(det,det.width*0.42,det.height*0.38,det.width*0.22,det.height*0.22,0,0,320,256);
   const rk=ArtKit.render(Object.assign({},sp,{format:'none',view:'raking'})).canvas,rc=mk(320,256);rc.getContext('2d').drawImage(rk,rk.width*0.42,rk.height*0.38,rk.width*0.22,rk.height*0.22,0,0,320,256);

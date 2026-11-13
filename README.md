@@ -56,5 +56,5 @@ Meta tagi, Open Graph / Twitter Card (miniatura `og-image.jpg` – zrzut ekranu 
 [SemVer](https://semver.org/lang/pl/): numer w `js/version.js` (widoczny w nagłówku gry) + wpis w `CHANGELOG.md` przy każdej zmianie.
 
 ## Zasoby zewnętrzne
-- Głowa popiersi 3D: „Lowpoly face model” – void (https://sketchfab.com/void22), licencja CC BY 4.0, zmienione (przez GameLaboratory i w grze).
+- Rzeźby 3D: „James Garfield” (J.Q.A. Ward) – skan Smithsonian Open Access, CC0; „Napoleon” (A.-D. Chaudet) – skan Olivera Larica (threedscans.com), bez ograniczeń praw autorskich.
 - ArtKit i model głowy skopiowane z repozytorium GameLaboratory (`js/lab/`).

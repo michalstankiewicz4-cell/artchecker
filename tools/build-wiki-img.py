@@ -1,6 +1,6 @@
 # Generuje statyczne ilustracje wiki i manifest js/data/wikiimg.js.
 # Dwa zestawy: img/wiki/ (PL) i img/wiki/en/ (EN, podpisy po angielsku).
-# Uruchom: python3 tools/build-wiki-img.py  (wymaga playwright + chrome)
+# Uruchom: python3 tools/build-wiki-img.py  (wymaga playwright + chrome; three.js z CDN albo lokalnie: THREE_LOCAL=/ścieżka/three.min.js)
 import asyncio,base64,json,os,sys
 from playwright.async_api import async_playwright
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -10,12 +10,14 @@ JS="""i=>{const a=WIKI[i];if(!a.img)return null;const r=wikiIllus(a.img);if(!r||
  return {slug:wslug(a.key||a.title),cap:r.cap,w:o.width,h:o.height,d:o.toDataURL('image/jpeg',.82)}}"""
 async def main():
     async with async_playwright() as p:
-        b=await p.chromium.launch(executable_path=os.environ.get('CHROME','/usr/bin/google-chrome'))
+        b=await p.chromium.launch(executable_path=os.environ.get('CHROME','/usr/bin/google-chrome'),args=['--use-gl=swiftshader','--enable-webgl','--ignore-gpu-blocklist'])
         man={}
         for lang,sub in (('pl',''),('en','en/')):
             os.makedirs(ROOT+'/img/wiki/'+sub,exist_ok=True)
             pg=await b.new_page(viewport={'width':1400,'height':900})
+            if os.environ.get('THREE_LOCAL'):await pg.route('**/three.min.js',lambda r:r.fulfill(path=os.environ['THREE_LOCAL'],content_type='application/javascript'))
             await pg.goto('file://'+ROOT+'/index.html?lang='+lang); await pg.wait_for_timeout(2500)
+            await pg.evaluate("async()=>{try{await loadThree();await loadModel3('garfield');await loadModel3('napoleon')}catch(e){}}")
             n=await pg.evaluate("()=>{WIKI=wikiData();return WIKI.length}")
             for i in range(n):
                 r=await pg.evaluate(JS,i)

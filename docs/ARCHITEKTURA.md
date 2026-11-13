@@ -20,7 +20,7 @@ js/core/              rdzeń niezależny od trybu
   homefx.js           efekty menu: ziarno, pasmowanie tła (JPG), paralaksa
   wiki.js             wiki eksperta: artykuły z danych trybów + słowniczek (GLOSS), ilustracje generowane w piaskownicy
 js/data/              dane: pigmenty, artyści i podobrazia (SUP), wikitexts.js – teksty wiki, wikiimg.js – manifest ilustracji
-js/lab/               kod z GameLaboratory: artkit.js (ArtKit), bust-head.js (głowa popiersia)
+js/lab/               kod z GameLaboratory: artkit.js (ArtKit)
 img/wiki/             gotowe ilustracje wiki (JPG)
 tools/                build-wiki-img.py, doctor-3d.py
 js/paint/             silnik obrazów: sceny, widoki (UV, IR, RTG…), obserwacje, próbki
@@ -70,7 +70,7 @@ Widoki z `LAMPV` (`uv`, `raking`, `trans`, `ir`) rysują się tylko w kręgu za 
 Światło boczne liczone jest na żywo z mapy wysokości: `makeRaking` (obrazy) i `embossFrom` (obiekty 2D) zapisują w obiekcie `p._rel` (`relPack`: wysokość i jasność jako `Uint8Array`), a `lampRaking` oświetla piksele kręgu z kierunku lampy. Obiekt bez `p._rel` pokazuje w kręgu gotowy widok.
 
 ## Podobrazia obrazów
-`SUP` w `js/data/artists.js` (`canvas`, `wood`, `copper`), artysta ma pole `sup` (domyślnie płótno), `supOf()` zwraca podobrazie bieżącej partii. Zależą od niego: odwrocie (`makeBackWood`, `makeBackCopper` z fakturą ArtKit przez `supTex`), RTG (`xraySupport`), teksty obserwacji, katalogu, certyfikatu i zlecenia, nazwy metod (`profName`) i dobór profili (na miedzi bez giclée i starego podobrazia). Fragment i pamięć losują tylko obrazy na płótnie.
+`SUP` w `js/data/supports.js` (`canvas`, `wood`, `copper`), artysta ma pole `sup` (domyślnie płótno), `supOf()` zwraca podobrazie bieżącej partii. Zależą od niego: odwrocie (`makeBackWood`, `makeBackCopper` z fakturą ArtKit przez `supTex`), RTG (`xraySupport`), teksty obserwacji, katalogu, certyfikatu i zlecenia, nazwy metod (`profName`) i dobór profili (na miedzi bez giclée i starego podobrazia). Fragment i pamięć losują tylko obrazy na płótnie.
 
 ## Loader
 `withLoader(fn, tekst)` (`js/core/home.js`) – nowa partia (`runNewGame`) i pierwsze przygotowanie widoku badania (`js/core/panel.js`, gdy któryś obiekt nie ma jeszcze widoku w `p.views`).
@@ -82,7 +82,7 @@ Aukcja, Śledztwo i Konserwator są w menu jako nieaktywne. Każdy będzie osobn
 Ilustracje artykułów wiki są gotowymi plikami w `img/wiki/` z manifestem `js/data/wikiimg.js`. Po zmianie wyglądu obiektów lub dodaniu artykułów uruchom `python3 tools/build-wiki-img.py` (playwright + Chrome) – skrypt wygeneruje je silnikiem gry. Artykuł bez pliku generuje ilustrację w przeglądarce w locie.
 
 ## Kod z GameLaboratory
-`js/lab/` – kod skopiowany z repozytorium GameLaboratory (laboratorium sztuki i modeli). `artkit.js` to ArtKit (obrazy 2D: techniki, podłoża, formaty, widoki), zamieniony z modułu ES na zwykły skrypt (`window.ArtKit`). `bust-head.js` – siatka głowy i szyi popiersia (CC BY 4.0, autor: void), używana w `js/modes/sculpture3d.js`. Logikę zmienia się w laboratorium i kopiuje tutaj ponownie.
+`js/lab/` – kod skopiowany z repozytorium GameLaboratory (laboratorium sztuki i modeli). `artkit.js` to ArtKit (obrazy 2D: techniki, podłoża, formaty, widoki), zamieniony z modułu ES na zwykły skrypt (`window.ArtKit`). Rzeźby 3D to prawdziwe skany (`js/modes/realsculpt.js`, `js/real/model-*.js`, `tools/build-models.mjs`). Logikę zmienia się w laboratorium i kopiuje tutaj ponownie.
 
 ## Doktor modeli 3D
 `python3 tools/doctor-3d.py /ścieżka/do/GameLaboratory` – sprawdza popiersia 3D doktorem modeli z laboratorium (`tools/doctor/modeldoctor.js`, Three.js r186 z laboratorium). Kończy się kodem 1, gdy są błędy. Po każdej zmianie geometrii rzeźb uruchom go ponownie.

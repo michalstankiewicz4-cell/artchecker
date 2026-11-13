@@ -16,7 +16,7 @@ document.getElementById('hprev').onclick=()=>homeStep(-1);document.getElementByI
 for(const id of['hwiki','gwiki'])document.getElementById(id).onclick=()=>showWiki();
 document.getElementById('wclose').onclick=()=>document.getElementById('wiki').classList.add('hidden');
 document.getElementById('wq').oninput=()=>{WSEL=0;renderWiki()};
-setTimeout(async()=>{try{await Promise.all(Object.values(HPREV).map(loadReal))}catch(e){}
+setTimeout(async()=>{try{await Promise.all([...new Set([...Object.values(HPREV),...Object.values(WREAL_MODE),'thumb-marble','thumb-sculpt'])].map(loadReal))}catch(e){}
  let R=null;try{R=JSON.parse(sessionStorage.getItem('artchecker.resume')||'null');sessionStorage.removeItem('artchecker.resume')}catch(e){}
  if(R&&R.game&&R.mode){RESUME_ART=R.artist||'';startMode(R.mode)}else{showHome();setTimeout(hideLoader,120)}
  if(R&&R.wiki){showWiki();if(R.art)wikiOpen(R.art)}},30);
