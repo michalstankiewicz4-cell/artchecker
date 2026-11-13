@@ -143,6 +143,39 @@
     "source": "https://commons.wikimedia.org/wiki/File:Znaczek_Fi_1.jpg"
   },
   {
+    "slug": "w10-a",
+    "file": "Stamp Poland Mi3.jpg",
+    "w": 195,
+    "h": 241,
+    "artist": "Stamp: Edward Trojanowski. Scan: Enzik",
+    "date": "Stamp: 1918-11-17. Scan: 2010-05-10",
+    "license": "Public domain",
+    "title": "Stamp Poland Mi3",
+    "source": "https://commons.wikimedia.org/wiki/File:Stamp_Poland_Mi3.jpg"
+  },
+  {
+    "slug": "pz10-a",
+    "file": "PL Fi70 over DE Mi90.jpg",
+    "w": 278,
+    "h": 325,
+    "artist": "Enzik",
+    "date": "Original in Germany: 1905/1913; overprint in Poland: 1919; scan: 2010",
+    "license": "Public domain",
+    "title": "PL Fi70 over DE Mi90",
+    "source": "https://commons.wikimedia.org/wiki/File:PL_Fi70_over_DE_Mi90.jpg"
+  },
+  {
+    "slug": "or50-a",
+    "file": "Poland 50h1919 1st.jpg",
+    "w": 144,
+    "h": 175,
+    "artist": "Unknown authorUnknown author",
+    "date": "1919",
+    "license": "Public domain",
+    "title": "Poland 50h1919 1st",
+    "source": "https://commons.wikimedia.org/wiki/File:Poland_50h1919_1st.jpg"
+  },
+  {
     "slug": "vm-32",
     "file": "Voynich Manuscript (32).jpg",
     "w": 744,
