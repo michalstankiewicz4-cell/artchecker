@@ -88,6 +88,28 @@
     "source": "https://commons.wikimedia.org/wiki/File:Stanisław_Wyspiański,_Macierzyństwo.jpg"
   },
   {
+    "slug": "uczony",
+    "file": "Rembrandt Scholar at the Lectern.jpg",
+    "w": 700,
+    "h": 1000,
+    "artist": "Rembrandt",
+    "date": "1641date QS:P571,+1641-00-00T00:00:00Z/9",
+    "license": "Public domain",
+    "title": "\nScholar at his Writing Table\nlabel QS:Lfr,\"Savant à son pupitre\"\nlabel QS:Len,\"Scholar at his Writing Table\"\nlabel QS:Lpl,\"Uczony przy pulpicie\"\nlabel QS:Lde,\"Gelehrter an seinem Schreibtisch\"\nlabel QS:Lnl,\"Geleerde aan een lessenaar\".",
+    "source": "https://commons.wikimedia.org/wiki/File:Rembrandt_Scholar_at_the_Lectern.jpg"
+  },
+  {
+    "slug": "ucieczka",
+    "file": "Adam Elsheimer - Die Flucht nach Ägypten (Alte Pinakothek).jpg",
+    "w": 1000,
+    "h": 730,
+    "artist": "Adam Elsheimer",
+    "date": "1609date QS:P571,+1609-00-00T00:00:00Z/9",
+    "license": "Public domain",
+    "title": "\nThe Flight into Egypt\nlabel QS:Lit,\"Fuga in Egitto\"\nlabel QS:Lhu,\"Menekülés Egyiptomba\"\nlabel QS:Lhr,\"Bijeg u Egipat\"\nlabel QS:Lca,\"Fugida a Egipte\"\nlabel QS:Lde,\"Die Flucht nach Ägypten\"\nlabel QS:Lpt,\"Fuga para o Egito\"\nlabel QS:Larz,\"رحلة العيله المقدسه لمصر\"\nlabel QS:Lzh,\"逃往埃及\"\nlabel QS:Lsr,\"Бекство у Египат\"\nlabel QS:Lsl,\"Beg v Egipt\"\nlabel QS:Lth,\"พระเยซูหนี ไปอียิปต์\"\nlabel QS:Lru,\"Бегство в Египет\"\nlabel QS:Lmk,\"Бегството во Египет\"\nlabel QS:Lid,\"Pelarian ke Mesir\"\nlabel QS:Lpl,\"Ucieczka do Egiptu\"\nlabel QS:Les,\"Huida a Egipto\"\nlabel QS:Lnl,\"De vlucht naar Egypte\"\nlabel QS:Lfr,\"La fuite en Égypte\"\nlabel QS:Leo,\"La fuĝo al Egiptujo\"\nlabel QS:Len,\"The Flight into Egypt\"\nlabel QS:Lar,\"الهرب إلى مصر\"\nlabel QS:Lcs,\"Útěk do Egypta\"\nlabel QS:Lel,\"Φυγή στην Αίγυπτο\"",
+    "source": "https://commons.wikimedia.org/wiki/File:Adam_Elsheimer_-_Die_Flucht_nach_Ägypten_(Alte_Pinakothek).jpg"
+  },
+  {
     "slug": "kamieniarze",
     "file": "Gustave Courbet - The Stonebreakers - WGA05457.jpg",
     "w": 1000,
