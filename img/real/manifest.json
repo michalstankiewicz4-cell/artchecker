@@ -218,5 +218,27 @@
     "license": "Public domain",
     "title": "Voynich Manuscript (200)",
     "source": "https://commons.wikimedia.org/wiki/File:Voynich_Manuscript_(200).jpg"
+  },
+  {
+    "slug": "doc-agad",
+    "file": "AGAD (3) Koperta z pieczęcią lakową, Pudło 660-12 s. 8.png",
+    "w": 1000,
+    "h": 906,
+    "artist": "Unknown authorUnknown author",
+    "date": "1863-01-01",
+    "license": "Public domain",
+    "title": "AGAD (3) Koperta z pieczęcią lakową, Pudło 660-12 s. 8",
+    "source": "https://commons.wikimedia.org/wiki/File:AGAD_(3)_Koperta_z_pieczęcią_lakową,_Pudło_660-12_s._8.png"
+  },
+  {
+    "slug": "doc-nowo",
+    "file": "Актовая бумага на продажу недвижимости в г. Новогрудке 5.png",
+    "w": 628,
+    "h": 1000,
+    "artist": "Parties to the recorded transactions; notarial certifications by Aleksey Alekseyevich Afanasyev, notary in Novogrudok. Digital reproduction: Museum of the National Bank of the Republic of Belarus.",
+    "date": "1902–1911",
+    "license": "Public domain",
+    "title": "Актовая бумага на продажу недвижимости в г. Новогрудке 5",
+    "source": "https://commons.wikimedia.org/wiki/File:Актовая_бумага_на_продажу_недвижимости_в_г._Новогрудке_5.png"
   }
 ]
