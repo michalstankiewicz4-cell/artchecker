@@ -4,7 +4,7 @@
    scena obrazu z prawdziwego dzieła dla trybu „Obrazy – przeprowadź ekspertyzę”.
    Włączane po kolei: REAL_READY.
    ===================================================================== */
-const REAL_READY=['stanczyk','babie-lato','melencolia','dlonie','zajac','macierzynstwo','kamieniarze'];
+const REAL_READY=['stanczyk','babie-lato','melencolia','dlonie','zajac','macierzynstwo','kamieniarze','uczony','ucieczka'];
 const REAL_DEF={paint5:'stanczyk'};/* dzieło wybrane domyślnie po wejściu w tryb */
 const REALIM={};let REAL_CUR=null,RESUME_ART=null;
 function loadReal(slug){if(REALIM[slug])return Promise.resolve(REALIM[slug]);

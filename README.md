@@ -7,7 +7,7 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 ## Tryby
 | Tryb | Opis |
 |---|---|
-| Przeprowadź ekspertyzę – obrazy | prawdziwe dzieła (Matejko, Chełmoński…); 1 oryginał i 4 kopie, każda wykonana inną metodą fałszerską – [opis](docs/tryby/obrazy.md) |
+| Przeprowadź ekspertyzę – obrazy | prawdziwe dzieła (Matejko, Chełmoński, Rembrandt na desce, Elsheimer na miedzi); 1 oryginał i 4 kopie, każda wykonana inną metodą fałszerską – [opis](docs/tryby/obrazy.md) |
 | Zniszczony fragment | czy fragment pochodzi z prawdziwego dzieła zniszczonego w czasie wojny (Courbet, „Kamieniarze”), znanego z fotografii i opisu |
 | Przeprowadź ekspertyzę – rzeźby z brązu (3D) | prawdziwa statuetka „James Garfield” (J.Q.A. Ward, skan Smithsonian CC0) w Three.js; ocena z checklisty |
 | Przeprowadź ekspertyzę – rzeźby z marmuru (3D) | prawdziwe popiersie „Napoleon” (A.-D. Chaudet, skan threedscans); dłuto kontra CNC, patyna, kwas – [opis](docs/tryby/marmur.md) |
@@ -19,7 +19,7 @@ Przeglądarkowa gra (HTML + JavaScript, bez kroku budowania) o rozpoznawaniu ory
 | Weryfikacja znaczków | prawdziwe Penny Black (1840) i Polska nr 1 (1860), domena publiczna; ząbkowanie / marginesy, znak wodny, UV, druk, litery, kasownik, guma – [opis](docs/tryby/znaczek.md) |
 | Weryfikacja monet | prawdziwe 1 zł, 2 zł, 5 zł, 1 € i 2 € (rysowane przez grę); waga, średnica, stop, magnes, rant, bicie czy odlew, zużycie – [opis](docs/tryby/moneta.md) |
 
-Wszystkie dzieła i obiekty są prawdziwe (domena publiczna albo CC0) – poza banknotami, które są fikcyjne. Obrazy: Jan Matejko, „Stańczyk”; Józef Chełmoński, „Babie lato”; Gustave Courbet, „Kamieniarze” (zniszczony 1945); Albrecht Dürer, „Melancholia I”, „Dłonie modlącego się”, „Zając”; Stanisław Wyspiański, „Macierzyństwo”. Rzeźby: J.Q.A. Ward, „James Garfield”; A.-D. Chaudet, „Napoleon”. Monety: 1 zł, 2 zł, 5 zł, 1 €, 2 €. Znaczki: Penny Black, Polska nr 1. Rękopis: Manuskrypt Wojnicza. Dzieło lub obiekt wybiera się na liście nad stołem; kopie i wyniki badań są symulowane. Źródła i licencje: okno „O programie”.
+Wszystkie dzieła i obiekty są prawdziwe (domena publiczna albo CC0) – poza banknotami, które są fikcyjne. Obrazy: Jan Matejko, „Stańczyk”; Józef Chełmoński, „Babie lato”; Rembrandt, „Uczony przy pulpicie” (deska); Adam Elsheimer, „Ucieczka do Egiptu” (miedź); Gustave Courbet, „Kamieniarze” (zniszczony 1945); Albrecht Dürer, „Melancholia I”, „Dłonie modlącego się”, „Zając”; Stanisław Wyspiański, „Macierzyństwo”. Rzeźby: J.Q.A. Ward, „James Garfield”; A.-D. Chaudet, „Napoleon”. Monety: 1 zł, 2 zł, 5 zł, 1 €, 2 €. Znaczki: Penny Black, Polska nr 1. Rękopis: Manuskrypt Wojnicza. Dzieło lub obiekt wybiera się na liście nad stołem; kopie i wyniki badań są symulowane. Źródła i licencje: okno „O programie”.
 
 **Język:** PL / EN – przycisk na ekranie startowym i pasku gry; domyślnie według języka przeglądarki. Po angielsku jest cała gra (interfejs, ekran startowy, badania, wyniki, zlecenia, podsumowania); także wiki (`js/core/i18n.js`, słowniki `js/i18n/`).
 

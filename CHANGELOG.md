@@ -2,6 +2,12 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.37.0] – 2026-11-13
+### Dodane
+- Obraz na desce: Rembrandt, „Uczony przy pulpicie” (1641, Zamek Królewski w Warszawie) – wracają odwrocie deski z parkietażem, podróbka na płycie pilśniowej i fałszerstwo na starej desce z epoki. Wiki zaznacza, że analiza konserwatorska z 2009 r. wskazuje drewno topolowe (Commons podaje dąb).
+- Obraz na miedzi: Adam Elsheimer, „Ucieczka do Egiptu” (1609, Alte Pinakothek) – wracają kuta blacha miedziana z puncą, RTG pochłaniane przez miedź i podróbka na blasze cynkowej.
+- O programie: licencje obu obrazów (domena publiczna, Wikimedia Commons).
+
 ## [1.36.2] – 2026-11-13
 ### Zmienione
 - Podział plików: `css/style.css` → 8 plików w `css/` (base, home, wiki, ui, layout, wiki-articles, home-gold, theme – ładowane w tej kolejności, wygląd bez zmian); `js/data/wikitexts.js` → `js/data/wiki/` (techniki badawcze, metody fałszerskie, słowniczek i opisy obiektów, techniki malarskie).
