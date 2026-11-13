@@ -1,0 +1,32 @@
+name: Pobierz skany rzeźb (CC0 / bez ograniczeń)
+# Ręcznie: pobiera skany 3D (Smithsonian – James Garfield, J.Q.A. Ward, CC0; threedscans – Napoleon, A.-D. Chaudet),
+# upraszcza siatki i zapisuje js/real/model-*.js.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 20}
+      - name: Pobierz
+        run: |
+          set -e;mkdir -p /tmp/models;cd /tmp/models
+          curl -sfL -o garfield.glb "https://3d-api.si.edu/content/document/3d_package:d2887438-0f09-4e72-887d-0966ff177149/james-garfield-bronze-sculpture-150k-1024-low.glb"
+          curl -sfL -A "Mozilla/5.0" -o nap.zip "https://threedscans.com/wp-content/uploads/2016/02/Napoleon.stl.zip"
+          unzip -o nap.zip;ls -la;f=$(ls *.stl *.STL 2>/dev/null|head -1);mv "$f" napoleon.stl;ls -la
+      - name: Uprość
+        run: |
+          mkdir -p /tmp/tools && cd /tmp/tools && npm init -y >/dev/null && npm i @gltf-transform/core @gltf-transform/extensions @gltf-transform/functions draco3dgltf meshoptimizer >/dev/null
+          cp $GITHUB_WORKSPACE/tools/build-models.mjs /tmp/tools/ && cd /tmp/tools && OUT=$GITHUB_WORKSPACE/js/real node build-models.mjs 2>&1 | tee /tmp/build.log
+          cd $GITHUB_WORKSPACE
+          cp /tmp/build.log tools/build-models.log
+      - name: Zapisz
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add js/real tools/build-models.log
+          git diff --cached --quiet || (git commit -m "Skany rzeźb (uproszczone siatki)" && git push)
