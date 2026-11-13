@@ -1,9 +1,9 @@
 #!/bin/bash
-# Rozpoznanie źródeł obrazów (uruchamiane w GitHub Actions – sieć niedostępna lokalnie).
-UA="artchecker-fetch/1.0 (GitHub Actions)"
-for q in "Penny Black" "Penny black stamp 1840" "Poland 1860 stamp 10 kopecks" "Polska 1 znaczek 1860" "Pierwszy polski znaczek" "Poland stamp No 1"; do
- echo "=== search: $q"; curl -s -A "$UA" "https://commons.wikimedia.org/w/api.php?action=query&format=json&list=search&srnamespace=6&srlimit=30&srsearch=$(jq -rn --arg s "$q" '$s|@uri')" | jq -r '.query.search[]?.title'
-done
-for c in "Category:Penny Black" "Category:Poland 1" "Category:Stamps of Congress Poland" "Category:1860 stamps of Poland"; do
- echo "=== $c"; curl -s -A "$UA" "https://commons.wikimedia.org/w/api.php?action=query&format=json&list=categorymembers&cmlimit=200&cmtitle=$(jq -rn --arg s "$c" '$s|@uri')" | jq -r '.query.categorymembers[]?.title'
-done
+# Rozpoznanie źródeł modeli 3D (uruchamiane w GitHub Actions).
+UA="Mozilla/5.0 (artchecker-fetch; GitHub Actions)"
+echo "=== ids media_view"; curl -sL -A "$UA" "https://ids.si.edu/ids/media_view?id=3d_package:d2887438-0f09-4e72-887d-0966ff177149" -o /tmp/p1; file /tmp/p1; ls -la /tmp/p1; (unzip -l /tmp/p1 2>/dev/null || head -c 600 /tmp/p1)
+echo "=== 3d-api search"; curl -sL -A "$UA" "https://3d-api.si.edu/api/v1.0/content/file/search?q=NPG.2008.3" | head -c 3000; echo
+echo "=== 3d.si.edu search"; curl -sL -A "$UA" "https://3d.si.edu/search/results?search_api_fulltext=garfield" | grep -oE 'href="/object/3d/[^"]+"' | sort -u | head
+echo "=== edan collections"; curl -sL -A "$UA" "https://collections.si.edu/search/detail/edanmdm:npg_NPG.2008.3" | grep -oE '(https?:)?//[^"]*(3d-api|ids\.si\.edu|\.glb|\.zip)[^"]*' | sort -u | head -20
+echo "=== threedscans napoleon"; for u in "http://threedscans.com/lincoln/napoleon/" "https://threedscans.com/lincoln/napoleon/"; do curl -sL -A "$UA" "$u" | grep -oE 'href="[^"]+\.(zip|stl|obj|ply)"' | sort -u; done
+curl -sL -A "$UA" "https://threedscans.com/lincoln/napoleon/" | grep -ioE '(s3[^"]*|download[^"]*)' | sort -u | head -20
