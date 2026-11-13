@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/), wersje według [SemVer](https://semver.org/lang/pl/).
 
+## [1.38.1] – 2026-11-13
+### Naprawione
+- Ekran startowy: miniatura weryfikacji rękopisów (karta Manuskryptu Wojnicza ładowana przy starcie, jak zdjęcia znaczków).
+
 ## [1.38.0] – 2026-11-13
 ### Dodane
 - Znaczki z lat 1918–19 (Wikimedia Commons, domena publiczna): 10 fen. na 6 gr Poczty Miejskiej w Warszawie z przedrukiem „Poczta Polska” (1918), 10 fen. na 40 Pf Germania – wydanie poznańskie (1919), 50 halerzy z orłem (1919, bez ząbkowania, bez gumy).

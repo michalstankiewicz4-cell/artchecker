@@ -99,3 +99,6 @@ registerKind({id:'manuscript',label:'Weryfikacja rękopisów',noun:'Rękopis',W:
  get intro(){return`Na stole leży 5 egzemplarzy karty z Manuskryptu Wojnicza – ${tr(MSP.name).toLowerCase()} (${tr(MSP.desc)}). Jeden to oryginał, reszta to kopie, faksymile albo przeróbki. Zbadaj pergamin pod światło i w UV, atrament i farby, pismo pod mikroskopem i zleć datowanie radiowęglowe. Na checkliście każdej karty zaznacz sygnały fałszerstwa i zakończ ekspertyzę.`},
  caseText:()=>`Weryfikacja rękopisów: Manuskrypt Wojnicza (Beinecke Rare Book & Manuscript Library, Yale, MS 408) – ${MSP.name.toLowerCase()}. Katalog: pergamin cielęcy datowany na 1404–1438, atrament żelazowo-galasowy, farby: azuryt, czerwona ochra, zieleń miedziowa; karta ok. 23,5 × 16,2 cm. Zdjęcie karty: Wikimedia Commons (domena publiczna); kopie i wyniki badań symuluje gra.`});
 Object.assign(AREA,{sheet:'środek widoku na karcie'});
+/* karta potrzebna miniaturze na ekranie startowym i ilustracjom wiki */
+setTimeout(()=>loadReal(MSP_BY['32'].img).then(()=>{if(MODE!=='manuscript')msSetup('32');if(typeof PREV!=='undefined'){delete PREV.manuscript;
+ const h=document.getElementById('home');if(h&&!h.hidden&&h.offsetParent!==null&&typeof renderHome==='function')renderHome()}}).catch(()=>{}),800);
