@@ -1,5 +1,8 @@
 #!/bin/bash
-UA="Mozilla/5.0 (artchecker-fetch; GitHub Actions)"
-curl -sL -A "$UA" "https://threedscans.com/lincoln/napoleon/" > /tmp/n.html; grep -n -i -B3 -A3 "download" /tmp/n.html | head -80
-echo "=== garfield low glb size"; curl -sIL "https://3d-api.si.edu/content/document/3d_package:d2887438-0f09-4e72-887d-0966ff177149/james-garfield-bronze-sculpture-150k-1024-low.glb" | grep -i "content-length\|HTTP/"
-curl -sIL "https://3d-api.si.edu/content/document/3d_package:d2887438-0f09-4e72-887d-0966ff177149/james-garfield-bronze-sculpture-20k-512-thumb.glb" | grep -i "content-length\|HTTP/"
+UA="artchecker-fetch/1.0 (GitHub Actions)"
+for c in "Category:Voynich manuscript" "Category:Voynich manuscript - pages" "Category:Pages of the Voynich manuscript"; do
+ echo "=== $c"; curl -s -A "$UA" "https://commons.wikimedia.org/w/api.php?action=query&format=json&list=categorymembers&cmlimit=500&cmtitle=$(jq -rn --arg s "$c" '$s|@uri')" | jq -r '.query.categorymembers[]?.title' | head -300
+done
+for q in "Voynich manuscript folio" "Voynich Manuscript (32)" "Voynich f58r" "Voynich f78r"; do
+ echo "=== search: $q"; curl -s -A "$UA" "https://commons.wikimedia.org/w/api.php?action=query&format=json&list=search&srnamespace=6&srlimit=30&srsearch=$(jq -rn --arg s "$q" '$s|@uri')" | jq -r '.query.search[]?.title'
+done
