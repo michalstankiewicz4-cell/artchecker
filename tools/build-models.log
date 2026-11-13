@@ -1,0 +1,4 @@
+garfield primitives 1
+garfield verts 32109 tris 45000 box [ '-340.508', '-74.258', '-981.548' ] [ '133.805', '95.372', '-685.956' ] kB 970
+napoleon stl tris 440512 verts 220247
+napoleon verts 24992 tris 50000 box [ '0.000', '-0.000', '0.000' ] [ '1.864', '3.500', '1.802' ] kB 586
